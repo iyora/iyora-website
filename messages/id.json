@@ -59,6 +59,22 @@
     "trust_title": "Diakui & Dipercaya",
     "trust_desc": "Dibangun di atas rekam jejak IYSA yang telah teruji selama lebih dari satu dekade, IYORA hadir dengan fondasi kepercayaan yang sudah terbentuk."
   },
+  "kurasi": {
+    "badge": "Terkurasi Puspresnas",
+    "title": "Olimpiade IYORA Diakui Resmi oleh Pemerintah",
+    "subtitle": "Setiap olimpiade yang kami selenggarakan telah melalui proses kurasi resmi oleh Puspresnas, Pusat Prestasi Nasional di bawah Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi Republik Indonesia.",
+    "what_is_title": "Apa itu Kurasi Puspresnas?",
+    "what_is_desc": "Kurasi adalah proses resmi identifikasi, penilaian, dan pemberian pengakuan dari Kemendikdasmen kepada ajang talenta yang diselenggarakan di luar pemerintah. Olimpiade yang telah terkurasi mendapat validasi tertinggi di mata institusi pendidikan Indonesia — memastikan sertifikat dan prestasi peserta benar-benar diakui.",
+    "b1_title": "Sertifikat Diakui Resmi",
+    "b1_desc": "Sertifikat dari olimpiade terkurasi memiliki validitas tinggi dan diakui secara resmi oleh seluruh institusi pendidikan di Indonesia.",
+    "b2_title": "Tercatat di Database SIMT",
+    "b2_desc": "Prestasi peserta masuk ke Sistem Informasi Manajemen Talenta (SIMT) Puspresnas, database talenta nasional yang dikelola pemerintah.",
+    "b3_title": "Bernilai untuk PPDB & SNBT",
+    "b3_desc": "Sertifikat olimpiade terkurasi sangat berharga untuk seleksi masuk SMA unggulan dan perguruan tinggi negeri terbaik Indonesia.",
+    "b4_title": "Terverifikasi Kemendikdasmen",
+    "b4_desc": "Diverifikasi langsung oleh tim kurator dari Kementerian Pendidikan, menjamin standar kualitas dan integritas kompetisi.",
+    "source": "Sumber informasi resmi:"
+  },
   "cta_section": {
     "title": "Siap Bersaing di Level Berikutnya?",
     "desc": "Bergabunglah bersama puluhan ribu siswa dari seluruh dunia yang telah memilih IYORA sebagai arena pembuktian diri mereka.",

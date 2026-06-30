@@ -4,6 +4,7 @@ import OriginStory from "@/components/home/OriginStory";
 import StatsSection from "@/components/home/StatsSection";
 import CompetitionsSection from "@/components/home/CompetitionsSection";
 import WhyIYORA from "@/components/home/WhyIYORA";
+import KurasiSection from "@/components/home/KurasiSection";
 import CTASection from "@/components/home/CTASection";
 
 export const metadata: Metadata = {
@@ -20,6 +21,7 @@ export default function HomePage() {
       <StatsSection />
       <CompetitionsSection />
       <WhyIYORA />
+      <KurasiSection />
       <CTASection />
     </>
   );
