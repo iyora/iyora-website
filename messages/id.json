@@ -131,7 +131,11 @@
     "sma": "SMA / Sederajat",
     "sd_sma": "SD – SMA",
     "mi_ma": "MI – MA (Madrasah)",
-    "visit_site": "Kunjungi Website"
+    "visit_site": "Kunjungi Website",
+    "register": "Daftar Sekarang",
+    "guidebook": "Guidebook",
+    "coming_soon": "Segera Dibuka",
+    "closed": "Ditutup"
   },
   "contact": {
     "title": "Hubungi Kami",

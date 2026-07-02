@@ -131,7 +131,11 @@
     "sma": "Senior High School",
     "sd_sma": "Elementary – Senior High",
     "mi_ma": "MI – MA (Madrasah)",
-    "visit_site": "Visit Website"
+    "visit_site": "Visit Website",
+    "register": "Register Now",
+    "guidebook": "Guidebook",
+    "coming_soon": "Coming Soon",
+    "closed": "Closed"
   },
   "contact": {
     "title": "Contact Us",

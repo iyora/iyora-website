@@ -5,7 +5,6 @@ import { useLocale } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const PARTICLES = [
@@ -149,18 +148,6 @@ export default function HeroSection() {
           </Link>
         </motion.div>
       </div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/70 hidden sm:flex flex-col items-center gap-1"
-        animate={{ y: [0, 8, 0] }}
-        transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-      >
-        <span className="text-xs font-medium tracking-widest uppercase opacity-70">
-          Scroll
-        </span>
-        <ChevronDown size={20} />
-      </motion.div>
     </section>
   );
 }
