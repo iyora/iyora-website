@@ -8,6 +8,8 @@ import KurasiSection from "@/components/home/KurasiSection";
 import CTASection from "@/components/home/CTASection";
 import { fetchCompetitionsData } from "@/lib/supabase";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "IYORA — Indonesian Youth Outstanding Recognition Association",
   description:

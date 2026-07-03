@@ -7,7 +7,7 @@ export interface CompetitionData {
   shortName: string;
   name: string;
   level: "national" | "international" | "madrasah" | "world";
-  category: string | null;
+  category: string | null;   // first element of the DB array, or null
   websiteUrl: string | null;
   registrationStatus: RegistrationStatus;
   guidebookUrl: string | null;
@@ -78,12 +78,16 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
     }) => {
       const event = events.find((e) => e.id === comp.active_edition_id);
       const guidebook = guidebooks.find((g) => g.event_id === comp.active_edition_id);
+      // category is stored as text[] in DB — take first element
+      const rawCat = comp.category;
+      const category = Array.isArray(rawCat) ? (rawCat[0] ?? null) : (rawCat ?? null);
+
       return {
         slug: comp.slug,
         shortName: comp.short_name,
         name: comp.name,
         level: (comp.level ?? "national") as CompetitionData["level"],
-        category: comp.category ?? null,
+        category,
         websiteUrl: comp.website_url ?? null,
         registrationStatus: computeStatus(
           event?.registration_open_at ?? null,
