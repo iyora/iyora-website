@@ -2,61 +2,97 @@ import { createClient } from "@supabase/supabase-js";
 
 export type RegistrationStatus = "open" | "coming_soon" | "closed";
 
-export interface CompetitionLiveData {
+export interface CompetitionData {
+  slug: string;
+  shortName: string;
+  name: string;
+  level: "national" | "international" | "madrasah" | "world";
+  category: string | null;
+  websiteUrl: string | null;
   registrationStatus: RegistrationStatus;
   guidebookUrl: string | null;
 }
 
-export async function fetchCompetitionsLiveData(): Promise<Record<string, CompetitionLiveData>> {
-  const supabase = createClient(
+function createSupabase() {
+  return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
+}
 
-  const { data: comps } = await supabase
-    .from("competitions")
-    .select("slug, active_edition_id")
-    .eq("is_active", true);
+function computeStatus(
+  openAt: string | null,
+  closeAt: string | null
+): RegistrationStatus {
+  if (!openAt || !closeAt) return "coming_soon";
+  const now = new Date();
+  if (now < new Date(openAt)) return "coming_soon";
+  if (now > new Date(closeAt)) return "closed";
+  return "open";
+}
 
-  if (!comps || comps.length === 0) return {};
+export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
+  try {
+    const supabase = createSupabase();
 
-  const editionIds = comps
-    .map((c: { slug: string; active_edition_id: string | null }) => c.active_edition_id)
-    .filter(Boolean) as string[];
+    const { data: comps, error } = await supabase
+      .from("competitions")
+      .select("slug, short_name, name, level, category, website_url, active_edition_id")
+      .eq("is_active", true)
+      .order("level")
+      .order("name");
 
-  if (editionIds.length === 0) return {};
+    if (error || !comps || comps.length === 0) return [];
 
-  const [{ data: events }, { data: guidebooks }] = await Promise.all([
-    supabase
-      .from("events")
-      .select("id, registration_open_at, registration_close_at")
-      .in("id", editionIds),
-    supabase
-      .from("guidebooks")
-      .select("event_id, file_url")
-      .in("event_id", editionIds)
-      .order("created_at", { ascending: false }),
-  ]);
+    const editionIds = comps
+      .map((c: { active_edition_id: string | null }) => c.active_edition_id)
+      .filter(Boolean) as string[];
 
-  const result: Record<string, CompetitionLiveData> = {};
+    const [eventsRes, guidebooksRes] = await Promise.all([
+      editionIds.length > 0
+        ? supabase
+            .from("events")
+            .select("id, registration_open_at, registration_close_at")
+            .in("id", editionIds)
+        : Promise.resolve({ data: [] as { id: string; registration_open_at: string | null; registration_close_at: string | null }[] }),
+      editionIds.length > 0
+        ? supabase
+            .from("guidebooks")
+            .select("event_id, file_url")
+            .in("event_id", editionIds)
+            .order("created_at", { ascending: false })
+        : Promise.resolve({ data: [] as { event_id: string; file_url: string }[] }),
+    ]);
 
-  for (const comp of comps) {
-    const event = events?.find((e: { id: string; registration_open_at: string | null; registration_close_at: string | null }) => e.id === comp.active_edition_id);
-    const guidebook = guidebooks?.find((g: { event_id: string; file_url: string }) => g.event_id === comp.active_edition_id);
+    const events = eventsRes.data ?? [];
+    const guidebooks = guidebooksRes.data ?? [];
 
-    let status: RegistrationStatus = "coming_soon";
-    if (event?.registration_open_at && event?.registration_close_at) {
-      const now = new Date();
-      if (now < new Date(event.registration_open_at)) status = "coming_soon";
-      else if (now > new Date(event.registration_close_at)) status = "closed";
-      else status = "open";
-    }
-
-    result[comp.slug] = {
-      registrationStatus: status,
-      guidebookUrl: guidebook?.file_url ?? null,
-    };
+    return comps.map((comp: {
+      slug: string;
+      short_name: string;
+      name: string;
+      level: string | null;
+      category: string | null;
+      website_url: string | null;
+      active_edition_id: string | null;
+    }) => {
+      const event = events.find((e) => e.id === comp.active_edition_id);
+      const guidebook = guidebooks.find((g) => g.event_id === comp.active_edition_id);
+      return {
+        slug: comp.slug,
+        shortName: comp.short_name,
+        name: comp.name,
+        level: (comp.level ?? "national") as CompetitionData["level"],
+        category: comp.category ?? null,
+        websiteUrl: comp.website_url ?? null,
+        registrationStatus: computeStatus(
+          event?.registration_open_at ?? null,
+          event?.registration_close_at ?? null
+        ),
+        guidebookUrl: guidebook?.file_url ?? null,
+      };
+    });
+  } catch {
+    return [];
   }
-
-  return result;
 }

@@ -6,6 +6,7 @@ import CompetitionsSection from "@/components/home/CompetitionsSection";
 import WhyIYORA from "@/components/home/WhyIYORA";
 import KurasiSection from "@/components/home/KurasiSection";
 import CTASection from "@/components/home/CTASection";
+import { fetchCompetitionsData } from "@/lib/supabase";
 
 export const metadata: Metadata = {
   title: "IYORA — Indonesian Youth Outstanding Recognition Association",
@@ -13,13 +14,15 @@ export const metadata: Metadata = {
     "Rumah resmi olimpiade sains pemuda Indonesia. Lahir dari IYSA, IYORA mendedikasikan diri sepenuhnya untuk mengangkat potensi terbaik generasi muda melalui kompetisi olimpiade bertaraf nasional dan internasional.",
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const competitions = await fetchCompetitionsData();
+
   return (
     <>
       <HeroSection />
       <OriginStory />
       <StatsSection />
-      <CompetitionsSection />
+      <CompetitionsSection competitions={competitions} />
       <WhyIYORA />
       <KurasiSection />
       <CTASection />
