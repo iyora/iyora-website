@@ -7,34 +7,50 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://iyora.or.id"),
   title: {
     default: "IYORA — Indonesian Youth Outstanding Recognition Association",
     template: "%s | IYORA",
   },
   description:
-    "IYORA is Indonesia's dedicated youth science olympiad institution, organizing national and international competitions in Biology, Physics, Chemistry, Mathematics, Geography, and more.",
+    "IYORA (Indonesian Youth Outstanding Recognition Association) adalah lembaga olimpiade sains pemuda Indonesia. Menyelenggarakan 14 cabang olimpiade bertaraf nasional & internasional, seluruhnya terkurasi resmi Puspresnas Kemendikbud RI.",
   keywords: [
     "IYORA",
     "Indonesian Youth Outstanding Recognition Association",
-    "olimpiade sains",
-    "science olympiad",
-    "IYBO",
-    "IYPO",
-    "IYCO",
-    "IYMO",
-    "IYGO",
-    "WSO",
-    "OS2MN",
-    "Indonesia",
-    "youth olympiad",
+    "olimpiade sains Indonesia",
+    "science olympiad Indonesia",
+    "IYGO", "NYGO", "IYEO", "NYEO",
+    "IYBO", "NYBO", "IYCO", "NYCO",
+    "IYMO", "NYMO", "IYPO", "NYPO",
+    "WSO", "OS2MN",
+    "olimpiade sains nasional",
+    "olimpiade sains internasional",
+    "kompetisi sains pelajar",
+    "Puspresnas",
+    "olimpiade terkurasi Kemendikbud",
+    "PPDB olimpiade",
+    "SNBT olimpiade sains",
+    "IYSA olimpiade",
+    "youth olympiad Indonesia",
+    "biology olympiad Indonesia",
+    "physics olympiad Indonesia",
+    "chemistry olympiad Indonesia",
+    "mathematics olympiad Indonesia",
+    "geography olympiad Indonesia",
   ],
+  authors: [{ name: "IYORA", url: "https://iyora.or.id" }],
+  creator: "IYORA — Indonesian Youth Outstanding Recognition Association",
+  publisher: "IYORA",
+  category: "Education",
+  classification: "Science Olympiad, Youth Competition, Education",
   openGraph: {
     title: "IYORA — Indonesian Youth Outstanding Recognition Association",
     description:
-      "Indonesia's dedicated home for youth science olympiads. Inspiring the next generation of scientists.",
+      "Lembaga olimpiade sains pemuda Indonesia. 14 cabang olimpiade nasional & internasional, terkurasi resmi Puspresnas Kemendikbud RI. Lahir dari IYSA.",
     url: "https://iyora.or.id",
     siteName: "IYORA",
     locale: "id_ID",
+    alternateLocale: "en_US",
     type: "website",
     images: [
       {
@@ -49,7 +65,8 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "IYORA — Indonesian Youth Outstanding Recognition Association",
     description:
-      "Indonesia's dedicated home for youth science olympiads.",
+      "Lembaga olimpiade sains pemuda Indonesia. 14 cabang olimpiade nasional & internasional, terkurasi resmi Puspresnas.",
+    images: ["https://res.cloudinary.com/dvcufsiy1/image/upload/v1782429397/IYORA_BRAND_GUIDELINE_a6kwif.png"],
   },
   robots: {
     index: true,
@@ -58,6 +75,15 @@ export const metadata: Metadata = {
       index: true,
       follow: true,
       "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  alternates: {
+    canonical: "https://iyora.or.id/id",
+    languages: {
+      "id-ID": "https://iyora.or.id/id",
+      "en-US": "https://iyora.or.id/en",
     },
   },
 };

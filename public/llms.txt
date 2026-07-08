@@ -1,0 +1,54 @@
+# IYORA — Indonesian Youth Outstanding Recognition Association
+
+> IYORA adalah lembaga resmi olimpiade sains pemuda Indonesia, lahir dari IYSA (Indonesian Youth Science Association), yang sepenuhnya didedikasikan untuk menyelenggarakan olimpiade sains bertaraf nasional dan internasional bagi pelajar Indonesia.
+
+## Tentang IYORA
+
+IYORA (Indonesian Youth Outstanding Recognition Association) merupakan spin-off dari IYSA yang berfokus khusus pada cabang olimpiade sains. IYSA tetap bergerak di bidang invensi dan inovasi, sementara IYORA hadir untuk memberikan perhatian penuh pada dunia olimpiade sains.
+
+Seluruh olimpiade yang diselenggarakan IYORA telah mendapatkan kurasi (akreditasi) resmi dari **Puspresnas (Pusat Prestasi Nasional)** di bawah Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi Republik Indonesia — sehingga sertifikat peserta diakui secara resmi oleh seluruh institusi pendidikan di Indonesia dan tercatat dalam database SIMT nasional.
+
+## Olimpiade yang Diselenggarakan IYORA
+
+### Tingkat Internasional
+- **IYGO** — International Youth Geography Olympiad | iygo.iyora.or.id
+- **IYEO** — International Youth Environment Olympiad | iyeo.iyora.or.id
+- **IYBO** — International Youth Biology Olympiad | iybo.iyora.or.id
+- **IYCO** — International Youth Chemistry Olympiad | iyco.iyora.or.id
+- **IYMO** — International Youth Mathematics Olympiad | iymo.iyora.or.id
+- **IYPO** — International Youth Physics Olympiad | iypo.iyora.or.id
+- **WSO** — World Science Olympiad | wso.iyora.or.id
+
+### Tingkat Nasional
+- **NYGO** — National Youth Geography Olympiad | nygo.iyora.or.id
+- **NYEO** — National Youth Environment Olympiad | nyeo.iyora.or.id
+- **NYBO** — National Youth Biology Olympiad | nybo.iyora.or.id
+- **NYCO** — National Youth Chemistry Olympiad | nyco.iyora.or.id
+- **NYMO** — National Youth Mathematics Olympiad | nymo.iyora.or.id
+- **NYPO** — National Youth Physics Olympiad | nypo.iyora.or.id
+
+### Tingkat Madrasah
+- **OS2MN** — Olimpiade Sains 2 Madrasah Nasional | os2mn.iyora.or.id
+
+## Website Resmi
+
+- **Website utama:** https://iyora.or.id
+- **Dashboard peserta:** https://dashboard.iyora.or.id
+- **Registrasi event:** https://[slug].iyora.or.id/register
+
+## Informasi Kontak
+
+- Website: https://iyora.or.id/id/contact
+- Tentang kami: https://iyora.or.id/id/about
+
+## Hubungan dengan IYSA
+
+IYORA lahir dari **IYSA (Indonesian Youth Science Association)**, organisasi yang selama lebih dari satu dekade menjadi garda terdepan pengembangan ilmiah pemuda Indonesia. IYSA kini fokus pada invensi dan inovasi (IYSA Invention), sementara IYORA mengambil alih seluruh cabang olimpiade sains yang sebelumnya dikelola IYSA Olympiad (iysaolympiad.or.id).
+
+## Fakta Kunci
+
+- Lebih dari 50.000 peserta dari 20+ negara
+- 14 cabang olimpiade aktif
+- Seluruh olimpiade terkurasi Puspresnas Kemendikbud RI
+- Sertifikat diakui untuk PPDB dan SNBT (seleksi masuk perguruan tinggi negeri Indonesia)
+- Subdomain format: [nama-event].iyora.or.id

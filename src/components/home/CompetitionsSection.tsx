@@ -4,6 +4,7 @@ import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { useState } from "react";
+import { ChevronDown } from "lucide-react";
 import type { CompetitionData } from "@/lib/supabase";
 
 type FilterKey = "all" | "national" | "international" | "madrasah" | "world";
@@ -148,23 +149,42 @@ export default function CompetitionsSection({ competitions }: Props) {
           <p className="text-gray-500 text-lg max-w-2xl mx-auto">{t("subtitle")}</p>
         </motion.div>
 
-        {/* Filter tabs */}
+        {/* Filter — mobile: dropdown, desktop: pills */}
         {filters.length > 1 && (
-          <div className="flex flex-wrap justify-center gap-2 mb-8">
-            {filters.map(({ key, label }) => (
-              <button
-                key={key}
-                onClick={() => { setActiveFilter(key); setShowAll(false); }}
-                className={`px-5 py-2 rounded-full font-semibold text-sm transition-all duration-200 ${
-                  activeFilter === key
-                    ? "bg-primary text-white shadow-md shadow-primary/30"
-                    : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+          <>
+            {/* Mobile dropdown */}
+            <div className="sm:hidden mb-6">
+              <div className={`relative mx-auto max-w-xs rounded-xl border-2 transition-colors ${activeFilter !== "all" ? "border-primary bg-primary/5" : "border-gray-200 bg-white"}`}>
+                <select
+                  value={activeFilter}
+                  onChange={(e) => { setActiveFilter(e.target.value as FilterKey); setShowAll(false); }}
+                  className={`w-full appearance-none bg-transparent pl-4 pr-10 py-3 text-sm font-bold focus:outline-none cursor-pointer ${activeFilter !== "all" ? "text-primary" : "text-gray-700"}`}
+                >
+                  {filters.map(({ key, label }) => (
+                    <option key={key} value={key}>{label}</option>
+                  ))}
+                </select>
+                <ChevronDown size={16} className={`absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none ${activeFilter !== "all" ? "text-primary" : "text-gray-400"}`} />
+              </div>
+            </div>
+
+            {/* Desktop pills */}
+            <div className="hidden sm:flex flex-wrap justify-center gap-2 mb-8">
+              {filters.map(({ key, label }) => (
+                <button
+                  key={key}
+                  onClick={() => { setActiveFilter(key); setShowAll(false); }}
+                  className={`px-5 py-2 rounded-full font-semibold text-sm transition-all duration-200 ${
+                    activeFilter === key
+                      ? "bg-primary text-white shadow-md shadow-primary/30"
+                      : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </>
         )}
 
         {/* Mobile grid */}

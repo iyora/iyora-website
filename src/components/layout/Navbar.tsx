@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
@@ -29,6 +29,16 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function openDropdown() {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setDropdownOpen(true);
+  }
+
+  function scheduleClose() {
+    closeTimer.current = setTimeout(() => setDropdownOpen(false), 150);
+  }
 
   const otherLocale = locale === "id" ? "en" : "id";
 
@@ -79,8 +89,8 @@ export default function Navbar() {
           {/* Competitions dropdown */}
           <div
             className="relative"
-            onMouseEnter={() => setDropdownOpen(true)}
-            onMouseLeave={() => setDropdownOpen(false)}
+            onMouseEnter={openDropdown}
+            onMouseLeave={scheduleClose}
           >
             <button
               className={clsx(
@@ -98,8 +108,14 @@ export default function Navbar() {
               />
             </button>
 
-            {dropdownOpen && (
-              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[480px] bg-white rounded-2xl shadow-xl shadow-black/10 border border-gray-100 p-4 grid grid-cols-2 gap-1">
+            {/* pt-2 bridges the gap so hover stays continuous — no mt-2 */}
+            <div
+              className={clsx(
+                "absolute top-full left-1/2 -translate-x-1/2 w-[480px] pt-2 transition-all duration-200",
+                dropdownOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-1 pointer-events-none"
+              )}
+            >
+              <div className="bg-white rounded-2xl shadow-xl shadow-black/10 border border-gray-100 p-4 grid grid-cols-2 gap-1">
                 {OLYMPIADS.map((o) => (
                   <Link
                     key={o.name}
@@ -124,7 +140,7 @@ export default function Navbar() {
                   </Link>
                 </div>
               </div>
-            )}
+            </div>
           </div>
 
           <Link href={href("/news")} className={navLinkClass}>
