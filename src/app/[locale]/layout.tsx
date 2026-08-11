@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { fetchNewsPreview } from "@/lib/supabase";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://iyora.or.id"),
@@ -106,10 +107,11 @@ export default async function LocaleLayout({
   }
 
   const messages = await getMessages();
+  const newsPreview = await fetchNewsPreview();
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <Navbar />
+      <Navbar newsPreview={newsPreview} />
       <main>{children}</main>
       <Footer />
     </NextIntlClientProvider>

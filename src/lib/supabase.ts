@@ -78,7 +78,6 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
     }) => {
       const event = events.find((e) => e.id === comp.active_edition_id);
       const guidebook = guidebooks.find((g) => g.event_id === comp.active_edition_id);
-      // category is stored as text[] in DB — take first element
       const rawCat = comp.category;
       const category = Array.isArray(rawCat) ? (rawCat[0] ?? null) : (rawCat ?? null);
 
@@ -98,5 +97,161 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
     });
   } catch {
     return [];
+  }
+}
+
+/* ───────────────────────────────────────────────
+   NEWS / BERITA
+   ─────────────────────────────────────────────── */
+
+export type NewsCategory = "news" | "announcement" | "documentation" | "gallery";
+
+export interface NewsArticle {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  content: string | null;
+  cover_image: string | null;
+  category: NewsCategory;
+  published_at: string | null;
+  created_at: string;
+}
+
+export interface GalleryItem {
+  id: string;
+  title: string;
+  description: string | null;
+  image_url: string;
+  category: string | null;
+  created_at: string;
+}
+
+export async function fetchNewsByCategory(
+  category: NewsCategory
+): Promise<NewsArticle[]> {
+  try {
+    const supabase = createSupabase();
+
+    const { data, error } = await supabase
+      .from("news")
+      .select("id, title, slug, excerpt, content, cover_image, category, published_at, created_at")
+      .eq("category", category)
+      .eq("is_published", true)
+      .order("published_at", { ascending: false });
+
+    if (error || !data) return [];
+    return data as NewsArticle[];
+  } catch {
+    return [];
+  }
+}
+
+export async function fetchAllNews(): Promise<{
+  news: NewsArticle[];
+  announcements: NewsArticle[];
+  documentation: NewsArticle[];
+  gallery: GalleryItem[];
+}> {
+  try {
+    const supabase = createSupabase();
+
+    const [newsRes, announcementsRes, documentationRes, galleryRes] =
+      await Promise.all([
+        supabase
+          .from("news")
+          .select("id, title, slug, excerpt, content, cover_image, category, published_at, created_at")
+          .eq("category", "news")
+          .eq("is_published", true)
+          .order("published_at", { ascending: false }),
+        supabase
+          .from("news")
+          .select("id, title, slug, excerpt, content, cover_image, category, published_at, created_at")
+          .eq("category", "announcement")
+          .eq("is_published", true)
+          .order("published_at", { ascending: false }),
+        supabase
+          .from("news")
+          .select("id, title, slug, excerpt, content, cover_image, category, published_at, created_at")
+          .eq("category", "documentation")
+          .eq("is_published", true)
+          .order("published_at", { ascending: false }),
+        supabase
+          .from("gallery")
+          .select("id, title, description, image_url, category, created_at")
+          .eq("is_published", true)
+          .order("created_at", { ascending: false }),
+      ]);
+
+    return {
+      news: (newsRes.data as NewsArticle[]) ?? [],
+      announcements: (announcementsRes.data as NewsArticle[]) ?? [],
+      documentation: (documentationRes.data as NewsArticle[]) ?? [],
+      gallery: (galleryRes.data as GalleryItem[]) ?? [],
+    };
+  } catch {
+    return { news: [], announcements: [], documentation: [], gallery: [] };
+  }
+}
+
+/* ───────────────────────────────────────────────
+   NEWS PREVIEW (for Navbar mega-menu)
+   ─────────────────────────────────────────────── */
+
+export interface NewsPreviewItem {
+  id: string;
+  title: string;
+  slug: string;
+  cover_image: string | null;
+  published_at: string | null;
+  created_at: string;
+}
+
+export interface GalleryPreviewItem {
+  id: string;
+  title: string;
+  image_url: string;
+}
+
+export interface NewsPreviewData {
+  news: NewsPreviewItem[];
+  announcements: NewsPreviewItem[];
+  gallery: GalleryPreviewItem[];
+}
+
+export async function fetchNewsPreview(): Promise<NewsPreviewData> {
+  try {
+    const supabase = createSupabase();
+
+    const [newsRes, announcementsRes, galleryRes] = await Promise.all([
+      supabase
+        .from("news")
+        .select("id, title, slug, cover_image, published_at, created_at")
+        .eq("category", "news")
+        .eq("is_published", true)
+        .order("published_at", { ascending: false })
+        .limit(3),
+      supabase
+        .from("news")
+        .select("id, title, slug, cover_image, published_at, created_at")
+        .eq("category", "announcement")
+        .eq("is_published", true)
+        .order("published_at", { ascending: false })
+        .limit(3),
+      supabase
+        .from("gallery")
+        .select("id, title, image_url")
+        .eq("is_published", true)
+        .order("created_at", { ascending: false })
+        .limit(4),
+    ]);
+
+    return {
+      news: (newsRes.data as NewsPreviewItem[]) ?? [],
+      announcements: (announcementsRes.data as NewsPreviewItem[]) ?? [],
+      gallery: (galleryRes.data as GalleryPreviewItem[]) ?? [],
+    };
+  } catch {
+    return { news: [], announcements: [], gallery: [] };
   }
 }

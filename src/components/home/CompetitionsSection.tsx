@@ -94,10 +94,11 @@ export default function CompetitionsSection({ competitions }: Props) {
     const styles = LEVEL_STYLES[c.level] ?? LEVEL_STYLES.national;
     if (size === "sm") {
       return (
-        <div className={`group bg-white rounded-2xl border border-gray-100 ${styles.border} hover:shadow-xl transition-all duration-300 flex flex-col p-4 cursor-pointer`}>
-          <div className="text-3xl mb-2 leading-none">{getIcon(c.category)}</div>
+        <div className={`group bg-white rounded-2xl border border-gray-100 ${styles.border} hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1.5 transition-all duration-300 flex flex-col p-4 cursor-pointer overflow-hidden relative`}>
+          <div className="h-1 -mx-4 -mt-4 mb-3 bg-gradient-to-r from-primary via-teal to-accent opacity-0 group-hover:opacity-100 transition-all duration-300" />
+          <div className="text-3xl mb-2 leading-none transition-transform duration-300 group-hover:scale-110 origin-left">{getIcon(c.category)}</div>
           <div className="flex items-start gap-1.5 flex-wrap mb-1">
-            <h3 className="text-sm font-extrabold text-gray-900">{c.shortName}</h3>
+            <h3 className="text-sm font-extrabold text-gray-900 group-hover:text-primary transition-colors">{c.shortName}</h3>
             <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wide ${styles.badge} self-center`}>
               {t(c.level as Parameters<typeof t>[0])}
             </span>
@@ -106,7 +107,7 @@ export default function CompetitionsSection({ competitions }: Props) {
           <div className="mb-2"><StatusBadge status={c.registrationStatus} /></div>
           <Link
             href={`/${locale}/competitions`}
-            className="block text-center py-2 rounded-xl text-xs font-semibold bg-gray-50 text-gray-600 border border-gray-200 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-200"
+            className="block text-center py-2 rounded-xl text-xs font-semibold bg-gray-50 text-gray-600 border border-gray-200 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-200 shadow-2xs"
           >
             {t("view_detail")}
           </Link>
@@ -114,21 +115,22 @@ export default function CompetitionsSection({ competitions }: Props) {
       );
     }
     return (
-      <div className={`group bg-white rounded-2xl border border-gray-100 ${styles.border} hover:shadow-xl transition-all duration-300 flex flex-col p-6 cursor-pointer`}>
-        <div className="text-5xl mb-4 leading-none">{getIcon(c.category)}</div>
+      <div className={`group bg-white rounded-2xl border border-gray-100 ${styles.border} hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2 transition-all duration-300 flex flex-col p-6 cursor-pointer overflow-hidden relative`}>
+        <div className="h-1 -mx-6 -mt-6 mb-5 bg-gradient-to-r from-primary via-teal to-accent opacity-0 group-hover:opacity-100 transition-all duration-300" />
+        <div className="text-5xl mb-4 leading-none transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 origin-left">{getIcon(c.category)}</div>
         <div className="flex items-start gap-2 flex-wrap mb-2">
-          <h3 className="text-lg font-extrabold text-gray-900">{c.shortName}</h3>
+          <h3 className="text-lg font-extrabold text-gray-900 group-hover:text-primary transition-colors">{c.shortName}</h3>
           <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide ${styles.badge} self-center`}>
             {t(c.level as Parameters<typeof t>[0])}
           </span>
         </div>
-        <p className="text-gray-400 text-sm leading-snug flex-1 mb-3">{c.name}</p>
+        <p className="text-gray-500 text-sm leading-snug flex-1 mb-4">{c.name}</p>
         <div className="mb-4"><StatusBadge status={c.registrationStatus} /></div>
         <Link
           href={`/${locale}/competitions`}
-          className="block text-center py-2.5 rounded-xl text-sm font-semibold bg-gray-50 text-gray-600 border border-gray-200 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-200"
+          className="block text-center py-2.5 rounded-xl text-sm font-semibold bg-gray-50 text-gray-700 border border-gray-200 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-200 shadow-2xs"
         >
-          {t("view_detail")}
+          {t("view_detail")} →
         </Link>
       </div>
     );

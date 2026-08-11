@@ -154,5 +154,18 @@
     "our_email": "Email Kami",
     "location": "Lokasi",
     "location_value": "Indonesia"
+  },
+  "news_page": {
+    "title": "Berita & Informasi",
+    "subtitle": "Informasi terbaru seputar olimpiade sains IYORA.",
+    "tab_news": "Berita Terbaru",
+    "tab_announcements": "Pengumuman",
+    "tab_documentation": "Dokumentasi",
+    "tab_gallery": "Galeri",
+    "empty_title": "Belum Ada Konten",
+    "empty_news": "Berita terbaru akan segera ditampilkan di sini. Nantikan informasi menarik seputar olimpiade sains IYORA.",
+    "empty_announcements": "Belum ada pengumuman terbaru. Pengumuman resmi dari IYORA akan muncul di sini.",
+    "empty_documentation": "Dokumentasi kegiatan akan segera tersedia. Pantau terus halaman ini untuk laporan dan dokumentasi lengkap.",
+    "empty_gallery": "Galeri foto dan video kegiatan IYORA akan segera hadir di sini."
   }
 }

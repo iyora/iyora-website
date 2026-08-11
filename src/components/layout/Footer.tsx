@@ -7,9 +7,18 @@ import { useLocale } from "next-intl";
 
 
 const COMPETITIONS = [
-  "NYBO", "IYBO", "NYPO", "IYPO",
-  "NYCO", "IYCO", "NYMO", "IYMO",
-  "IYGO", "IYEO", "OS2MN", "WSO",
+  { name: "NYBO", url: "https://nybo.iyora.or.id" },
+  { name: "IYBO", url: "https://iybo.iyora.or.id" },
+  { name: "NYPO", url: "https://nypo.iyora.or.id" },
+  { name: "IYPO", url: "https://iypo.iyora.or.id" },
+  { name: "NYCO", url: "https://nyco.iyora.or.id" },
+  { name: "IYCO", url: "https://iyco.iyora.or.id" },
+  { name: "NYMO", url: "https://nymo.iyora.or.id" },
+  { name: "IYMO", url: "https://iymo.iyora.or.id" },
+  { name: "IYGO", url: "https://iygo.iyora.or.id" },
+  { name: "IYEO", url: "https://iyeo.iyora.or.id" },
+  { name: "OS2MN", url: "https://os2mn.iyora.or.id" },
+  { name: "WSO", url: "https://wso.iyora.or.id" },
 ];
 
 export default function Footer() {
@@ -35,7 +44,7 @@ export default function Footer() {
               {t("tagline")}
             </p>
             <div className="flex gap-3 mt-6">
-              <a href="#" aria-label="Instagram" className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+              <a href="https://www.instagram.com/iyora.official" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
               </a>
               <a href="#" aria-label="YouTube" className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
@@ -53,14 +62,16 @@ export default function Footer() {
               {t("competitions")}
             </h3>
             <ul className="grid grid-cols-2 gap-x-4 gap-y-2">
-              {COMPETITIONS.map((name) => (
-                <li key={name}>
-                  <Link
-                    href={href("/competitions")}
+              {COMPETITIONS.map((c) => (
+                <li key={c.name}>
+                  <a
+                    href={c.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-sm text-white/50 hover:text-teal transition-colors"
                   >
-                    {name}
-                  </Link>
+                    {c.name}
+                  </a>
                 </li>
               ))}
             </ul>
@@ -115,7 +126,9 @@ export default function Footer() {
             <ul className="flex flex-col gap-2">
               <li>
                 <a
-                  href="#"
+                  href="https://www.instagram.com/iyora.official"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-sm text-white/50 hover:text-teal transition-colors"
                 >
                   Instagram
