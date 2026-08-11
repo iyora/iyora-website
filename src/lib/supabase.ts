@@ -31,6 +31,27 @@ function computeStatus(
   return "open";
 }
 
+export const DEFAULT_COMPETITIONS: CompetitionData[] = [
+  { slug: "nybo", shortName: "NYBO", name: "National Youth Biology Olympiad", level: "national", category: "Biology", websiteUrl: "https://nybo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
+  { slug: "iybo", shortName: "IYBO", name: "International Youth Biology Olympiad", level: "international", category: "Biology", websiteUrl: "https://iybo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
+  { slug: "nypo", shortName: "NYPO", name: "National Youth Physics Olympiad", level: "national", category: "Physics", websiteUrl: "https://nypo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
+  { slug: "iypo", shortName: "IYPO", name: "International Youth Physics Olympiad", level: "international", category: "Physics", websiteUrl: "https://iypo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
+  { slug: "nyco", shortName: "NYCO", name: "National Youth Chemistry Olympiad", level: "national", category: "Chemistry", websiteUrl: "https://nyco.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
+  { slug: "iyco", shortName: "IYCO", name: "International Youth Chemistry Olympiad", level: "international", category: "Chemistry", websiteUrl: "https://iyco.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
+  { slug: "nymo", shortName: "NYMO", name: "National Youth Mathematics Olympiad", level: "national", category: "Mathematics", websiteUrl: "https://nymo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
+  { slug: "iymo", shortName: "IYMO", name: "International Youth Mathematics Olympiad", level: "international", category: "Mathematics", websiteUrl: "https://iymo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
+  { slug: "nygo", shortName: "NYGO", name: "National Youth Geography Olympiad", level: "national", category: "Geography", websiteUrl: "https://nygo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
+  { slug: "iygo", shortName: "IYGO", name: "International Youth Geography Olympiad", level: "international", category: "Geography", websiteUrl: "https://iygo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
+  { slug: "nyeno", shortName: "NYEnO", name: "National Youth Environment Olympiad", level: "national", category: "Environment", websiteUrl: "https://nyeo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
+  { slug: "iyeno", shortName: "IYEnO", name: "International Youth Environment Olympiad", level: "international", category: "Environment", websiteUrl: "https://iyeo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
+  { slug: "nyeco", shortName: "NYEO", name: "National Youth Economics Olympiad", level: "national", category: "Economics", websiteUrl: "https://nyeo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
+  { slug: "iyeco", shortName: "IYEO", name: "International Youth Economics Olympiad", level: "international", category: "Economics", websiteUrl: "https://iyeo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
+  { slug: "nyao", shortName: "NYAO", name: "National Youth Astronomy Olympiad", level: "national", category: "Astronomy", websiteUrl: "https://nyao.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
+  { slug: "iyao", shortName: "IYAO", name: "International Youth Astronomy Olympiad", level: "international", category: "Astronomy", websiteUrl: "https://iyao.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
+  { slug: "os2mn", shortName: "OS2MN", name: "Olimpiade Sains Madrasah Nasional", level: "national", category: "Madrasah", websiteUrl: "https://os2mn.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
+  { slug: "wso", shortName: "WSO", name: "World Science Olympiad", level: "international", category: "Science", websiteUrl: "https://wso.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
+];
+
 export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
   try {
     const supabase = createSupabase();
@@ -42,7 +63,7 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
       .order("level")
       .order("name");
 
-    if (error || !comps || comps.length === 0) return [];
+    if (error || !comps || comps.length === 0) return DEFAULT_COMPETITIONS;
 
     const editionIds = comps
       .map((c: { active_edition_id: string | null }) => c.active_edition_id)
@@ -67,7 +88,7 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
     const events = eventsRes.data ?? [];
     const guidebooks = guidebooksRes.data ?? [];
 
-    return comps.map((comp: {
+    const result = comps.map((comp: {
       slug: string;
       short_name: string;
       name: string;
@@ -95,8 +116,10 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
         guidebookUrl: guidebook?.file_url ?? null,
       };
     });
+
+    return result.length > 0 ? result : DEFAULT_COMPETITIONS;
   } catch {
-    return [];
+    return DEFAULT_COMPETITIONS;
   }
 }
 

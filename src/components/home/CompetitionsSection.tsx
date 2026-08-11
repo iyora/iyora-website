@@ -7,7 +7,7 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import type { CompetitionData } from "@/lib/supabase";
 
-type FilterKey = "all" | "national" | "international" | "madrasah" | "world";
+type FilterKey = "all" | "national" | "international";
 
 const MOBILE_LIMIT = 4;
 
@@ -20,6 +20,8 @@ const CATEGORY_ICONS: Record<string, string> = {
   Economics:   "📊",
   Astronomy:   "🔭",
   Environment: "🌱",
+  Madrasah:    "🕌",
+  Science:     "🏆",
 };
 
 function getIcon(category: string | null) {
@@ -59,14 +61,10 @@ export default function CompetitionsSection({ competitions }: Props) {
   const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
   const [showAll, setShowAll] = useState(false);
 
-  const levels = Array.from(new Set(competitions.map((c) => c.level)));
-
   const filters: { key: FilterKey; label: string }[] = [
     { key: "all", label: t("filter_all") },
-    ...(levels.includes("national")      ? [{ key: "national"      as FilterKey, label: t("national") }]      : []),
-    ...(levels.includes("international") ? [{ key: "international" as FilterKey, label: t("international") }] : []),
-    ...(levels.includes("madrasah")      ? [{ key: "madrasah"      as FilterKey, label: t("madrasah") }]      : []),
-    ...(levels.includes("world")         ? [{ key: "world"         as FilterKey, label: t("world") }]         : []),
+    { key: "national", label: t("national") },
+    { key: "international", label: t("international") },
   ];
 
   const filtered = activeFilter === "all"
@@ -92,6 +90,8 @@ export default function CompetitionsSection({ competitions }: Props) {
 
   function OlympiadCard({ c, size }: { c: CompetitionData; size: "sm" | "lg" }) {
     const styles = LEVEL_STYLES[c.level] ?? LEVEL_STYLES.national;
+    const targetUrl = c.websiteUrl ?? `https://${c.slug}.iyora.or.id`;
+
     if (size === "sm") {
       return (
         <div className={`group bg-white rounded-2xl border border-gray-100 ${styles.border} hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1.5 transition-all duration-300 flex flex-col p-4 cursor-pointer overflow-hidden relative`}>
@@ -105,12 +105,14 @@ export default function CompetitionsSection({ competitions }: Props) {
           </div>
           <p className="text-gray-400 text-xs leading-snug flex-1 mb-2 line-clamp-2">{c.name}</p>
           <div className="mb-2"><StatusBadge status={c.registrationStatus} /></div>
-          <Link
-            href={`/${locale}/competitions`}
+          <a
+            href={targetUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             className="block text-center py-2 rounded-xl text-xs font-semibold bg-gray-50 text-gray-600 border border-gray-200 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-200 shadow-2xs"
           >
-            {t("view_detail")}
-          </Link>
+            {t("visit_website")}
+          </a>
         </div>
       );
     }
@@ -126,12 +128,14 @@ export default function CompetitionsSection({ competitions }: Props) {
         </div>
         <p className="text-gray-500 text-sm leading-snug flex-1 mb-4">{c.name}</p>
         <div className="mb-4"><StatusBadge status={c.registrationStatus} /></div>
-        <Link
-          href={`/${locale}/competitions`}
+        <a
+          href={targetUrl}
+          target="_blank"
+          rel="noopener noreferrer"
           className="block text-center py-2.5 rounded-xl text-sm font-semibold bg-gray-50 text-gray-700 border border-gray-200 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-200 shadow-2xs"
         >
-          {t("view_detail")} →
-        </Link>
+          {t("visit_website")} →
+        </a>
       </div>
     );
   }
@@ -241,6 +245,16 @@ export default function CompetitionsSection({ competitions }: Props) {
             </motion.div>
           ))}
         </motion.div>
+
+        {/* View All Competitions Button */}
+        <div className="text-center mt-12">
+          <Link
+            href={`/${locale}/competitions`}
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl text-sm font-bold bg-primary text-white hover:bg-primary-dark shadow-lg shadow-primary/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
+          >
+            {locale === "id" ? "Lihat Semua Kompetisi" : "View All Competitions"} →
+          </Link>
+        </div>
       </div>
     </section>
   );

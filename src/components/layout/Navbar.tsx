@@ -86,7 +86,7 @@ const OLYMPIADS = [
     name: "NYGO",
     emoji: "🌍",
     side: "left" as const,
-    full: "Nasional Youth Geography Olympiad",
+    full: "National Youth Geography Olympiad",
     level: "Nasional",
     badgeStyle: "bg-teal-50 text-teal-700 border-teal-200",
     url: "https://nygo.iyora.or.id",
@@ -102,15 +102,33 @@ const OLYMPIADS = [
   },
   {
     name: "NYEO",
+    emoji: "📊",
+    side: "left" as const,
+    full: "National Youth Economics Olympiad",
+    level: "Nasional",
+    badgeStyle: "bg-indigo-50 text-indigo-700 border-indigo-200",
+    url: "https://nyeo.iyora.or.id",
+  },
+  {
+    name: "IYEO",
+    emoji: "📊",
+    side: "right" as const,
+    full: "International Youth Economics Olympiad",
+    level: "Internasional",
+    badgeStyle: "bg-indigo-50 text-indigo-700 border-indigo-200",
+    url: "https://iyeo.iyora.or.id",
+  },
+  {
+    name: "NYEnO",
     emoji: "🌱",
     side: "left" as const,
-    full: "Nasional Youth Environment Olympiad",
+    full: "National Youth Environment Olympiad",
     level: "Nasional",
     badgeStyle: "bg-emerald-50 text-emerald-700 border-emerald-200",
     url: "https://nyeo.iyora.or.id",
   },
   {
-    name: "IYEO",
+    name: "IYEnO",
     emoji: "🌱",
     side: "right" as const,
     full: "International Youth Environment Olympiad",
@@ -119,12 +137,30 @@ const OLYMPIADS = [
     url: "https://iyeo.iyora.or.id",
   },
   {
+    name: "NYAO",
+    emoji: "🔭",
+    side: "left" as const,
+    full: "National Youth Astronomy Olympiad",
+    level: "Nasional",
+    badgeStyle: "bg-sky-50 text-sky-700 border-sky-200",
+    url: "https://nyao.iyora.or.id",
+  },
+  {
+    name: "IYAO",
+    emoji: "🔭",
+    side: "right" as const,
+    full: "International Youth Astronomy Olympiad",
+    level: "Internasional",
+    badgeStyle: "bg-sky-50 text-sky-700 border-sky-200",
+    url: "https://iyao.iyora.or.id",
+  },
+  {
     name: "OS2MN",
     emoji: "🕌",
     side: "left" as const,
     full: "Olimpiade Sains Madrasah Nasional",
-    level: "Madrasah",
-    badgeStyle: "bg-amber-50 text-amber-700 border-amber-200",
+    level: "Nasional",
+    badgeStyle: "bg-teal-50 text-teal-700 border-teal-200",
     url: "https://os2mn.iyora.or.id",
   },
   {
@@ -132,8 +168,8 @@ const OLYMPIADS = [
     emoji: "🏆",
     side: "right" as const,
     full: "World Science Olympiad",
-    level: "Ompiade Dunia",
-    badgeStyle: "bg-rose-50 text-rose-700 border-rose-200",
+    level: "Internasional",
+    badgeStyle: "bg-indigo-50 text-indigo-700 border-indigo-200",
     url: "https://wso.iyora.or.id",
   },
 ];
@@ -245,7 +281,9 @@ export default function Navbar({ newsPreview }: NavbarProps) {
             onMouseEnter={openDropdown}
             onMouseLeave={scheduleClose}
           >
-            <button
+            <Link
+              href={href("/competitions")}
+              onClick={() => setDropdownOpen(false)}
               className={clsx(
                 navLinkClass,
                 "flex items-center gap-1 cursor-pointer"
@@ -259,7 +297,7 @@ export default function Navbar({ newsPreview }: NavbarProps) {
                   dropdownOpen && "rotate-180"
                 )}
               />
-            </button>
+            </Link>
 
             {/* Competitions mega-menu dropdown */}
             <div
@@ -275,8 +313,9 @@ export default function Navbar({ newsPreview }: NavbarProps) {
                     const isHovered = hoveredOlympiadName === o.name;
                     return (
                       <Link
-                        key={o.name}
+                        key={`${o.name}-${o.full}`}
                         href={href("/competitions")}
+                        onClick={() => setDropdownOpen(false)}
                         onMouseEnter={() => {
                           setHoveredOlympiadName(o.name);
                           setHoveredSide(o.side);
@@ -303,6 +342,7 @@ export default function Navbar({ newsPreview }: NavbarProps) {
                 <div className="pt-2 mt-2 border-t border-gray-100">
                   <Link
                     href={href("/competitions")}
+                    onClick={() => setDropdownOpen(false)}
                     className="flex items-center justify-center w-full py-1.5 text-xs font-semibold text-primary hover:underline"
                   >
                     {locale === "id" ? "Lihat Semua Kompetisi" : "View All Competitions"} →
@@ -338,6 +378,7 @@ export default function Navbar({ newsPreview }: NavbarProps) {
                             href={activeOlympiad.url}
                             target="_blank"
                             rel="noopener noreferrer"
+                            onClick={() => setDropdownOpen(false)}
                             className="flex items-center justify-center gap-1.5 w-full py-2 bg-primary text-white rounded-xl text-xs font-bold hover:bg-primary-dark transition-all shadow-sm group"
                           >
                             <span>{locale === "id" ? "Kunjungi Website" : "Visit Website"}</span>
@@ -347,6 +388,7 @@ export default function Navbar({ newsPreview }: NavbarProps) {
 
                         <Link
                           href={href("/competitions")}
+                          onClick={() => setDropdownOpen(false)}
                           className="flex items-center justify-center gap-1 w-full py-1 text-xs font-semibold text-gray-500 hover:text-primary transition-colors"
                         >
                           <span>{locale === "id" ? "Detail Kompetisi" : "Competition Details"}</span>
