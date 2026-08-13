@@ -182,10 +182,10 @@ const NEWS_MENU = [
 
 type NewsMenuKey = typeof NEWS_MENU[number]["key"];
 
-function formatPreviewDate(dateStr: string | null): string {
+function formatPreviewDate(dateStr: string | null, locale: string = "id"): string {
   if (!dateStr) return "";
   const d = new Date(dateStr);
-  return d.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
+  return d.toLocaleDateString(locale === "en" ? "en-US" : "id-ID", { day: "numeric", month: "short", year: "numeric" });
 }
 
 interface NavbarProps {
@@ -501,7 +501,7 @@ export default function Navbar({ newsPreview }: NavbarProps) {
                               <p className="text-sm font-semibold text-gray-800 line-clamp-2 group-hover:text-primary transition-colors">{item.title}</p>
                               <div className="flex items-center gap-1 mt-1">
                                 <Calendar size={10} className="text-gray-300" />
-                                <span className="text-xs text-gray-400">{formatPreviewDate(item.published_at ?? item.created_at)}</span>
+                                <span className="text-xs text-gray-400">{formatPreviewDate(item.published_at ?? item.created_at, locale)}</span>
                               </div>
                             </div>
                           </Link>
@@ -543,7 +543,7 @@ export default function Navbar({ newsPreview }: NavbarProps) {
                               <p className="text-sm font-semibold text-gray-800 line-clamp-2 group-hover:text-primary transition-colors">{item.title}</p>
                               <div className="flex items-center gap-1 mt-1">
                                 <Calendar size={10} className="text-gray-300" />
-                                <span className="text-xs text-gray-400">{formatPreviewDate(item.published_at ?? item.created_at)}</span>
+                                <span className="text-xs text-gray-400">{formatPreviewDate(item.published_at ?? item.created_at, locale)}</span>
                               </div>
                             </div>
                           </Link>
@@ -585,7 +585,7 @@ export default function Navbar({ newsPreview }: NavbarProps) {
                               <p className="text-sm font-semibold text-gray-800 line-clamp-2 group-hover:text-primary transition-colors">{item.title}</p>
                               <div className="flex items-center gap-1 mt-1">
                                 <Calendar size={10} className="text-gray-300" />
-                                <span className="text-xs text-gray-400">{formatPreviewDate(item.created_at || null)}</span>
+                                <span className="text-xs text-gray-400">{formatPreviewDate(item.created_at || null, locale)}</span>
                               </div>
                             </div>
                           </Link>

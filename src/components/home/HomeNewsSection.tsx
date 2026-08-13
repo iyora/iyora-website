@@ -25,10 +25,10 @@ interface HomeNewsSectionProps {
 
 type TabKey = "all" | "news" | "announcements" | "gallery";
 
-function formatDate(dateStr: string | null): string {
+function formatDate(dateStr: string | null, locale: string = "id"): string {
   if (!dateStr) return "-";
   const date = new Date(dateStr);
-  return date.toLocaleDateString("id-ID", {
+  return date.toLocaleDateString(locale === "en" ? "en-US" : "id-ID", {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -313,7 +313,7 @@ function ArticleCard({
       <div className="p-5 flex flex-col flex-1">
         <div className="flex items-center gap-1.5 text-xs text-gray-400 mb-2.5 font-medium">
           <Calendar size={13} className="text-primary/70" />
-          <time>{formatDate(publishedAt)}</time>
+          <time>{formatDate(publishedAt, locale)}</time>
         </div>
 
         <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-primary transition-colors duration-200 leading-snug">

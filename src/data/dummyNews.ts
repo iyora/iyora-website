@@ -99,71 +99,59 @@ export const DUMMY_NEWS: DummyNewsItem[] = [
     publishedAt: "2026-08-13",
     author: "IyoraOlympiade",
   },
- /* {
-    id: "news-4",
-    slug: "kurasi-puspresnas-12-cabang-olimpiade-iyora",
-    title: "12 Cabang Olimpiade IYORA Resmi Tercatat dan Terkurasi di Puspresnas",
-    category: "news",
-    photo: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80",
-    caption: "Seluruh sertifikat pemenang ajang IYORA resmi terintegrasi secara otomatis dengan Sistem Informasi Manajemen Talenta (SIMT) Puspresnas Kemendikdasmen RI.",
-    content: "IYORA memastikan seluruh sertifikat kejuaraan terintegrasi secara otomatis dengan Sistem Informasi Manajemen Talenta (SIMT) Puspresnas. Hal ini memberikan nilai tambah yang signifikan bagi peserta untuk jalur prestasi PPDB maupun SNBT perguruan tinggi negeri.",
-    link: "/news",
-    publishedAt: "2026-07-15",
-    author: "IyoraOlumpiad",
-  },*/
-
-  // ── ANNOUNCEMENTS (Pengumuman) ──
-  /*{
-    id: "announcement-1",
-    slug: "jadwal-dan-petunjuk-teknis-nyco-2026",
-    title: "Pengumuman Jadwal & Petunjuk Teknis Pelaksanaan NYCO & IYCO 2026",
-    category: "announcement",
-    photo: "-",
-    caption: "Simak jadwal penting, tata cara ujian CBT online, serta pembagian sesi pelaksanaan National & International Youth Chemistry Olympiad.",
-    content: "Panitia Pelaksana NYCO 2026 menyampaikan jadwal rinci dan petunjuk teknis ujian yang wajib dipelajari oleh seluruh peserta terdaftar. Pengawasan akan dilakukan melalui sistem AI proctoring dan Zoom meeting terintegrasi.",
-    link: "https://nyco.iyora.or.id",
-    publishedAt: "2026-08-11",
-    author: "IyoraOlumpiad",
-  },
-  {
-    id: "announcement-2",
-    slug: "pembaruan-sistem-cbt-olimpiade-iyora-2026",
-    title: "Pembaruan Platform CBT Online & Aturan Pengawasan Ujian Olimpiade",
-    category: "announcement",
-    photo: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80",
-    caption: "Pemberitahuan mengenai update fitur portal ujian online dan panduan teknis bagi peserta olimpiade matematika & geografi.",
-    content: "Demi menjaga integritas dan kelancaran ujian, IYORA telah memperbarui platform Computer Based Test (CBT) dengan fitur anti-cheat lanjutan dan simulasi ujian gratis yang dapat diakses mulai pekan depan.",
-    link: "/news",
-    publishedAt: "2026-08-02",
-    author: "IyoraOlumpiad",
-  },
-  {
-    id: "announcement-3",
-    slug: "prosedur-klaim-sertifikat-simt-puspresnas",
-    title: "Prosedur Klaim Sertifikat Terintegrasi SIMT Puspresnas untuk Pemenang",
-    category: "announcement",
-    photo: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1200&q=80",
-    caption: "Tata cara verifikasi data dan pengunduhan e-sertifikat terkurasi bagi seluruh peraih medali olimpiade sains IYORA.",
-    content: "Seluruh pemenang medali emas, perak, dan perunggu dapat melakukan klaim e-sertifikat ber-QR Code melalui portal resmi IYORA. Sertifikat ini terhubung langsung dengan SIMT Puspresnas Kemendikdasmen.",
-    link: "/news",
-    publishedAt: "2026-07-20",
-    author: "IyoraOlumpiad",
-  },*/
 
   // ── GALLERY (Galeri) ──
   {
     id: "gallery-1",
     slug: "after-event-biology-physics-olympiad-2026",
     title: "After Event Biology & Physics Olympiad 2026",
+    title_en: "After Event Biology & Physics Olympiad 2026",
     category: "gallery",
     photo: "/images/Galery Pemenang/AFTER EVENT.png",
     caption: "Momen berkesan dan rangkuman keseruan kompetisi sains nasional Biology & Physics Olympiad 2026.",
+    caption_en: "Memorable moments and highlight summary of the national science competition Biology & Physics Olympiad 2026.",
     content: "Kami bangga mempersembahkan video rangkuman dari acara yang tak terlupakan ini, sebagai bukti semangat, dedikasi, dan kecemerlangan yang telah ditunjukkan oleh setiap peserta. Melalui video pasca-acara ini, Anda akan disuguhi berbagai momen berkesan yang telah kita lalui bersama.",
+    content_en: "We are proud to present a summary video of this unforgettable event, as a testament to the passion, dedication, and brilliance demonstrated by every participant. Through this post-event video, you will be treated to various memorable moments we shared together.",
     publishedAt: "2026-08-13",
     author: "IyoraOlympiade",
     link: "https://www.youtube.com/embed/05RdQgvQiVY?si=KSSadgHGYFNm9do1",
     linkLabel: "Tonton Video Dokumentasi YouTube",
+    linkLabel_en: "Watch Video Documentation on YouTube",
   },
+  /*{
+    id: "gallery-2",
+    slug: "dokumentasi-pemenang-olimpiade-sains-nasional-2026",
+    title: "Dokumentasi Penyerahan Medali & Piagam Pemenang Olympiade IYORA 2026",
+    title_en: "Medal & Certificate Awarding Ceremony Documentation IYORA Olympiad 2026",
+    category: "gallery",
+    photo: "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80",
+    caption: "Kumpulan foto penyerahan medali emas, perak, dan perunggu kepada para juara muda terbaik bangsa.",
+    caption_en: "Collection of photos of gold, silver, and bronze medal presentations to the nation's finest young champions.",
+    content: "Dokumentasi resmi selebrasi dan penyerahan penghargaan bagi seluruh peserta berprestasi pada ajang olimpiade sains nasional dan internasional IYORA 2026. Selamat kepada seluruh pemenang atas pencapaian luar biasa ini!",
+    content_en: "Official documentation of the celebration and award ceremony for all high-achieving participants at the IYORA 2026 national and international science olympiads. Congratulations to all winners on this extraordinary achievement!",
+    publishedAt: "2026-08-10",
+    author: "IyoraOlympiade",
+    link: "https://www.instagram.com/reel/Db92P8dJVmA/?igsh=aXExdW1nNjUzenNv&igsi=aXExdW1nNjUzenNv",
+    linkLabel: "Lihat Galeri Foto di Instagram",
+    linkLabel_en: "View Photo Gallery on Instagram",
+  },
+  {
+    id: "gallery-3",
+    slug: "dokumentasi-kompetisi-cbt-online-nygo-iygo",
+    title: "Suasana & Keseruan Pelaksanaan CBT Online NYGO & IYGO 2026",
+    title_en: "Highlights & Atmosphere of NYGO & IYGO 2026 Online CBT Competition",
+    category: "gallery",
+    photo: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80",
+    caption: "Potret antusiasme ribuan peserta dari berbagai daerah dalam mengikuti ujian sains online berstandar nasional.",
+    caption_en: "Photographs capturing the enthusiasm of thousands of participants competing in national-standard online science exams.",
+    content: "Pelaksanaan kompetisi sains berbasis komputer (CBT) IYORA berlangsung dengan lancar, transparan, dan kompetitif. Ribuan pelajar madrasah dan sekolah menengah bertanding menunjukkan keunggulan sains.",
+    content_en: "The implementation of IYORA's Computer-Based Test (CBT) science competition proceeded smoothly, transparently, and competitively. Thousands of students competed demonstrating scientific excellence.",
+    publishedAt: "2026-08-05",
+    author: "IyoraOlympiade",
+    link: "https://nygo.iyora.or.id",
+    linkLabel: "Kunjungi Portal Pendaftaran NYGO",
+    linkLabel_en: "Visit NYGO Registration Portal",
+  },*/
 ];
 
 export function getDummyNewsByCategory(category: "news" | "announcement" | "gallery") {
@@ -185,5 +173,3 @@ export function getDummyNewsBySlug(slug: string) {
     );
   });
 }
-
-

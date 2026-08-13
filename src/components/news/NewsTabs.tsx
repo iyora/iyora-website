@@ -24,10 +24,10 @@ const TAB_ICONS = {
   gallery: Images,
 };
 
-function formatDate(dateStr: string | null): string {
+function formatDate(dateStr: string | null, locale: string = "id"): string {
   if (!dateStr) return "-";
   const date = new Date(dateStr);
-  return date.toLocaleDateString("id-ID", {
+  return date.toLocaleDateString(locale === "en" ? "en-US" : "id-ID", {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -98,7 +98,7 @@ function ArticleCard({
         {/* Date */}
         <div className="flex items-center gap-1.5 text-xs text-gray-400 mb-3">
           <Calendar size={12} />
-          <time>{formatDate(publishedAt)}</time>
+          <time>{formatDate(publishedAt, locale)}</time>
         </div>
 
         {/* Title */}

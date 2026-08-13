@@ -368,19 +368,29 @@ export async function fetchAllNews(locale?: string): Promise<{
       author: item.author ?? "IyoraOlympiade",
     }));
 
-    const formattedGalleryData: GalleryItem[] = galleryData.map((item) => ({
-      ...item,
-      slug: item.slug || item.id,
-      excerpt: item.description,
-      cover_image: item.image_url,
-      published_at: item.created_at,
-    }));
+    const formattedGalleryData: GalleryItem[] = galleryData.map((item) => {
+      const dummy = getDummyNewsBySlug(item.slug || item.id);
+      return {
+        ...item,
+        title: (isEn && dummy?.title_en) ? dummy.title_en : (item.title || dummy?.title || ""),
+        slug: item.slug || dummy?.slug || item.id,
+        description: (isEn && dummy?.caption_en) ? dummy.caption_en : (item.description || dummy?.caption || null),
+        excerpt: (isEn && dummy?.caption_en) ? dummy.caption_en : (item.description || dummy?.caption || null),
+        content: (isEn && dummy?.content_en) ? dummy.content_en : (dummy?.content ?? item.description ?? null),
+        cover_image: item.image_url || dummy?.photo,
+        image_url: item.image_url || dummy?.photo || "",
+        published_at: item.created_at || dummy?.publishedAt,
+        external_link: item.external_link || dummy?.link || null,
+        external_link_label: (isEn && dummy?.linkLabel_en) ? dummy.linkLabel_en : (dummy?.linkLabel ?? null),
+        author: dummy?.author ?? "IyoraOlympiade",
+      };
+    });
 
     return {
       news: (newsData.length > 0 ? newsData : defaultNews).sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime()),
       announcements: (announcementsData.length > 0 ? announcementsData : defaultAnnouncements).sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime()),
       documentation: documentationData,
-      gallery: formattedGalleryData.length > 0 ? formattedGalleryData : defaultGallery,
+      gallery: (formattedGalleryData.length > 0 ? formattedGalleryData : defaultGallery).sort((a, b) => new Date(b.published_at ?? b.created_at ?? 0).getTime() - new Date(a.published_at ?? a.created_at ?? 0).getTime()),
     };
   } catch {
     const defaultNews: NewsArticle[] = DUMMY_NEWS.filter((item) => item.category === "news")
@@ -521,10 +531,21 @@ export async function fetchNewsPreview(locale?: string): Promise<NewsPreviewData
       created_at: item.publishedAt,
     }));
 
+    const formattedGalleryData: GalleryPreviewItem[] = galleryData.map((item) => {
+      const dummy = getDummyNewsBySlug(item.slug || item.id);
+      return {
+        id: item.id,
+        title: (isEn && dummy?.title_en) ? dummy.title_en : (item.title || dummy?.title || ""),
+        slug: item.slug || dummy?.slug || item.id,
+        image_url: item.image_url || dummy?.photo || "",
+        created_at: item.created_at || dummy?.publishedAt,
+      };
+    });
+
     return {
       news: newsData.length > 0 ? newsData : defaultNews,
       announcements: announcementsData.length > 0 ? announcementsData : defaultAnnouncements,
-      gallery: galleryData.length > 0 ? galleryData : defaultGallery,
+      gallery: formattedGalleryData.length > 0 ? formattedGalleryData : defaultGallery,
     };
   } catch {
     const defaultNews: NewsPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "news").slice(0, 3).map((item) => ({

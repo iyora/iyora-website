@@ -32,10 +32,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-function formatDate(dateStr: string | null): string {
+function formatDate(dateStr: string | null, isEn: boolean = false): string {
   if (!dateStr) return "-";
   const date = new Date(dateStr);
-  return date.toLocaleDateString("id-ID", {
+  return date.toLocaleDateString(isEn ? "en-US" : "id-ID", {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -59,13 +59,13 @@ function getYouTubeEmbedUrl(url: string | null | undefined): string | null {
 export default async function NewsDetailPage({ params }: Props) {
   const { locale, slug } = await params;
   const isEn = locale === "en";
-  const article = await fetchNewsBySlug(slug);
+  const article = await fetchNewsBySlug(slug, locale);
 
   if (!article) {
     notFound();
   }
 
-  const { news, announcements, gallery } = await fetchAllNews();
+  const { news, announcements, gallery } = await fetchAllNews(locale);
   const galleryAsArticles = gallery.map((item) => ({
     id: item.id,
     title: item.title,
@@ -146,7 +146,7 @@ export default async function NewsDetailPage({ params }: Props) {
             <div className="flex flex-wrap items-center gap-4 text-xs md:text-sm text-gray-500 mb-6 pb-6 border-b border-gray-100 font-medium">
               <div className="flex items-center gap-1.5">
                 <Calendar size={15} className="text-primary" />
-                <time>{formatDate(article.published_at ?? article.created_at)}</time>
+                <time>{formatDate(article.published_at ?? article.created_at, isEn)}</time>
               </div>
               <span className="text-gray-300">•</span>
               <div className="flex items-center gap-1.5">
@@ -326,7 +326,7 @@ export default async function NewsDetailPage({ params }: Props) {
                   <div className="p-5 flex flex-col flex-1">
                     <div className="flex items-center gap-1 text-xs text-gray-400 mb-2">
                       <Calendar size={12} />
-                      <span>{formatDate(item.published_at ?? item.created_at)}</span>
+                      <span>{formatDate(item.published_at ?? item.created_at, isEn)}</span>
                     </div>
                     <h4 className="font-bold text-gray-900 text-sm line-clamp-2 group-hover:text-primary transition-colors mb-2">
                       {item.title}

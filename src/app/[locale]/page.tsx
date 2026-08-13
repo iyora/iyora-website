@@ -17,9 +17,14 @@ export const metadata: Metadata = {
     "Rumah resmi olimpiade sains pemuda Indonesia. Lahir dari IYSA, IYORA mendedikasikan diri sepenuhnya untuk mengangkat potensi terbaik generasi muda melalui kompetisi olimpiade bertaraf nasional dan internasional.",
 };
 
-export default async function HomePage() {
+export default async function HomePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
   const competitions = await fetchCompetitionsData();
-  const { news, announcements, gallery } = await fetchAllNews();
+  const { news, announcements, gallery } = await fetchAllNews(locale);
 
   return (
     <>

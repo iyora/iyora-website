@@ -17,6 +17,16 @@ const BUTTON_VARIANTS: Record<string, string> = {
   secondary: "bg-gray-100 hover:bg-gray-200 text-gray-800",
 };
 
+function formatDate(dateStr: string | null, isEn: boolean): string {
+  if (!dateStr) return "-";
+  const date = new Date(dateStr);
+  return date.toLocaleDateString(isEn ? "en-US" : "id-ID", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
 export default function EventPopup() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
@@ -115,22 +125,20 @@ export default function EventPopup() {
               {/* Event Details & Body */}
               <div className="p-6 sm:p-8">
                 {/* Meta details */}
-                <div className="flex items-center gap-3 text-xs text-gray-500 font-medium mb-3">
-                  <div className="flex items-center gap-1 text-primary">
-                    <Megaphone size={14} />
-                    <span className="font-bold uppercase tracking-wider">
-                      {isEn ? "Event Announcement" : "Pengumuman Event"}
-                    </span>
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-gray-500 font-medium mb-4">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-primary font-extrabold uppercase tracking-wider text-[11px] whitespace-nowrap">
+                    <Megaphone size={13} className="flex-shrink-0" />
+                    <span>{isEn ? "Event Announcement" : "Pengumuman Event"}</span>
                   </div>
-                  <span>•</span>
-                  <div className="flex items-center gap-1">
-                    <User size={13} className="text-gray-400" />
+                  <span className="text-gray-300">•</span>
+                  <div className="flex items-center gap-1.5 whitespace-nowrap text-gray-600">
+                    <User size={13} className="text-gray-400 flex-shrink-0" />
                     <span>{event.author}</span>
                   </div>
-                  <span>•</span>
-                  <div className="flex items-center gap-1">
-                    <Calendar size={13} className="text-gray-400" />
-                    <span>{event.publishedAt}</span>
+                  <span className="text-gray-300">•</span>
+                  <div className="flex items-center gap-1.5 whitespace-nowrap text-gray-600">
+                    <Calendar size={13} className="text-gray-400 flex-shrink-0" />
+                    <span>{formatDate(event.publishedAt, isEn)}</span>
                   </div>
                 </div>
 
