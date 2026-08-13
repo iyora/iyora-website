@@ -130,7 +130,7 @@ export const DUMMY_NEWS: DummyNewsItem[] = [
     slug: "after-event-biology-physics-olympiad-2026",
     title: "After Event Biology & Physics Olympiad 2026",
     category: "gallery",
-    photo: "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80",
+    photo: "/images/Galery Pemenang/AFTER EVENT.png",
     caption: "Momen berkesan dan rangkuman keseruan kompetisi sains nasional Biology & Physics Olympiad 2026.",
     content: "Kami bangga mempersembahkan video rangkuman dari acara yang tak terlupakan ini, sebagai bukti semangat, dedikasi, dan kecemerlangan yang telah ditunjukkan oleh setiap peserta. Melalui video pasca-acara ini, Anda akan disuguhi berbagai momen berkesan yang telah kita lalui bersama.",
     publishedAt: "2026-08-13",
