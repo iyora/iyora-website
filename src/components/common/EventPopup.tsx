@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useLocale } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ExternalLink, Sparkles, User, Calendar, Megaphone } from "lucide-react";
 import { DUMMY_EVENT_POPUP, type EventPopupLink } from "@/data/dummyEventPopup";
@@ -19,6 +20,8 @@ const BUTTON_VARIANTS: Record<string, string> = {
 export default function EventPopup() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const locale = useLocale();
+  const isEn = locale === "en";
   const event = DUMMY_EVENT_POPUP;
 
   const isHomepage =
@@ -48,6 +51,11 @@ export default function EventPopup() {
 
   if (!event.isActive || !isHomepage) return null;
 
+  const badgeText = isEn ? (event.badge_en || event.badge) : event.badge;
+  const titleText = isEn ? (event.title_en || event.title) : event.title;
+  const subtitleText = isEn ? (event.subtitle_en || event.subtitle) : event.subtitle;
+  const contentText = isEn ? (event.content_en || event.content) : event.content;
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -74,7 +82,7 @@ export default function EventPopup() {
             <button
               onClick={handleClose}
               className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-black/40 hover:bg-black/70 text-white backdrop-blur-md flex items-center justify-center transition-all cursor-pointer shadow-lg hover:scale-110"
-              aria-label="Tutup Pop Up"
+              aria-label={isEn ? "Close Pop Up" : "Tutup Pop Up"}
             >
               <X size={18} />
             </button>
@@ -86,7 +94,7 @@ export default function EventPopup() {
                 <div className="relative aspect-[16/9] w-full bg-gray-900 overflow-hidden">
                   <Image
                     src={event.image}
-                    alt={event.title}
+                    alt={titleText}
                     fill
                     priority
                     className="object-cover"
@@ -98,7 +106,7 @@ export default function EventPopup() {
                   <div className="absolute top-4 left-4 z-10">
                     <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-600 text-white text-xs font-extrabold rounded-full shadow-lg animate-pulse tracking-wide uppercase">
                       <Sparkles size={13} />
-                      {event.badge}
+                      {badgeText}
                     </span>
                   </div>
                 </div>
@@ -110,7 +118,9 @@ export default function EventPopup() {
                 <div className="flex items-center gap-3 text-xs text-gray-500 font-medium mb-3">
                   <div className="flex items-center gap-1 text-primary">
                     <Megaphone size={14} />
-                    <span className="font-bold uppercase tracking-wider">Pengumuman Event</span>
+                    <span className="font-bold uppercase tracking-wider">
+                      {isEn ? "Event Announcement" : "Pengumuman Event"}
+                    </span>
                   </div>
                   <span>•</span>
                   <div className="flex items-center gap-1">
@@ -126,31 +136,32 @@ export default function EventPopup() {
 
                 {/* Title */}
                 <h3 className="text-xl sm:text-2xl font-extrabold text-gray-900 leading-snug mb-2">
-                  {event.title}
+                  {titleText}
                 </h3>
 
                 {/* Subtitle / Excerpt */}
-                {event.subtitle && (
+                {subtitleText && (
                   <p className="text-sm font-semibold text-primary mb-4 leading-relaxed">
-                    {event.subtitle}
+                    {subtitleText}
                   </p>
                 )}
 
                 {/* Main Content */}
                 <p className="text-xs sm:text-sm text-gray-600 leading-relaxed mb-6 bg-gray-50 p-4 rounded-2xl border border-gray-100">
-                  {event.content}
+                  {contentText}
                 </p>
 
                 {/* Action Links */}
                 {event.links && event.links.length > 0 && (
                   <div className="space-y-2.5 pt-2">
                     <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-                      Pilih Akses Pendaftaran & Informasi:
+                      {isEn ? "Registration & Info Links:" : "Pilih Akses Pendaftaran & Informasi:"}
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                       {event.links.map((link: EventPopupLink, idx: number) => {
                         const styleClass =
                           BUTTON_VARIANTS[link.variant ?? "primary"] ?? BUTTON_VARIANTS.primary;
+                        const labelText = isEn ? (link.label_en || link.label) : link.label;
                         return (
                           <a
                             key={idx}
@@ -159,7 +170,7 @@ export default function EventPopup() {
                             rel="noopener noreferrer"
                             className={`inline-flex items-center justify-between px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 cursor-pointer hover:-translate-y-0.5 ${styleClass}`}
                           >
-                            <span className="truncate pr-1">{link.label}</span>
+                            <span className="truncate pr-1">{labelText}</span>
                             <ExternalLink size={14} className="flex-shrink-0" />
                           </a>
                         );
@@ -172,12 +183,12 @@ export default function EventPopup() {
 
             {/* Modal Footer */}
             <div className="p-4 bg-gray-50 border-t border-gray-100 text-center flex items-center justify-between text-xs text-gray-500">
-              <span>Event Resmi IYORA Olympiad</span>
+              <span>{isEn ? "Official IYORA Olympiad Event" : "Event Resmi IYORA Olympiad"}</span>
               <button
                 onClick={handleClose}
                 className="text-gray-600 hover:text-primary font-semibold underline cursor-pointer"
               >
-                Tutup & Lanjutkan ke Web
+                {isEn ? "Close & Continue to Website" : "Tutup & Lanjutkan ke Web"}
               </button>
             </div>
           </motion.div>

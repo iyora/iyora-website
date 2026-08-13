@@ -51,6 +51,7 @@ export default function HomeNewsSection({
   gallery,
 }: HomeNewsSectionProps) {
   const locale = useLocale();
+  const isEn = locale === "en";
   const [activeTab, setActiveTab] = useState<TabKey>("all");
 
   const totalCount = news.length + announcements.length + gallery.length;
@@ -75,13 +76,13 @@ export default function HomeNewsSection({
   }
 
   const tabs: { key: TabKey; label: string; count: number; icon: React.ElementType }[] = [
-    { key: "all", label: "Semua", count: totalCount, icon: Newspaper },
-    { key: "news", label: "Berita", count: news.length, icon: Newspaper },
-    { key: "announcements", label: "Pengumuman", count: announcements.length, icon: Megaphone },
+    { key: "all", label: isEn ? "All" : "Semua", count: totalCount, icon: Newspaper },
+    { key: "news", label: isEn ? "News" : "Berita", count: news.length, icon: Newspaper },
+    { key: "announcements", label: isEn ? "Announcements" : "Pengumuman", count: announcements.length, icon: Megaphone },
   ];
 
   if (gallery.length > 0) {
-    tabs.push({ key: "gallery", label: "Galeri", count: gallery.length, icon: Images });
+    tabs.push({ key: "gallery", label: isEn ? "Gallery" : "Galeri", count: gallery.length, icon: Images });
   }
 
   return (
@@ -97,13 +98,15 @@ export default function HomeNewsSection({
         >
           <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-3">
             <Megaphone size={14} />
-            Berita & Pengumuman
+            {isEn ? "News & Announcements" : "Berita & Pengumuman"}
           </span>
           <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-4">
-            Informasi & Kabar Terbaru
+            {isEn ? "Latest News & Updates" : "Informasi & Kabar Terbaru"}
           </h2>
           <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-            Simak pengumuman pendaftaran, berita olimpiade, dan update terkini dari IYORA.
+            {isEn
+              ? "Stay updated with registration announcements, olympiad news, and latest updates from IYORA."
+              : "Simak pengumuman pendaftaran, berita olimpiade, dan update terkini dari IYORA."}
           </p>
         </motion.div>
 
@@ -146,13 +149,13 @@ export default function HomeNewsSection({
                 <div className="flex items-center justify-between mb-6 pb-2 border-b border-gray-100">
                   <div className="flex items-center gap-2 text-gray-900 font-bold text-xl">
                     <Newspaper className="text-primary" size={20} />
-                    <span>Berita Terbaru</span>
+                    <span>{isEn ? "Latest News" : "Berita Terbaru"}</span>
                   </div>
                   <Link
                     href={`/${locale}/news?tab=news`}
                     className="text-xs md:text-sm font-semibold text-primary hover:underline flex items-center gap-1"
                   >
-                    Lihat Semua Berita <ChevronRight size={14} />
+                    {isEn ? "View All News" : "Lihat Semua Berita"} <ChevronRight size={14} />
                   </Link>
                 </div>
               )}
@@ -166,7 +169,7 @@ export default function HomeNewsSection({
               >
                 {displayNews.map((article) => (
                   <motion.div key={article.id} variants={itemVariants}>
-                    <ArticleCard article={article} badge="Berita" locale={locale} />
+                    <ArticleCard article={article} badge={isEn ? "News" : "Berita"} locale={locale} />
                   </motion.div>
                 ))}
               </motion.div>
@@ -181,13 +184,13 @@ export default function HomeNewsSection({
                   <div className="flex items-center justify-between mb-6 pb-2 border-b border-gray-100">
                     <div className="flex items-center gap-2 text-gray-900 font-bold text-xl">
                       <Megaphone className="text-primary" size={20} />
-                      <span>Pengumuman Pendaftaran & Jadwal</span>
+                      <span>{isEn ? "Registration & Schedule Announcements" : "Pengumuman Pendaftaran & Jadwal"}</span>
                     </div>
                     <Link
                       href={`/${locale}/news?tab=announcements`}
                       className="text-xs md:text-sm font-semibold text-primary hover:underline flex items-center gap-1"
                     >
-                      Lihat Semua Pengumuman <ChevronRight size={14} />
+                      {isEn ? "View All Announcements" : "Lihat Semua Pengumuman"} <ChevronRight size={14} />
                     </Link>
                   </div>
                 )}
@@ -201,7 +204,7 @@ export default function HomeNewsSection({
                 >
                   {displayAnnouncements.map((article) => (
                     <motion.div key={article.id} variants={itemVariants}>
-                      <ArticleCard article={article} badge="Pengumuman" locale={locale} />
+                      <ArticleCard article={article} badge={isEn ? "Announcement" : "Pengumuman"} locale={locale} />
                     </motion.div>
                   ))}
                 </motion.div>
@@ -215,13 +218,13 @@ export default function HomeNewsSection({
                 <div className="flex items-center justify-between mb-6 pb-2 border-b border-gray-100">
                   <div className="flex items-center gap-2 text-gray-900 font-bold text-xl">
                     <Images className="text-primary" size={20} />
-                    <span>Galeri Kegiatan</span>
+                    <span>{isEn ? "Activity Gallery" : "Galeri Kegiatan"}</span>
                   </div>
                   <Link
                     href={`/${locale}/news?tab=gallery`}
                     className="text-xs md:text-sm font-semibold text-primary hover:underline flex items-center gap-1"
                   >
-                    Lihat Semua Galeri <ChevronRight size={14} />
+                    {isEn ? "View All Gallery" : "Lihat Semua Galeri"} <ChevronRight size={14} />
                   </Link>
                 </div>
               )}
@@ -235,7 +238,7 @@ export default function HomeNewsSection({
               >
                 {displayGallery.map((item) => (
                   <motion.div key={item.id} variants={itemVariants}>
-                    <ArticleCard article={item} badge="Galeri" locale={locale} />
+                    <ArticleCard article={item} badge={isEn ? "Gallery" : "Galeri"} locale={locale} />
                   </motion.div>
                 ))}
               </motion.div>
@@ -249,7 +252,7 @@ export default function HomeNewsSection({
             href={`/${locale}/news`}
             className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl text-sm font-bold bg-primary text-white hover:bg-primary-dark shadow-lg shadow-primary/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
           >
-            <span>Buka Halaman News Selengkapnya</span>
+            <span>{isEn ? "Explore All News & Updates" : "Buka Halaman News Selengkapnya"}</span>
             <ArrowRight size={16} />
           </Link>
         </div>
@@ -324,7 +327,7 @@ function ArticleCard({
         )}
 
         <div className="flex items-center gap-1 text-xs md:text-sm font-semibold text-primary mt-auto pt-3 border-t border-gray-50 group-hover:translate-x-1 transition-transform">
-          <span>Baca Selengkapnya</span>
+          <span>{locale === "en" ? "Read More" : "Baca Selengkapnya"}</span>
           <ArrowRight size={14} />
         </div>
       </div>

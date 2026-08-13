@@ -52,6 +52,12 @@ function ArticleCard({
     ? article.published_at
     : article.created_at;
 
+  const displayBadge = badge
+    ? locale === "en"
+      ? badge === "Berita" ? "News" : badge === "Pengumuman" ? "Announcement" : badge === "Galeri" ? "Gallery" : badge
+      : badge
+    : undefined;
+
   return (
     <Link
       href={`/${locale}/news/${slug}`}
@@ -70,18 +76,18 @@ function ArticleCard({
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-          {badge && (
+          {displayBadge && (
             <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-primary shadow-sm">
-              {badge}
+              {displayBadge}
             </div>
           )}
         </div>
       ) : (
         <div className="relative aspect-[16/9] bg-gradient-to-br from-primary/5 to-teal/5 flex items-center justify-center">
           <ImageOff className="w-10 h-10 text-gray-300" />
-          {badge && (
+          {displayBadge && (
             <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-primary shadow-sm">
-              {badge}
+              {displayBadge}
             </div>
           )}
         </div>
@@ -109,7 +115,7 @@ function ArticleCard({
 
         {/* Read more */}
         <div className="flex items-center gap-1 text-sm font-semibold text-primary mt-auto pt-2 group-hover:translate-x-1 transition-transform">
-          <span>Selengkapnya</span>
+          <span>{locale === "en" ? "Read More" : "Selengkapnya"}</span>
           <ArrowRight size={14} />
         </div>
       </div>
@@ -136,6 +142,7 @@ function EmptyState({ tab, t }: { tab: TabKey; t: ReturnType<typeof useTranslati
 /* ── Main Tabs Component ── */
 export default function NewsTabs({ news, announcements, gallery }: NewsTabsProps) {
   const t = useTranslations("news_page");
+  const locale = useLocale();
   const searchParams = useSearchParams();
 
   const validTabs: TabKey[] = ["all", "news", "announcements", "gallery"];
@@ -217,7 +224,7 @@ export default function NewsTabs({ news, announcements, gallery }: NewsTabsProps
                         onClick={() => setActiveTab("news")}
                         className="text-sm font-semibold text-primary hover:underline flex items-center gap-1 cursor-pointer"
                       >
-                        Lihat semua berita <ArrowRight size={14} />
+                        {locale === "en" ? "View all news" : "Lihat semua berita"} <ArrowRight size={14} />
                       </button>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -246,7 +253,7 @@ export default function NewsTabs({ news, announcements, gallery }: NewsTabsProps
                         onClick={() => setActiveTab("announcements")}
                         className="text-sm font-semibold text-primary hover:underline flex items-center gap-1 cursor-pointer"
                       >
-                        Lihat semua pengumuman <ArrowRight size={14} />
+                        {locale === "en" ? "View all announcements" : "Lihat semua pengumuman"} <ArrowRight size={14} />
                       </button>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -275,7 +282,7 @@ export default function NewsTabs({ news, announcements, gallery }: NewsTabsProps
                         onClick={() => setActiveTab("gallery")}
                         className="text-sm font-semibold text-primary hover:underline flex items-center gap-1 cursor-pointer"
                       >
-                        Lihat semua galeri <ArrowRight size={14} />
+                        {locale === "en" ? "View all gallery items" : "Lihat semua galeri"} <ArrowRight size={14} />
                       </button>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

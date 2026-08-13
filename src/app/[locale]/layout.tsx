@@ -108,7 +108,7 @@ export default async function LocaleLayout({
   }
 
   const messages = await getMessages();
-  const newsPreview = await fetchNewsPreview();
+  const newsPreview = await fetchNewsPreview(locale);
 
   return (
     <NextIntlClientProvider messages={messages}>

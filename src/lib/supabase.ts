@@ -191,8 +191,10 @@ export async function fetchNewsByCategory(
 }
 
 export async function fetchNewsBySlug(
-  slug: string
+  slug: string,
+  locale?: string
 ): Promise<NewsArticle | null> {
+  const isEn = locale === "en";
   try {
     const supabase = createSupabase();
 
@@ -208,40 +210,43 @@ export async function fetchNewsBySlug(
       if (!dummy) return null;
       return {
         id: dummy.id,
-        title: dummy.title,
+        title: (isEn && dummy.title_en) ? dummy.title_en : dummy.title,
         slug: dummy.slug,
-        excerpt: dummy.caption,
-        content: dummy.content ?? null,
+        excerpt: (isEn && dummy.caption_en) ? dummy.caption_en : dummy.caption,
+        content: (isEn && dummy.content_en) ? dummy.content_en : (dummy.content ?? null),
         cover_image: dummy.photo,
         category: (dummy.category as NewsCategory) || "news",
         published_at: dummy.publishedAt,
         created_at: dummy.publishedAt,
         external_link: dummy.link,
-        external_link_label: dummy.linkLabel ?? null,
+        external_link_label: (isEn && dummy.linkLabel_en) ? dummy.linkLabel_en : (dummy.linkLabel ?? null),
         external_link2: dummy.link2 ?? null,
-        external_link2_label: dummy.link2Label ?? null,
+        external_link2_label: (isEn && dummy.link2Label_en) ? dummy.link2Label_en : (dummy.link2Label ?? null),
         external_link3: dummy.link3 ?? null,
-        external_link3_label: dummy.link3Label ?? null,
+        external_link3_label: (isEn && dummy.link3Label_en) ? dummy.link3Label_en : (dummy.link3Label ?? null),
         external_link4: dummy.link4 ?? null,
-        external_link4_label: dummy.link4Label ?? null,
+        external_link4_label: (isEn && dummy.link4Label_en) ? dummy.link4Label_en : (dummy.link4Label ?? null),
         external_link5: dummy.link5 ?? null,
-        external_link5_label: dummy.link5Label ?? null,
+        external_link5_label: (isEn && dummy.link5Label_en) ? dummy.link5Label_en : (dummy.link5Label ?? null),
         author: dummy.author ?? "IyoraOlympiade",
       };
     }
     const dummy = getDummyNewsBySlug(slug);
     return {
       ...(data as NewsArticle),
+      title: isEn && dummy?.title_en ? dummy.title_en : (data as NewsArticle).title,
+      excerpt: isEn && dummy?.caption_en ? dummy.caption_en : (data as NewsArticle).excerpt,
+      content: isEn && dummy?.content_en ? dummy.content_en : (data as NewsArticle).content,
       external_link: dummy?.link ?? null,
-      external_link_label: dummy?.linkLabel ?? null,
+      external_link_label: (isEn && dummy?.linkLabel_en) ? dummy.linkLabel_en : (dummy?.linkLabel ?? null),
       external_link2: dummy?.link2 ?? null,
-      external_link2_label: dummy?.link2Label ?? null,
+      external_link2_label: (isEn && dummy?.link2Label_en) ? dummy.link2Label_en : (dummy?.link2Label ?? null),
       external_link3: dummy?.link3 ?? null,
-      external_link3_label: dummy?.link3Label ?? null,
+      external_link3_label: (isEn && dummy?.link3Label_en) ? dummy.link3Label_en : (dummy?.link3Label ?? null),
       external_link4: dummy?.link4 ?? null,
-      external_link4_label: dummy?.link4Label ?? null,
+      external_link4_label: (isEn && dummy?.link4Label_en) ? dummy.link4Label_en : (dummy?.link4Label ?? null),
       external_link5: dummy?.link5 ?? null,
-      external_link5_label: dummy?.link5Label ?? null,
+      external_link5_label: (isEn && dummy?.link5Label_en) ? dummy.link5Label_en : (dummy?.link5Label ?? null),
       author: dummy?.author ?? "IyoraOlympiade",
     };
   } catch {
@@ -249,35 +254,36 @@ export async function fetchNewsBySlug(
     if (!dummy) return null;
     return {
       id: dummy.id,
-      title: dummy.title,
+      title: (isEn && dummy.title_en) ? dummy.title_en : dummy.title,
       slug: dummy.slug,
-      excerpt: dummy.caption,
-      content: dummy.content ?? null,
+      excerpt: (isEn && dummy.caption_en) ? dummy.caption_en : dummy.caption,
+      content: (isEn && dummy.content_en) ? dummy.content_en : (dummy.content ?? null),
       cover_image: dummy.photo,
       category: (dummy.category as NewsCategory) || "news",
       published_at: dummy.publishedAt,
       created_at: dummy.publishedAt,
       external_link: dummy.link,
-      external_link_label: dummy.linkLabel ?? null,
+      external_link_label: (isEn && dummy.linkLabel_en) ? dummy.linkLabel_en : (dummy.linkLabel ?? null),
       external_link2: dummy.link2 ?? null,
-      external_link2_label: dummy.link2Label ?? null,
+      external_link2_label: (isEn && dummy.link2Label_en) ? dummy.link2Label_en : (dummy.link2Label ?? null),
       external_link3: dummy.link3 ?? null,
-      external_link3_label: dummy.link3Label ?? null,
+      external_link3_label: (isEn && dummy.link3Label_en) ? dummy.link3Label_en : (dummy.link3Label ?? null),
       external_link4: dummy.link4 ?? null,
-      external_link4_label: dummy.link4Label ?? null,
+      external_link4_label: (isEn && dummy.link4Label_en) ? dummy.link4Label_en : (dummy.link4Label ?? null),
       external_link5: dummy.link5 ?? null,
-      external_link5_label: dummy.link5Label ?? null,
+      external_link5_label: (isEn && dummy.link5Label_en) ? dummy.link5Label_en : (dummy.link5Label ?? null),
       author: dummy.author ?? "IyoraOlympiade",
     };
   }
 }
 
-export async function fetchAllNews(): Promise<{
+export async function fetchAllNews(locale?: string): Promise<{
   news: NewsArticle[];
   announcements: NewsArticle[];
   documentation: NewsArticle[];
   gallery: GalleryItem[];
 }> {
+  const isEn = locale === "en";
   try {
     const supabase = createSupabase();
 
@@ -316,10 +322,10 @@ export async function fetchAllNews(): Promise<{
     const defaultNews: NewsArticle[] = DUMMY_NEWS.filter((item) => item.category === "news")
       .map((item) => ({
         id: item.id,
-        title: item.title,
+        title: (isEn && item.title_en) ? item.title_en : item.title,
         slug: item.slug,
-        excerpt: item.caption,
-        content: item.content ?? null,
+        excerpt: (isEn && item.caption_en) ? item.caption_en : item.caption,
+        content: (isEn && item.content_en) ? item.content_en : (item.content ?? null),
         cover_image: item.photo,
         category: "news" as const,
         published_at: item.publishedAt,
@@ -332,10 +338,10 @@ export async function fetchAllNews(): Promise<{
     const defaultAnnouncements: NewsArticle[] = DUMMY_NEWS.filter((item) => item.category === "announcement")
       .map((item) => ({
         id: item.id,
-        title: item.title,
+        title: (isEn && item.title_en) ? item.title_en : item.title,
         slug: item.slug,
-        excerpt: item.caption,
-        content: item.content ?? null,
+        excerpt: (isEn && item.caption_en) ? item.caption_en : item.caption,
+        content: (isEn && item.content_en) ? item.content_en : (item.content ?? null),
         cover_image: item.photo,
         category: "announcement" as const,
         published_at: item.publishedAt,
@@ -347,18 +353,18 @@ export async function fetchAllNews(): Promise<{
 
     const defaultGallery: GalleryItem[] = DUMMY_NEWS.filter((item) => item.category === "gallery").map((item) => ({
       id: item.id,
-      title: item.title,
+      title: (isEn && item.title_en) ? item.title_en : item.title,
       slug: item.slug,
-      description: item.caption,
-      excerpt: item.caption,
-      content: item.content ?? null,
+      description: (isEn && item.caption_en) ? item.caption_en : item.caption,
+      excerpt: (isEn && item.caption_en) ? item.caption_en : item.caption,
+      content: (isEn && item.content_en) ? item.content_en : (item.content ?? null),
       image_url: item.photo,
       cover_image: item.photo,
       category: "gallery",
       created_at: item.publishedAt,
       published_at: item.publishedAt,
       external_link: item.link ?? null,
-      external_link_label: item.linkLabel ?? null,
+      external_link_label: (isEn && item.linkLabel_en) ? item.linkLabel_en : (item.linkLabel ?? null),
       author: item.author ?? "IyoraOlympiade",
     }));
 
@@ -380,10 +386,10 @@ export async function fetchAllNews(): Promise<{
     const defaultNews: NewsArticle[] = DUMMY_NEWS.filter((item) => item.category === "news")
       .map((item) => ({
         id: item.id,
-        title: item.title,
+        title: (isEn && item.title_en) ? item.title_en : item.title,
         slug: item.slug,
-        excerpt: item.caption,
-        content: item.content ?? null,
+        excerpt: (isEn && item.caption_en) ? item.caption_en : item.caption,
+        content: (isEn && item.content_en) ? item.content_en : (item.content ?? null),
         cover_image: item.photo,
         category: "news" as const,
         published_at: item.publishedAt,
@@ -396,10 +402,10 @@ export async function fetchAllNews(): Promise<{
     const defaultAnnouncements: NewsArticle[] = DUMMY_NEWS.filter((item) => item.category === "announcement")
       .map((item) => ({
         id: item.id,
-        title: item.title,
+        title: (isEn && item.title_en) ? item.title_en : item.title,
         slug: item.slug,
-        excerpt: item.caption,
-        content: item.content ?? null,
+        excerpt: (isEn && item.caption_en) ? item.caption_en : item.caption,
+        content: (isEn && item.content_en) ? item.content_en : (item.content ?? null),
         cover_image: item.photo,
         category: "announcement" as const,
         published_at: item.publishedAt,
@@ -411,18 +417,18 @@ export async function fetchAllNews(): Promise<{
 
     const defaultGallery: GalleryItem[] = DUMMY_NEWS.filter((item) => item.category === "gallery").map((item) => ({
       id: item.id,
-      title: item.title,
+      title: (isEn && item.title_en) ? item.title_en : item.title,
       slug: item.slug,
-      description: item.caption,
-      excerpt: item.caption,
-      content: item.content ?? null,
+      description: (isEn && item.caption_en) ? item.caption_en : item.caption,
+      excerpt: (isEn && item.caption_en) ? item.caption_en : item.caption,
+      content: (isEn && item.content_en) ? item.content_en : (item.content ?? null),
       image_url: item.photo,
       cover_image: item.photo,
       category: "gallery",
       created_at: item.publishedAt,
       published_at: item.publishedAt,
       external_link: item.link ?? null,
-      external_link_label: item.linkLabel ?? null,
+      external_link_label: (isEn && item.linkLabel_en) ? item.linkLabel_en : (item.linkLabel ?? null),
       author: item.author ?? "IyoraOlympiade",
     }));
 
@@ -457,7 +463,8 @@ export interface NewsPreviewData {
   gallery: GalleryPreviewItem[];
 }
 
-export async function fetchNewsPreview(): Promise<NewsPreviewData> {
+export async function fetchNewsPreview(locale?: string): Promise<NewsPreviewData> {
+  const isEn = locale === "en";
   try {
     const supabase = createSupabase();
 
@@ -490,7 +497,7 @@ export async function fetchNewsPreview(): Promise<NewsPreviewData> {
 
     const defaultNews: NewsPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "news").slice(0, 3).map((item) => ({
       id: item.id,
-      title: item.title,
+      title: (isEn && item.title_en) ? item.title_en : item.title,
       slug: item.slug,
       cover_image: item.photo,
       published_at: item.publishedAt,
@@ -499,7 +506,7 @@ export async function fetchNewsPreview(): Promise<NewsPreviewData> {
 
     const defaultAnnouncements: NewsPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "announcement").slice(0, 3).map((item) => ({
       id: item.id,
-      title: item.title,
+      title: (isEn && item.title_en) ? item.title_en : item.title,
       slug: item.slug,
       cover_image: item.photo,
       published_at: item.publishedAt,
@@ -508,7 +515,7 @@ export async function fetchNewsPreview(): Promise<NewsPreviewData> {
 
     const defaultGallery: GalleryPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "gallery").slice(0, 3).map((item) => ({
       id: item.id,
-      title: item.title,
+      title: (isEn && item.title_en) ? item.title_en : item.title,
       slug: item.slug,
       image_url: item.photo,
       created_at: item.publishedAt,
@@ -522,7 +529,7 @@ export async function fetchNewsPreview(): Promise<NewsPreviewData> {
   } catch {
     const defaultNews: NewsPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "news").slice(0, 3).map((item) => ({
       id: item.id,
-      title: item.title,
+      title: (isEn && item.title_en) ? item.title_en : item.title,
       slug: item.slug,
       cover_image: item.photo,
       published_at: item.publishedAt,
@@ -531,7 +538,7 @@ export async function fetchNewsPreview(): Promise<NewsPreviewData> {
 
     const defaultAnnouncements: NewsPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "announcement").slice(0, 3).map((item) => ({
       id: item.id,
-      title: item.title,
+      title: (isEn && item.title_en) ? item.title_en : item.title,
       slug: item.slug,
       cover_image: item.photo,
       published_at: item.publishedAt,
@@ -540,7 +547,7 @@ export async function fetchNewsPreview(): Promise<NewsPreviewData> {
 
     const defaultGallery: GalleryPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "gallery").slice(0, 3).map((item) => ({
       id: item.id,
-      title: item.title,
+      title: (isEn && item.title_en) ? item.title_en : item.title,
       slug: item.slug,
       image_url: item.photo,
       created_at: item.publishedAt,

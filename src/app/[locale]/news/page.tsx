@@ -23,8 +23,13 @@ function NewsHero() {
   );
 }
 
-export default async function NewsPage() {
-  const { news, announcements, gallery } = await fetchAllNews();
+export default async function NewsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const { news, announcements, gallery } = await fetchAllNews(locale);
 
   return (
     <>

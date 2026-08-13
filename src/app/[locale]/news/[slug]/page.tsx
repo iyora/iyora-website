@@ -42,11 +42,11 @@ function formatDate(dateStr: string | null): string {
   });
 }
 
-function estimateReadingTime(text: string | null): string {
-  if (!text) return "1 min baca";
+function estimateReadingTime(text: string | null, isEn: boolean): string {
+  if (!text) return isEn ? "1 min read" : "1 min baca";
   const words = text.trim().split(/\s+/).length;
   const minutes = Math.ceil(words / 200);
-  return `${minutes} min baca`;
+  return isEn ? `${minutes} min read` : `${minutes} min baca`;
 }
 
 function getYouTubeEmbedUrl(url: string | null | undefined): string | null {
@@ -58,6 +58,7 @@ function getYouTubeEmbedUrl(url: string | null | undefined): string | null {
 
 export default async function NewsDetailPage({ params }: Props) {
   const { locale, slug } = await params;
+  const isEn = locale === "en";
   const article = await fetchNewsBySlug(slug);
 
   if (!article) {
@@ -86,7 +87,7 @@ export default async function NewsDetailPage({ params }: Props) {
 
   const isAnnouncement = article.category === "announcement";
   const isGallery = article.category === "gallery";
-  const categoryLabel = isGallery ? "Galeri" : isAnnouncement ? "Pengumuman" : "Berita";
+  const categoryLabel = isGallery ? (isEn ? "Gallery" : "Galeri") : isAnnouncement ? (isEn ? "Announcement" : "Pengumuman") : (isEn ? "News" : "Berita");
   const youtubeEmbedUrl = getYouTubeEmbedUrl(article.external_link);
 
   return (
@@ -95,11 +96,11 @@ export default async function NewsDetailPage({ params }: Props) {
       <div className="max-w-4xl mx-auto px-6 mb-8">
         <div className="flex items-center gap-2 text-sm text-gray-500 overflow-x-auto py-2">
           <Link href={`/${locale}`} className="hover:text-primary transition-colors flex-shrink-0">
-            Beranda
+            {isEn ? "Home" : "Beranda"}
           </Link>
           <ChevronRight size={14} className="text-gray-300 flex-shrink-0" />
           <Link href={`/${locale}/news${isGallery ? "?tab=gallery" : isAnnouncement ? "?tab=announcements" : ""}`} className="hover:text-primary transition-colors flex-shrink-0">
-            {isGallery ? "Galeri" : "Berita & Pengumuman"}
+            {isGallery ? (isEn ? "Gallery" : "Galeri") : (isEn ? "News & Announcements" : "Berita & Pengumuman")}
           </Link>
           <ChevronRight size={14} className="text-gray-300 flex-shrink-0" />
           <span className="text-gray-900 font-medium truncate">{article.title}</span>
@@ -154,7 +155,7 @@ export default async function NewsDetailPage({ params }: Props) {
               </div>
               <span className="text-gray-300">•</span>
               <span className="bg-gray-100 px-2.5 py-0.5 rounded-full text-xs text-gray-600 font-semibold">
-                {estimateReadingTime(article.content)}
+                {estimateReadingTime(article.content, isEn)}
               </span>
             </div>
 
@@ -205,10 +206,12 @@ export default async function NewsDetailPage({ params }: Props) {
               <div className="my-8 p-6 bg-gradient-to-br from-primary/5 via-teal/5 to-purple-50 rounded-2xl border border-primary/20">
                 <div className="mb-4">
                   <h4 className="font-bold text-gray-900 text-base mb-1">
-                    Tautan Website Resmi & Terkait
+                    {isEn ? "Official & Related Website Links" : "Tautan Website Resmi & Terkait"}
                   </h4>
                   <p className="text-xs text-gray-500">
-                    Silakan pilih opsi tautan website di bawah ini untuk mengakses berita resmi atau portal pendaftaran.
+                    {isEn
+                      ? "Please select a link option below to access official news or registration portals."
+                      : "Silakan pilih opsi tautan website di bawah ini untuk mengakses berita resmi atau portal pendaftaran."}
                   </p>
                 </div>
                 
@@ -221,7 +224,7 @@ export default async function NewsDetailPage({ params }: Props) {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white font-semibold text-sm rounded-full shadow-md shadow-primary/20 transition-all cursor-pointer"
                     >
-                      <span>{article.external_link_label || (youtubeEmbedUrl ? "Tonton di YouTube" : "Opsi 1: Website Utama / Media")}</span>
+                      <span>{article.external_link_label || (youtubeEmbedUrl ? (isEn ? "Watch on YouTube" : "Tonton di YouTube") : (isEn ? "Option 1: Main Website / Media" : "Opsi 1: Website Utama / Media"))}</span>
                       <ExternalLink size={16} />
                     </a>
                   )}
@@ -234,7 +237,7 @@ export default async function NewsDetailPage({ params }: Props) {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-6 py-3 bg-teal hover:bg-teal-600 text-white font-semibold text-sm rounded-full shadow-md shadow-teal-500/20 transition-all cursor-pointer"
                     >
-                      <span>{article.external_link2_label || "Opsi 2: Portal Pendaftaran / Website Resmi"}</span>
+                      <span>{article.external_link2_label || (isEn ? "Option 2: Registration Portal / Official Website" : "Opsi 2: Portal Pendaftaran / Website Resmi")}</span>
                       <ExternalLink size={16} />
                     </a>
                   )}
@@ -247,7 +250,7 @@ export default async function NewsDetailPage({ params }: Props) {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm rounded-full shadow-md shadow-indigo-500/20 transition-all cursor-pointer"
                     >
-                      <span>{article.external_link3_label || "Opsi 3: Portal Pendaftaran"}</span>
+                      <span>{article.external_link3_label || (isEn ? "Option 3: Registration Portal" : "Opsi 3: Portal Pendaftaran")}</span>
                       <ExternalLink size={16} />
                     </a>
                   )}
@@ -260,7 +263,7 @@ export default async function NewsDetailPage({ params }: Props) {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-6 py-3 bg-violet-600 hover:bg-violet-700 text-white font-semibold text-sm rounded-full shadow-md shadow-violet-500/20 transition-all cursor-pointer"
                     >
-                      <span>{article.external_link4_label || "Opsi 4: Portal Pendaftaran"}</span>
+                      <span>{article.external_link4_label || (isEn ? "Option 4: Registration Portal" : "Opsi 4: Portal Pendaftaran")}</span>
                       <ExternalLink size={16} />
                     </a>
                   )}
@@ -273,7 +276,7 @@ export default async function NewsDetailPage({ params }: Props) {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm rounded-full shadow-md shadow-rose-500/20 transition-all cursor-pointer"
                     >
-                      <span>{article.external_link5_label || "Opsi 5: Portal Pendaftaran"}</span>
+                      <span>{article.external_link5_label || (isEn ? "Option 5: Registration Portal" : "Opsi 5: Portal Pendaftaran")}</span>
                       <ExternalLink size={16} />
                     </a>
                   )}
@@ -288,7 +291,7 @@ export default async function NewsDetailPage({ params }: Props) {
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-sm transition-colors"
               >
                 <ArrowLeft size={16} />
-                <span>Kembali ke Berita</span>
+                <span>{isEn ? "Back to News" : "Kembali ke Berita"}</span>
               </Link>
             </div>
           </div>
@@ -298,7 +301,7 @@ export default async function NewsDetailPage({ params }: Props) {
         {relatedArticles.length > 0 && (
           <div className="mt-16">
             <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">
-              Berita & Pengumuman Lainnya
+              {isEn ? "Other News & Announcements" : "Berita & Pengumuman Lainnya"}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {relatedArticles.map((item) => (
