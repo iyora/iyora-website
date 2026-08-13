@@ -3,12 +3,13 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
-import { Newspaper, Megaphone, FileText, Images, Calendar, ArrowRight, ImageOff } from "lucide-react";
+import Link from "next/link";
+import { useTranslations, useLocale } from "next-intl";
+import { LayoutGrid, Newspaper, Megaphone, Images, Calendar, ArrowRight, ImageOff, ExternalLink, X } from "lucide-react";
 import clsx from "clsx";
 import type { NewsArticle, GalleryItem } from "@/lib/supabase";
 
-type TabKey = "news" | "announcements" | "gallery";
+type TabKey = "all" | "news" | "announcements" | "gallery";
 
 interface NewsTabsProps {
   news: NewsArticle[];
@@ -17,6 +18,7 @@ interface NewsTabsProps {
 }
 
 const TAB_ICONS = {
+  all: LayoutGrid,
   news: Newspaper,
   announcements: Megaphone,
   gallery: Images,
@@ -32,10 +34,25 @@ function formatDate(dateStr: string | null): string {
   });
 }
 
+
+
 /* ── Article Card ── */
-function ArticleCard({ article }: { article: NewsArticle }) {
+function ArticleCard({
+  article,
+  badge,
+}: {
+  article: NewsArticle;
+  badge?: string;
+}) {
+  const locale = useLocale();
+
   return (
-    <article className="group bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-1">
+    <Link
+      href={`/${locale}/news/${article.slug}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-1 flex flex-col h-full cursor-pointer"
+    >
       {/* Cover image */}
       {article.cover_image ? (
         <div className="relative aspect-[16/9] overflow-hidden">
@@ -47,15 +64,25 @@ function ArticleCard({ article }: { article: NewsArticle }) {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+          {badge && (
+            <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-primary shadow-sm">
+              {badge}
+            </div>
+          )}
         </div>
       ) : (
-        <div className="aspect-[16/9] bg-gradient-to-br from-primary/5 to-teal/5 flex items-center justify-center">
+        <div className="relative aspect-[16/9] bg-gradient-to-br from-primary/5 to-teal/5 flex items-center justify-center">
           <ImageOff className="w-10 h-10 text-gray-300" />
+          {badge && (
+            <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-primary shadow-sm">
+              {badge}
+            </div>
+          )}
         </div>
       )}
 
       {/* Content */}
-      <div className="p-5">
+      <div className="p-5 flex flex-col flex-1">
         {/* Date */}
         <div className="flex items-center gap-1.5 text-xs text-gray-400 mb-3">
           <Calendar size={12} />
@@ -69,18 +96,18 @@ function ArticleCard({ article }: { article: NewsArticle }) {
 
         {/* Excerpt */}
         {article.excerpt && (
-          <p className="text-sm text-gray-500 line-clamp-3 leading-relaxed mb-4">
+          <p className="text-sm text-gray-500 line-clamp-3 leading-relaxed mb-4 flex-1">
             {article.excerpt}
           </p>
         )}
 
         {/* Read more */}
-        <div className="flex items-center gap-1 text-sm font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <div className="flex items-center gap-1 text-sm font-semibold text-primary mt-auto pt-2 group-hover:translate-x-1 transition-transform">
           <span>Selengkapnya</span>
-          <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+          <ArrowRight size={14} />
         </div>
       </div>
-    </article>
+    </Link>
   );
 }
 
@@ -167,9 +194,9 @@ export default function NewsTabs({ news, announcements, gallery }: NewsTabsProps
   const t = useTranslations("news_page");
   const searchParams = useSearchParams();
 
-  const validTabs: TabKey[] = ["news", "announcements", "gallery"];
+  const validTabs: TabKey[] = ["all", "news", "announcements", "gallery"];
   const tabParam = searchParams.get("tab") as TabKey | null;
-  const initialTab = tabParam && validTabs.includes(tabParam) ? tabParam : "news";
+  const initialTab = tabParam && validTabs.includes(tabParam) ? tabParam : "all";
   const [activeTab, setActiveTab] = useState<TabKey>(initialTab);
 
   // Sync tab when URL changes (e.g. navigating from navbar dropdown)
@@ -180,14 +207,17 @@ export default function NewsTabs({ news, announcements, gallery }: NewsTabsProps
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tabParam]);
 
+  const totalCount = news.length + announcements.length + gallery.length;
+
   const tabs: { key: TabKey; count: number }[] = [
+    { key: "all", count: totalCount },
     { key: "news", count: news.length },
     { key: "announcements", count: announcements.length },
     { key: "gallery", count: gallery.length },
   ];
 
   return (
-    <section className="py-16 px-6">
+    <section className="py-16 px-6 bg-gradient-to-b from-white to-gray-50/50">
       <div className="max-w-7xl mx-auto">
         {/* Tab buttons */}
         <div className="flex flex-wrap justify-center gap-2 mb-12">
@@ -202,7 +232,7 @@ export default function NewsTabs({ news, announcements, gallery }: NewsTabsProps
                 className={clsx(
                   "flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 cursor-pointer",
                   isActive
-                    ? "bg-primary text-white shadow-lg shadow-primary/25"
+                    ? "bg-primary text-white shadow-lg shadow-primary/25 scale-105"
                     : "bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-800"
                 )}
               >
@@ -225,12 +255,107 @@ export default function NewsTabs({ news, announcements, gallery }: NewsTabsProps
 
         {/* Tab content */}
         <div className="min-h-[300px]">
-          {/* News */}
+          {/* VIEW ALL (Semua) */}
+          {activeTab === "all" && (
+            totalCount > 0 ? (
+              <div className="space-y-16">
+                {/* News Section */}
+                {news.length > 0 && (
+                  <div>
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-2">
+                        <Newspaper className="text-primary" size={22} />
+                        <h2 className="text-2xl font-bold text-gray-900">
+                          {t("tab_news")}
+                        </h2>
+                      </div>
+                      <button
+                        onClick={() => setActiveTab("news")}
+                        className="text-sm font-semibold text-primary hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        Lihat semua berita <ArrowRight size={14} />
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {news.slice(0, 3).map((article) => (
+                        <ArticleCard
+                          key={article.id}
+                          article={article}
+                          badge="Berita"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Announcements Section */}
+                {announcements.length > 0 && (
+                  <div>
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-2">
+                        <Megaphone className="text-primary" size={22} />
+                        <h2 className="text-2xl font-bold text-gray-900">
+                          {t("tab_announcements")}
+                        </h2>
+                      </div>
+                      <button
+                        onClick={() => setActiveTab("announcements")}
+                        className="text-sm font-semibold text-primary hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        Lihat semua pengumuman <ArrowRight size={14} />
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {announcements.slice(0, 3).map((article) => (
+                        <ArticleCard
+                          key={article.id}
+                          article={article}
+                          badge="Pengumuman"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Gallery Section */}
+                {gallery.length > 0 && (
+                  <div>
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-2">
+                        <Images className="text-primary" size={22} />
+                        <h2 className="text-2xl font-bold text-gray-900">
+                          {t("tab_gallery")}
+                        </h2>
+                      </div>
+                      <button
+                        onClick={() => setActiveTab("gallery")}
+                        className="text-sm font-semibold text-primary hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        Lihat semua galeri <ArrowRight size={14} />
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                      {gallery.slice(0, 4).map((item) => (
+                        <GalleryCard key={item.id} item={item} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <EmptyState tab="all" t={t} />
+            )
+          )}
+
+          {/* News Tab */}
           {activeTab === "news" && (
             news.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {news.map((article) => (
-                  <ArticleCard key={article.id} article={article} />
+                  <ArticleCard
+                    key={article.id}
+                    article={article}
+                  />
                 ))}
               </div>
             ) : (
@@ -238,12 +363,16 @@ export default function NewsTabs({ news, announcements, gallery }: NewsTabsProps
             )
           )}
 
-          {/* Announcements */}
+          {/* Announcements Tab */}
           {activeTab === "announcements" && (
             announcements.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {announcements.map((article) => (
-                  <ArticleCard key={article.id} article={article} />
+                  <ArticleCard
+                    key={article.id}
+                    article={article}
+                    badge="Pengumuman"
+                  />
                 ))}
               </div>
             ) : (
@@ -251,7 +380,7 @@ export default function NewsTabs({ news, announcements, gallery }: NewsTabsProps
             )
           )}
 
-          {/* Gallery */}
+          {/* Gallery Tab */}
           {activeTab === "gallery" && (
             gallery.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -268,3 +397,4 @@ export default function NewsTabs({ news, announcements, gallery }: NewsTabsProps
     </section>
   );
 }
+

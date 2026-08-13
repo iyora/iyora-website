@@ -177,7 +177,7 @@ const OLYMPIADS = [
 const NEWS_MENU = [
   { key: "news", icon: Newspaper, labelId: "tab_news", hash: "news", descId: "preview_news" },
   { key: "announcements", icon: Megaphone, labelId: "tab_announcements", hash: "announcements", descId: "preview_announcements" },
-  { key: "gallery", icon: Images, labelId: "tab_gallery", hash: "gallery", descId: "preview_gallery" },
+  { key: "gallery Pemenang", icon: Images, labelId: "tab_gallery", hash: "gallery", descId: "preview_gallery" },
 ] as const;
 
 type NewsMenuKey = typeof NEWS_MENU[number]["key"];
@@ -483,7 +483,9 @@ export default function Navbar({ newsPreview }: NavbarProps) {
                         newsPreview.news.map((item) => (
                           <Link
                             key={item.id}
-                            href={`${href("/news")}?tab=news`}
+                            href={href(`/news/${item.slug}`)}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="flex gap-3 p-2 rounded-xl hover:bg-white transition-colors group"
                           >
                             {item.cover_image ? (
@@ -523,7 +525,9 @@ export default function Navbar({ newsPreview }: NavbarProps) {
                         newsPreview.announcements.map((item) => (
                           <Link
                             key={item.id}
-                            href={`${href("/news")}?tab=announcements`}
+                            href={href(`/news/${item.slug}`)}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="flex gap-3 p-2 rounded-xl hover:bg-white transition-colors group"
                           >
                             {item.cover_image ? (
@@ -554,10 +558,10 @@ export default function Navbar({ newsPreview }: NavbarProps) {
                   )}
 
                   {/* Gallery preview */}
-                  {hoveredNewsKey === "gallery" && (
+                  {hoveredNewsKey === "gallery Pemenang" && (
                     <div>
                       <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-                        {locale === "id" ? "Galeri Terbaru" : "Recent Gallery"}
+                        {locale === "id" ? "Galeri Pemenang" : "Winnesrs Gallery"}
                       </p>
                       {newsPreview && newsPreview.gallery.length > 0 ? (
                         <div className="grid grid-cols-2 gap-2">

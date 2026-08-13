@@ -113,9 +113,8 @@ export default function ContactPage() {
                 </svg>
               </div>
               <h3 className="font-bold text-teal mb-1">{t("location")}</h3>
-              <p className="text-gray-500 text-sm">{t("location_value")}</p>
+              <p className="text-gray-500 text-sm">Jl. Kemang, Pasir Putih, Kecamatan. Sawangan, Kota Depok, Jawa Barat 16519</p>
             </div>
-
             {/* IYORA brand accent */}
             <div className="rounded-2xl gradient-hero p-6 text-white">
               <p className="font-bold text-sm mb-1">IYORA</p>

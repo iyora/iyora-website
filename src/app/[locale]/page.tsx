@@ -3,10 +3,11 @@ import HeroSection from "@/components/home/HeroSection";
 import OriginStory from "@/components/home/OriginStory";
 import StatsSection from "@/components/home/StatsSection";
 import CompetitionsSection from "@/components/home/CompetitionsSection";
+import HomeNewsSection from "@/components/home/HomeNewsSection";
 import WhyIYORA from "@/components/home/WhyIYORA";
 import KurasiSection from "@/components/home/KurasiSection";
 import CTASection from "@/components/home/CTASection";
-import { fetchCompetitionsData } from "@/lib/supabase";
+import { fetchCompetitionsData, fetchAllNews } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +19,7 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   const competitions = await fetchCompetitionsData();
+  const { news, announcements, gallery } = await fetchAllNews();
 
   return (
     <>
@@ -25,6 +27,7 @@ export default async function HomePage() {
       <OriginStory />
       <StatsSection />
       <CompetitionsSection competitions={competitions} />
+      <HomeNewsSection news={news} announcements={announcements} gallery={gallery} />
       <WhyIYORA />
       <KurasiSection />
       <CTASection />

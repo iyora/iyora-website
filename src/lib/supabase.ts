@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { DUMMY_NEWS, getDummyNewsBySlug } from "@/data/dummyNews";
 
 export type RegistrationStatus = "open" | "coming_soon" | "closed";
 
@@ -127,7 +128,7 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
    NEWS / BERITA
    ─────────────────────────────────────────────── */
 
-export type NewsCategory = "news" | "announcement" | "documentation" | "gallery";
+export type NewsCategory = "news" | "announcement" | "documentation" | "gallery ";
 
 export interface NewsArticle {
   id: string;
@@ -139,6 +140,17 @@ export interface NewsArticle {
   category: NewsCategory;
   published_at: string | null;
   created_at: string;
+  external_link?: string | null;
+  external_link_label?: string | null;
+  external_link2?: string | null;
+  external_link2_label?: string | null;
+  external_link3?: string | null;
+  external_link3_label?: string | null;
+  external_link4?: string | null;
+  external_link4_label?: string | null;
+  external_link5?: string | null;
+  external_link5_label?: string | null;
+  author?: string | null;
 }
 
 export interface GalleryItem {
@@ -167,6 +179,88 @@ export async function fetchNewsByCategory(
     return data as NewsArticle[];
   } catch {
     return [];
+  }
+}
+
+export async function fetchNewsBySlug(
+  slug: string
+): Promise<NewsArticle | null> {
+  try {
+    const supabase = createSupabase();
+
+    const { data, error } = await supabase
+      .from("news")
+      .select("id, title, slug, excerpt, content, cover_image, category, published_at, created_at")
+      .eq("slug", slug)
+      .eq("is_published", true)
+      .single();
+
+    if (error || !data) {
+      const dummy = getDummyNewsBySlug(slug);
+      if (!dummy) return null;
+      return {
+        id: dummy.id,
+        title: dummy.title,
+        slug: dummy.slug,
+        excerpt: dummy.caption,
+        content: dummy.content ?? null,
+        cover_image: dummy.photo,
+        category: dummy.category === "announcement" ? "announcement" : "news",
+        published_at: dummy.publishedAt,
+        created_at: dummy.publishedAt,
+        external_link: dummy.link,
+        external_link_label: dummy.linkLabel ?? null,
+        external_link2: dummy.link2 ?? null,
+        external_link2_label: dummy.link2Label ?? null,
+        external_link3: dummy.link3 ?? null,
+        external_link3_label: dummy.link3Label ?? null,
+        external_link4: dummy.link4 ?? null,
+        external_link4_label: dummy.link4Label ?? null,
+        external_link5: dummy.link5 ?? null,
+        external_link5_label: dummy.link5Label ?? null,
+        author: dummy.author ?? null,
+      };
+    }
+    const dummy = getDummyNewsBySlug(slug);
+    return {
+      ...(data as NewsArticle),
+      external_link: dummy?.link ?? null,
+      external_link_label: dummy?.linkLabel ?? null,
+      external_link2: dummy?.link2 ?? null,
+      external_link2_label: dummy?.link2Label ?? null,
+      external_link3: dummy?.link3 ?? null,
+      external_link3_label: dummy?.link3Label ?? null,
+      external_link4: dummy?.link4 ?? null,
+      external_link4_label: dummy?.link4Label ?? null,
+      external_link5: dummy?.link5 ?? null,
+      external_link5_label: dummy?.link5Label ?? null,
+      author: dummy?.author ?? "Tim Humas IYORA",
+    };
+  } catch {
+    const dummy = getDummyNewsBySlug(slug);
+    if (!dummy) return null;
+    return {
+      id: dummy.id,
+      title: dummy.title,
+      slug: dummy.slug,
+      excerpt: dummy.caption,
+      content: dummy.content ?? null,
+      cover_image: dummy.photo,
+      category: dummy.category === "announcement" ? "announcement" : "news",
+      published_at: dummy.publishedAt,
+      created_at: dummy.publishedAt,
+      external_link: dummy.link,
+      external_link_label: dummy.linkLabel ?? null,
+      external_link2: dummy.link2 ?? null,
+      external_link2_label: dummy.link2Label ?? null,
+      external_link3: dummy.link3 ?? null,
+      external_link3_label: dummy.link3Label ?? null,
+      external_link4: dummy.link4 ?? null,
+      external_link4_label: dummy.link4Label ?? null,
+      external_link5: dummy.link5 ?? null,
+      external_link5_label: dummy.link5Label ?? null,
+      author: dummy.author ?? null,
+    };
   }
 }
 
@@ -206,14 +300,101 @@ export async function fetchAllNews(): Promise<{
           .order("created_at", { ascending: false }),
       ]);
 
+    const newsData = (newsRes.data as NewsArticle[]) ?? [];
+    const announcementsData = (announcementsRes.data as NewsArticle[]) ?? [];
+    const documentationData = (documentationRes.data as NewsArticle[]) ?? [];
+    const galleryData = (galleryRes.data as GalleryItem[]) ?? [];
+
+    const defaultNews: NewsArticle[] = DUMMY_NEWS.filter((item) => item.category === "news")
+      .map((item) => ({
+        id: item.id,
+        title: item.title,
+        slug: item.slug,
+        excerpt: item.caption,
+        content: item.content ?? null,
+        cover_image: item.photo,
+        category: "news" as const,
+        published_at: item.publishedAt,
+        created_at: item.publishedAt,
+        external_link: item.link,
+        author: item.author ?? null,
+      }))
+      .sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime());
+
+    const defaultAnnouncements: NewsArticle[] = DUMMY_NEWS.filter((item) => item.category === "announcement")
+      .map((item) => ({
+        id: item.id,
+        title: item.title,
+        slug: item.slug,
+        excerpt: item.caption,
+        content: item.content ?? null,
+        cover_image: item.photo,
+        category: "announcement" as const,
+        published_at: item.publishedAt,
+        created_at: item.publishedAt,
+        external_link: item.link,
+        author: item.author ?? null,
+      }))
+      .sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime());
+
+    const defaultGallery: GalleryItem[] = DUMMY_NEWS.filter((item) => item.category === "gallery").map((item) => ({
+      id: item.id,
+      title: item.title,
+      description: item.caption,
+      image_url: item.photo,
+      category: "gallery",
+      created_at: item.publishedAt,
+    }));
+
     return {
-      news: (newsRes.data as NewsArticle[]) ?? [],
-      announcements: (announcementsRes.data as NewsArticle[]) ?? [],
-      documentation: (documentationRes.data as NewsArticle[]) ?? [],
-      gallery: (galleryRes.data as GalleryItem[]) ?? [],
+      news: (newsData.length > 0 ? newsData : defaultNews).sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime()),
+      announcements: (announcementsData.length > 0 ? announcementsData : defaultAnnouncements).sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime()),
+      documentation: documentationData,
+      gallery: galleryData.length > 0 ? galleryData : defaultGallery,
     };
   } catch {
-    return { news: [], announcements: [], documentation: [], gallery: [] };
+    const defaultNews: NewsArticle[] = DUMMY_NEWS.filter((item) => item.category === "news")
+      .map((item) => ({
+        id: item.id,
+        title: item.title,
+        slug: item.slug,
+        excerpt: item.caption,
+        content: item.content ?? null,
+        cover_image: item.photo,
+        category: "news" as const,
+        published_at: item.publishedAt,
+        created_at: item.publishedAt,
+        external_link: item.link,
+        author: item.author ?? null,
+      }))
+      .sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime());
+
+    const defaultAnnouncements: NewsArticle[] = DUMMY_NEWS.filter((item) => item.category === "announcement")
+      .map((item) => ({
+        id: item.id,
+        title: item.title,
+        slug: item.slug,
+        excerpt: item.caption,
+        content: item.content ?? null,
+        cover_image: item.photo,
+        category: "announcement" as const,
+        published_at: item.publishedAt,
+        created_at: item.publishedAt,
+        external_link: item.link,
+        author: item.author ?? null,
+      }))
+      .sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime());
+
+    const defaultGallery: GalleryItem[] = DUMMY_NEWS.filter((item) => item.category === "gallery").map((item) => ({
+      id: item.id,
+      title: item.title,
+      description: item.caption,
+      image_url: item.photo,
+      category: "gallery",
+      created_at: item.publishedAt,
+    }));
+
+    return { news: defaultNews, announcements: defaultAnnouncements, documentation: [], gallery: defaultGallery };
   }
 }
 
@@ -269,12 +450,64 @@ export async function fetchNewsPreview(): Promise<NewsPreviewData> {
         .limit(4),
     ]);
 
+    const newsData = (newsRes.data as NewsPreviewItem[]) ?? [];
+    const announcementsData = (announcementsRes.data as NewsPreviewItem[]) ?? [];
+    const galleryData = (galleryRes.data as GalleryPreviewItem[]) ?? [];
+
+    const defaultNews: NewsPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "news").slice(0, 3).map((item) => ({
+      id: item.id,
+      title: item.title,
+      slug: item.slug,
+      cover_image: item.photo,
+      published_at: item.publishedAt,
+      created_at: item.publishedAt,
+    }));
+
+    const defaultAnnouncements: NewsPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "announcement").slice(0, 3).map((item) => ({
+      id: item.id,
+      title: item.title,
+      slug: item.slug,
+      cover_image: item.photo,
+      published_at: item.publishedAt,
+      created_at: item.publishedAt,
+    }));
+
+    const defaultGallery: GalleryPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "gallery").slice(0, 4).map((item) => ({
+      id: item.id,
+      title: item.title,
+      image_url: item.photo,
+    }));
+
     return {
-      news: (newsRes.data as NewsPreviewItem[]) ?? [],
-      announcements: (announcementsRes.data as NewsPreviewItem[]) ?? [],
-      gallery: (galleryRes.data as GalleryPreviewItem[]) ?? [],
+      news: newsData.length > 0 ? newsData : defaultNews,
+      announcements: announcementsData.length > 0 ? announcementsData : defaultAnnouncements,
+      gallery: galleryData.length > 0 ? galleryData : defaultGallery,
     };
   } catch {
-    return { news: [], announcements: [], gallery: [] };
+    const defaultNews: NewsPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "news").slice(0, 3).map((item) => ({
+      id: item.id,
+      title: item.title,
+      slug: item.slug,
+      cover_image: item.photo,
+      published_at: item.publishedAt,
+      created_at: item.publishedAt,
+    }));
+
+    const defaultAnnouncements: NewsPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "announcement").slice(0, 3).map((item) => ({
+      id: item.id,
+      title: item.title,
+      slug: item.slug,
+      cover_image: item.photo,
+      published_at: item.publishedAt,
+      created_at: item.publishedAt,
+    }));
+
+    const defaultGallery: GalleryPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "gallery").slice(0, 4).map((item) => ({
+      id: item.id,
+      title: item.title,
+      image_url: item.photo,
+    }));
+
+    return { news: defaultNews, announcements: defaultAnnouncements, gallery: defaultGallery };
   }
 }
