@@ -41,6 +41,7 @@ export const DUMMY_NEWS: DummyNewsItem[] = [
     link5: "https://iyeo.iyora.or.id",
     link5Label: "Website Pendaftaran IYEO",
     publishedAt: "2026-08-13",
+    author: "IyoraOlympiade",
   },
   {
     id: "news-1",
@@ -55,6 +56,7 @@ export const DUMMY_NEWS: DummyNewsItem[] = [
     link2: "https://nybo.iyora.or.id",
     link2Label: "Website Resmi NYBO",
     publishedAt: "2024-04-07",
+    author: "IyoraOlympiade",
   },
   {
     id: "news-2",
@@ -69,6 +71,7 @@ export const DUMMY_NEWS: DummyNewsItem[] = [
     link2: "https://os2mn.iyora.or.id",
     link2Label: "Website Resmi OS2MN",
     publishedAt: "2025-04-25",
+    author: "IyoraOlympiade",
   },
  /* {
     id: "news-4",

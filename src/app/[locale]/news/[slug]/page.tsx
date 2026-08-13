@@ -127,7 +127,7 @@ export default async function NewsDetailPage({ params }: Props) {
               <span className="text-gray-300">•</span>
               <div className="flex items-center gap-1.5">
                 <User size={15} className="text-primary" />
-                <span>{article.author ?? "Tim Humas IYORA"}</span>
+                <span>{article.author || "IyoraOlympiade"}</span>
               </div>
               <span className="text-gray-300">•</span>
               <span className="bg-gray-100 px-2.5 py-0.5 rounded-full text-xs text-gray-600 font-semibold">

@@ -218,7 +218,7 @@ export async function fetchNewsBySlug(
         external_link4_label: dummy.link4Label ?? null,
         external_link5: dummy.link5 ?? null,
         external_link5_label: dummy.link5Label ?? null,
-        author: dummy.author ?? null,
+        author: dummy.author ?? "IyoraOlympiade",
       };
     }
     const dummy = getDummyNewsBySlug(slug);
@@ -234,7 +234,7 @@ export async function fetchNewsBySlug(
       external_link4_label: dummy?.link4Label ?? null,
       external_link5: dummy?.link5 ?? null,
       external_link5_label: dummy?.link5Label ?? null,
-      author: dummy?.author ?? "Tim Humas IYORA",
+      author: dummy?.author ?? "IyoraOlympiade",
     };
   } catch {
     const dummy = getDummyNewsBySlug(slug);
@@ -259,7 +259,7 @@ export async function fetchNewsBySlug(
       external_link4_label: dummy.link4Label ?? null,
       external_link5: dummy.link5 ?? null,
       external_link5_label: dummy.link5Label ?? null,
-      author: dummy.author ?? null,
+      author: dummy.author ?? "IyoraOlympiade",
     };
   }
 }
