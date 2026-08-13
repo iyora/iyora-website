@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import EventPopup from "@/components/common/EventPopup";
 import { fetchNewsPreview } from "@/lib/supabase";
 
 export const metadata: Metadata = {
@@ -111,6 +112,7 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages}>
+      <EventPopup />
       <Navbar newsPreview={newsPreview} />
       <main>{children}</main>
       <Footer />

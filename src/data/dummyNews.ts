@@ -55,7 +55,7 @@ export const DUMMY_NEWS: DummyNewsItem[] = [
     linkLabel: "Berita di DepokPos",
     link2: "https://nybo.iyora.or.id",
     link2Label: "Website Resmi NYBO",
-    publishedAt: "2024-04-07",
+    publishedAt: "2026-08-13",
     author: "IyoraOlympiade",
   },
   {
@@ -70,7 +70,7 @@ export const DUMMY_NEWS: DummyNewsItem[] = [
     linkLabel: "Berita Media Jabaran.id",
     link2: "https://os2mn.iyora.or.id",
     link2Label: "Website Resmi OS2MN",
-    publishedAt: "2025-04-25",
+    publishedAt: "2026-08-13",
     author: "IyoraOlympiade",
   },
  /* {
@@ -83,7 +83,7 @@ export const DUMMY_NEWS: DummyNewsItem[] = [
     content: "IYORA memastikan seluruh sertifikat kejuaraan terintegrasi secara otomatis dengan Sistem Informasi Manajemen Talenta (SIMT) Puspresnas. Hal ini memberikan nilai tambah yang signifikan bagi peserta untuk jalur prestasi PPDB maupun SNBT perguruan tinggi negeri.",
     link: "/news",
     publishedAt: "2026-07-15",
-    author: "Sekretariat IYORA",
+    author: "IyoraOlumpiad",
   },*/
 
   // ── ANNOUNCEMENTS (Pengumuman) ──
@@ -92,12 +92,12 @@ export const DUMMY_NEWS: DummyNewsItem[] = [
     slug: "jadwal-dan-petunjuk-teknis-nyco-2026",
     title: "Pengumuman Jadwal & Petunjuk Teknis Pelaksanaan NYCO & IYCO 2026",
     category: "announcement",
-    photo: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=1200&q=80",
+    photo: "-",
     caption: "Simak jadwal penting, tata cara ujian CBT online, serta pembagian sesi pelaksanaan National & International Youth Chemistry Olympiad.",
     content: "Panitia Pelaksana NYCO 2026 menyampaikan jadwal rinci dan petunjuk teknis ujian yang wajib dipelajari oleh seluruh peserta terdaftar. Pengawasan akan dilakukan melalui sistem AI proctoring dan Zoom meeting terintegrasi.",
     link: "https://nyco.iyora.or.id",
     publishedAt: "2026-08-11",
-    author: "Panitia Kompetisi",
+    author: "IyoraOlumpiad",
   },
   {
     id: "announcement-2",
@@ -109,7 +109,7 @@ export const DUMMY_NEWS: DummyNewsItem[] = [
     content: "Demi menjaga integritas dan kelancaran ujian, IYORA telah memperbarui platform Computer Based Test (CBT) dengan fitur anti-cheat lanjutan dan simulasi ujian gratis yang dapat diakses mulai pekan depan.",
     link: "/news",
     publishedAt: "2026-08-02",
-    author: "Tim IT IYORA",
+    author: "IyoraOlumpiad",
   },
   {
     id: "announcement-3",
@@ -121,22 +121,22 @@ export const DUMMY_NEWS: DummyNewsItem[] = [
     content: "Seluruh pemenang medali emas, perak, dan perunggu dapat melakukan klaim e-sertifikat ber-QR Code melalui portal resmi IYORA. Sertifikat ini terhubung langsung dengan SIMT Puspresnas Kemendikdasmen.",
     link: "/news",
     publishedAt: "2026-07-20",
-    author: "Sekretariat IYORA",
+    author: "IyoraOlumpiad",
   },*/
 
   // ── GALLERY (Galeri) ──
-/*  {
+  {
     id: "gallery-1",
-    slug: "galeri-penganugerahan-wso-2026",
-    title: "Upacara Penganugerahan Medali World Science Olympiad",
+    slug: "after-event-biology-physics-olympiad-2026",
+    title: "After Event Biology & Physics Olympiad 2026",
     category: "gallery",
-    photo: "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80",
-    caption: "Momen kebahagiaan dan kebanggaan para pemenang saat menerima medali dan trofi penganugerahan WSO.",
-    publishedAt: "2026-07-20",
-    author: "Tim Dokumentasi",
-    link: "/news",
-  },*/
- 
+    caption: "Momen berkesan dan rangkuman keseruan kompetisi sains nasional Biology & Physics Olympiad 2026.",
+    content: "Kami bangga mempersembahkan video rangkuman dari acara yang tak terlupakan ini, sebagai bukti semangat, dedikasi, dan kecemerlangan yang telah ditunjukkan oleh setiap peserta. Melalui video pasca-acara ini, Anda akan disuguhi berbagai momen berkesan yang telah kita lalui bersama.",
+    publishedAt: "2026-08-13",
+    author: "IyoraOlympiade",
+    link: "https://www.youtube.com/embed/05RdQgvQiVY?si=KSSadgHGYFNm9do1",
+    linkLabel: "Tonton Video Dokumentasi YouTube",
+  },
 ];
 
 export function getDummyNewsByCategory(category: "news" | "announcement" | "gallery") {
@@ -146,6 +146,17 @@ export function getDummyNewsByCategory(category: "news" | "announcement" | "gall
 }
 
 export function getDummyNewsBySlug(slug: string) {
-  return DUMMY_NEWS.find((item) => item.slug === slug);
+  const decoded = decodeURIComponent(slug).toLowerCase().trim();
+  const normalized = decoded.replace(/[^a-z0-9]+/g, "-");
+  return DUMMY_NEWS.find((item) => {
+    const itemSlugDecoded = item.slug.toLowerCase().trim();
+    const itemSlugNormalized = itemSlugDecoded.replace(/[^a-z0-9]+/g, "-");
+    return (
+      item.slug === slug ||
+      itemSlugDecoded === decoded ||
+      itemSlugNormalized === normalized
+    );
+  });
 }
+
 

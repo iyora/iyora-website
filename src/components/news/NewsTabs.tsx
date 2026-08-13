@@ -41,23 +41,29 @@ function ArticleCard({
   article,
   badge,
 }: {
-  article: NewsArticle;
+  article: NewsArticle | GalleryItem;
   badge?: string;
 }) {
   const locale = useLocale();
+  const slug = ("slug" in article && article.slug) ? article.slug : article.id;
+  const coverImage = article.cover_image || ("image_url" in article ? article.image_url : null);
+  const excerpt = article.excerpt || ("description" in article ? article.description : null);
+  const publishedAt = ("published_at" in article && article.published_at)
+    ? article.published_at
+    : article.created_at;
 
   return (
     <Link
-      href={`/${locale}/news/${article.slug}`}
+      href={`/${locale}/news/${slug}`}
       target="_blank"
       rel="noopener noreferrer"
       className="group bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-1 flex flex-col h-full cursor-pointer"
     >
       {/* Cover image */}
-      {article.cover_image ? (
+      {coverImage ? (
         <div className="relative aspect-[16/9] overflow-hidden">
           <Image
-            src={article.cover_image}
+            src={coverImage}
             alt={article.title}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -86,7 +92,7 @@ function ArticleCard({
         {/* Date */}
         <div className="flex items-center gap-1.5 text-xs text-gray-400 mb-3">
           <Calendar size={12} />
-          <time>{formatDate(article.published_at ?? article.created_at)}</time>
+          <time>{formatDate(publishedAt)}</time>
         </div>
 
         {/* Title */}
@@ -95,9 +101,9 @@ function ArticleCard({
         </h3>
 
         {/* Excerpt */}
-        {article.excerpt && (
+        {excerpt && (
           <p className="text-sm text-gray-500 line-clamp-3 leading-relaxed mb-4 flex-1">
-            {article.excerpt}
+            {excerpt}
           </p>
         )}
 
@@ -108,68 +114,6 @@ function ArticleCard({
         </div>
       </div>
     </Link>
-  );
-}
-
-/* ── Gallery Card ── */
-function GalleryCard({ item }: { item: GalleryItem }) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <>
-      <div
-        className="group relative aspect-square rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300"
-        onClick={() => setIsOpen(true)}
-      >
-        <Image
-          src={item.image_url}
-          alt={item.title}
-          fill
-          className="object-cover group-hover:scale-110 transition-transform duration-500"
-          sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-        />
-        {/* Hover overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-          <div>
-            <h4 className="text-white font-semibold text-sm line-clamp-2">{item.title}</h4>
-            {item.description && (
-              <p className="text-white/70 text-xs mt-1 line-clamp-1">{item.description}</p>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Lightbox */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-[999] bg-black/90 flex items-center justify-center p-4 animate-fadeIn"
-          onClick={() => setIsOpen(false)}
-        >
-          <div className="relative max-w-5xl w-full max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
-            <Image
-              src={item.image_url}
-              alt={item.title}
-              width={1200}
-              height={800}
-              className="w-full h-auto max-h-[85vh] object-contain rounded-lg"
-            />
-            <div className="text-center mt-3">
-              <h4 className="text-white font-semibold">{item.title}</h4>
-              {item.description && (
-                <p className="text-white/60 text-sm mt-1">{item.description}</p>
-              )}
-            </div>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="absolute -top-3 -right-3 w-10 h-10 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-colors cursor-pointer"
-              aria-label="Close"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
-    </>
   );
 }
 
@@ -334,9 +278,13 @@ export default function NewsTabs({ news, announcements, gallery }: NewsTabsProps
                         Lihat semua galeri <ArrowRight size={14} />
                       </button>
                     </div>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {gallery.slice(0, 4).map((item) => (
-                        <GalleryCard key={item.id} item={item} />
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {gallery.slice(0, 3).map((item) => (
+                        <ArticleCard
+                          key={item.id}
+                          article={item}
+                          badge="Galeri"
+                        />
                       ))}
                     </div>
                   </div>
@@ -355,6 +303,7 @@ export default function NewsTabs({ news, announcements, gallery }: NewsTabsProps
                   <ArticleCard
                     key={article.id}
                     article={article}
+                    badge="Berita"
                   />
                 ))}
               </div>
@@ -383,9 +332,13 @@ export default function NewsTabs({ news, announcements, gallery }: NewsTabsProps
           {/* Gallery Tab */}
           {activeTab === "gallery" && (
             gallery.length > 0 ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {gallery.map((item) => (
-                  <GalleryCard key={item.id} item={item} />
+                  <ArticleCard
+                    key={item.id}
+                    article={item}
+                    badge="Galeri"
+                  />
                 ))}
               </div>
             ) : (
@@ -393,6 +346,7 @@ export default function NewsTabs({ news, announcements, gallery }: NewsTabsProps
             )
           )}
         </div>
+
       </div>
     </section>
   );

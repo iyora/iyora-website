@@ -559,25 +559,37 @@ export default function Navbar({ newsPreview }: NavbarProps) {
 
                   {/* Gallery preview */}
                   {hoveredNewsKey === "gallery Pemenang" && (
-                    <div>
+                    <div className="space-y-3">
                       <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-                        {locale === "id" ? "Galeri Pemenang" : "Winnesrs Gallery"}
+                        {locale === "id" ? "Galeri Terbaru" : "Recent Gallery"}
                       </p>
                       {newsPreview && newsPreview.gallery.length > 0 ? (
-                        <div className="grid grid-cols-2 gap-2">
-                          {newsPreview.gallery.map((item) => (
-                            <Link
-                              key={item.id}
-                              href={`${href("/news")}?tab=gallery`}
-                              className="relative aspect-square rounded-xl overflow-hidden group"
-                            >
-                              <Image src={item.image_url} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-300" sizes="140px" />
-                              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-end p-2">
-                                <p className="text-white text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity line-clamp-1">{item.title}</p>
+                        newsPreview.gallery.map((item) => (
+                          <Link
+                            key={item.id}
+                            href={item.slug ? href(`/news/${item.slug}`) : `${href("/news")}?tab=gallery`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex gap-3 p-2 rounded-xl hover:bg-white transition-colors group"
+                          >
+                            {item.image_url ? (
+                              <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0">
+                                <Image src={item.image_url} alt={item.title} width={56} height={56} className="w-full h-full object-cover" />
                               </div>
-                            </Link>
-                          ))}
-                        </div>
+                            ) : (
+                              <div className="w-14 h-14 rounded-lg bg-accent/5 flex items-center justify-center flex-shrink-0">
+                                <Images size={20} className="text-accent/40" />
+                              </div>
+                            )}
+                            <div className="min-w-0">
+                              <p className="text-sm font-semibold text-gray-800 line-clamp-2 group-hover:text-primary transition-colors">{item.title}</p>
+                              <div className="flex items-center gap-1 mt-1">
+                                <Calendar size={10} className="text-gray-300" />
+                                <span className="text-xs text-gray-400">{formatPreviewDate(item.created_at || null)}</span>
+                              </div>
+                            </div>
+                          </Link>
+                        ))
                       ) : (
                         <div className="flex flex-col items-center justify-center py-6 text-center">
                           <Images size={28} className="text-gray-200 mb-2" />

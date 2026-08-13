@@ -128,7 +128,7 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
    NEWS / BERITA
    ─────────────────────────────────────────────── */
 
-export type NewsCategory = "news" | "announcement" | "documentation" | "gallery ";
+export type NewsCategory = "news" | "announcement" | "documentation" | "gallery";
 
 export interface NewsArticle {
   id: string;
@@ -160,6 +160,14 @@ export interface GalleryItem {
   image_url: string;
   category: string | null;
   created_at: string;
+  slug?: string;
+  excerpt?: string | null;
+  content?: string | null;
+  cover_image?: string | null;
+  published_at?: string | null;
+  external_link?: string | null;
+  external_link_label?: string | null;
+  author?: string | null;
 }
 
 export async function fetchNewsByCategory(
@@ -205,7 +213,7 @@ export async function fetchNewsBySlug(
         excerpt: dummy.caption,
         content: dummy.content ?? null,
         cover_image: dummy.photo,
-        category: dummy.category === "announcement" ? "announcement" : "news",
+        category: (dummy.category as NewsCategory) || "news",
         published_at: dummy.publishedAt,
         created_at: dummy.publishedAt,
         external_link: dummy.link,
@@ -246,7 +254,7 @@ export async function fetchNewsBySlug(
       excerpt: dummy.caption,
       content: dummy.content ?? null,
       cover_image: dummy.photo,
-      category: dummy.category === "announcement" ? "announcement" : "news",
+      category: (dummy.category as NewsCategory) || "news",
       published_at: dummy.publishedAt,
       created_at: dummy.publishedAt,
       external_link: dummy.link,
@@ -340,17 +348,33 @@ export async function fetchAllNews(): Promise<{
     const defaultGallery: GalleryItem[] = DUMMY_NEWS.filter((item) => item.category === "gallery").map((item) => ({
       id: item.id,
       title: item.title,
+      slug: item.slug,
       description: item.caption,
+      excerpt: item.caption,
+      content: item.content ?? null,
       image_url: item.photo,
+      cover_image: item.photo,
       category: "gallery",
       created_at: item.publishedAt,
+      published_at: item.publishedAt,
+      external_link: item.link ?? null,
+      external_link_label: item.linkLabel ?? null,
+      author: item.author ?? "IyoraOlympiade",
+    }));
+
+    const formattedGalleryData: GalleryItem[] = galleryData.map((item) => ({
+      ...item,
+      slug: item.slug || item.id,
+      excerpt: item.description,
+      cover_image: item.image_url,
+      published_at: item.created_at,
     }));
 
     return {
       news: (newsData.length > 0 ? newsData : defaultNews).sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime()),
       announcements: (announcementsData.length > 0 ? announcementsData : defaultAnnouncements).sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime()),
       documentation: documentationData,
-      gallery: galleryData.length > 0 ? galleryData : defaultGallery,
+      gallery: formattedGalleryData.length > 0 ? formattedGalleryData : defaultGallery,
     };
   } catch {
     const defaultNews: NewsArticle[] = DUMMY_NEWS.filter((item) => item.category === "news")
@@ -388,10 +412,18 @@ export async function fetchAllNews(): Promise<{
     const defaultGallery: GalleryItem[] = DUMMY_NEWS.filter((item) => item.category === "gallery").map((item) => ({
       id: item.id,
       title: item.title,
+      slug: item.slug,
       description: item.caption,
+      excerpt: item.caption,
+      content: item.content ?? null,
       image_url: item.photo,
+      cover_image: item.photo,
       category: "gallery",
       created_at: item.publishedAt,
+      published_at: item.publishedAt,
+      external_link: item.link ?? null,
+      external_link_label: item.linkLabel ?? null,
+      author: item.author ?? "IyoraOlympiade",
     }));
 
     return { news: defaultNews, announcements: defaultAnnouncements, documentation: [], gallery: defaultGallery };
@@ -414,7 +446,9 @@ export interface NewsPreviewItem {
 export interface GalleryPreviewItem {
   id: string;
   title: string;
+  slug?: string;
   image_url: string;
+  created_at?: string;
 }
 
 export interface NewsPreviewData {
@@ -444,10 +478,10 @@ export async function fetchNewsPreview(): Promise<NewsPreviewData> {
         .limit(3),
       supabase
         .from("gallery")
-        .select("id, title, image_url")
+        .select("id, title, image_url, created_at")
         .eq("is_published", true)
         .order("created_at", { ascending: false })
-        .limit(4),
+        .limit(3),
     ]);
 
     const newsData = (newsRes.data as NewsPreviewItem[]) ?? [];
@@ -472,10 +506,12 @@ export async function fetchNewsPreview(): Promise<NewsPreviewData> {
       created_at: item.publishedAt,
     }));
 
-    const defaultGallery: GalleryPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "gallery").slice(0, 4).map((item) => ({
+    const defaultGallery: GalleryPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "gallery").slice(0, 3).map((item) => ({
       id: item.id,
       title: item.title,
+      slug: item.slug,
       image_url: item.photo,
+      created_at: item.publishedAt,
     }));
 
     return {
@@ -502,10 +538,12 @@ export async function fetchNewsPreview(): Promise<NewsPreviewData> {
       created_at: item.publishedAt,
     }));
 
-    const defaultGallery: GalleryPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "gallery").slice(0, 4).map((item) => ({
+    const defaultGallery: GalleryPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "gallery").slice(0, 3).map((item) => ({
       id: item.id,
       title: item.title,
+      slug: item.slug,
       image_url: item.photo,
+      created_at: item.publishedAt,
     }));
 
     return { news: defaultNews, announcements: defaultAnnouncements, gallery: defaultGallery };

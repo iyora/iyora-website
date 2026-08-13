@@ -65,13 +65,13 @@ export default function HomeNewsSection({
   if (activeTab === "all") {
     displayNews = news.slice(0, 3);
     displayAnnouncements = announcements.slice(0, 3);
-    displayGallery = gallery.slice(0, 4);
+    displayGallery = gallery.slice(0, 3);
   } else if (activeTab === "news") {
     displayNews = news.slice(0, 6);
   } else if (activeTab === "announcements") {
     displayAnnouncements = announcements.slice(0, 6);
   } else if (activeTab === "gallery") {
-    displayGallery = gallery.slice(0, 8);
+    displayGallery = gallery.slice(0, 6);
   }
 
   const tabs: { key: TabKey; label: string; count: number; icon: React.ElementType }[] = [
@@ -100,7 +100,7 @@ export default function HomeNewsSection({
             Berita & Pengumuman
           </span>
           <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-4">
-            Berita dan Pengumuman
+            Informasi & Kabar Terbaru
           </h2>
           <p className="text-gray-500 text-lg max-w-2xl mx-auto">
             Simak pengumuman pendaftaran, berita olimpiade, dan update terkini dari IYORA.
@@ -231,11 +231,11 @@ export default function HomeNewsSection({
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
-                className="grid grid-cols-2 md:grid-cols-4 gap-4"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
               >
                 {displayGallery.map((item) => (
                   <motion.div key={item.id} variants={itemVariants}>
-                    <GalleryCard item={item} />
+                    <ArticleCard article={item} badge="Galeri" locale={locale} />
                   </motion.div>
                 ))}
               </motion.div>
@@ -264,22 +264,29 @@ function ArticleCard({
   badge,
   locale,
 }: {
-  article: NewsArticle;
+  article: NewsArticle | GalleryItem;
   badge: string;
   locale: string;
 }) {
+  const slug = ("slug" in article && article.slug) ? article.slug : article.id;
+  const coverImage = article.cover_image || ("image_url" in article ? article.image_url : null);
+  const excerpt = article.excerpt || ("description" in article ? article.description : null);
+  const publishedAt = ("published_at" in article && article.published_at)
+    ? article.published_at
+    : article.created_at;
+
   return (
     <Link
-      href={`/${locale}/news/${article.slug}`}
+      href={`/${locale}/news/${slug}`}
       target="_blank"
       rel="noopener noreferrer"
       className="group bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1.5 flex flex-col h-full cursor-pointer"
     >
       {/* Cover Image */}
-      {article.cover_image ? (
+      {coverImage ? (
         <div className="relative aspect-[16/9] overflow-hidden bg-gray-100">
           <Image
-            src={article.cover_image}
+            src={coverImage}
             alt={article.title}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -303,16 +310,16 @@ function ArticleCard({
       <div className="p-5 flex flex-col flex-1">
         <div className="flex items-center gap-1.5 text-xs text-gray-400 mb-2.5 font-medium">
           <Calendar size={13} className="text-primary/70" />
-          <time>{formatDate(article.published_at ?? article.created_at)}</time>
+          <time>{formatDate(publishedAt)}</time>
         </div>
 
         <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-primary transition-colors duration-200 leading-snug">
           {article.title}
         </h3>
 
-        {article.excerpt && (
+        {excerpt && (
           <p className="text-xs md:text-sm text-gray-500 line-clamp-2 leading-relaxed mb-4 flex-1">
-            {article.excerpt}
+            {excerpt}
           </p>
         )}
 
@@ -325,25 +332,3 @@ function ArticleCard({
   );
 }
 
-/* ── Gallery Card Sub-component ── */
-function GalleryCard({ item }: { item: GalleryItem }) {
-  return (
-    <div className="group relative aspect-square rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-300">
-      <Image
-        src={item.image_url}
-        alt={item.title}
-        fill
-        className="object-cover group-hover:scale-110 transition-transform duration-500"
-        sizes="(max-width: 768px) 50vw, 25vw"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-        <div>
-          <h4 className="text-white font-semibold text-xs md:text-sm line-clamp-2">{item.title}</h4>
-          {item.description && (
-            <p className="text-white/80 text-[11px] mt-1 line-clamp-1">{item.description}</p>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}

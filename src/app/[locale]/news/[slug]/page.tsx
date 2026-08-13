@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { fetchNewsBySlug, fetchAllNews } from "@/lib/supabase";
-import { Calendar, User, ArrowLeft, ExternalLink, Share2, Tag, ChevronRight, Newspaper, Megaphone } from "lucide-react";
+import { Calendar, User, ArrowLeft, ExternalLink, Share2, Tag, ChevronRight, Newspaper, Megaphone, Images } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -49,6 +49,13 @@ function estimateReadingTime(text: string | null): string {
   return `${minutes} min baca`;
 }
 
+function getYouTubeEmbedUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+  if (url.includes("youtube.com/embed/")) return url;
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+  return match ? `https://www.youtube.com/embed/${match[1]}` : null;
+}
+
 export default async function NewsDetailPage({ params }: Props) {
   const { locale, slug } = await params;
   const article = await fetchNewsBySlug(slug);
@@ -57,14 +64,30 @@ export default async function NewsDetailPage({ params }: Props) {
     notFound();
   }
 
-  const { news, announcements } = await fetchAllNews();
-  const allArticles = [...news, ...announcements];
+  const { news, announcements, gallery } = await fetchAllNews();
+  const galleryAsArticles = gallery.map((item) => ({
+    id: item.id,
+    title: item.title,
+    slug: item.slug || item.id,
+    excerpt: item.excerpt || item.description,
+    content: item.content ?? null,
+    cover_image: item.cover_image || item.image_url,
+    category: "gallery" as const,
+    published_at: item.published_at || item.created_at,
+    created_at: item.created_at,
+    external_link: item.external_link,
+    author: item.author ?? "IyoraOlympiade",
+  }));
+
+  const allArticles = [...news, ...announcements, ...galleryAsArticles];
   const relatedArticles = allArticles
     .filter((item) => item.slug !== article.slug)
     .slice(0, 3);
 
   const isAnnouncement = article.category === "announcement";
-  const categoryLabel = isAnnouncement ? "Pengumuman" : "Berita";
+  const isGallery = article.category === "gallery";
+  const categoryLabel = isGallery ? "Galeri" : isAnnouncement ? "Pengumuman" : "Berita";
+  const youtubeEmbedUrl = getYouTubeEmbedUrl(article.external_link);
 
   return (
     <article className="min-h-screen bg-gray-50/50 pt-28 pb-24">
@@ -75,8 +98,8 @@ export default async function NewsDetailPage({ params }: Props) {
             Beranda
           </Link>
           <ChevronRight size={14} className="text-gray-300 flex-shrink-0" />
-          <Link href={`/${locale}/news`} className="hover:text-primary transition-colors flex-shrink-0">
-            Berita
+          <Link href={`/${locale}/news${isGallery ? "?tab=gallery" : isAnnouncement ? "?tab=announcements" : ""}`} className="hover:text-primary transition-colors flex-shrink-0">
+            {isGallery ? "Galeri" : "Berita & Pengumuman"}
           </Link>
           <ChevronRight size={14} className="text-gray-300 flex-shrink-0" />
           <span className="text-gray-900 font-medium truncate">{article.title}</span>
@@ -100,7 +123,7 @@ export default async function NewsDetailPage({ params }: Props) {
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
               <div className="absolute top-6 left-6">
                 <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-primary text-white text-xs font-bold rounded-full shadow-lg tracking-wide uppercase">
-                  {isAnnouncement ? <Megaphone size={13} /> : <Newspaper size={13} />}
+                  {isGallery ? <Images size={13} /> : isAnnouncement ? <Megaphone size={13} /> : <Newspaper size={13} />}
                   {categoryLabel}
                 </span>
               </div>
@@ -112,7 +135,7 @@ export default async function NewsDetailPage({ params }: Props) {
             {!article.cover_image && (
               <div className="mb-6">
                 <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-primary text-white text-xs font-bold rounded-full shadow-sm tracking-wide uppercase">
-                  {isAnnouncement ? <Megaphone size={13} /> : <Newspaper size={13} />}
+                  {isGallery ? <Images size={13} /> : isAnnouncement ? <Megaphone size={13} /> : <Newspaper size={13} />}
                   {categoryLabel}
                 </span>
               </div>
@@ -146,6 +169,19 @@ export default async function NewsDetailPage({ params }: Props) {
                 <p className="text-base md:text-lg font-medium text-gray-800 leading-relaxed italic">
                   &ldquo;{article.excerpt}&rdquo;
                 </p>
+              </div>
+            )}
+
+            {/* Embedded Video Player if YouTube link exists */}
+            {youtubeEmbedUrl && (
+              <div className="relative aspect-video w-full rounded-2xl overflow-hidden shadow-lg border border-gray-100 mb-8 bg-black">
+                <iframe
+                  src={youtubeEmbedUrl}
+                  title={article.title}
+                  className="w-full h-full border-0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
               </div>
             )}
 
@@ -185,7 +221,7 @@ export default async function NewsDetailPage({ params }: Props) {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white font-semibold text-sm rounded-full shadow-md shadow-primary/20 transition-all cursor-pointer"
                     >
-                      <span>{article.external_link_label || "Opsi 1: Website Utama / Media"}</span>
+                      <span>{article.external_link_label || (youtubeEmbedUrl ? "Tonton di YouTube" : "Opsi 1: Website Utama / Media")}</span>
                       <ExternalLink size={16} />
                     </a>
                   )}
@@ -305,3 +341,4 @@ export default async function NewsDetailPage({ params }: Props) {
     </article>
   );
 }
+
