@@ -29,7 +29,7 @@ export default async function NewsPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const { news, announcements, gallery } = await fetchAllNews(locale);
+  const { news, announcements, pressRelease, gallery } = await fetchAllNews(locale);
 
   return (
     <>
@@ -37,6 +37,7 @@ export default async function NewsPage({
       <NewsTabs
         news={news}
         announcements={announcements}
+        pressRelease={pressRelease}
         gallery={gallery}
       />
     </>

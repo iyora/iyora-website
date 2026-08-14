@@ -5,15 +5,16 @@ import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
-import { LayoutGrid, Newspaper, Megaphone, Images, Calendar, ArrowRight, ImageOff, ExternalLink, X } from "lucide-react";
+import { LayoutGrid, Newspaper, Megaphone, FileText, Images, Calendar, ArrowRight, ImageOff, ExternalLink, X } from "lucide-react";
 import clsx from "clsx";
 import type { NewsArticle, GalleryItem } from "@/lib/supabase";
 
-type TabKey = "all" | "news" | "announcements" | "gallery";
+type TabKey = "all" | "news" | "announcements" | "press_release" | "gallery";
 
 interface NewsTabsProps {
   news: NewsArticle[];
   announcements: NewsArticle[];
+  pressRelease?: NewsArticle[];
   gallery: GalleryItem[];
 }
 
@@ -21,6 +22,7 @@ const TAB_ICONS = {
   all: LayoutGrid,
   news: Newspaper,
   announcements: Megaphone,
+  press_release: FileText,
   gallery: Images,
 };
 
@@ -33,8 +35,6 @@ function formatDate(dateStr: string | null, locale: string = "id"): string {
     year: "numeric",
   });
 }
-
-
 
 /* ── Article Card ── */
 function ArticleCard({
@@ -54,7 +54,7 @@ function ArticleCard({
 
   const displayBadge = badge
     ? locale === "en"
-      ? badge === "Berita" ? "News" : badge === "Pengumuman" ? "Announcement" : badge === "Galeri" ? "Gallery" : badge
+      ? badge === "Berita" ? "News" : badge === "Pengumuman" ? "Announcement" : badge === "Siaran Pers" ? "Press Release" : badge === "Galeri" ? "Gallery" : badge
       : badge
     : undefined;
 
@@ -140,12 +140,12 @@ function EmptyState({ tab, t }: { tab: TabKey; t: ReturnType<typeof useTranslati
 }
 
 /* ── Main Tabs Component ── */
-export default function NewsTabs({ news, announcements, gallery }: NewsTabsProps) {
+export default function NewsTabs({ news, announcements, pressRelease = [], gallery }: NewsTabsProps) {
   const t = useTranslations("news_page");
   const locale = useLocale();
   const searchParams = useSearchParams();
 
-  const validTabs: TabKey[] = ["all", "news", "announcements", "gallery"];
+  const validTabs: TabKey[] = ["all", "news", "announcements", "press_release", "gallery"];
   const tabParam = searchParams.get("tab") as TabKey | null;
   const initialTab = tabParam && validTabs.includes(tabParam) ? tabParam : "all";
   const [activeTab, setActiveTab] = useState<TabKey>(initialTab);
@@ -158,12 +158,13 @@ export default function NewsTabs({ news, announcements, gallery }: NewsTabsProps
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tabParam]);
 
-  const totalCount = news.length + announcements.length + gallery.length;
+  const totalCount = news.length + announcements.length + pressRelease.length + gallery.length;
 
   const tabs: { key: TabKey; count: number }[] = [
     { key: "all", count: totalCount },
     { key: "news", count: news.length },
     { key: "announcements", count: announcements.length },
+    { key: "press_release", count: pressRelease.length },
     { key: "gallery", count: gallery.length },
   ];
 
@@ -268,6 +269,35 @@ export default function NewsTabs({ news, announcements, gallery }: NewsTabsProps
                   </div>
                 )}
 
+                {/* Press Release Section */}
+                {pressRelease.length > 0 && (
+                  <div>
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-2">
+                        <FileText className="text-primary" size={22} />
+                        <h2 className="text-2xl font-bold text-gray-900">
+                          {t("tab_press_release")}
+                        </h2>
+                      </div>
+                      <button
+                        onClick={() => setActiveTab("press_release")}
+                        className="text-sm font-semibold text-primary hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        {locale === "en" ? "View all press releases" : "Lihat semua siaran pers"} <ArrowRight size={14} />
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {pressRelease.slice(0, 3).map((article) => (
+                        <ArticleCard
+                          key={article.id}
+                          article={article}
+                          badge="Siaran Pers"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Gallery Section */}
                 {gallery.length > 0 && (
                   <div>
@@ -333,6 +363,23 @@ export default function NewsTabs({ news, announcements, gallery }: NewsTabsProps
               </div>
             ) : (
               <EmptyState tab="announcements" t={t} />
+            )
+          )}
+
+          {/* Press Release Tab */}
+          {activeTab === "press_release" && (
+            pressRelease.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {pressRelease.map((article) => (
+                  <ArticleCard
+                    key={article.id}
+                    article={article}
+                    badge="Siaran Pers"
+                  />
+                ))}
+              </div>
+            ) : (
+              <EmptyState tab="press_release" t={t} />
             )
           )}
 

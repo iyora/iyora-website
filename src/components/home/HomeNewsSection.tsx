@@ -10,6 +10,7 @@ import {
   ArrowRight,
   Newspaper,
   Megaphone,
+  FileText,
   Images,
   ImageOff,
   ExternalLink,
@@ -20,10 +21,11 @@ import type { NewsArticle, GalleryItem } from "@/lib/supabase";
 interface HomeNewsSectionProps {
   news: NewsArticle[];
   announcements: NewsArticle[];
+  pressRelease?: NewsArticle[];
   gallery: GalleryItem[];
 }
 
-type TabKey = "all" | "news" | "announcements" | "gallery";
+type TabKey = "all" | "news" | "announcements" | "press_release" | "gallery";
 
 function formatDate(dateStr: string | null, locale: string = "id"): string {
   if (!dateStr) return "-";
@@ -48,29 +50,34 @@ const itemVariants: Variants = {
 export default function HomeNewsSection({
   news,
   announcements,
+  pressRelease = [],
   gallery,
 }: HomeNewsSectionProps) {
   const locale = useLocale();
   const isEn = locale === "en";
   const [activeTab, setActiveTab] = useState<TabKey>("all");
 
-  const totalCount = news.length + announcements.length + gallery.length;
+  const totalCount = news.length + announcements.length + pressRelease.length + gallery.length;
 
   if (totalCount === 0) return null;
 
   // Filter items based on active tab
   let displayNews: NewsArticle[] = [];
   let displayAnnouncements: NewsArticle[] = [];
+  let displayPressRelease: NewsArticle[] = [];
   let displayGallery: GalleryItem[] = [];
 
   if (activeTab === "all") {
     displayNews = news.slice(0, 3);
     displayAnnouncements = announcements.slice(0, 3);
+    displayPressRelease = pressRelease.slice(0, 3);
     displayGallery = gallery.slice(0, 3);
   } else if (activeTab === "news") {
     displayNews = news.slice(0, 6);
   } else if (activeTab === "announcements") {
     displayAnnouncements = announcements.slice(0, 6);
+  } else if (activeTab === "press_release") {
+    displayPressRelease = pressRelease.slice(0, 6);
   } else if (activeTab === "gallery") {
     displayGallery = gallery.slice(0, 6);
   }
@@ -80,6 +87,10 @@ export default function HomeNewsSection({
     { key: "news", label: isEn ? "News" : "Berita", count: news.length, icon: Newspaper },
     { key: "announcements", label: isEn ? "Announcements" : "Pengumuman", count: announcements.length, icon: Megaphone },
   ];
+
+  if (pressRelease.length > 0) {
+    tabs.push({ key: "press_release", label: isEn ? "Press Release" : "Siaran Pers", count: pressRelease.length, icon: FileText });
+  }
 
   if (gallery.length > 0) {
     tabs.push({ key: "gallery", label: isEn ? "Gallery" : "Galeri", count: gallery.length, icon: Images });
@@ -205,6 +216,41 @@ export default function HomeNewsSection({
                   {displayAnnouncements.map((article) => (
                     <motion.div key={article.id} variants={itemVariants}>
                       <ArticleCard article={article} badge={isEn ? "Announcement" : "Pengumuman"} locale={locale} />
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </div>
+            )}
+
+          {/* TAB ALL or PRESS RELEASE */}
+          {(activeTab === "all" || activeTab === "press_release") &&
+            displayPressRelease.length > 0 && (
+              <div className="mb-12">
+                {activeTab === "all" && (
+                  <div className="flex items-center justify-between mb-6 pb-2 border-b border-gray-100">
+                    <div className="flex items-center gap-2 text-gray-900 font-bold text-xl">
+                      <FileText className="text-primary" size={20} />
+                      <span>{isEn ? "Official Press Releases" : "Siaran Pers Resmi"}</span>
+                    </div>
+                    <Link
+                      href={`/${locale}/news?tab=press_release`}
+                      className="text-xs md:text-sm font-semibold text-primary hover:underline flex items-center gap-1"
+                    >
+                      {isEn ? "View All Press Releases" : "Lihat Semua Siaran Pers"} <ChevronRight size={14} />
+                    </Link>
+                  </div>
+                )}
+                <motion.div
+                  key={`press-release-grid-${activeTab}`}
+                  variants={containerVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                >
+                  {displayPressRelease.map((article) => (
+                    <motion.div key={article.id} variants={itemVariants}>
+                      <ArticleCard article={article} badge={isEn ? "Press Release" : "Siaran Pers"} locale={locale} />
                     </motion.div>
                   ))}
                 </motion.div>

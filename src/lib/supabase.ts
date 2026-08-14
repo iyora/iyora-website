@@ -128,7 +128,7 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
    NEWS / BERITA
    ─────────────────────────────────────────────── */
 
-export type NewsCategory = "news" | "announcement" | "documentation" | "gallery";
+export type NewsCategory = "news" | "announcement" | "press_release" | "documentation" | "gallery";
 
 export interface NewsArticle {
   id: string;
@@ -280,6 +280,7 @@ export async function fetchNewsBySlug(
 export async function fetchAllNews(locale?: string): Promise<{
   news: NewsArticle[];
   announcements: NewsArticle[];
+  pressRelease: NewsArticle[];
   documentation: NewsArticle[];
   gallery: GalleryItem[];
 }> {
@@ -287,7 +288,7 @@ export async function fetchAllNews(locale?: string): Promise<{
   try {
     const supabase = createSupabase();
 
-    const [newsRes, announcementsRes, documentationRes, galleryRes] =
+    const [newsRes, announcementsRes, pressReleaseRes, documentationRes, galleryRes] =
       await Promise.all([
         supabase
           .from("news")
@@ -299,6 +300,12 @@ export async function fetchAllNews(locale?: string): Promise<{
           .from("news")
           .select("id, title, slug, excerpt, content, cover_image, category, published_at, created_at")
           .eq("category", "announcement")
+          .eq("is_published", true)
+          .order("published_at", { ascending: false }),
+        supabase
+          .from("news")
+          .select("id, title, slug, excerpt, content, cover_image, category, published_at, created_at")
+          .eq("category", "press_release")
           .eq("is_published", true)
           .order("published_at", { ascending: false }),
         supabase
@@ -316,6 +323,7 @@ export async function fetchAllNews(locale?: string): Promise<{
 
     const newsData = (newsRes.data as NewsArticle[]) ?? [];
     const announcementsData = (announcementsRes.data as NewsArticle[]) ?? [];
+    const pressReleaseData = (pressReleaseRes.data as NewsArticle[]) ?? [];
     const documentationData = (documentationRes.data as NewsArticle[]) ?? [];
     const galleryData = (galleryRes.data as GalleryItem[]) ?? [];
 
@@ -344,6 +352,22 @@ export async function fetchAllNews(locale?: string): Promise<{
         content: (isEn && item.content_en) ? item.content_en : (item.content ?? null),
         cover_image: item.photo,
         category: "announcement" as const,
+        published_at: item.publishedAt,
+        created_at: item.publishedAt,
+        external_link: item.link,
+        author: item.author ?? null,
+      }))
+      .sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime());
+
+    const defaultPressRelease: NewsArticle[] = DUMMY_NEWS.filter((item) => item.category === "press_release")
+      .map((item) => ({
+        id: item.id,
+        title: (isEn && item.title_en) ? item.title_en : item.title,
+        slug: item.slug,
+        excerpt: (isEn && item.caption_en) ? item.caption_en : item.caption,
+        content: (isEn && item.content_en) ? item.content_en : (item.content ?? null),
+        cover_image: item.photo,
+        category: "press_release" as const,
         published_at: item.publishedAt,
         created_at: item.publishedAt,
         external_link: item.link,
@@ -389,6 +413,7 @@ export async function fetchAllNews(locale?: string): Promise<{
     return {
       news: (newsData.length > 0 ? newsData : defaultNews).sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime()),
       announcements: (announcementsData.length > 0 ? announcementsData : defaultAnnouncements).sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime()),
+      pressRelease: (pressReleaseData.length > 0 ? pressReleaseData : defaultPressRelease).sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime()),
       documentation: documentationData,
       gallery: (formattedGalleryData.length > 0 ? formattedGalleryData : defaultGallery).sort((a, b) => new Date(b.published_at ?? b.created_at ?? 0).getTime() - new Date(a.published_at ?? a.created_at ?? 0).getTime()),
     };
@@ -425,6 +450,22 @@ export async function fetchAllNews(locale?: string): Promise<{
       }))
       .sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime());
 
+    const defaultPressRelease: NewsArticle[] = DUMMY_NEWS.filter((item) => item.category === "press_release")
+      .map((item) => ({
+        id: item.id,
+        title: (isEn && item.title_en) ? item.title_en : item.title,
+        slug: item.slug,
+        excerpt: (isEn && item.caption_en) ? item.caption_en : item.caption,
+        content: (isEn && item.content_en) ? item.content_en : (item.content ?? null),
+        cover_image: item.photo,
+        category: "press_release" as const,
+        published_at: item.publishedAt,
+        created_at: item.publishedAt,
+        external_link: item.link,
+        author: item.author ?? null,
+      }))
+      .sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime());
+
     const defaultGallery: GalleryItem[] = DUMMY_NEWS.filter((item) => item.category === "gallery").map((item) => ({
       id: item.id,
       title: (isEn && item.title_en) ? item.title_en : item.title,
@@ -442,7 +483,7 @@ export async function fetchAllNews(locale?: string): Promise<{
       author: item.author ?? "IyoraOlympiade",
     }));
 
-    return { news: defaultNews, announcements: defaultAnnouncements, documentation: [], gallery: defaultGallery };
+    return { news: defaultNews, announcements: defaultAnnouncements, pressRelease: defaultPressRelease, documentation: [], gallery: defaultGallery };
   }
 }
 
@@ -470,6 +511,7 @@ export interface GalleryPreviewItem {
 export interface NewsPreviewData {
   news: NewsPreviewItem[];
   announcements: NewsPreviewItem[];
+  pressRelease: NewsPreviewItem[];
   gallery: GalleryPreviewItem[];
 }
 
@@ -478,7 +520,7 @@ export async function fetchNewsPreview(locale?: string): Promise<NewsPreviewData
   try {
     const supabase = createSupabase();
 
-    const [newsRes, announcementsRes, galleryRes] = await Promise.all([
+    const [newsRes, announcementsRes, pressReleaseRes, galleryRes] = await Promise.all([
       supabase
         .from("news")
         .select("id, title, slug, cover_image, published_at, created_at")
@@ -494,6 +536,13 @@ export async function fetchNewsPreview(locale?: string): Promise<NewsPreviewData
         .order("published_at", { ascending: false })
         .limit(3),
       supabase
+        .from("news")
+        .select("id, title, slug, cover_image, published_at, created_at")
+        .eq("category", "press_release")
+        .eq("is_published", true)
+        .order("published_at", { ascending: false })
+        .limit(3),
+      supabase
         .from("gallery")
         .select("id, title, image_url, created_at")
         .eq("is_published", true)
@@ -503,6 +552,7 @@ export async function fetchNewsPreview(locale?: string): Promise<NewsPreviewData
 
     const newsData = (newsRes.data as NewsPreviewItem[]) ?? [];
     const announcementsData = (announcementsRes.data as NewsPreviewItem[]) ?? [];
+    const pressReleaseData = (pressReleaseRes.data as NewsPreviewItem[]) ?? [];
     const galleryData = (galleryRes.data as GalleryPreviewItem[]) ?? [];
 
     const defaultNews: NewsPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "news").slice(0, 3).map((item) => ({
@@ -515,6 +565,15 @@ export async function fetchNewsPreview(locale?: string): Promise<NewsPreviewData
     }));
 
     const defaultAnnouncements: NewsPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "announcement").slice(0, 3).map((item) => ({
+      id: item.id,
+      title: (isEn && item.title_en) ? item.title_en : item.title,
+      slug: item.slug,
+      cover_image: item.photo,
+      published_at: item.publishedAt,
+      created_at: item.publishedAt,
+    }));
+
+    const defaultPressRelease: NewsPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "press_release").slice(0, 3).map((item) => ({
       id: item.id,
       title: (isEn && item.title_en) ? item.title_en : item.title,
       slug: item.slug,
@@ -545,6 +604,7 @@ export async function fetchNewsPreview(locale?: string): Promise<NewsPreviewData
     return {
       news: newsData.length > 0 ? newsData : defaultNews,
       announcements: announcementsData.length > 0 ? announcementsData : defaultAnnouncements,
+      pressRelease: pressReleaseData.length > 0 ? pressReleaseData : defaultPressRelease,
       gallery: formattedGalleryData.length > 0 ? formattedGalleryData : defaultGallery,
     };
   } catch {
@@ -566,6 +626,15 @@ export async function fetchNewsPreview(locale?: string): Promise<NewsPreviewData
       created_at: item.publishedAt,
     }));
 
+    const defaultPressRelease: NewsPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "press_release").slice(0, 3).map((item) => ({
+      id: item.id,
+      title: (isEn && item.title_en) ? item.title_en : item.title,
+      slug: item.slug,
+      cover_image: item.photo,
+      published_at: item.publishedAt,
+      created_at: item.publishedAt,
+    }));
+
     const defaultGallery: GalleryPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "gallery").slice(0, 3).map((item) => ({
       id: item.id,
       title: (isEn && item.title_en) ? item.title_en : item.title,
@@ -574,6 +643,6 @@ export async function fetchNewsPreview(locale?: string): Promise<NewsPreviewData
       created_at: item.publishedAt,
     }));
 
-    return { news: defaultNews, announcements: defaultAnnouncements, gallery: defaultGallery };
+    return { news: defaultNews, announcements: defaultAnnouncements, pressRelease: defaultPressRelease, gallery: defaultGallery };
   }
 }

@@ -3,7 +3,7 @@ export interface DummyNewsItem {
   slug: string;
   title: string;
   title_en?: string;
-  category: "news" | "announcement" | "gallery";
+  category: "news" | "announcement" | "press_release" | "gallery";
   photo: string;
   caption: string;
   caption_en?: string;
@@ -29,6 +29,24 @@ export interface DummyNewsItem {
 }
 
 export const DUMMY_NEWS: DummyNewsItem[] = [
+  // ── PRESS RELEASE ──
+  /*{
+    id: "press-release-1",
+    slug: "siaran-pers-rekapitulasi-sukses-os2mn-dan-ekspansi-kemitraan",
+    title: "Siaran Pers: Rekapitulasi Sukses OS2MN dan Ekspansi Kemitraan Media Nasional",
+    title_en: "Press Release: OS2MN Success Recap and National Media Partnership Expansion",
+    category: "press_release",
+    photo: "https://jabaran.id/wp-content/uploads/2025/04/IYSA-gelar-OS2MN-2025-696x381.jpg",
+    caption: "Siaran Pers Resmi Hasil OS2MN dan Program Pengembangan Olimpiade 2026",
+    caption_en: "Official Press Release on OS2MN Results and 2026 Olympiad Development Program",
+    content: "DEPOK — Dalam upaya memperluas jangkauan apresiasi talenta sains muda di seluruh Indonesia, IYORA menyampaikan laporan siaran pers terkait keberhasilan penyelenggaraan OS2MN serta penguatan jejaring kemitraan dengan berbagai institusi dan media nasional.",
+    content_en: "DEPOK — In an effort to expand the reach of young science talent appreciation across Indonesia, IYORA released an official press report on the success of OS2MN and media partnerships.",
+    link: "https://jabaran.id/os2mn-2025-sukses-digelar-tampilkan-semangat-kompetisi-ilmiah-pelajar-madrasah-se-indonesia/",
+    linkLabel: "Baca Berita Media Jabaran.id",
+    linkLabel_en: "Read News Article on Jabaran.id",
+    publishedAt: "2026-08-13",
+    author: "Humas IYORA",
+  },*/
   // ── NEWS / ANNOUNCEMENT ──
   {
     id: "announcement-1",
@@ -57,6 +75,35 @@ export const DUMMY_NEWS: DummyNewsItem[] = [
     link5Label: "Website Pendaftaran IYEO",
     link5Label_en: "IYEO Registration Website",
     publishedAt: "2026-08-13",
+    author: "IyoraOlympiade",
+  },
+  {
+    id: "announcement-2",
+    slug: "penutupan-registrasi-nygo-iygo-nyeo-iyeo",
+    title: "Penutupan Registrasi NYGO, IYGO, NYEO, IYEO tinggal 2 hari lagi",
+    title_en: "NYGO, IYGO, NYEO & IYEO 2026 Registration Closing in 3 Days",
+    category: "announcement",
+    photo: "/images/pengumuman/h-2.PNG",
+    caption: "H-2 PENDAFTARAN DITUTUP, YUK BURUAN DAFTAR!",
+    caption_en: "2 DAYS LEFT BEFORE REGISTRATION CLOSES, REGISTER NOW!",
+    content: "Jangan tunggu hingga menit terakhir! Tantang diri sendiri, tunjukkan pengetahuan Anda, dan jadilah bagian dari IYORA Olympiad 2026.",
+    content_en: "Don't wait until the last minute! Challenge yourself, showcase your knowledge, and be part of IYORA Olympiad 2026.",
+    link: "https://www.instagram.com/reel/Db92P8dJVmA/?igsh=aXExdW1nNjUzenNv&igsi=aXExdW1nNjUzenNv",
+    linkLabel: "Kunjungi Instagram IyoraOfficial",
+    linkLabel_en: "Visit Instagram IyoraOfficial",
+    link2: "https://nygo.iyora.or.id",
+    link2Label: "Website Pendaftaran NYGO",
+    link2Label_en: "NYGO Registration Website",
+    link3: "https://iygo.iyora.or.id",
+    link3Label: "Website Pendaftaran IYGO",
+    link3Label_en: "IYGO Registration Website",
+    link4: "https://nyeo.iyora.or.id",
+    link4Label: "Website Pendaftaran NYEO",
+    link4Label_en: "NYEO Registration Website",
+    link5: "https://iyeo.iyora.or.id",
+    link5Label: "Website Pendaftaran IYEO",
+    link5Label_en: "IYEO Registration Website",
+    publishedAt: "2026-08-14",
     author: "IyoraOlympiade",
   },
   {
@@ -99,7 +146,6 @@ export const DUMMY_NEWS: DummyNewsItem[] = [
     publishedAt: "2026-08-13",
     author: "IyoraOlympiade",
   },
-
   // ── GALLERY (Galeri) ──
   {
     id: "gallery-1",
@@ -120,7 +166,7 @@ export const DUMMY_NEWS: DummyNewsItem[] = [
   },
 ];
 
-export function getDummyNewsByCategory(category: "news" | "announcement" | "gallery") {
+export function getDummyNewsByCategory(category: "news" | "announcement" | "press_release" | "gallery") {
   return DUMMY_NEWS.filter((item) => item.category === category).sort((a, b) => {
     return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
   });

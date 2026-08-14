@@ -55,6 +55,20 @@ export default function EventPopup() {
     return () => clearTimeout(timer);
   }, [pathname, isHomepage, event.isActive]);
 
+  // Listen for Escape key to close popup modal
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
+
   const handleClose = () => {
     setIsOpen(false);
   };

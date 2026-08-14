@@ -7,6 +7,7 @@ import HomeNewsSection from "@/components/home/HomeNewsSection";
 import WhyIYORA from "@/components/home/WhyIYORA";
 import KurasiSection from "@/components/home/KurasiSection";
 import CTASection from "@/components/home/CTASection";
+import HomePreloader from "@/components/home/HomePreloader";
 import { fetchCompetitionsData, fetchAllNews } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
@@ -24,15 +25,16 @@ export default async function HomePage({
 }) {
   const { locale } = await params;
   const competitions = await fetchCompetitionsData();
-  const { news, announcements, gallery } = await fetchAllNews(locale);
+  const { news, announcements, pressRelease, gallery } = await fetchAllNews(locale);
 
   return (
     <>
+      <HomePreloader />
       <HeroSection />
       <OriginStory />
       <StatsSection />
       <CompetitionsSection competitions={competitions} />
-      <HomeNewsSection news={news} announcements={announcements} gallery={gallery} />
+      <HomeNewsSection news={news} announcements={announcements} pressRelease={pressRelease} gallery={gallery} />
       <WhyIYORA />
       <KurasiSection />
       <CTASection />

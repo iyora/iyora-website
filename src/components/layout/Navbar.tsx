@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
-import { Menu, X, ChevronDown, Newspaper, Megaphone, Images, Calendar, ArrowRight } from "lucide-react";
+import { Menu, X, ChevronDown, Newspaper, Megaphone, FileText, Images, Calendar, ArrowRight } from "lucide-react";
 import clsx from "clsx";
 import type { NewsPreviewData } from "@/lib/supabase";
 
@@ -177,6 +177,7 @@ const OLYMPIADS = [
 const NEWS_MENU = [
   { key: "news", icon: Newspaper, labelId: "tab_news", hash: "news", descId: "preview_news" },
   { key: "announcements", icon: Megaphone, labelId: "tab_announcements", hash: "announcements", descId: "preview_announcements" },
+  { key: "press_release", icon: FileText, labelId: "tab_press_release", hash: "press_release", descId: "preview_press_release" },
   { key: "gallery Pemenang", icon: Images, labelId: "tab_gallery", hash: "gallery", descId: "preview_gallery" },
 ] as const;
 
@@ -552,6 +553,48 @@ export default function Navbar({ newsPreview }: NavbarProps) {
                         <div className="flex flex-col items-center justify-center py-6 text-center">
                           <Megaphone size={28} className="text-gray-200 mb-2" />
                           <p className="text-xs text-gray-400">{locale === "id" ? "Belum ada pengumuman" : "No announcements yet"}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Press Release preview */}
+                  {hoveredNewsKey === "press_release" && (
+                    <div className="space-y-3">
+                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+                        {locale === "id" ? "Siaran Pers Terbaru" : "Recent Press Releases"}
+                      </p>
+                      {newsPreview && newsPreview.pressRelease && newsPreview.pressRelease.length > 0 ? (
+                        newsPreview.pressRelease.map((item) => (
+                          <Link
+                            key={item.id}
+                            href={href(`/news/${item.slug}`)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex gap-3 p-2 rounded-xl hover:bg-white transition-colors group"
+                          >
+                            {item.cover_image ? (
+                              <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0">
+                                <Image src={item.cover_image} alt={item.title} width={56} height={56} className="w-full h-full object-cover" />
+                              </div>
+                            ) : (
+                              <div className="w-14 h-14 rounded-lg bg-primary/5 flex items-center justify-center flex-shrink-0">
+                                <FileText size={20} className="text-primary/40" />
+                              </div>
+                            )}
+                            <div className="min-w-0">
+                              <p className="text-sm font-semibold text-gray-800 line-clamp-2 group-hover:text-primary transition-colors">{item.title}</p>
+                              <div className="flex items-center gap-1 mt-1">
+                                <Calendar size={10} className="text-gray-300" />
+                                <span className="text-xs text-gray-400">{formatPreviewDate(item.published_at ?? item.created_at, locale)}</span>
+                              </div>
+                            </div>
+                          </Link>
+                        ))
+                      ) : (
+                        <div className="flex flex-col items-center justify-center py-6 text-center">
+                          <FileText size={28} className="text-gray-200 mb-2" />
+                          <p className="text-xs text-gray-400">{locale === "id" ? "Belum ada siaran pers" : "No press releases yet"}</p>
                         </div>
                       )}
                     </div>

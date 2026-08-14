@@ -162,12 +162,14 @@
     "tab_all": "View All",
     "tab_news": "Latest News",
     "tab_announcements": "Announcements",
+    "tab_press_release": "Press Release",
     "tab_documentation": "Documentation",
     "tab_gallery": "Gallery",
     "empty_title": "No Content Yet",
-    "empty_all": "No news, announcements, or gallery items available yet.",
+    "empty_all": "No news, announcements, press releases, or gallery items available yet.",
     "empty_news": "Latest news will be displayed here soon. Stay tuned for exciting updates about IYORA science olympiads.",
     "empty_announcements": "No recent announcements. Official announcements from IYORA will appear here.",
+    "empty_press_release": "No press releases available yet. Official information for media and public will appear here.",
     "empty_documentation": "Activity documentation will be available soon. Keep checking this page for complete reports and documentation.",
     "empty_gallery": "IYORA event photos and videos will be featured here soon."
   }
