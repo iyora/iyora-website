@@ -31,7 +31,7 @@ export const DUMMY_EVENT_POPUP: EventPopupData = {
   title_en: "REGISTRATION CLOSING FOR : NYGO, IYGO, NYEO & IYEO 2026",
   subtitle: "Jangan tunggu hingga menit terakhir! Tantang diri Anda dan jadilah bagian dari IYORA Olympiad 2026.",
   subtitle_en: "Don't wait until the last minute! Challenge yourself and be part of IYORA Olympiad 2026.",
-  image: "/images/pengumuman/h-2.PNG",
+  image: "/images/pengumuman/2.PNG",
   content:
     "Indonesian Youth Outstanding Recognition Association (IYORA) mengingatkan seluruh calon peserta bahwa pendaftaran National & International Youth Olympiad (NYGO, IYGO, NYEO, IYEO 2026) akan resmi ditutup dalam 3 hari lagi. Seluruh sertifikat kejuaraan terintegrasi resmi dengan SIMT Puspresnas.",
   content_en:
@@ -66,7 +66,7 @@ export const DUMMY_EVENT_POPUP: EventPopupData = {
     {
       label: "Kunjungi Instagram",
       label_en: "Visit Instagram",
-      url: "https://www.instagram.com/reel/Db92P8dJVmA/?igsh=aXExdW1nNjUzenNv&igsi=aXExdW1nNjUzenNv",
+      url: "https://www.instagram.com/p/DcALqc9prQD/?igsh=ejd2YXU4NW9qcDd4&igsi=ejd2YXU4NW9qcDd4",
       variant: "instagram",
     },
   ],
