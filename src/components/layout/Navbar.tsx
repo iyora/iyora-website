@@ -9,170 +9,56 @@ import { Menu, X, ChevronDown, Newspaper, Megaphone, FileText, Images, Calendar,
 import clsx from "clsx";
 import type { NewsPreviewData } from "@/lib/supabase";
 
-const OLYMPIADS = [
-  {
-    name: "NYBO",
-    emoji: "🧬",
-    side: "left" as const,
-    full: "National Youth Biology Olympiad",
-    level: "Nasional",
-    badgeStyle: "bg-blue-50 text-blue-700 border-blue-200",
-    url: "https://nybo.iyora.or.id",
-  },
-  {
-    name: "IYBO",
-    emoji: "🧬",
-    side: "right" as const,
-    full: "International Youth Biology Olympiad",
-    level: "Internasional",
-    badgeStyle: "bg-purple-50 text-purple-700 border-purple-200",
-    url: "https://iybo.iyora.or.id",
-  },
-  {
-    name: "NYPO",
-    emoji: "⚛️",
-    side: "left" as const,
-    full: "National Youth Physics Olympiad",
-    level: "Nasional",
-    badgeStyle: "bg-blue-50 text-blue-700 border-blue-200",
-    url: "https://nypo.iyora.or.id",
-  },
-  {
-    name: "IYPO",
-    emoji: "⚛️",
-    side: "right" as const,
-    full: "International Youth Physics Olympiad",
-    level: "Internasional",
-    badgeStyle: "bg-purple-50 text-purple-700 border-purple-200",
-    url: "https://iypo.iyora.or.id",
-  },
-  {
-    name: "NYCO",
-    emoji: "🧪",
-    side: "left" as const,
-    full: "National Youth Chemistry Olympiad",
-    level: "Nasional",
-    badgeStyle: "bg-blue-50 text-blue-700 border-blue-200",
-    url: "https://nyco.iyora.or.id",
-  },
-  {
-    name: "IYCO",
-    emoji: "🧪",
-    side: "right" as const,
-    full: "International Youth Chemistry Olympiad",
-    level: "Internasional",
-    badgeStyle: "bg-purple-50 text-purple-700 border-purple-200",
-    url: "https://iyco.iyora.or.id",
-  },
-  {
-    name: "NYMO",
-    emoji: "➗",
-    side: "left" as const,
-    full: "National Youth Mathematics Olympiad",
-    level: "Nasional",
-    badgeStyle: "bg-blue-50 text-blue-700 border-blue-200",
-    url: "https://nymo.iyora.or.id",
-  },
-  {
-    name: "IYMO",
-    emoji: "➗",
-    side: "right" as const,
-    full: "International Youth Mathematics Olympiad",
-    level: "Internasional",
-    badgeStyle: "bg-purple-50 text-purple-700 border-purple-200",
-    url: "https://iymo.iyora.or.id",
-  },
-  {
-    name: "NYGO",
-    emoji: "🌍",
-    side: "left" as const,
-    full: "National Youth Geography Olympiad",
-    level: "Nasional",
-    badgeStyle: "bg-teal-50 text-teal-700 border-teal-200",
-    url: "https://nygo.iyora.or.id",
-  },
-  {
-    name: "IYGO",
-    emoji: "🌍",
-    side: "right" as const,
-    full: "International Youth Geography Olympiad",
-    level: "Internasional",
-    badgeStyle: "bg-teal-50 text-teal-700 border-teal-200",
-    url: "https://iygo.iyora.or.id",
-  },
-  {
-    name: "NYEO",
-    emoji: "📊",
-    side: "left" as const,
-    full: "National Youth Economics Olympiad",
-    level: "Nasional",
-    badgeStyle: "bg-indigo-50 text-indigo-700 border-indigo-200",
-    url: "https://nyeo.iyora.or.id",
-  },
-  {
-    name: "IYEO",
-    emoji: "📊",
-    side: "right" as const,
-    full: "International Youth Economics Olympiad",
-    level: "Internasional",
-    badgeStyle: "bg-indigo-50 text-indigo-700 border-indigo-200",
-    url: "https://iyeo.iyora.or.id",
-  },
-  {
-    name: "NYEnO",
-    emoji: "🌱",
-    side: "left" as const,
-    full: "National Youth Environment Olympiad",
-    level: "Nasional",
-    badgeStyle: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    url: "https://nyeo.iyora.or.id",
-  },
-  {
-    name: "IYEnO",
-    emoji: "🌱",
-    side: "right" as const,
-    full: "International Youth Environment Olympiad",
-    level: "Internasional",
-    badgeStyle: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    url: "https://iyeo.iyora.or.id",
-  },
-  {
-    name: "NYAO",
-    emoji: "🔭",
-    side: "left" as const,
-    full: "National Youth Astronomy Olympiad",
-    level: "Nasional",
-    badgeStyle: "bg-sky-50 text-sky-700 border-sky-200",
-    url: "https://nyao.iyora.or.id",
-  },
-  {
-    name: "IYAO",
-    emoji: "🔭",
-    side: "right" as const,
-    full: "International Youth Astronomy Olympiad",
-    level: "Internasional",
-    badgeStyle: "bg-sky-50 text-sky-700 border-sky-200",
-    url: "https://iyao.iyora.or.id",
-  },
-  {
-    name: "OS2MN",
-    emoji: "🕌",
-    side: "left" as const,
-    full: "Olimpiade Sains Madrasah Nasional",
-    level: "Nasional",
-    badgeStyle: "bg-teal-50 text-teal-700 border-teal-200",
-    url: "https://os2mn.iyora.or.id",
-  },
-  {
-    name: "WSO",
-    emoji: "🏆",
-    side: "right" as const,
-    full: "World Science Olympiad",
-    level: "Internasional",
-    badgeStyle: "bg-indigo-50 text-indigo-700 border-indigo-200",
-    url: "https://wso.iyora.or.id",
-  },
+interface OlympiadItem {
+  name: string;
+  emoji: string;
+  side: "left" | "right";
+  full: string;
+  level: string;
+  badgeStyle: string;
+  url: string;
+  openAt: string;
+  closeAt: string;
+}
+
+function computeOlympiadStatus(openAt: string, closeAt: string): "open" | "coming_soon" | "closed" {
+  const now = new Date();
+  if (now < new Date(openAt)) return "coming_soon";
+  const closeDate = new Date(closeAt);
+  if (closeAt.length <= 10) closeDate.setHours(23, 59, 59, 999);
+  if (now > closeDate) return "closed";
+  return "open";
+}
+
+const RAW_OLYMPIADS: OlympiadItem[] = [
+  { name: "NYBO", emoji: "🧬", side: "left", full: "National Youth Biology Olympiad", level: "Nasional", badgeStyle: "bg-blue-50 text-blue-700 border-blue-200", url: "https://nybo.iyora.or.id", openAt: "2026-07-01", closeAt: "2026-07-31" },
+  { name: "IYBO", emoji: "🧬", side: "right", full: "International Youth Biology Olympiad", level: "Internasional", badgeStyle: "bg-purple-50 text-purple-700 border-purple-200", url: "https://iybo.iyora.or.id", openAt: "2026-07-01", closeAt: "2026-07-31" },
+  { name: "NYPO", emoji: "⚛️", side: "left", full: "National Youth Physics Olympiad", level: "Nasional", badgeStyle: "bg-blue-50 text-blue-700 border-blue-200", url: "https://nypo.iyora.or.id", openAt: "2026-06-01", closeAt: "2026-06-30" },
+  { name: "IYPO", emoji: "⚛️", side: "right", full: "International Youth Physics Olympiad", level: "Internasional", badgeStyle: "bg-purple-50 text-purple-700 border-purple-200", url: "https://iypo.iyora.or.id", openAt: "2026-06-01", closeAt: "2026-06-30" },
+  { name: "NYCO", emoji: "🧪", side: "left", full: "National Youth Chemistry Olympiad", level: "Nasional", badgeStyle: "bg-blue-50 text-blue-700 border-blue-200", url: "https://nyco.iyora.or.id", openAt: "2026-05-01", closeAt: "2026-05-31" },
+  { name: "IYCO", emoji: "🧪", side: "right", full: "International Youth Chemistry Olympiad", level: "Internasional", badgeStyle: "bg-purple-50 text-purple-700 border-purple-200", url: "https://iyco.iyora.or.id", openAt: "2026-05-01", closeAt: "2026-05-31" },
+  { name: "NYMO", emoji: "➗", side: "left", full: "National Youth Mathematics Olympiad", level: "Nasional", badgeStyle: "bg-blue-50 text-blue-700 border-blue-200", url: "https://nymo.iyora.or.id", openAt: "2026-04-01", closeAt: "2026-05-02" },
+  { name: "IYMO", emoji: "➗", side: "right", full: "International Youth Mathematics Olympiad", level: "Internasional", badgeStyle: "bg-purple-50 text-purple-700 border-purple-200", url: "https://iymo.iyora.or.id", openAt: "2026-06-01", closeAt: "2026-07-30" },
+  { name: "NYGO", emoji: "🌍", side: "left", full: "National Youth Geography Olympiad", level: "Nasional", badgeStyle: "bg-teal-50 text-teal-700 border-teal-200", url: "https://nygo.iyora.or.id", openAt: "2026-08-01", closeAt: "2026-08-16" },
+  { name: "IYGO", emoji: "🌍", side: "right", full: "International Youth Geography Olympiad", level: "Internasional", badgeStyle: "bg-teal-50 text-teal-700 border-teal-200", url: "https://iygo.iyora.or.id", openAt: "2026-08-01", closeAt: "2026-08-16" },
+  { name: "NYEO", emoji: "📊", side: "left", full: "National Youth Economics Olympiad", level: "Nasional", badgeStyle: "bg-indigo-50 text-indigo-700 border-indigo-200", url: "https://nyeo.iyora.or.id", openAt: "2026-08-01", closeAt: "2026-08-16" },
+  { name: "IYEO", emoji: "📊", side: "right", full: "International Youth Economics Olympiad", level: "Internasional", badgeStyle: "bg-indigo-50 text-indigo-700 border-indigo-200", url: "https://iyeo.iyora.or.id", openAt: "2026-08-01", closeAt: "2026-08-16" },
+  { name: "NYEnO", emoji: "🌱", side: "left", full: "National Youth Environment Olympiad", level: "Nasional", badgeStyle: "bg-emerald-50 text-emerald-700 border-emerald-200", url: "https://nyeo.iyora.or.id", openAt: "2026-04-01", closeAt: "2026-04-30" },
+  { name: "IYEnO", emoji: "🌱", side: "right", full: "International Youth Environment Olympiad", level: "Internasional", badgeStyle: "bg-emerald-50 text-emerald-700 border-emerald-200", url: "https://iyeo.iyora.or.id", openAt: "2026-04-01", closeAt: "2026-04-30" },
+  { name: "NYAO", emoji: "🔭", side: "left", full: "National Youth Astronomy Olympiad", level: "Nasional", badgeStyle: "bg-sky-50 text-sky-700 border-sky-200", url: "https://nyao.iyora.or.id", openAt: "2026-03-01", closeAt: "2026-03-31" },
+  { name: "IYAO", emoji: "🔭", side: "right", full: "International Youth Astronomy Olympiad", level: "Internasional", badgeStyle: "bg-sky-50 text-sky-700 border-sky-200", url: "https://iyao.iyora.or.id", openAt: "2026-03-01", closeAt: "2026-03-31" },
+  { name: "OS2MN", emoji: "🕌", side: "left", full: "Olimpiade Sains Madrasah Nasional", level: "Nasional", badgeStyle: "bg-teal-50 text-teal-700 border-teal-200", url: "https://os2mn.iyora.or.id", openAt: "2026-02-01", closeAt: "2026-02-28" },
+  { name: "WSO", emoji: "🏆", side: "right", full: "World Science Olympiad", level: "Internasional", badgeStyle: "bg-indigo-50 text-indigo-700 border-indigo-200", url: "https://wso.iyora.or.id", openAt: "2026-01-01", closeAt: "2026-01-31" },
 ];
+
+const STATUS_PRIORITY = { open: 0, coming_soon: 1, closed: 2 };
+
+export const OLYMPIADS = [...RAW_OLYMPIADS]
+  .map((o) => ({
+    ...o,
+    status: computeOlympiadStatus(o.openAt, o.closeAt),
+  }))
+  .sort((a, b) => STATUS_PRIORITY[a.status] - STATUS_PRIORITY[b.status]);
 
 const NEWS_MENU = [
   { key: "news", icon: Newspaper, labelId: "tab_news", hash: "news", descId: "preview_news" },
@@ -203,14 +89,12 @@ export default function Navbar({ newsPreview }: NavbarProps) {
   const [newsDropdownOpen, setNewsDropdownOpen] = useState(false);
   const [mobileNewsOpen, setMobileNewsOpen] = useState(false);
   const [hoveredNewsKey, setHoveredNewsKey] = useState<NewsMenuKey>("news");
-  const [hoveredOlympiadName, setHoveredOlympiadName] = useState<string>("NYBO");
+  const [hoveredOlympiadName, setHoveredOlympiadName] = useState<string>(OLYMPIADS[0]?.name || "NYGO");
   const [hoveredSide, setHoveredSide] = useState<"left" | "right">("left");
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const newsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const activeOlympiad = OLYMPIADS.find((o) => o.name === hoveredOlympiadName) || OLYMPIADS[0];
-
-
 
   function openDropdown() {
     if (closeTimer.current) clearTimeout(closeTimer.current);
@@ -255,7 +139,6 @@ export default function Navbar({ newsPreview }: NavbarProps) {
       )}
     >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Logo */}
         <Link href={href("/")} className="flex-shrink-0">
           <Image
             src="https://res.cloudinary.com/dvcufsiy1/image/upload/v1782429397/IYORA_BRAND_GUIDELINE_a6kwif.png"
@@ -270,13 +153,11 @@ export default function Navbar({ newsPreview }: NavbarProps) {
           />
         </Link>
 
-        {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-8">
           <Link href={href("/about")} className={navLinkClass}>
             {t("about")}
           </Link>
 
-          {/* Competitions dropdown */}
           <div
             className="relative"
             onMouseEnter={openDropdown}
@@ -300,18 +181,17 @@ export default function Navbar({ newsPreview }: NavbarProps) {
               />
             </Link>
 
-            {/* Competitions mega-menu dropdown */}
             <div
               className={clsx(
                 "absolute top-full left-1/2 -translate-x-1/2 pt-2 transition-all duration-200",
                 dropdownOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-1 pointer-events-none"
               )}
             >
-              {/* Main Center Menu Box (Locked in Center) */}
               <div className="relative bg-white rounded-2xl shadow-xl shadow-black/10 border border-gray-100 p-3 w-[350px]">
                 <div className="grid grid-cols-2 gap-1 max-h-[340px] overflow-y-auto pr-0.5">
                   {OLYMPIADS.map((o) => {
                     const isHovered = hoveredOlympiadName === o.name;
+                    const isOpen = o.status === "open";
                     return (
                       <Link
                         key={`${o.name}-${o.full}`}
@@ -322,20 +202,36 @@ export default function Navbar({ newsPreview }: NavbarProps) {
                           setHoveredSide(o.side);
                         }}
                         className={clsx(
-                          "flex items-center gap-2 px-2.5 py-2 rounded-xl transition-all duration-150 group",
-                          isHovered ? "bg-primary/10" : "hover:bg-gray-50"
+                          "flex items-center justify-between px-2.5 py-2 rounded-xl transition-all duration-150 group relative overflow-hidden",
+                          isHovered
+                            ? isOpen
+                              ? "bg-teal-500/10 text-teal-900 font-bold"
+                              : "bg-primary/10"
+                            : "hover:bg-gray-50"
                         )}
                       >
-                        <span className="text-base leading-none">{o.emoji}</span>
-                        <div className="min-w-0">
-                          <p className={clsx(
-                            "text-xs font-bold transition-colors",
-                            isHovered ? "text-primary" : "text-gray-800 group-hover:text-primary"
-                          )}>
-                            {o.name}
-                          </p>
-                          <p className="text-[10px] text-gray-400 truncate leading-tight">{o.level}</p>
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="text-base leading-none flex-shrink-0">{o.emoji}</span>
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-1">
+                              <p className={clsx(
+                                "text-xs font-bold transition-colors",
+                                isHovered ? "text-primary" : "text-gray-800 group-hover:text-primary"
+                              )}>
+                                {o.name}
+                              </p>
+                              {isOpen && (
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
+                              )}
+                            </div>
+                            <p className="text-[10px] text-gray-400 truncate leading-tight">{o.level}</p>
+                          </div>
                         </div>
+                        {isOpen && (
+                          <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200 flex-shrink-0 ml-1">
+                            Open
+                          </span>
+                        )}
                       </Link>
                     );
                   })}
@@ -350,37 +246,98 @@ export default function Navbar({ newsPreview }: NavbarProps) {
                   </Link>
                 </div>
 
-                {/* Floating Dynamic Preview Panel (Pops out to LEFT or RIGHT depending on hovered column) */}
                 {activeOlympiad && (
                   <div
                     className={clsx(
-                      "absolute top-0 w-[270px] min-h-full p-4 bg-white rounded-2xl shadow-xl shadow-black/10 border border-gray-100 flex flex-col justify-between transition-all duration-200 animate-fadeIn",
-                      hoveredSide === "left" ? "right-full mr-3" : "left-full ml-3"
+                      "absolute top-0 w-[270px] min-h-full p-4 rounded-2xl shadow-xl transition-all duration-200 animate-fadeIn overflow-hidden flex flex-col justify-between",
+                      hoveredSide === "left" ? "right-full mr-3" : "left-full ml-3",
+                      activeOlympiad.status === "open"
+                        ? "bg-gradient-to-br from-[#3B79A7] via-[#358EAA] to-[#2EA3AD] text-white border border-teal-300/30 shadow-teal-900/20"
+                        : activeOlympiad.status === "coming_soon"
+                          ? "bg-gradient-to-br from-[#66449b] via-[#523380] to-[#3f2366] text-white border border-purple-300/30 shadow-purple-950/20"
+                          : "bg-white text-gray-900 border border-gray-100 shadow-black/10"
                     )}
                   >
-                    <div className="flex flex-col h-full justify-between">
+                    {/* Decorative watermark circles */}
+                    <div className={clsx(
+                      "absolute -top-10 -right-10 w-36 h-36 rounded-full pointer-events-none",
+                      (activeOlympiad.status === "open" || activeOlympiad.status === "coming_soon") ? "bg-white/10" : "bg-gray-200/50"
+                    )} />
+                    <div className={clsx(
+                      "absolute -bottom-10 -right-4 w-28 h-28 rounded-full pointer-events-none",
+                      (activeOlympiad.status === "open" || activeOlympiad.status === "coming_soon") ? "bg-white/10" : "bg-gray-200/50"
+                    )} />
+
+                    <div className="flex flex-col h-full justify-between relative z-10">
                       <div>
                         <div className="flex items-center justify-between gap-2 mb-2">
                           <span className="text-3xl">{activeOlympiad.emoji}</span>
-                          <span className={clsx("text-[10px] font-bold px-2.5 py-0.5 rounded-full border", activeOlympiad.badgeStyle)}>
+                          <span className={clsx(
+                            "text-[10px] font-bold px-2.5 py-0.5 rounded-full border",
+                            (activeOlympiad.status === "open" || activeOlympiad.status === "coming_soon")
+                              ? "bg-white/20 text-white border-white/30 backdrop-blur-xs"
+                              : activeOlympiad.badgeStyle
+                          )}>
                             {activeOlympiad.level}
                           </span>
                         </div>
-                        <h4 className="text-sm font-bold text-gray-900 mb-1 leading-snug">
+                        <h4 className={clsx(
+                          "text-sm font-extrabold mb-1 leading-snug",
+                          (activeOlympiad.status === "open" || activeOlympiad.status === "coming_soon") ? "text-white" : "text-gray-900"
+                        )}>
                           {activeOlympiad.name}
                         </h4>
-                        <p className="text-xs font-semibold text-primary mb-4">
+                        <p className={clsx(
+                          "text-xs font-semibold mb-3 leading-snug",
+                          (activeOlympiad.status === "open" || activeOlympiad.status === "coming_soon") ? "text-white/90" : "text-primary"
+                        )}>
                           {activeOlympiad.full}
                         </p>
+
+                        <div className="mb-2">
+                          <span className={clsx(
+                            "inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-0.5 rounded-full",
+                            activeOlympiad.status === "open"
+                              ? "bg-emerald-400/20 text-emerald-200 border border-emerald-300/40 backdrop-blur-xs"
+                              : activeOlympiad.status === "coming_soon"
+                                ? "bg-amber-400/20 text-amber-200 border border-amber-300/40 backdrop-blur-xs"
+                                : "bg-gray-100 text-gray-500 border border-gray-200"
+                          )}>
+                            <span className={clsx(
+                              "w-1.5 h-1.5 rounded-full flex-shrink-0",
+                              activeOlympiad.status === "open"
+                                ? "bg-emerald-300 animate-pulse"
+                                : activeOlympiad.status === "coming_soon"
+                                  ? "bg-amber-300"
+                                  : "bg-gray-400"
+                            )} />
+                            {activeOlympiad.status === "open"
+                              ? (locale === "id" ? "Pendaftaran Dibuka" : "Registration Open")
+                              : activeOlympiad.status === "coming_soon"
+                                ? (locale === "id" ? "Segera Dibuka" : "Coming Soon")
+                                : (locale === "id" ? "Ditutup" : "Closed")}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex flex-col gap-1.5 pt-3 border-t border-gray-100">
+
+                      <div className={clsx(
+                        "flex flex-col gap-1.5 pt-3 border-t",
+                        (activeOlympiad.status === "open" || activeOlympiad.status === "coming_soon") ? "border-white/20" : "border-gray-100"
+                      )}>
                         {activeOlympiad.url && (
                           <a
                             href={activeOlympiad.url}
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={() => setDropdownOpen(false)}
-                            className="flex items-center justify-center gap-1.5 w-full py-2 bg-primary text-white rounded-xl text-xs font-bold hover:bg-primary-dark transition-all shadow-sm group"
+                            className={clsx(
+                              "flex items-center justify-center gap-1.5 w-full py-2 rounded-xl text-xs font-bold transition-all shadow-sm group",
+                              activeOlympiad.status === "open"
+                                ? "bg-white text-[#2b608a] hover:bg-white/95 hover:text-[#1d4669]"
+                                : activeOlympiad.status === "coming_soon"
+                                  ? "bg-white text-[#66449b] hover:bg-white/95 hover:text-[#4d2d7a]"
+                                  : "bg-primary text-white hover:bg-primary-dark"
+                            )}
                           >
                             <span>{locale === "id" ? "Kunjungi Website" : "Visit Website"}</span>
                             <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
@@ -390,7 +347,12 @@ export default function Navbar({ newsPreview }: NavbarProps) {
                         <Link
                           href={href("/competitions")}
                           onClick={() => setDropdownOpen(false)}
-                          className="flex items-center justify-center gap-1 w-full py-1 text-xs font-semibold text-gray-500 hover:text-primary transition-colors"
+                          className={clsx(
+                            "flex items-center justify-center gap-1 w-full py-1 text-xs font-semibold transition-colors",
+                            (activeOlympiad.status === "open" || activeOlympiad.status === "coming_soon")
+                              ? "text-white/80 hover:text-white"
+                              : "text-gray-500 hover:text-primary"
+                          )}
                         >
                           <span>{locale === "id" ? "Detail Kompetisi" : "Competition Details"}</span>
                         </Link>
@@ -402,7 +364,6 @@ export default function Navbar({ newsPreview }: NavbarProps) {
             </div>
           </div>
 
-          {/* News mega-menu dropdown */}
           <div
             className="relative"
             onMouseEnter={openNewsDropdown}

@@ -75,14 +75,20 @@ export default function CompetitionsSection({ competitions }: Props) {
   const hiddenCount = Math.max(0, filtered.length - MOBILE_LIMIT);
 
   function StatusBadge({ status }: { status: string }) {
-    const cls = STATUS_STYLE[status] ?? STATUS_STYLE.coming_soon;
+    const cls = status === "open"
+      ? "bg-emerald-400/20 text-emerald-200 border border-emerald-300/40 backdrop-blur-xs"
+      : status === "coming_soon"
+        ? "bg-amber-400/20 text-amber-200 border border-amber-300/40 backdrop-blur-xs"
+        : STATUS_STYLE[status] ?? STATUS_STYLE.coming_soon;
     const label = status === "open"
       ? t("open")
       : status === "closed"
         ? t("closed")
         : t("coming_soon");
     return (
-      <span className={`inline-block text-[9px] px-1.5 py-0.5 rounded-full font-bold ${cls}`}>
+      <span className={`inline-flex items-center gap-1.5 text-[10px] px-2.5 py-0.5 rounded-full font-bold ${cls}`}>
+        {status === "open" && <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" />}
+        {status === "coming_soon" && <span className="w-1.5 h-1.5 rounded-full bg-amber-300" />}
         {label}
       </span>
     );
@@ -91,51 +97,93 @@ export default function CompetitionsSection({ competitions }: Props) {
   function OlympiadCard({ c, size }: { c: CompetitionData; size: "sm" | "lg" }) {
     const styles = LEVEL_STYLES[c.level] ?? LEVEL_STYLES.national;
     const targetUrl = c.websiteUrl ?? `https://${c.slug}.iyora.or.id`;
+    const isOpen = c.registrationStatus === "open";
+    const isComing = c.registrationStatus === "coming_soon";
 
     if (size === "sm") {
       return (
-        <div className={`group bg-white rounded-2xl border border-gray-100 ${styles.border} hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1.5 transition-all duration-300 flex flex-col p-4 cursor-pointer overflow-hidden relative`}>
-          <div className="h-1 -mx-4 -mt-4 mb-3 bg-gradient-to-r from-primary via-teal to-accent opacity-0 group-hover:opacity-100 transition-all duration-300" />
-          <div className="text-3xl mb-2 leading-none transition-transform duration-300 group-hover:scale-110 origin-left">{getIcon(c.category)}</div>
-          <div className="flex items-start gap-1.5 flex-wrap mb-1">
-            <h3 className="text-sm font-extrabold text-gray-900 group-hover:text-primary transition-colors">{c.shortName}</h3>
-            <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wide ${styles.badge} self-center`}>
-              {t(c.level as Parameters<typeof t>[0])}
-            </span>
+        <div className={`group rounded-2xl transition-all duration-300 flex flex-col p-4 cursor-pointer overflow-hidden relative h-full justify-between ${
+          isOpen
+            ? "bg-gradient-to-br from-[#3B79A7] via-[#358EAA] to-[#2EA3AD] text-white shadow-xl shadow-teal-900/20 border border-teal-300/30 hover:scale-[1.02]"
+            : isComing
+              ? "bg-gradient-to-br from-[#66449b] via-[#523380] to-[#3f2366] text-white shadow-xl shadow-purple-950/20 border border-purple-300/30 hover:scale-[1.02]"
+              : `bg-white border border-gray-100 ${styles.border} hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1.5`
+        }`}>
+          {/* Decorative background watermark circles */}
+          <div className={`absolute -top-10 -right-10 w-36 h-36 rounded-full pointer-events-none ${isOpen || isComing ? "bg-white/10" : "bg-gray-200/50"}`} />
+          <div className={`absolute -bottom-10 -right-4 w-28 h-28 rounded-full pointer-events-none ${isOpen || isComing ? "bg-white/10" : "bg-gray-200/50"}`} />
+          <div className="flex-1 flex flex-col justify-between relative z-10">
+            <div>
+              <div className="text-3xl mb-2 leading-none transition-transform duration-300 group-hover:scale-110 origin-left">{getIcon(c.category)}</div>
+              <div className="flex items-start gap-1.5 flex-wrap mb-1">
+                <h3 className={`text-sm font-extrabold ${(isOpen || isComing) ? "text-white" : "text-gray-900 group-hover:text-primary"}`}>{c.shortName}</h3>
+                <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wide self-center ${
+                  (isOpen || isComing) ? "bg-white/20 text-white border border-white/30 backdrop-blur-xs" : styles.badge
+                }`}>
+                  {t(c.level as Parameters<typeof t>[0])}
+                </span>
+              </div>
+              <p className={`text-xs leading-snug mb-2 line-clamp-2 min-h-[2rem] ${(isOpen || isComing) ? "text-white/90" : "text-gray-500"}`}>{c.name}</p>
+              <div className="mb-2"><StatusBadge status={c.registrationStatus} /></div>
+            </div>
+            <a
+              href={targetUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`block text-center py-2 rounded-xl text-xs font-bold transition-all duration-200 mt-auto shadow-md ${
+                isOpen
+                  ? "bg-white text-[#2b608a] hover:bg-white/95 hover:text-[#1d4669]"
+                  : isComing
+                    ? "bg-white text-[#66449b] hover:bg-white/95 hover:text-[#4d2d7a]"
+                    : "bg-gray-50 text-gray-600 border border-gray-200 group-hover:bg-primary group-hover:text-white group-hover:border-primary"
+              }`}
+            >
+              {t("visit_website")}
+            </a>
           </div>
-          <p className="text-gray-400 text-xs leading-snug flex-1 mb-2 line-clamp-2">{c.name}</p>
-          <div className="mb-2"><StatusBadge status={c.registrationStatus} /></div>
-          <a
-            href={targetUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block text-center py-2 rounded-xl text-xs font-semibold bg-gray-50 text-gray-600 border border-gray-200 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-200 shadow-2xs"
-          >
-            {t("visit_website")}
-          </a>
         </div>
       );
     }
     return (
-      <div className={`group bg-white rounded-2xl border border-gray-100 ${styles.border} hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2 transition-all duration-300 flex flex-col p-6 cursor-pointer overflow-hidden relative`}>
-        <div className="h-1 -mx-6 -mt-6 mb-5 bg-gradient-to-r from-primary via-teal to-accent opacity-0 group-hover:opacity-100 transition-all duration-300" />
-        <div className="text-5xl mb-4 leading-none transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 origin-left">{getIcon(c.category)}</div>
-        <div className="flex items-start gap-2 flex-wrap mb-2">
-          <h3 className="text-lg font-extrabold text-gray-900 group-hover:text-primary transition-colors">{c.shortName}</h3>
-          <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide ${styles.badge} self-center`}>
-            {t(c.level as Parameters<typeof t>[0])}
-          </span>
+      <div className={`group rounded-2xl transition-all duration-300 flex flex-col p-6 cursor-pointer overflow-hidden relative h-full justify-between ${
+        isOpen
+          ? "bg-gradient-to-br from-[#3B79A7] via-[#358EAA] to-[#2EA3AD] text-white shadow-xl shadow-teal-900/20 border border-teal-300/30 hover:scale-[1.02] hover:shadow-2xl"
+          : isComing
+            ? "bg-gradient-to-br from-[#66449b] via-[#523380] to-[#3f2366] text-white shadow-xl shadow-purple-950/20 border border-purple-300/30 hover:scale-[1.02] hover:shadow-2xl"
+            : `bg-white border border-gray-100 ${styles.border} hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2`
+      }`}>
+        {/* Decorative background watermark circles */}
+        <div className={`absolute -top-10 -right-10 w-40 h-40 rounded-full pointer-events-none ${isOpen || isComing ? "bg-white/10" : "bg-gray-200/50"}`} />
+        <div className={`absolute -bottom-10 -right-4 w-32 h-32 rounded-full pointer-events-none ${isOpen || isComing ? "bg-white/10" : "bg-gray-200/50"}`} />
+        <div className="flex-1 flex flex-col justify-between relative z-10">
+          <div>
+            <div className="text-5xl mb-4 leading-none transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 origin-left">{getIcon(c.category)}</div>
+            <div className="flex items-start gap-2 flex-wrap mb-2">
+              <h3 className={`text-lg font-extrabold transition-colors ${(isOpen || isComing) ? "text-white" : "text-gray-900 group-hover:text-primary"}`}>{c.shortName}</h3>
+              <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide self-center ${
+                (isOpen || isComing) ? "bg-white/20 text-white border border-white/30 backdrop-blur-xs" : styles.badge
+              }`}>
+                {t(c.level as Parameters<typeof t>[0])}
+              </span>
+            </div>
+            <p className={`text-sm leading-snug mb-4 line-clamp-2 min-h-[2.5rem] ${(isOpen || isComing) ? "text-white/90" : "text-gray-500"}`}>{c.name}</p>
+            <div className="mb-4"><StatusBadge status={c.registrationStatus} /></div>
+          </div>
+          <a
+            href={targetUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`block text-center py-2.5 rounded-xl text-sm font-bold transition-all duration-200 mt-auto shadow-md ${
+              isOpen
+                ? "bg-white text-[#2b608a] hover:bg-white/95 hover:text-[#1d4669]"
+                : isComing
+                  ? "bg-white text-[#66449b] hover:bg-white/95 hover:text-[#4d2d7a]"
+                  : "bg-gray-50 text-gray-700 border border-gray-200 group-hover:bg-primary group-hover:text-white group-hover:border-primary"
+            }`}
+          >
+            {t("visit_website")} →
+          </a>
         </div>
-        <p className="text-gray-500 text-sm leading-snug flex-1 mb-4">{c.name}</p>
-        <div className="mb-4"><StatusBadge status={c.registrationStatus} /></div>
-        <a
-          href={targetUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block text-center py-2.5 rounded-xl text-sm font-semibold bg-gray-50 text-gray-700 border border-gray-200 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-200 shadow-2xs"
-        >
-          {t("visit_website")} →
-        </a>
       </div>
     );
   }

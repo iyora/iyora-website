@@ -28,30 +28,76 @@ function computeStatus(
   if (!openAt || !closeAt) return "coming_soon";
   const now = new Date();
   if (now < new Date(openAt)) return "coming_soon";
-  if (now > new Date(closeAt)) return "closed";
+
+  const closeDate = new Date(closeAt);
+  if (closeAt.length <= 10) {
+    closeDate.setHours(23, 59, 59, 999);
+  }
+  if (now > closeDate) return "closed";
   return "open";
 }
 
-export const DEFAULT_COMPETITIONS: CompetitionData[] = [
-  { slug: "nybo", shortName: "NYBO", name: "National Youth Biology Olympiad", level: "national", category: "Biology", websiteUrl: "https://nybo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
-  { slug: "iybo", shortName: "IYBO", name: "International Youth Biology Olympiad", level: "international", category: "Biology", websiteUrl: "https://iybo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
-  { slug: "nypo", shortName: "NYPO", name: "National Youth Physics Olympiad", level: "national", category: "Physics", websiteUrl: "https://nypo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
-  { slug: "iypo", shortName: "IYPO", name: "International Youth Physics Olympiad", level: "international", category: "Physics", websiteUrl: "https://iypo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
-  { slug: "nyco", shortName: "NYCO", name: "National Youth Chemistry Olympiad", level: "national", category: "Chemistry", websiteUrl: "https://nyco.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
-  { slug: "iyco", shortName: "IYCO", name: "International Youth Chemistry Olympiad", level: "international", category: "Chemistry", websiteUrl: "https://iyco.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
-  { slug: "nymo", shortName: "NYMO", name: "National Youth Mathematics Olympiad", level: "national", category: "Mathematics", websiteUrl: "https://nymo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
-  { slug: "iymo", shortName: "IYMO", name: "International Youth Mathematics Olympiad", level: "international", category: "Mathematics", websiteUrl: "https://iymo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
-  { slug: "nygo", shortName: "NYGO", name: "National Youth Geography Olympiad", level: "national", category: "Geography", websiteUrl: "https://nygo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
-  { slug: "iygo", shortName: "IYGO", name: "International Youth Geography Olympiad", level: "international", category: "Geography", websiteUrl: "https://iygo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
-  { slug: "nyeno", shortName: "NYEnO", name: "National Youth Environment Olympiad", level: "national", category: "Environment", websiteUrl: "https://nyeo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
-  { slug: "iyeno", shortName: "IYEnO", name: "International Youth Environment Olympiad", level: "international", category: "Environment", websiteUrl: "https://iyeo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
-  { slug: "nyeco", shortName: "NYEO", name: "National Youth Economics Olympiad", level: "national", category: "Economics", websiteUrl: "https://nyeo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
-  { slug: "iyeco", shortName: "IYEO", name: "International Youth Economics Olympiad", level: "international", category: "Economics", websiteUrl: "https://iyeo.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
-  { slug: "nyao", shortName: "NYAO", name: "National Youth Astronomy Olympiad", level: "national", category: "Astronomy", websiteUrl: "https://nyao.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
-  { slug: "iyao", shortName: "IYAO", name: "International Youth Astronomy Olympiad", level: "international", category: "Astronomy", websiteUrl: "https://iyao.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
-  { slug: "os2mn", shortName: "OS2MN", name: "Olimpiade Sains Madrasah Nasional", level: "national", category: "Madrasah", websiteUrl: "https://os2mn.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
-  { slug: "wso", shortName: "WSO", name: "World Science Olympiad", level: "international", category: "Science", websiteUrl: "https://wso.iyora.or.id", registrationStatus: "open", guidebookUrl: null },
+const STATUS_ORDER: Record<string, number> = {
+  open: 0,
+  coming_soon: 1,
+  closed: 2,
+};
+
+function sortCompetitionsByStatus(competitions: CompetitionData[]): CompetitionData[] {
+  return [...competitions].sort((a, b) => {
+    const orderA = STATUS_ORDER[a.registrationStatus] ?? 99;
+    const orderB = STATUS_ORDER[b.registrationStatus] ?? 99;
+    return orderA - orderB;
+  });
+}
+
+interface RawDefaultCompetition {
+  slug: string;
+  shortName: string;
+  name: string;
+  level: "national" | "international" | "madrasah" | "world";
+  category: string | null;
+  websiteUrl: string | null;
+  guidebookUrl: string | null;
+  openAt: string | null;
+  closeAt: string | null;
+}
+
+const RAW_DEFAULT_COMPETITIONS: RawDefaultCompetition[] = [
+  { slug: "nygo", shortName: "NYGO", name: "National Youth Geography Olympiad", level: "national", category: "Geography", websiteUrl: "https://nygo.iyora.or.id", guidebookUrl: null, openAt: "2026-08-01", closeAt: "2026-08-16" },
+  { slug: "iygo", shortName: "IYGO", name: "International Youth Geography Olympiad", level: "international", category: "Geography", websiteUrl: "https://iygo.iyora.or.id", guidebookUrl: null, openAt: "2026-08-01", closeAt: "2026-08-16" },
+  { slug: "nyeco", shortName: "NYEO", name: "National Youth Economics Olympiad", level: "national", category: "Economics", websiteUrl: "https://nyeo.iyora.or.id", guidebookUrl: null, openAt: "2026-08-01", closeAt: "2026-08-16" },
+  { slug: "iyeco", shortName: "IYEO", name: "International Youth Economics Olympiad", level: "international", category: "Economics", websiteUrl: "https://iyeo.iyora.or.id", guidebookUrl: null, openAt: "2026-08-01", closeAt: "2026-08-16" },
+  { slug: "nymo", shortName: "NYMO", name: "National Youth Mathematics Olympiad", level: "national", category: "Mathematics", websiteUrl: "https://nymo.iyora.or.id", guidebookUrl: null, openAt: "2026-04-01", closeAt: "2026-05-02" },
+  { slug: "iymo", shortName: "IYMO", name: "International Youth Mathematics Olympiad", level: "international", category: "Mathematics", websiteUrl: "https://iymo.iyora.or.id", guidebookUrl: null, openAt: "2026-06-01", closeAt: "2026-06-30" },
+  { slug: "nybo", shortName: "NYBO", name: "National Youth Biology Olympiad", level: "national", category: "Biology", websiteUrl: "https://nybo.iyora.or.id", guidebookUrl: null, openAt: "2026-07-01", closeAt: "2026-07-31" },
+  { slug: "iybo", shortName: "IYBO", name: "International Youth Biology Olympiad", level: "international", category: "Biology", websiteUrl: "https://iybo.iyora.or.id", guidebookUrl: null, openAt: "2026-07-01", closeAt: "2026-07-31" },
+  { slug: "nypo", shortName: "NYPO", name: "National Youth Physics Olympiad", level: "national", category: "Physics", websiteUrl: "https://nypo.iyora.or.id", guidebookUrl: null, openAt: "2026-06-01", closeAt: "2026-06-30" },
+  { slug: "iypo", shortName: "IYPO", name: "International Youth Physics Olympiad", level: "international", category: "Physics", websiteUrl: "https://iypo.iyora.or.id", guidebookUrl: null, openAt: "2026-06-01", closeAt: "2026-06-30" },
+  { slug: "nyco", shortName: "NYCO", name: "National Youth Chemistry Olympiad", level: "national", category: "Chemistry", websiteUrl: "https://nyco.iyora.or.id", guidebookUrl: null, openAt: "2026-05-01", closeAt: "2026-05-31" },
+  { slug: "iyco", shortName: "IYCO", name: "International Youth Chemistry Olympiad", level: "international", category: "Chemistry", websiteUrl: "https://iyco.iyora.or.id", guidebookUrl: null, openAt: "2026-05-01", closeAt: "2026-05-31" },
+  { slug: "nyeno", shortName: "NYEnO", name: "National Youth Environment Olympiad", level: "national", category: "Environment", websiteUrl: "https://nyeo.iyora.or.id", guidebookUrl: null, openAt: "2026-04-01", closeAt: "2026-04-30" },
+  { slug: "iyeno", shortName: "IYEnO", name: "International Youth Environment Olympiad", level: "international", category: "Environment", websiteUrl: "https://iyeo.iyora.or.id", guidebookUrl: null, openAt: "2026-04-01", closeAt: "2026-04-30" },
+  { slug: "nyao", shortName: "NYAO", name: "National Youth Astronomy Olympiad", level: "national", category: "Astronomy", websiteUrl: "https://nyao.iyora.or.id", guidebookUrl: null, openAt: "2026-03-01", closeAt: "2026-03-31" },
+  { slug: "iyao", shortName: "IYAO", name: "International Youth Astronomy Olympiad", level: "international", category: "Astronomy", websiteUrl: "https://iyao.iyora.or.id", guidebookUrl: null, openAt: "2026-03-01", closeAt: "2026-03-31" },
+  { slug: "os2mn", shortName: "OS2MN", name: "Olimpiade Sains Madrasah Nasional", level: "national", category: "Madrasah", websiteUrl: "https://os2mn.iyora.or.id", guidebookUrl: null, openAt: "2026-02-01", closeAt: "2026-02-28" },
+  { slug: "wso", shortName: "WSO", name: "World Science Olympiad", level: "international", category: "Science", websiteUrl: "https://wso.iyora.or.id", guidebookUrl: null, openAt: "2026-01-01", closeAt: "2026-01-31" },
 ];
+
+export function getDefaultCompetitions(): CompetitionData[] {
+  return RAW_DEFAULT_COMPETITIONS.map((c) => ({
+    slug: c.slug,
+    shortName: c.shortName,
+    name: c.name,
+    level: c.level,
+    category: c.category,
+    websiteUrl: c.websiteUrl,
+    registrationStatus: computeStatus(c.openAt, c.closeAt),
+    guidebookUrl: c.guidebookUrl,
+  }));
+}
+
+export const DEFAULT_COMPETITIONS: CompetitionData[] = getDefaultCompetitions();
 
 export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
   try {
@@ -64,7 +110,7 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
       .order("level")
       .order("name");
 
-    if (error || !comps || comps.length === 0) return DEFAULT_COMPETITIONS;
+    if (error || !comps || comps.length === 0) return sortCompetitionsByStatus(DEFAULT_COMPETITIONS);
 
     const editionIds = comps
       .map((c: { active_edition_id: string | null }) => c.active_edition_id)
@@ -118,9 +164,9 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
       };
     });
 
-    return result.length > 0 ? result : DEFAULT_COMPETITIONS;
+    return sortCompetitionsByStatus(result.length > 0 ? result : DEFAULT_COMPETITIONS);
   } catch {
-    return DEFAULT_COMPETITIONS;
+    return sortCompetitionsByStatus(DEFAULT_COMPETITIONS);
   }
 }
 

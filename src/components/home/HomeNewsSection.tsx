@@ -329,52 +329,53 @@ function ArticleCard({
       href={`/${locale}/news/${slug}`}
       target="_blank"
       rel="noopener noreferrer"
-      className="group bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1.5 flex flex-col h-full cursor-pointer"
+      className="group relative rounded-2xl overflow-hidden border border-gray-200/80 shadow-md hover:shadow-2xl hover:shadow-primary/20 transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between min-h-[380px] cursor-pointer"
     >
-      {/* Cover Image */}
+      {/* Full Card Background Image */}
       {coverImage ? (
-        <div className="relative aspect-[16/9] overflow-hidden bg-gray-100">
-          <Image
-            src={coverImage}
-            alt={article.title}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
-          <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-primary shadow-sm uppercase tracking-wide">
-            {badge}
-          </div>
-        </div>
+        <Image
+          src={coverImage}
+          alt={article.title}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-700"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
       ) : (
-        <div className="relative aspect-[16/9] bg-gradient-to-br from-primary/5 via-teal/5 to-purple-50 flex items-center justify-center">
-          <ImageOff className="w-10 h-10 text-gray-300" />
-          <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-primary shadow-sm uppercase tracking-wide">
-            {badge}
-          </div>
-        </div>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary via-purple-700 to-indigo-900" />
       )}
 
-      {/* Details */}
-      <div className="p-5 flex flex-col flex-1">
-        <div className="flex items-center gap-1.5 text-xs text-gray-400 mb-2.5 font-medium">
-          <Calendar size={13} className="text-primary/70" />
-          <time>{formatDate(publishedAt, locale)}</time>
+      {/* Soft Gradient Overlay for brightness */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
+
+      {/* Top Badge */}
+      <div className="relative z-10 p-3.5 flex items-start justify-between">
+        <span className="bg-white/95 backdrop-blur-md px-3 py-1 rounded-full text-xs font-extrabold text-primary shadow-md uppercase tracking-wide">
+          {badge}
+        </span>
+      </div>
+
+      {/* Bright Translucent Content Glass Panel ("Kotak Putih Cerah & Transparan") */}
+      <div className="relative z-10 m-3 p-4 rounded-xl bg-white/75 backdrop-blur-md border border-white/80 shadow-md text-gray-900 flex flex-col justify-between transition-all duration-300 group-hover:bg-white/90">
+        <div>
+          <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-2 font-semibold">
+            <Calendar size={13} className="text-primary" />
+            <time>{formatDate(publishedAt, locale)}</time>
+          </div>
+
+          <h3 className="text-base font-extrabold text-gray-900 mb-2 line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+            {article.title}
+          </h3>
+
+          {excerpt && (
+            <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed mb-3">
+              {excerpt}
+            </p>
+          )}
         </div>
 
-        <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-primary transition-colors duration-200 leading-snug">
-          {article.title}
-        </h3>
-
-        {excerpt && (
-          <p className="text-xs md:text-sm text-gray-500 line-clamp-2 leading-relaxed mb-4 flex-1">
-            {excerpt}
-          </p>
-        )}
-
-        <div className="flex items-center gap-1 text-xs md:text-sm font-semibold text-primary mt-auto pt-3 border-t border-gray-50 group-hover:translate-x-1 transition-transform">
+        <div className="flex items-center gap-1 text-xs font-bold text-primary pt-2.5 border-t border-gray-100 group-hover:translate-x-1 transition-transform">
           <span>{locale === "en" ? "Read More" : "Baca Selengkapnya"}</span>
-          <ArrowRight size={14} />
+          <ArrowRight size={13} />
         </div>
       </div>
     </Link>
