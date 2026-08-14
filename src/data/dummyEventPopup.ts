@@ -25,13 +25,13 @@ export interface EventPopupData {
 export const DUMMY_EVENT_POPUP: EventPopupData = {
   id: "event-popup-nygo-iygo-2026",
   isActive: true,
-  badge: "🔥 H-3 PENDAFTARAN DITUTUP!",
-  badge_en: "🔥 3 DAYS LEFT BEFORE REGISTRATION CLOSES!",
+  badge: "🔥 H-2 PENDAFTARAN DITUTUP!",
+  badge_en: "🔥 2 DAYS LEFT BEFORE REGISTRATION CLOSES!",
   title: "Penutupan Registrasi NYGO, IYGO, NYEO & IYEO 2026",
   title_en: "Registration Closing for NYGO, IYGO, NYEO & IYEO 2026",
   subtitle: "Jangan tunggu hingga menit terakhir! Tantang diri Anda dan jadilah bagian dari IYORA Olympiad 2026.",
   subtitle_en: "Don't wait until the last minute! Challenge yourself and be part of IYORA Olympiad 2026.",
-  image: "/images/pengumuman/feedolym.png",
+  image: "/images/pengumuman/h-2.png",
   content:
     "Indonesian Youth Outstanding Recognition Association (IYORA) mengingatkan seluruh calon peserta bahwa pendaftaran National & International Youth Olympiad (NYGO, IYGO, NYEO, IYEO 2026) akan resmi ditutup dalam 3 hari lagi. Seluruh sertifikat kejuaraan terintegrasi resmi dengan SIMT Puspresnas.",
   content_en:
