@@ -30,23 +30,43 @@ export interface DummyNewsItem {
 
 export const DUMMY_NEWS: DummyNewsItem[] = [
   // ── PRESS RELEASE ──
-  /*{
+  {
     id: "press-release-1",
-    slug: "siaran-pers-rekapitulasi-sukses-os2mn-dan-ekspansi-kemitraan",
-    title: "Siaran Pers: Rekapitulasi Sukses OS2MN dan Ekspansi Kemitraan Media Nasional",
-    title_en: "Press Release: OS2MN Success Recap and National Media Partnership Expansion",
+    slug: "siaran-pers-peluncuran-ekosistem-olimpiade-sains-terpadu-2026",
+    title: "Siaran Pers: IYORA Resmi Luncurkan Ekosistem Olimpiade Sains Terpadu 2026 dan Penyatuan Sertifikasi Berstandar SIMT Puspresnas",
+    title_en: "Press Release: IYORA Officially Launches Integrated Science Olympiad Ecosystem 2026 and SIMT Puspresnas Standardized Certification",
     category: "press_release",
     photo: "https://jabaran.id/wp-content/uploads/2025/04/IYSA-gelar-OS2MN-2025-696x381.jpg",
-    caption: "Siaran Pers Resmi Hasil OS2MN dan Program Pengembangan Olimpiade 2026",
-    caption_en: "Official Press Release on OS2MN Results and 2026 Olympiad Development Program",
-    content: "DEPOK — Dalam upaya memperluas jangkauan apresiasi talenta sains muda di seluruh Indonesia, IYORA menyampaikan laporan siaran pers terkait keberhasilan penyelenggaraan OS2MN serta penguatan jejaring kemitraan dengan berbagai institusi dan media nasional.",
-    content_en: "DEPOK — In an effort to expand the reach of young science talent appreciation across Indonesia, IYORA released an official press report on the success of OS2MN and media partnerships.",
+    caption: "Siaran Pers Resmi Hasil Pembukaan Olimpiade Sains Nasional & Internasional IYORA 2026",
+    caption_en: "Official Press Release on IYORA 2026 National & International Science Olympiad Launch",
+    content: `DEPOK, 18 Agustus 2026 — Indonesian Youth Outstanding Recognition Association (IYORA), lembaga penyelenggara kompetisi sains dan olimpiade pelajar bertaraf nasional dan internasional yang berpusat di Depok, Jawa Barat, secara resmi meluncurkan ekosistem olimpiade sains terpadu untuk periode 2026.
+
+Dalam keterangan pers resminya hari ini, Direktur Eksekutif IYORA menegaskan komitmen lembaga untuk memfasilitasi minat, bakat, serta potensi akademik peserta didik mulai tingkat Sekolah Dasar (SD), Sekolah Menengah Pertama (SMP), hingga Sekolah Menengah Atas / Kejuruan (SMA/SMK) di seluruh pelosok Indonesia dan mancanegara.
+
+Sejak berdiri sebagai pengembang utama olimpiade sains di bawah naungan Indonesian Young Scientist Association (IYSA), IYORA kini mengelola 14 cabang olimpiade bereputasi unggul, meliputi National Youth Geography Olympiad (NYGO), International Youth Geography Olympiad (IYGO), National Youth Economics Olympiad (NYEO), International Youth Economics Olympiad (IYEO), National Youth Biology Olympiad (NYBO), International Youth Biology Olympiad (IYBO), serta Olimpiade Sains Siswa Madrasah Nasional (OS2MN).
+
+"Seluruh penyelenggaraan kompetisi IYORA mengedepankan objektivitas, transparansi, dan kualitas materi soal berstandar internasional. Lebih dari itu, setiap sertifikat kejuaraan dan penghargaan resmi yang diterbitkan IYORA telah terintegrasi secara langsung dengan Sistem Informasi Manajemen Talenta (SIMT) Puspresnas Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi Republik Indonesia," ujar Humas IYORA.
+
+Integrasi SIMT Puspresnas ini memberikan nilai tambah strategis bagi para pemenang dan peserta dalam proses Seleksi Nasional Berdasarkan Prestasi (SNBP), penerimaan mahasiswa baru perguruan tinggi negeri (PTN) unggulan, serta jalur seleksi beasiswa bertaraf nasional maupun internasional.
+
+Seiring dengan pembukaan pendaftaran gelombang utama untuk NYGO, IYGO, NYEO, dan IYEO 2026, IYORA mengundang seluruh sekolah, guru pendamping, dan pelajar di 38 provinsi Indonesia untuk memanfaatkan kesempatan emas ini. Pendaftaran dilakukan secara mandiri maupun kolektif melalui portal resmi IYORA di https://iyora.or.id.`,
+    content_en: `DEPOK, August 18, 2026 — The Indonesian Youth Outstanding Recognition Association (IYORA), a premier national and international science competition organization based in Depok, West Java, today officially launched its integrated science olympiad ecosystem for the 2026 academic period.
+
+In an official press statement released today, the Executive Director of IYORA emphasized the organization's steadfast commitment to fostering academic excellence among students spanning Elementary, Junior High, and Senior High School levels across all 38 provinces of Indonesia and internationally.
+
+Originally established as a core science olympiad division under the Indonesian Young Scientist Association (IYSA), IYORA currently manages 14 prestigious competition branches, including the National Youth Geography Olympiad (NYGO), International Youth Geography Olympiad (IYGO), National Youth Economics Olympiad (NYEO), International Youth Economics Olympiad (IYEO), National Youth Biology Olympiad (NYBO), International Youth Biology Olympiad (IYBO), and the National Madrasah Student Science Olympiad (OS2MN).
+
+"Every IYORA competition prioritizes objectivity, transparency, and international-standard examination quality. Furthermore, all official award certificates issued by IYORA are officially integrated into the Talent Management Information System (SIMT Puspresnas) under the Ministry of Education, Culture, Research, and Technology of the Republic of Indonesia," stated IYORA Public Relations.
+
+This official SIMT Puspresnas integration offers strategic advantages for winners and participants applying through National Achievement-Based Selection (SNBP), state university admissions, and prestigious national or international scholarship pathways.
+
+With main registration currently open for NYGO, IYGO, NYEO, and IYEO 2026, IYORA invites all schools, mentoring educators, and students nationwide to seize this opportunity. Registrations can be submitted individually or collectively via the official portal at https://iyora.or.id.`,
     link: "https://jabaran.id/os2mn-2025-sukses-digelar-tampilkan-semangat-kompetisi-ilmiah-pelajar-madrasah-se-indonesia/",
     linkLabel: "Baca Berita Media Jabaran.id",
     linkLabel_en: "Read News Article on Jabaran.id",
-    publishedAt: "2026-08-13",
+    publishedAt: "2026-08-18",
     author: "Humas IYORA",
-  },*/
+  },
   // ── NEWS / ANNOUNCEMENT ──
   {
     id: "announcement-1",
@@ -104,6 +124,64 @@ export const DUMMY_NEWS: DummyNewsItem[] = [
     link5Label: "Website Pendaftaran IYEO",
     link5Label_en: "IYEO Registration Website",
     publishedAt: "2026-08-14",
+    author: "IyoraOlympiade",
+  },
+  {
+    id: "announcement-3",
+    slug: "penutupan-registrasi-nygo-iygo-nyeo-iyeo",
+    title: "Penutupan Registrasi NYGO, IYGO, NYEO, IYEO tinggal 1 hari lagi",
+    title_en: "NYGO, IYGO, NYEO & IYEO 2026 Registration Closing in 1 Days",
+    category: "announcement",
+    photo: "/images/pengumuman/h-1.jpg",
+    caption: "H-1 PENDAFTARAN DITUTUP, YUK BURUAN DAFTAR!",
+    caption_en: "1 DAYS LEFT BEFORE REGISTRATION CLOSES, REGISTER NOW!",
+    content: "Jangan tunggu hingga menit terakhir! Tantang diri sendiri, tunjukkan pengetahuan Anda, dan jadilah bagian dari IYORA Olympiad 2026.",
+    content_en: "Don't wait until the last minute! Challenge yourself, showcase your knowledge, and be part of IYORA Olympiad 2026.",
+    link: "https://www.instagram.com/p/DcALqc9prQD/?igsh=ejd2YXU4NW9qcDd4&igsi=ejd2YXU4NW9qcDd4",
+    linkLabel: "Kunjungi Instagram IyoraOfficial",
+    linkLabel_en: "Visit Instagram IyoraOfficial",
+    link2: "https://nygo.iyora.or.id",
+    link2Label: "Website Pendaftaran NYGO",
+    link2Label_en: "NYGO Registration Website",
+    link3: "https://iygo.iyora.or.id",
+    link3Label: "Website Pendaftaran IYGO",
+    link3Label_en: "IYGO Registration Website",
+    link4: "https://nyeo.iyora.or.id",
+    link4Label: "Website Pendaftaran NYEO",
+    link4Label_en: "NYEO Registration Website",
+    link5: "https://iyeo.iyora.or.id",
+    link5Label: "Website Pendaftaran IYEO",
+    link5Label_en: "IYEO Registration Website",
+    publishedAt: "2026-08-15",
+    author: "IyoraOlympiade",
+  },
+  {
+    id: "announcement-4",
+    slug: "penutupan-registrasi-nygo-iygo-nyeo-iyeo",
+    title: "Penutupan Registrasi NYGO, IYGO, NYEO, IYEO tinggal",
+    title_en: "NYGO, IYGO, NYEO & IYEO 2026 Registration Closing",
+    category: "announcement",
+    photo: "/images/pengumuman/lastday.jpg",
+    caption: "Last Day!! PENDAFTARAN DITUTUP, YUK BURUAN DAFTAR!",
+    caption_en: "Last Day!! LEFT BEFORE REGISTRATION CLOSES, REGISTER NOW!",
+    content: "Jangan tunggu hingga menit terakhir! Tantang diri sendiri, tunjukkan pengetahuan Anda, dan jadilah bagian dari IYORA Olympiad 2026.",
+    content_en: "Don't wait until the last minute! Challenge yourself, showcase your knowledge, and be part of IYORA Olympiad 2026.",
+    link: "https://www.instagram.com/p/DcALqc9prQD/?igsh=ejd2YXU4NW9qcDd4&igsi=ejd2YXU4NW9qcDd4",
+    linkLabel: "Kunjungi Instagram IyoraOfficial",
+    linkLabel_en: "Visit Instagram IyoraOfficial",
+    link2: "https://nygo.iyora.or.id",
+    link2Label: "Website Pendaftaran NYGO",
+    link2Label_en: "NYGO Registration Website",
+    link3: "https://iygo.iyora.or.id",
+    link3Label: "Website Pendaftaran IYGO",
+    link3Label_en: "IYGO Registration Website",
+    link4: "https://nyeo.iyora.or.id",
+    link4Label: "Website Pendaftaran NYEO",
+    link4Label_en: "NYEO Registration Website",
+    link5: "https://iyeo.iyora.or.id",
+    link5Label: "Website Pendaftaran IYEO",
+    link5Label_en: "IYEO Registration Website",
+    publishedAt: "2026-08-16",
     author: "IyoraOlympiade",
   },
   {

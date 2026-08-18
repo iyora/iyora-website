@@ -456,12 +456,17 @@ export async function fetchAllNews(locale?: string): Promise<{
       };
     });
 
+    const combinedNews = [...newsData, ...defaultNews.filter((d) => !newsData.some((n) => n.id === d.id))];
+    const combinedAnnouncements = [...announcementsData, ...defaultAnnouncements.filter((d) => !announcementsData.some((n) => n.id === d.id))];
+    const combinedPressRelease = [...pressReleaseData, ...defaultPressRelease.filter((d) => !pressReleaseData.some((n) => n.id === d.id))];
+    const combinedGallery = [...formattedGalleryData, ...defaultGallery.filter((d) => !formattedGalleryData.some((n) => n.id === d.id))];
+
     return {
-      news: (newsData.length > 0 ? newsData : defaultNews).sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime()),
-      announcements: (announcementsData.length > 0 ? announcementsData : defaultAnnouncements).sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime()),
-      pressRelease: (pressReleaseData.length > 0 ? pressReleaseData : defaultPressRelease).sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime()),
+      news: combinedNews.sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime()),
+      announcements: combinedAnnouncements.sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime()),
+      pressRelease: combinedPressRelease.sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime()),
       documentation: documentationData,
-      gallery: (formattedGalleryData.length > 0 ? formattedGalleryData : defaultGallery).sort((a, b) => new Date(b.published_at ?? b.created_at ?? 0).getTime() - new Date(a.published_at ?? a.created_at ?? 0).getTime()),
+      gallery: combinedGallery.sort((a, b) => new Date(b.published_at ?? b.created_at ?? 0).getTime() - new Date(a.published_at ?? a.created_at ?? 0).getTime()),
     };
   } catch {
     const defaultNews: NewsArticle[] = DUMMY_NEWS.filter((item) => item.category === "news")
@@ -647,11 +652,16 @@ export async function fetchNewsPreview(locale?: string): Promise<NewsPreviewData
       };
     });
 
+    const combinedNews = [...newsData, ...defaultNews.filter((d) => !newsData.some((n) => n.id === d.id))].slice(0, 3);
+    const combinedAnnouncements = [...announcementsData, ...defaultAnnouncements.filter((d) => !announcementsData.some((n) => n.id === d.id))].slice(0, 3);
+    const combinedPressRelease = [...pressReleaseData, ...defaultPressRelease.filter((d) => !pressReleaseData.some((n) => n.id === d.id))].slice(0, 3);
+    const combinedGallery = [...formattedGalleryData, ...defaultGallery.filter((d) => !formattedGalleryData.some((n) => n.id === d.id))].slice(0, 3);
+
     return {
-      news: newsData.length > 0 ? newsData : defaultNews,
-      announcements: announcementsData.length > 0 ? announcementsData : defaultAnnouncements,
-      pressRelease: pressReleaseData.length > 0 ? pressReleaseData : defaultPressRelease,
-      gallery: formattedGalleryData.length > 0 ? formattedGalleryData : defaultGallery,
+      news: combinedNews,
+      announcements: combinedAnnouncements,
+      pressRelease: combinedPressRelease,
+      gallery: combinedGallery,
     };
   } catch {
     const defaultNews: NewsPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "news").slice(0, 3).map((item) => ({
