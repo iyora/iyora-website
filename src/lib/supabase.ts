@@ -183,6 +183,7 @@ export interface NewsArticle {
   excerpt: string | null;
   content: string | null;
   cover_image: string | null;
+  photos?: string[] | null;
   category: NewsCategory;
   published_at: string | null;
   created_at: string;
@@ -204,6 +205,7 @@ export interface GalleryItem {
   title: string;
   description: string | null;
   image_url: string;
+  photos?: string[] | null;
   category: string | null;
   created_at: string;
   slug?: string;
@@ -261,6 +263,7 @@ export async function fetchNewsBySlug(
         excerpt: (isEn && dummy.caption_en) ? dummy.caption_en : dummy.caption,
         content: (isEn && dummy.content_en) ? dummy.content_en : (dummy.content ?? null),
         cover_image: dummy.photo,
+        photos: dummy.photos ?? null,
         category: (dummy.category as NewsCategory) || "news",
         published_at: dummy.publishedAt,
         created_at: dummy.publishedAt,
@@ -283,6 +286,7 @@ export async function fetchNewsBySlug(
       title: isEn && dummy?.title_en ? dummy.title_en : (data as NewsArticle).title,
       excerpt: isEn && dummy?.caption_en ? dummy.caption_en : (data as NewsArticle).excerpt,
       content: isEn && dummy?.content_en ? dummy.content_en : (data as NewsArticle).content,
+      photos: dummy?.photos ?? null,
       external_link: dummy?.link ?? null,
       external_link_label: (isEn && dummy?.linkLabel_en) ? dummy.linkLabel_en : (dummy?.linkLabel ?? null),
       external_link2: dummy?.link2 ?? null,
@@ -305,6 +309,7 @@ export async function fetchNewsBySlug(
       excerpt: (isEn && dummy.caption_en) ? dummy.caption_en : dummy.caption,
       content: (isEn && dummy.content_en) ? dummy.content_en : (dummy.content ?? null),
       cover_image: dummy.photo,
+      photos: dummy.photos ?? null,
       category: (dummy.category as NewsCategory) || "news",
       published_at: dummy.publishedAt,
       created_at: dummy.publishedAt,
@@ -430,6 +435,7 @@ export async function fetchAllNews(locale?: string): Promise<{
       content: (isEn && item.content_en) ? item.content_en : (item.content ?? null),
       image_url: item.photo,
       cover_image: item.photo,
+      photos: item.photos ?? null,
       category: "gallery",
       created_at: item.publishedAt,
       published_at: item.publishedAt,

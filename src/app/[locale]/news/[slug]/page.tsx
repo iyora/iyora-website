@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { fetchNewsBySlug, fetchAllNews } from "@/lib/supabase";
 import { Calendar, User, ArrowLeft, ExternalLink, Share2, Tag, ChevronRight, Newspaper, Megaphone, Images } from "lucide-react";
+import ImageGallerySlider from "@/components/news/ImageGallerySlider";
 
 export const dynamic = "force-dynamic";
 
@@ -184,6 +185,11 @@ export default async function NewsDetailPage({ params }: Props) {
                   allowFullScreen
                 />
               </div>
+            )}
+
+            {/* Gallery Photo Collection Slider */}
+            {article.photos && article.photos.length > 0 && (
+              <ImageGallerySlider photos={article.photos} title={article.title} isEn={isEn} />
             )}
 
             {/* Content Body */}

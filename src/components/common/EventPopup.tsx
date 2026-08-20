@@ -261,7 +261,15 @@ export default function EventPopup() {
                   <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-gray-500 font-medium mb-4">
                     <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-primary font-extrabold uppercase tracking-wider text-[11px] whitespace-nowrap">
                       <Megaphone size={13} className="flex-shrink-0" />
-                      <span>{isEn ? `Announcement ${currentIndex + 1}/${totalSlides}` : `Pengumuman Event ${currentIndex + 1}/${totalSlides}`}</span>
+                      <span>
+                        {isEn
+                          ? totalSlides > 1
+                            ? `Press Release ${currentIndex + 1}/${totalSlides}`
+                            : "Press Release"
+                          : totalSlides > 1
+                          ? `Siaran Pers ${currentIndex + 1}/${totalSlides}`
+                          : "Siaran Pers"}
+                      </span>
                     </div>
                     <span className="text-gray-300">•</span>
                     <div className="flex items-center gap-1.5 whitespace-nowrap text-gray-600">

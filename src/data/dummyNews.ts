@@ -5,6 +5,7 @@ export interface DummyNewsItem {
   title_en?: string;
   category: "news" | "announcement" | "press_release" | "gallery";
   photo: string;
+  photos?: string[];
   caption: string;
   caption_en?: string;
   content?: string;
@@ -31,40 +32,41 @@ export interface DummyNewsItem {
 export const DUMMY_NEWS: DummyNewsItem[] = [
   // ── PRESS RELEASE ──
   {
-    id: "press-release-1",
-    slug: "siaran-pers-peluncuran-ekosistem-olimpiade-sains-terpadu-2026",
-    title: "Siaran Pers: IYORA Resmi Luncurkan Ekosistem Olimpiade Sains Terpadu 2026 dan Penyatuan Sertifikasi Berstandar SIMT Puspresnas",
-    title_en: "Press Release: IYORA Officially Launches Integrated Science Olympiad Ecosystem 2026 and SIMT Puspresnas Standardized Certification",
+    id: "press-release-opening-ceremony-2026",
+    slug: "siaran-pers-opening-ceremony-nygo-iygo-nyeo-iyeo-2026",
+    title: "Siaran Pers: Pembukaan Resmi (Opening Ceremony) NYGO, IYGO, NYEO & IYEO 2026 Sukses Digelar Secara Daring",
+    title_en: "Press Release: Official Opening Ceremony of NYGO, IYGO, NYEO & IYEO 2026 Successfully Held Online",
     category: "press_release",
-    photo: "https://jabaran.id/wp-content/uploads/2025/04/IYSA-gelar-OS2MN-2025-696x381.jpg",
-    caption: "Siaran Pers Resmi Hasil Pembukaan Olimpiade Sains Nasional & Internasional IYORA 2026",
-    caption_en: "Official Press Release on IYORA 2026 National & International Science Olympiad Launch",
-    content: `DEPOK, 18 Agustus 2026 — Indonesian Youth Outstanding Recognition Association (IYORA), lembaga penyelenggara kompetisi sains dan olimpiade pelajar bertaraf nasional dan internasional yang berpusat di Depok, Jawa Barat, secara resmi meluncurkan ekosistem olimpiade sains terpadu untuk periode 2026.
+    photo: "/images/OPENING/dokum1.png",
+    /* 📸 DOKUMENTASI FOTO (Bisa Diubah / Ditambah Foto Baru di Sini) */
+    photos: [
+      "/images/OPENING/dokum1.png",
+      "/images/OPENING/dokum2.png",
+      "/images/OPENING/dokum3.jpeg",
+      "/images/OPENING/dokum4.jpeg",
+      "/images/OPENING/dokum5.jpeg",
+    ],
+    caption: "Resmi Dibuka! Opening Ceremony NYGO & IYGO serta NYEO & IYEO 2026 Sukses Digelar Secara Daring pada 20 Agustus 2026.",
+    caption_en: "Officially Opened! Online Opening Ceremony for NYGO, IYGO, NYEO & IYEO 2026 Successfully Held on August 20th, 2026.",
+    content: `DEPOK, 20 Agustus 2026 — Indonesian Youth Outstanding Recognition Association (IYORA) bekerjasama dengan Indonesian Young Scientist Association (IYSA) dan Malaysia Innovation Invention Creativity Association (MIICA) secara resmi menyelenggarakan Pembukaan Resmi (Opening Ceremony) kompetisi olimpiade tingkat nasional dan internasional: National Youth Geography Olympiad (NYGO), International Youth Geography Olympiad (IYGO), National Youth Economics Olympiad (NYEO), dan International Youth Economics Olympiad (IYEO) 2026.
 
-Dalam keterangan pers resminya hari ini, Direktur Eksekutif IYORA menegaskan komitmen lembaga untuk memfasilitasi minat, bakat, serta potensi akademik peserta didik mulai tingkat Sekolah Dasar (SD), Sekolah Menengah Pertama (SMP), hingga Sekolah Menengah Atas / Kejuruan (SMA/SMK) di seluruh pelosok Indonesia dan mancanegara.
+Acara pembukaan yang digelar secara full online pada Kamis, 20 Agustus 2026 ini dihadiri oleh ribuan pelajar bertalenta, guru pendamping, dewan juri internasional, serta perwakilan dari berbagai asosiasi pendidikan sains nasional dan mancanegara.
 
-Sejak berdiri sebagai pengembang utama olimpiade sains di bawah naungan Indonesian Young Scientist Association (IYSA), IYORA kini mengelola 14 cabang olimpiade bereputasi unggul, meliputi National Youth Geography Olympiad (NYGO), International Youth Geography Olympiad (IYGO), National Youth Economics Olympiad (NYEO), International Youth Economics Olympiad (IYEO), National Youth Biology Olympiad (NYBO), International Youth Biology Olympiad (IYBO), serta Olimpiade Sains Siswa Madrasah Nasional (OS2MN).
+Rangkaian kompetisi NYGO, IYGO, NYEO, dan IYEO 2026 menjadi wadah prestisius bagi generasi muda untuk menguji pemahaman mendalam di bidang ilmu Geografi dan Ekonomi. Selain memperebutkan medali dan penghargaan internasional, seluruh sertifikat kejuaraan IYORA telah terintegrasi dengan Sistem Informasi Manajemen Talenta (SIMT) Puspresnas Kemendikbudristek RI, memberikan bobot rekam jejak akademik yang diakui untuk jalur seleksi perguruan tinggi dan beasiswa.
 
-"Seluruh penyelenggaraan kompetisi IYORA mengedepankan objektivitas, transparansi, dan kualitas materi soal berstandar internasional. Lebih dari itu, setiap sertifikat kejuaraan dan penghargaan resmi yang diterbitkan IYORA telah terintegrasi secara langsung dengan Sistem Informasi Manajemen Talenta (SIMT) Puspresnas Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi Republik Indonesia," ujar Humas IYORA.
+"Opening Ceremony hari ini menandai dimulainya persaingan sehat dan sportif antar pelajar terbaik dari seluruh provinsi di Indonesia hingga mancanegara. Kami berkomitmen menyajikan kompetisi yang transparan, objektif, dan berstandar internasional," tegas Humas IYORA.
 
-Integrasi SIMT Puspresnas ini memberikan nilai tambah strategis bagi para pemenang dan peserta dalam proses Seleksi Nasional Berdasarkan Prestasi (SNBP), penerimaan mahasiswa baru perguruan tinggi negeri (PTN) unggulan, serta jalur seleksi beasiswa bertaraf nasional maupun internasional.
+Tahap ujian online akan berlangsung sesuai jadwal teknis yang disiapkan platform IYORA. Masyarakat dan sekolah dapat memantau update pengumuman dan hasil babak final melalui portal resmi https://iyora.or.id.`,
+    content_en: `DEPOK, August 20, 2026 — Indonesian Youth Outstanding Recognition Association (IYORA) in collaboration with Indonesian Young Scientist Association (IYSA) and Malaysia Innovation Invention Creativity Association (MIICA) officially held the Opening Ceremony for prestigious national and international olympiads: National Youth Geography Olympiad (NYGO), International Youth Geography Olympiad (IYGO), National Youth Economics Olympiad (NYEO), and International Youth Economics Olympiad (IYEO) 2026.
 
-Seiring dengan pembukaan pendaftaran gelombang utama untuk NYGO, IYGO, NYEO, dan IYEO 2026, IYORA mengundang seluruh sekolah, guru pendamping, dan pelajar di 38 provinsi Indonesia untuk memanfaatkan kesempatan emas ini. Pendaftaran dilakukan secara mandiri maupun kolektif melalui portal resmi IYORA di https://iyora.or.id.`,
-    content_en: `DEPOK, August 18, 2026 — The Indonesian Youth Outstanding Recognition Association (IYORA), a premier national and international science competition organization based in Depok, West Java, today officially launched its integrated science olympiad ecosystem for the 2026 academic period.
+The opening event, held fully online on Thursday, August 20th, 2026, was attended by thousands of talented students, mentor teachers, international jury members, and representatives from educational and scientific associations across Indonesia and abroad.
 
-In an official press statement released today, the Executive Director of IYORA emphasized the organization's steadfast commitment to fostering academic excellence among students spanning Elementary, Junior High, and Senior High School levels across all 38 provinces of Indonesia and internationally.
+The NYGO, IYGO, NYEO, and IYEO 2026 competition series serve as an elite platform for youth to demonstrate analytical prowess in Geography and Economics. Beyond competing for medals and global recognition, all official IYORA winner certificates are integrated into SIMT Puspresnas (Ministry of Education, Culture, Research, and Technology of the Republic of Indonesia), providing recognized academic merit for university selection pathways and scholarships.
 
-Originally established as a core science olympiad division under the Indonesian Young Scientist Association (IYSA), IYORA currently manages 14 prestigious competition branches, including the National Youth Geography Olympiad (NYGO), International Youth Geography Olympiad (IYGO), National Youth Economics Olympiad (NYEO), International Youth Economics Olympiad (IYEO), National Youth Biology Olympiad (NYBO), International Youth Biology Olympiad (IYBO), and the National Madrasah Student Science Olympiad (OS2MN).
+"Today's Opening Ceremony marks the beginning of high-level, fair competition among top students nationwide and internationally. We are dedicated to providing a transparent, objective, and globally standardized competition," emphasized IYORA Public Relations.
 
-"Every IYORA competition prioritizes objectivity, transparency, and international-standard examination quality. Furthermore, all official award certificates issued by IYORA are officially integrated into the Talent Management Information System (SIMT Puspresnas) under the Ministry of Education, Culture, Research, and Technology of the Republic of Indonesia," stated IYORA Public Relations.
-
-This official SIMT Puspresnas integration offers strategic advantages for winners and participants applying through National Achievement-Based Selection (SNBP), state university admissions, and prestigious national or international scholarship pathways.
-
-With main registration currently open for NYGO, IYGO, NYEO, and IYEO 2026, IYORA invites all schools, mentoring educators, and students nationwide to seize this opportunity. Registrations can be submitted individually or collectively via the official portal at https://iyora.or.id.`,
-    link: "https://jabaran.id/os2mn-2025-sukses-digelar-tampilkan-semangat-kompetisi-ilmiah-pelajar-madrasah-se-indonesia/",
-    linkLabel: "Baca Berita Media Jabaran.id",
-    linkLabel_en: "Read News Article on Jabaran.id",
-    publishedAt: "2026-08-18",
+The online examination phases will proceed according to the schedule hosted on the IYORA platform. Schools, mentors, and participants can monitor official updates and final results via https://iyora.or.id.`,
+    publishedAt: "2026-08-20",
     author: "Humas IYORA",
   },
   // ── NEWS / ANNOUNCEMENT ──
@@ -225,6 +227,33 @@ With main registration currently open for NYGO, IYGO, NYEO, and IYEO 2026, IYORA
     author: "IyoraOlympiade",
   },
   // ── GALLERY (Galeri) ──
+  {
+    id: "gallery-opening-ceremony-2026",
+    slug: "dokumentasi-opening-ceremony-nygo-iygo-nyeo-iyeo-2026",
+    title: "Dokumentasi Pembukaan Resmi (Opening Ceremony) NYGO, IYGO, NYEO & IYEO 2026",
+    title_en: "Photo Documentation: Official Opening Ceremony of NYGO, IYGO, NYEO & IYEO 2026",
+    category: "gallery",
+    photo: "/images/pengumuman/opening.png",
+    photos: [
+      "/images/OPENING/dokum6.jpeg",
+      "/images/OPENING/dokum2.png",
+      "/images/OPENING/dokum5.jpeg",
+      "/images/OPENING/dokum1.png",
+      "/images/OPENING/dokum3.jpeg",
+      "/images/OPENING/dokum4.jpeg",
+      
+     
+    ],
+    caption: "Kumpulan foto dokumentasi Pembukaan Resmi (Opening Ceremony) NYGO & IYGO serta NYEO & IYEO 2026 yang digelar secara daring pada 20 Agustus 2026.",
+    caption_en: "Photo documentation collection of the Online Opening Ceremony for NYGO, IYGO, NYEO & IYEO 2026 held on August 20th, 2026.",
+    content: "Berikut adalah dokumentasi foto lengkap dari acara Pembukaan Resmi (Opening Ceremony) kompetisi olimpiade tingkat nasional dan internasional NYGO, IYGO, NYEO, dan IYEO 2026. Acara diselenggarakan secara daring bekerja sama dengan IYSA & MIICA serta terintegrasi resmi dengan SIMT Puspresnas Kemendikbudristek RI.",
+    content_en: "Here is the complete photo documentation gallery of the Online Opening Ceremony for NYGO, IYGO, NYEO, and IYEO 2026 national and international olympiads held in collaboration with IYSA & MIICA.",
+    publishedAt: "2026-08-20",
+    author: "Humas IYORA",
+    link: "https://iyora.or.id",
+    linkLabel: "Kunjungi Portal Resmi IYORA",
+    linkLabel_en: "Visit Official IYORA Portal",
+  },
   {
     id: "gallery-1",
     slug: "after-event-biology-physics-olympiad-2026",
