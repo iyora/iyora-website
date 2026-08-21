@@ -61,8 +61,6 @@ function ArticleCard({
   return (
     <Link
       href={`/${locale}/news/${slug}`}
-      target="_blank"
-      rel="noopener noreferrer"
       className="group bg-white rounded-2xl overflow-hidden border border-gray-200/80 shadow-md hover:shadow-xl hover:shadow-primary/15 transition-all duration-300 hover:-translate-y-1.5 flex flex-col h-full cursor-pointer"
     >
       {/* Frame Foto (Top Image Container) */}

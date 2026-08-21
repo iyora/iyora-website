@@ -154,8 +154,8 @@ export default function Navbar({ newsPreview }: NavbarProps) {
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
-          <Link href={href("/about")} className={navLinkClass}>
-            {t("about")}
+          <Link href={href("/")} className={navLinkClass}>
+            {t("home")}
           </Link>
 
           <div
@@ -446,8 +446,7 @@ export default function Navbar({ newsPreview }: NavbarProps) {
                           <Link
                             key={item.id}
                             href={href(`/news/${item.slug}`)}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            onClick={() => setNewsDropdownOpen(false)}
                             className="flex gap-3 p-2 rounded-xl hover:bg-white transition-colors group"
                           >
                             {item.cover_image ? (
@@ -488,8 +487,7 @@ export default function Navbar({ newsPreview }: NavbarProps) {
                           <Link
                             key={item.id}
                             href={href(`/news/${item.slug}`)}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            onClick={() => setNewsDropdownOpen(false)}
                             className="flex gap-3 p-2 rounded-xl hover:bg-white transition-colors group"
                           >
                             {item.cover_image ? (
@@ -530,8 +528,7 @@ export default function Navbar({ newsPreview }: NavbarProps) {
                           <Link
                             key={item.id}
                             href={href(`/news/${item.slug}`)}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            onClick={() => setNewsDropdownOpen(false)}
                             className="flex gap-3 p-2 rounded-xl hover:bg-white transition-colors group"
                           >
                             {item.cover_image ? (
@@ -572,8 +569,7 @@ export default function Navbar({ newsPreview }: NavbarProps) {
                           <Link
                             key={item.id}
                             href={item.slug ? href(`/news/${item.slug}`) : `${href("/news")}?tab=gallery`}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            onClick={() => setNewsDropdownOpen(false)}
                             className="flex gap-3 p-2 rounded-xl hover:bg-white transition-colors group"
                           >
                             {item.image_url ? (
@@ -609,6 +605,9 @@ export default function Navbar({ newsPreview }: NavbarProps) {
           <Link href={href("/partners")} className={navLinkClass}>
             {t("partners")}
           </Link>
+          <Link href={href("/about")} className={navLinkClass}>
+            {t("about")}
+          </Link>
           <Link href={href("/contact")} className={navLinkClass}>
             {t("contact")}
           </Link>
@@ -642,11 +641,11 @@ export default function Navbar({ newsPreview }: NavbarProps) {
         <div className="md:hidden bg-white border-t border-gray-100 shadow-lg">
           <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-1">
             <Link
-              href={href("/about")}
+              href={href("/")}
               className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors"
               onClick={() => setMobileOpen(false)}
             >
-              {t("about")}
+              {t("home")}
             </Link>
             <Link
               href={href("/competitions")}
@@ -700,6 +699,13 @@ export default function Navbar({ newsPreview }: NavbarProps) {
               onClick={() => setMobileOpen(false)}
             >
               {t("partners")}
+            </Link>
+            <Link
+              href={href("/about")}
+              className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors"
+              onClick={() => setMobileOpen(false)}
+            >
+              {t("about")}
             </Link>
             <Link
               href={href("/contact")}

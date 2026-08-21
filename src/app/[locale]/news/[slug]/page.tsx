@@ -314,8 +314,6 @@ export default async function NewsDetailPage({ params }: Props) {
                 <Link
                   key={item.id}
                   href={`/${locale}/news/${item.slug}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="group bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 flex flex-col h-full hover:-translate-y-1"
                 >
                   {item.cover_image && (
