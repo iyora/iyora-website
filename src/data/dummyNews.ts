@@ -37,7 +37,7 @@ export const DUMMY_NEWS: DummyNewsItem[] = [
     title: "Siaran Pers: Pembukaan Resmi (Opening Ceremony) NYGO, IYGO, NYEO & IYEO 2026 Sukses Digelar Secara Daring",
     title_en: "Press Release: Official Opening Ceremony of NYGO, IYGO, NYEO & IYEO 2026 Successfully Held Online",
     category: "press_release",
-    photo: "/images/OPENING/dokum1.png",
+    photo: "/images/galeri/open.png",
     /* 📸 DOKUMENTASI FOTO (Bisa Diubah / Ditambah Foto Baru di Sini) */
     photos: [
       "/images/OPENING/dokum1.png",
@@ -50,22 +50,22 @@ export const DUMMY_NEWS: DummyNewsItem[] = [
     caption_en: "Officially Opened! Online Opening Ceremony for NYGO, IYGO, NYEO & IYEO 2026 Successfully Held on August 20th, 2026.",
     content: `DEPOK, 20 Agustus 2026 — Indonesian Youth Outstanding Recognition Association (IYORA) bekerjasama dengan Indonesian Young Scientist Association (IYSA) dan Malaysia Innovation Invention Creativity Association (MIICA) secara resmi menyelenggarakan Pembukaan Resmi (Opening Ceremony) kompetisi olimpiade tingkat nasional dan internasional: National Youth Geography Olympiad (NYGO), International Youth Geography Olympiad (IYGO), National Youth Economics Olympiad (NYEO), dan International Youth Economics Olympiad (IYEO) 2026.
 
-Acara pembukaan yang digelar secara full online pada Kamis, 20 Agustus 2026 ini dihadiri oleh ribuan pelajar bertalenta, guru pendamping, dewan juri internasional, serta perwakilan dari berbagai asosiasi pendidikan sains nasional dan mancanegara.
+Acara pembukaan yang digelar secara full online pada Kamis, 20 Agustus 2026 ini diikuti oleh pelajar bertalenta, guru pendamping, serta perwakilan dari beberapa negara Thailand, South Korea, Uzbekistan, United States.
 
-Rangkaian kompetisi NYGO, IYGO, NYEO, dan IYEO 2026 menjadi wadah prestisius bagi generasi muda untuk menguji pemahaman mendalam di bidang ilmu Geografi dan Ekonomi. Selain memperebutkan medali dan penghargaan internasional, seluruh sertifikat kejuaraan IYORA telah terintegrasi dengan Sistem Informasi Manajemen Talenta (SIMT) Puspresnas Kemendikbudristek RI, memberikan bobot rekam jejak akademik yang diakui untuk jalur seleksi perguruan tinggi dan beasiswa.
+Rangkaian Olimpiade NYGO, IYGO, NYEO, dan IYEO 2026 menjadi wadah prestisius bagi generasi muda untuk menguji pemahaman mendalam di bidang ilmu Geografi dan Ekonomi. Selain memperebutkan medali seluruh sertifikat kejuaraan IYORA telah terintegrasi dengan Sistem Informasi Manajemen Talenta (SIMT) Puspresnas Kemendikbudristek RI, memberikan bobot rekam jejak akademik yang diakui untuk jalur seleksi perguruan tinggi dan beasiswa.
 
-"Opening Ceremony hari ini menandai dimulainya persaingan sehat dan sportif antar pelajar terbaik dari seluruh provinsi di Indonesia hingga mancanegara. Kami berkomitmen menyajikan kompetisi yang transparan, objektif, dan berstandar internasional," tegas Humas IYORA.
+"Opening Ceremony hari ini menandai dimulainya persaingan sehat dan sportif antar pelajar terbaik dari seluruh provinsi di Indonesia hingga mancanegara. Kami berkomitmen menyajikan kompetisi yang transparan, objektif, dan berstandar internasional,"
 
 Tahap ujian online akan berlangsung sesuai jadwal teknis yang disiapkan platform IYORA. Masyarakat dan sekolah dapat memantau update pengumuman dan hasil babak final melalui portal resmi https://iyora.or.id.`,
-    content_en: `DEPOK, August 20, 2026 — Indonesian Youth Outstanding Recognition Association (IYORA) in collaboration with Indonesian Young Scientist Association (IYSA) and Malaysia Innovation Invention Creativity Association (MIICA) officially held the Opening Ceremony for prestigious national and international olympiads: National Youth Geography Olympiad (NYGO), International Youth Geography Olympiad (IYGO), National Youth Economics Olympiad (NYEO), and International Youth Economics Olympiad (IYEO) 2026.
+    content_en: `DEPOK, August 20, 2026 — The Indonesian Youth Outstanding Recognition Association (IYORA), in collaboration with the Indonesian Young Scientist Association (IYSA) and the Malaysia Innovation Invention Creativity Association (MIICA), has officially held the opening ceremony for the 2026 national and international olympiad competitions: the National Youth Geography Olympiad (NYGO), International Youth Geography Olympiad (IYGO), National Youth Economics Olympiad (NYEO), and International Youth Economics Olympiad (IYEO).
 
-The opening event, held fully online on Thursday, August 20th, 2026, was attended by thousands of talented students, mentor teachers, international jury members, and representatives from educational and scientific associations across Indonesia and abroad.
+The opening ceremony, held entirely online on Thursday, August 20, 2026, was attended by talented students, supervising teachers, and representatives from several countries, including Thailand, South Korea, Uzbekistan, and the United States.
 
-The NYGO, IYGO, NYEO, and IYEO 2026 competition series serve as an elite platform for youth to demonstrate analytical prowess in Geography and Economics. Beyond competing for medals and global recognition, all official IYORA winner certificates are integrated into SIMT Puspresnas (Ministry of Education, Culture, Research, and Technology of the Republic of Indonesia), providing recognized academic merit for university selection pathways and scholarships.
+The 2026 NYGO, IYGO, NYEO, and IYEO series serves as a prestigious platform for the younger generation to test their in-depth understanding of Geography and Economics. Beyond competing for medals, all IYORA championship certificates are integrated with the Talent Management Information System (SIMT) of the National Achievement Center (Puspresnas) under the Indonesian Ministry of Education, Culture, Research, and Technology; this provides recognized academic credentials for university admissions and scholarship applications.
 
-"Today's Opening Ceremony marks the beginning of high-level, fair competition among top students nationwide and internationally. We are dedicated to providing a transparent, objective, and globally standardized competition," emphasized IYORA Public Relations.
+"Today's opening ceremony marks the beginning of healthy, sportsmanlike competition among the best students from every province in Indonesia and from abroad. We are committed to delivering competitions that are transparent, objective, and meet international standards."
 
-The online examination phases will proceed according to the schedule hosted on the IYORA platform. Schools, mentors, and participants can monitor official updates and final results via https://iyora.or.id.`,
+The online examination phase will proceed according to the technical schedule established by the IYORA platform. The public and schools can monitor updates regarding announcements and final round results via the official portal at https://iyora.or.id.`,
     publishedAt: "2026-08-20",
     author: "Humas IYORA",
   },
@@ -233,7 +233,7 @@ The online examination phases will proceed according to the schedule hosted on t
     title: "Dokumentasi Pembukaan Resmi (Opening Ceremony) NYGO, IYGO, NYEO & IYEO 2026",
     title_en: "Photo Documentation: Official Opening Ceremony of NYGO, IYGO, NYEO & IYEO 2026",
     category: "gallery",
-    photo: "/images/pengumuman/opening.png",
+    photo: "/images/galeri/round1doc.png",
     photos: [
       "/images/OPENING/dokum6.jpeg",
       "/images/OPENING/dokum2.png",
@@ -241,6 +241,7 @@ The online examination phases will proceed according to the schedule hosted on t
       "/images/OPENING/dokum1.png",
       "/images/OPENING/dokum3.jpeg",
       "/images/OPENING/dokum4.jpeg",
+      
       
      
     ],
@@ -250,9 +251,9 @@ The online examination phases will proceed according to the schedule hosted on t
     content_en: "Here is the complete photo documentation gallery of the Online Opening Ceremony for NYGO, IYGO, NYEO, and IYEO 2026 national and international olympiads held in collaboration with IYSA & MIICA.",
     publishedAt: "2026-08-20",
     author: "Humas IYORA",
-    link: "https://iyora.or.id",
-    linkLabel: "Kunjungi Portal Resmi IYORA",
-    linkLabel_en: "Visit Official IYORA Portal",
+    link: "https://drive.google.com/drive/folders/139SZyKKk2xDc6-Kx5FN3zFTsrIhWaLp0?usp=sharing",
+    linkLabel: "FULL DOKUMENTASI ROUND 1",
+    linkLabel_en: "Full Documentation of Round 1",
   },
   {
     id: "gallery-1",

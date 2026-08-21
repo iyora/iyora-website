@@ -57,35 +57,25 @@ export default function HomeNewsSection({
   const isEn = locale === "en";
   const [activeTab, setActiveTab] = useState<TabKey>("all");
 
-  const totalCount = news.length + announcements.length + pressRelease.length + gallery.length;
+  const totalCount = pressRelease.length + gallery.length;
 
   if (totalCount === 0) return null;
 
   // Filter items based on active tab
-  let displayNews: NewsArticle[] = [];
-  let displayAnnouncements: NewsArticle[] = [];
   let displayPressRelease: NewsArticle[] = [];
   let displayGallery: GalleryItem[] = [];
 
   if (activeTab === "all") {
-    displayNews = news.slice(0, 3);
-    displayAnnouncements = announcements.slice(0, 3);
     displayPressRelease = pressRelease.slice(0, 3);
-    displayGallery = gallery.slice(0, 3);
-  } else if (activeTab === "news") {
-    displayNews = news.slice(0, 6);
-  } else if (activeTab === "announcements") {
-    displayAnnouncements = announcements.slice(0, 6);
-  } else if (activeTab === "press_release") {
-    displayPressRelease = pressRelease.slice(0, 6);
-  } else if (activeTab === "gallery") {
     displayGallery = gallery.slice(0, 6);
+  } else if (activeTab === "press_release") {
+    displayPressRelease = pressRelease;
+  } else if (activeTab === "gallery") {
+    displayGallery = gallery;
   }
 
   const tabs: { key: TabKey; label: string; count: number; icon: React.ElementType }[] = [
     { key: "all", label: isEn ? "All" : "Semua", count: totalCount, icon: Newspaper },
-    { key: "news", label: isEn ? "News" : "Berita", count: news.length, icon: Newspaper },
-    { key: "announcements", label: isEn ? "Announcements" : "Pengumuman", count: announcements.length, icon: Megaphone },
   ];
 
   if (pressRelease.length > 0) {
@@ -108,16 +98,16 @@ export default function HomeNewsSection({
           className="text-center mb-10"
         >
           <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-3">
-            <Megaphone size={14} />
-            {isEn ? "News & Announcements" : "Berita & Pengumuman"}
+            <FileText size={14} />
+            {isEn ? "Press Release & Gallery" : "Siaran Pers & Galeri"}
           </span>
           <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-4">
-            {isEn ? "Latest News & Updates" : "Informasi & Kabar Terbaru"}
+            {isEn ? "Official Press Release & Activity Gallery" : "Siaran Pers Resmi & Galeri Kegiatan"}
           </h2>
           <p className="text-gray-500 text-lg max-w-2xl mx-auto">
             {isEn
-              ? "Stay updated with registration announcements, olympiad news, and latest updates from IYORA."
-              : "Simak pengumuman pendaftaran, berita olimpiade, dan update terkini dari IYORA."}
+              ? "Explore official press releases and photo documentation from IYORA science olympiad events."
+              : "Simak siaran pers resmi serta dokumentasi foto rangkaian kegiatan olimpiade sains IYORA."}
           </p>
         </motion.div>
 
@@ -153,84 +143,15 @@ export default function HomeNewsSection({
 
         {/* Content Container */}
         <div className="min-h-[300px]">
-          {/* TAB ALL or NEWS */}
-          {(activeTab === "all" || activeTab === "news") && displayNews.length > 0 && (
-            <div className="mb-12">
-              {activeTab === "all" && (
-                <div className="flex items-center justify-between mb-6 pb-2 border-b border-gray-100">
-                  <div className="flex items-center gap-2 text-gray-900 font-bold text-xl">
-                    <Newspaper className="text-primary" size={20} />
-                    <span>{isEn ? "Latest News" : "Berita Terbaru"}</span>
-                  </div>
-                  <Link
-                    href={`/${locale}/news?tab=news`}
-                    className="text-xs md:text-sm font-semibold text-primary hover:underline flex items-center gap-1"
-                  >
-                    {isEn ? "View All News" : "Lihat Semua Berita"} <ChevronRight size={14} />
-                  </Link>
-                </div>
-              )}
-              <motion.div
-                key={`news-grid-${activeTab}`}
-                variants={containerVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-              >
-                {displayNews.map((article) => (
-                  <motion.div key={article.id} variants={itemVariants}>
-                    <ArticleCard article={article} badge={isEn ? "News" : "Berita"} locale={locale} />
-                  </motion.div>
-                ))}
-              </motion.div>
-            </div>
-          )}
-
-          {/* TAB ALL or ANNOUNCEMENTS */}
-          {(activeTab === "all" || activeTab === "announcements") &&
-            displayAnnouncements.length > 0 && (
-              <div className="mb-12">
-                {activeTab === "all" && (
-                  <div className="flex items-center justify-between mb-6 pb-2 border-b border-gray-100">
-                    <div className="flex items-center gap-2 text-gray-900 font-bold text-xl">
-                      <Megaphone className="text-primary" size={20} />
-                      <span>{isEn ? "Registration & Schedule Announcements" : "Pengumuman Pendaftaran & Jadwal"}</span>
-                    </div>
-                    <Link
-                      href={`/${locale}/news?tab=announcements`}
-                      className="text-xs md:text-sm font-semibold text-primary hover:underline flex items-center gap-1"
-                    >
-                      {isEn ? "View All Announcements" : "Lihat Semua Pengumuman"} <ChevronRight size={14} />
-                    </Link>
-                  </div>
-                )}
-                <motion.div
-                  key={`announcements-grid-${activeTab}`}
-                  variants={containerVariants}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                >
-                  {displayAnnouncements.map((article) => (
-                    <motion.div key={article.id} variants={itemVariants}>
-                      <ArticleCard article={article} badge={isEn ? "Announcement" : "Pengumuman"} locale={locale} />
-                    </motion.div>
-                  ))}
-                </motion.div>
-              </div>
-            )}
-
-          {/* TAB ALL or PRESS RELEASE */}
+          {/* PRESS RELEASE SECTION (Foto Full Layout) */}
           {(activeTab === "all" || activeTab === "press_release") &&
             displayPressRelease.length > 0 && (
-              <div className="mb-12">
+              <div className="mb-14">
                 {activeTab === "all" && (
                   <div className="flex items-center justify-between mb-6 pb-2 border-b border-gray-100">
                     <div className="flex items-center gap-2 text-gray-900 font-bold text-xl">
                       <FileText className="text-primary" size={20} />
-                      <span>{isEn ? "Official Press Releases" : "Siaran Pers Resmi"}</span>
+                      <span>{isEn ? "Official Press Release" : "Siaran Pers Resmi"}</span>
                     </div>
                     <Link
                       href={`/${locale}/news?tab=press_release`}
@@ -246,18 +167,18 @@ export default function HomeNewsSection({
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true }}
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                  className="space-y-6"
                 >
                   {displayPressRelease.map((article) => (
                     <motion.div key={article.id} variants={itemVariants}>
-                      <ArticleCard article={article} badge={isEn ? "Press Release" : "Siaran Pers"} locale={locale} />
+                      <PressReleaseCard article={article} locale={locale} />
                     </motion.div>
                   ))}
                 </motion.div>
               </div>
             )}
 
-          {/* GALLERY */}
+          {/* GALLERY SECTION */}
           {(activeTab === "all" || activeTab === "gallery") && displayGallery.length > 0 && (
             <div className="mb-12">
               {activeTab === "all" && (
@@ -298,12 +219,107 @@ export default function HomeNewsSection({
             href={`/${locale}/news`}
             className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl text-sm font-bold bg-primary text-white hover:bg-primary-dark shadow-lg shadow-primary/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
           >
-            <span>{isEn ? "Explore All News & Updates" : "Buka Halaman News Selengkapnya"}</span>
+            <span>{isEn ? "Explore All News & Updates" : "Buka Halaman News & Galeri Selengkapnya"}</span>
             <ArrowRight size={16} />
           </Link>
         </div>
       </div>
     </section>
+  );
+}
+
+/* ── Press Release Full Photo Card Sub-component ── */
+function PressReleaseCard({
+  article,
+  locale,
+}: {
+  article: NewsArticle;
+  locale: string;
+}) {
+  const isEn = locale === "en";
+  const slug = article.slug || article.id;
+  const coverImage = article.cover_image;
+  const excerpt = article.excerpt;
+  const publishedAt = article.published_at || article.created_at;
+
+  return (
+    <Link
+      href={`/${locale}/news/${slug}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group relative bg-white rounded-3xl overflow-hidden border border-gray-200/80 shadow-md hover:shadow-2xl hover:shadow-primary/15 transition-all duration-300 hover:-translate-y-1.5 flex flex-col md:flex-row cursor-pointer"
+    >
+      {/* Full Photo Frame (Tampilan Foto Full Tanpa Terpotong) */}
+      <div className="relative w-full md:w-7/12 aspect-[16/10] md:aspect-auto min-h-[260px] md:min-h-[340px] bg-gray-950 overflow-hidden flex-shrink-0">
+        {coverImage ? (
+          <>
+            {/* Ambient Blur Backdrop */}
+            <Image
+              src={coverImage}
+              alt=""
+              fill
+              aria-hidden="true"
+              className="object-cover blur-md scale-110 opacity-40"
+            />
+            {/* Main Full Photo */}
+            <Image
+              src={coverImage}
+              alt={article.title}
+              fill
+              className="object-contain group-hover:scale-105 transition-transform duration-500 p-2 md:p-4"
+              sizes="(max-width: 768px) 100vw, 60vw"
+            />
+          </>
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-primary via-purple-700 to-indigo-900 flex items-center justify-center">
+            <FileText className="w-14 h-14 text-white/30" />
+          </div>
+        )}
+
+        {/* Badge */}
+        <div className="absolute top-4 left-4 z-10">
+          <span className="bg-primary text-white px-3.5 py-1.5 rounded-full text-xs font-extrabold shadow-md uppercase tracking-wide flex items-center gap-1.5">
+            <FileText size={13} />
+            {isEn ? "Official Press Release" : "Siaran Pers Resmi"}
+          </span>
+        </div>
+      </div>
+
+      {/* Content Details */}
+      <div className="p-6 md:p-8 flex flex-col justify-between flex-1 bg-white">
+        <div>
+          <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500 mb-3 font-semibold">
+            <div className="flex items-center gap-1.5 text-primary font-bold">
+              <Calendar size={14} />
+              <time>{formatDate(publishedAt, locale)}</time>
+            </div>
+            {article.author && (
+              <>
+                <span className="text-gray-300">•</span>
+                <span className="text-gray-600">{article.author}</span>
+              </>
+            )}
+          </div>
+
+          <h3 className="text-xl md:text-2xl font-extrabold text-gray-900 mb-3 leading-snug group-hover:text-primary transition-colors">
+            {article.title}
+          </h3>
+
+          {excerpt && (
+            <p className="text-sm text-gray-600 line-clamp-4 leading-relaxed mb-6 bg-gray-50/80 p-4 rounded-2xl border border-gray-100">
+              {excerpt}
+            </p>
+          )}
+        </div>
+
+        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+          <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white font-bold text-xs md:text-sm shadow-md shadow-primary/20 group-hover:bg-primary-dark transition-all">
+            <span>{isEn ? "Read Full Press Release" : "Baca Siaran Pers Selengkapnya"}</span>
+            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+          </span>
+        </div>
+      </div>
+    </Link>
   );
 }
 
@@ -329,33 +345,45 @@ function ArticleCard({
       href={`/${locale}/news/${slug}`}
       target="_blank"
       rel="noopener noreferrer"
-      className="group relative rounded-2xl overflow-hidden border border-gray-200/80 shadow-md hover:shadow-2xl hover:shadow-primary/20 transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between min-h-[380px] cursor-pointer"
+      className="group bg-white rounded-2xl overflow-hidden border border-gray-200/80 shadow-md hover:shadow-xl hover:shadow-primary/15 transition-all duration-300 hover:-translate-y-1.5 flex flex-col h-full cursor-pointer"
     >
-      {/* Full Card Background Image */}
-      {coverImage ? (
-        <Image
-          src={coverImage}
-          alt={article.title}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-700"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        />
-      ) : (
-        <div className="absolute inset-0 bg-gradient-to-br from-primary via-purple-700 to-indigo-900" />
-      )}
+      {/* Frame Foto (Top Image Container) */}
+      <div className="relative w-full aspect-[16/10] bg-gray-900 overflow-hidden flex-shrink-0">
+        {coverImage ? (
+          <>
+            {/* Soft Ambient Blur Backdrop */}
+            <Image
+              src={coverImage}
+              alt=""
+              fill
+              aria-hidden="true"
+              className="object-cover blur-md scale-110 opacity-30"
+            />
+            {/* Main Foto menyesuaikan frame */}
+            <Image
+              src={coverImage}
+              alt={article.title}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          </>
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-primary via-purple-700 to-indigo-900 flex items-center justify-center">
+            <Newspaper className="w-10 h-10 text-white/30" />
+          </div>
+        )}
 
-      {/* Soft Gradient Overlay for brightness */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
-
-      {/* Top Badge */}
-      <div className="relative z-10 p-3.5 flex items-start justify-between">
-        <span className="bg-white/95 backdrop-blur-md px-3 py-1 rounded-full text-xs font-extrabold text-primary shadow-md uppercase tracking-wide">
-          {badge}
-        </span>
+        {/* Top Badge */}
+        <div className="absolute top-3 left-3 z-10">
+          <span className="bg-white/95 backdrop-blur-md px-3 py-1 rounded-full text-xs font-extrabold text-primary shadow-md uppercase tracking-wide">
+            {badge}
+          </span>
+        </div>
       </div>
 
-      {/* Bright Translucent Content Glass Panel ("Kotak Putih Cerah & Transparan") */}
-      <div className="relative z-10 m-3 p-4 rounded-xl bg-white/75 backdrop-blur-md border border-white/80 shadow-md text-gray-900 flex flex-col justify-between transition-all duration-300 group-hover:bg-white/90">
+      {/* Content Section Below Image Frame */}
+      <div className="p-5 flex flex-col justify-between flex-1 bg-white">
         <div>
           <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-2 font-semibold">
             <Calendar size={13} className="text-primary" />
@@ -367,13 +395,13 @@ function ArticleCard({
           </h3>
 
           {excerpt && (
-            <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed mb-3">
+            <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed mb-4">
               {excerpt}
             </p>
           )}
         </div>
 
-        <div className="flex items-center gap-1 text-xs font-bold text-primary pt-2.5 border-t border-gray-100 group-hover:translate-x-1 transition-transform">
+        <div className="flex items-center gap-1 text-xs font-bold text-primary pt-3 border-t border-gray-100 group-hover:translate-x-1 transition-transform">
           <span>{locale === "en" ? "Read More" : "Baca Selengkapnya"}</span>
           <ArrowRight size={13} />
         </div>

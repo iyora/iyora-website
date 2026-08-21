@@ -97,6 +97,13 @@ export default function ImageGallerySlider({ photos, title, isEn = false }: Imag
           >
             <Image
               src={currentPhoto}
+              alt=""
+              fill
+              aria-hidden="true"
+              className="object-cover blur-md scale-110 opacity-30"
+            />
+            <Image
+              src={currentPhoto}
               alt={`${title} - Documentation ${currentIndex + 1}`}
               fill
               priority

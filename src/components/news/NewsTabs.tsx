@@ -63,35 +63,47 @@ function ArticleCard({
       href={`/${locale}/news/${slug}`}
       target="_blank"
       rel="noopener noreferrer"
-      className="group relative rounded-2xl overflow-hidden border border-gray-200/80 shadow-md hover:shadow-2xl hover:shadow-primary/20 transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between min-h-[380px] cursor-pointer"
+      className="group bg-white rounded-2xl overflow-hidden border border-gray-200/80 shadow-md hover:shadow-xl hover:shadow-primary/15 transition-all duration-300 hover:-translate-y-1.5 flex flex-col h-full cursor-pointer"
     >
-      {/* Full Card Background Image */}
-      {coverImage ? (
-        <Image
-          src={coverImage}
-          alt={article.title}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-700"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        />
-      ) : (
-        <div className="absolute inset-0 bg-gradient-to-br from-primary via-purple-700 to-indigo-900" />
-      )}
+      {/* Frame Foto (Top Image Container) */}
+      <div className="relative w-full aspect-[16/10] bg-gray-900 overflow-hidden flex-shrink-0">
+        {coverImage ? (
+          <>
+            {/* Soft Ambient Blur Backdrop */}
+            <Image
+              src={coverImage}
+              alt=""
+              fill
+              aria-hidden="true"
+              className="object-cover blur-md scale-110 opacity-30"
+            />
+            {/* Main Foto menyesuaikan frame */}
+            <Image
+              src={coverImage}
+              alt={article.title}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          </>
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-primary via-purple-700 to-indigo-900 flex items-center justify-center">
+            <Newspaper className="w-10 h-10 text-white/30" />
+          </div>
+        )}
 
-      {/* Soft Gradient Overlay for brightness */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
-
-      {/* Top Badge */}
-      <div className="relative z-10 p-3.5 flex items-start justify-between">
+        {/* Top Badge */}
         {displayBadge && (
-          <span className="bg-white/95 backdrop-blur-md px-3 py-1 rounded-full text-xs font-extrabold text-primary shadow-md uppercase tracking-wide">
-            {displayBadge}
-          </span>
+          <div className="absolute top-3 left-3 z-10">
+            <span className="bg-white/95 backdrop-blur-md px-3 py-1 rounded-full text-xs font-extrabold text-primary shadow-md uppercase tracking-wide">
+              {displayBadge}
+            </span>
+          </div>
         )}
       </div>
 
-      {/* Bright Translucent Content Glass Panel ("Kotak Putih Cerah & Transparan") */}
-      <div className="relative z-10 m-3 p-4 rounded-xl bg-white/75 backdrop-blur-md border border-white/80 shadow-md text-gray-900 flex flex-col justify-between transition-all duration-300 group-hover:bg-white/90">
+      {/* Content Section Below Image Frame */}
+      <div className="p-5 flex flex-col justify-between flex-1 bg-white">
         <div>
           <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-2 font-semibold">
             <Calendar size={13} className="text-primary" />
@@ -103,13 +115,13 @@ function ArticleCard({
           </h3>
 
           {excerpt && (
-            <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed mb-3">
+            <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed mb-4">
               {excerpt}
             </p>
           )}
         </div>
 
-        <div className="flex items-center gap-1 text-xs font-bold text-primary pt-2.5 border-t border-gray-100 group-hover:translate-x-1 transition-transform">
+        <div className="flex items-center gap-1 text-xs font-bold text-primary pt-3 border-t border-gray-100 group-hover:translate-x-1 transition-transform">
           <span>{locale === "en" ? "Read More" : "Selengkapnya"}</span>
           <ArrowRight size={13} />
         </div>
