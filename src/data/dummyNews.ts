@@ -263,7 +263,7 @@ The online examination phase will proceed according to the technical schedule es
     title: "After Event Biology & Physics Olympiad 2026",
     title_en: "After Event Biology & Physics Olympiad 2026",
     category: "gallery",
-    photo: "/images/Galeri/AFTER EVENT.png",
+    photo: "/images/galeri/afterevent.png",
     caption: "Momen berkesan dan rangkuman keseruan kompetisi sains nasional Biology & Physics Olympiad 2026.",
     caption_en: "Memorable moments and highlight summary of the national science competition Biology & Physics Olympiad 2026.",
     content: "Kami bangga mempersembahkan video rangkuman dari acara yang tak terlupakan ini, sebagai bukti semangat, dedikasi, dan kecemerlangan yang telah ditunjukkan oleh setiap peserta. Melalui video pasca-acara ini, Anda akan disuguhi berbagai momen berkesan yang telah kita lalui bersama.",
