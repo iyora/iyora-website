@@ -33,7 +33,7 @@ export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
     subtitle: "Resmi Dibuka! Opening Ceremony NYGO & IYGO serta NYEO & IYEO 2026 Sukses Digelar Secara Daring pada 20 Agustus 2026.",
     subtitle_en: "Officially Opened! Online Opening Ceremony for NYGO, IYGO, NYEO & IYEO 2026 Successfully Held on August 20th, 2026.",
     /* 🖼️ GAMBAR UTAMA POP-UP (Ganti path / URL gambar di sini) */
-    image: "/images/pengumuman/opening.png",
+    image: "/images/galeri/open.png",
     content:
       "DEPOK, 20 Agustus 2026 — Indonesian Youth Outstanding Recognition Association (IYORA) bekerjasama dengan Indonesian Young Scientist Association (IYSA) dan Malaysia Innovation Invention Creativity Association (MIICA) secara resmi membuka kompetisi olimpiade sains tingkat nasional dan internasional NYGO, IYGO, NYEO, dan IYEO 2026 secara daring. Seluruh sertifikat pemenang terintegrasi resmi dengan SIMT Puspresnas Kemendikbudristek RI.",
     content_en:
