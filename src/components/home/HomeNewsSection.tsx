@@ -97,18 +97,9 @@ export default function HomeNewsSection({
           transition={{ duration: 0.6 }}
           className="text-center mb-10"
         >
-          <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-3">
-            <FileText size={14} />
-            {isEn ? "Press Release & Gallery" : "Siaran Pers & Galeri"}
-          </span>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-5xl font-extrabold text-primary mb-4">
             {isEn ? "Official Press Release & Activity Gallery" : "Siaran Pers Resmi & Galeri Kegiatan"}
           </h2>
-          <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-            {isEn
-              ? "Explore official press releases and photo documentation from IYORA science olympiad events."
-              : "Simak siaran pers resmi serta dokumentasi foto rangkaian kegiatan olimpiade sains IYORA."}
-          </p>
         </motion.div>
 
         {/* Category Tabs */}
@@ -249,27 +240,16 @@ function PressReleaseCard({
       rel="noopener noreferrer"
       className="group relative bg-white rounded-3xl overflow-hidden border border-gray-200/80 shadow-md hover:shadow-2xl hover:shadow-primary/15 transition-all duration-300 hover:-translate-y-1.5 flex flex-col md:flex-row cursor-pointer"
     >
-      {/* Full Photo Frame (Tampilan Foto Full Tanpa Terpotong) */}
-      <div className="relative w-full md:w-7/12 aspect-[16/10] md:aspect-auto min-h-[260px] md:min-h-[340px] bg-gray-950 overflow-hidden flex-shrink-0">
+      {/* Full Photo Frame (Foto Full Tanpa Space) */}
+      <div className="relative w-full md:w-1/2 aspect-[16/10] md:aspect-auto min-h-[260px] md:min-h-[340px] bg-gray-900 overflow-hidden flex-shrink-0">
         {coverImage ? (
-          <>
-            {/* Ambient Blur Backdrop */}
-            <Image
-              src={coverImage}
-              alt=""
-              fill
-              aria-hidden="true"
-              className="object-cover blur-md scale-110 opacity-40"
-            />
-            {/* Main Full Photo */}
-            <Image
-              src={coverImage}
-              alt={article.title}
-              fill
-              className="object-contain group-hover:scale-105 transition-transform duration-500 p-2 md:p-4"
-              sizes="(max-width: 768px) 100vw, 60vw"
-            />
-          </>
+          <Image
+            src={coverImage}
+            alt={article.title}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-primary via-purple-700 to-indigo-900 flex items-center justify-center">
             <FileText className="w-14 h-14 text-white/30" />

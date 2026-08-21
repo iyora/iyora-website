@@ -71,7 +71,7 @@ export default function StatsSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900">
+          <h2 className="text-3xl md:text-5xl font-extrabold text-primary">
             {t("title")}
           </h2>
         </motion.div>

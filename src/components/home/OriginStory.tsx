@@ -54,7 +54,7 @@ export default function OriginStory() {
           viewport={{ once: true }}
           className="text-center mb-10 md:mb-16"
         >
-          <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-5xl font-extrabold text-primary mb-4">
             {t("title")}
           </h2>
           <p className="text-lg text-gray-500 max-w-xl mx-auto">{t("subtitle")}</p>

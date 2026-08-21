@@ -96,7 +96,7 @@ export default function HeroSection() {
           variants={fadeUp}
           initial="hidden"
           animate="visible"
-          className="text-4xl sm:text-5xl md:text-7xl font-extrabold leading-tight tracking-tight mb-6"
+          className="text-4xl sm:text-5xl md:text-7xl font-extrabold leading-tight tracking-tight mb-6 text-white"
         >
           {headlineLines.map((line, i) => (
             <span key={i} className="block">

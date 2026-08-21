@@ -199,7 +199,7 @@ export default function CompetitionsSection({ competitions }: Props) {
           transition={{ duration: 0.6 }}
           className="text-center mb-8 md:mb-10"
         >
-          <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-4">{t("title")}</h2>
+          <h2 className="text-3xl md:text-5xl font-extrabold text-primary mb-4">{t("title")}</h2>
           <p className="text-gray-500 text-lg max-w-2xl mx-auto">{t("subtitle")}</p>
         </motion.div>
 

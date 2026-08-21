@@ -43,7 +43,7 @@ export default function KurasiSection() {
           transition={{ duration: 0.6, delay: 0.05 }}
           className="text-center mb-5"
         >
-          <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 leading-tight">
+          <h2 className="text-3xl md:text-5xl font-extrabold text-primary leading-tight">
             {t("title")}
           </h2>
           <p className="mt-4 text-base md:text-lg text-gray-500 max-w-2xl mx-auto">

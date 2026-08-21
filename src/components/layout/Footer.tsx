@@ -136,7 +136,9 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="https://www.youtube.com/@iyoraolympiad?si=8svhUizyVsl6ptvc"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-sm text-white/50 hover:text-teal transition-colors"
                 >
                   YouTube

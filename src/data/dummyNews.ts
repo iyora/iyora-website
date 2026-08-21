@@ -42,9 +42,11 @@ export const DUMMY_NEWS: DummyNewsItem[] = [
     photos: [
       "/images/OPENING/dokum1.png",
       "/images/OPENING/dokum2.png",
+      "/images/OPENING/dokum6.jpeg",
+      "/images/OPENING/dokum5.jpeg",
       "/images/OPENING/dokum3.jpeg",
       "/images/OPENING/dokum4.jpeg",
-      "/images/OPENING/dokum5.jpeg",
+    
     ],
     caption: "Resmi Dibuka! Opening Ceremony NYGO & IYGO serta NYEO & IYEO 2026 Sukses Digelar Secara Daring pada 20 Agustus 2026.",
     caption_en: "Officially Opened! Online Opening Ceremony for NYGO, IYGO, NYEO & IYEO 2026 Successfully Held on August 20th, 2026.",
@@ -67,7 +69,7 @@ The 2026 NYGO, IYGO, NYEO, and IYEO series serves as a prestigious platform for 
 
 The online examination phase will proceed according to the technical schedule established by the IYORA platform. The public and schools can monitor updates regarding announcements and final round results via the official portal at https://iyora.or.id.`,
     publishedAt: "2026-08-20",
-    author: "Humas IYORA",
+    author: "IyoraOlympiad",
   },
   // ── NEWS / ANNOUNCEMENT ──
   {
@@ -230,8 +232,8 @@ The online examination phase will proceed according to the technical schedule es
   {
     id: "gallery-opening-ceremony-2026",
     slug: "dokumentasi-opening-ceremony-nygo-iygo-nyeo-iyeo-2026",
-    title: "Dokumentasi Pembukaan Resmi (Opening Ceremony) NYGO, IYGO, NYEO & IYEO 2026",
-    title_en: "Photo Documentation: Official Opening Ceremony of NYGO, IYGO, NYEO & IYEO 2026",
+    title: "Dokumentasi Acara Round 1: Upacara Pembukaan Resmi NYGO, IYGO, NYEO & IYEO 2026",
+    title_en: "Event Documentation Round 1: Official Opening Ceremony of NYGO, IYGO, NYEO & IYEO 2026",
     category: "gallery",
     photo: "/images/galeri/round1doc.png",
     photos: [
@@ -261,7 +263,7 @@ The online examination phase will proceed according to the technical schedule es
     title: "After Event Biology & Physics Olympiad 2026",
     title_en: "After Event Biology & Physics Olympiad 2026",
     category: "gallery",
-    photo: "/images/Galery Pemenang/AFTER EVENT.png",
+    photo: "/images/Galeri/AFTER EVENT.png",
     caption: "Momen berkesan dan rangkuman keseruan kompetisi sains nasional Biology & Physics Olympiad 2026.",
     caption_en: "Memorable moments and highlight summary of the national science competition Biology & Physics Olympiad 2026.",
     content: "Kami bangga mempersembahkan video rangkuman dari acara yang tak terlupakan ini, sebagai bukti semangat, dedikasi, dan kecemerlangan yang telah ditunjukkan oleh setiap peserta. Melalui video pasca-acara ini, Anda akan disuguhi berbagai momen berkesan yang telah kita lalui bersama.",
