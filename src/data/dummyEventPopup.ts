@@ -23,6 +23,37 @@ export interface EventPopupData {
 }
 /* Press Release Dummy Popups (Strictly for Press Release / Siaran Pers Event) */
 export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
+ {
+    id: "popup-coming-soon-awarding-2026",
+    isActive: true,
+    badge: "🏆 COMING SOON: AWARDING CEREMONY",
+    badge_en: "🏆 COMING SOON: AWARDING CEREMONY",
+    title: "COMING SOON: AWARDING CEREMONY NYGO, IYGO, NYEO & IYEO 2026",
+    title_en: "COMING SOON: AWARDING CEREMONY OF NYGO, IYGO, NYEO & IYEO 2026",
+    subtitle: "awarding ceremony akan di laksanakan pada tanggal 27 Agustus 2026",
+    subtitle_en: "The awarding ceremony will be held on August 27, 2026.",
+    image: "/images/galeri/awarding.png",
+    content:
+      "Nantikan pengumuman pemenang olimpiade NYGO, IYGO, NYEO, & IYEO 2026 ! Bersiaplah menyaksikan para talenta muda terbaik dari seluruh Indonesia dan mancanegara meraih medali dan sertifikat terintegrasi SIMT Puspresnas Kemendikbudristek RI.",
+    content_en:
+      "Stay tuned for the grand awarding ceremony & winners announcement of NYGO, IYGO, NYEO, & IYEO 2026! Get ready to witness the best young talents from Indonesia and around the world receive their medals and official SIMT Puspresnas integrated certificates.",
+    author: "Panitia IYORA",
+    publishedAt: "2026-08-24",
+    links: [
+      {
+        label: "Portal Resmi IYORA",
+        label_en: "Official IYORA Portal",
+        url: "https://iyora.or.id",
+        variant: "primary",
+      },
+      {
+        label: "Instagram @iyoraofficial",
+        label_en: "Instagram @iyoraofficial",
+        url: "https://www.instagram.com/iyoraofficial",
+        variant: "instagram",
+      },
+    ],
+  },
   {
     id: "press-release-popup-opening-2026",
     isActive: true,
@@ -61,6 +92,7 @@ export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
       },
     ],
   },
+  
 ];
 
 export const DUMMY_EVENT_POPUP: EventPopupData = DUMMY_EVENT_POPUPS[0];

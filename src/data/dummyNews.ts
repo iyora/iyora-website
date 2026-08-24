@@ -72,7 +72,7 @@ The online examination phase will proceed according to the technical schedule es
     author: "IyoraOlympiad",
   },
   // ── NEWS / ANNOUNCEMENT ──
-  {
+  /*{
     id: "announcement-1",
     slug: "penutupan-registrasi-nygo-iygo-nyeo-iyeo",
     title: "Penutupan Registrasi NYGO, IYGO, NYEO, IYEO tinggal 3 hari lagi",
@@ -187,7 +187,7 @@ The online examination phase will proceed according to the technical schedule es
     link5Label_en: "IYEO Registration Website",
     publishedAt: "2026-08-16",
     author: "IyoraOlympiade",
-  },
+  },*/
   {
     id: "news-1",
     slug: "pendaftaran-nybo-iybo-2026-resmi-dibuka",
@@ -230,6 +230,34 @@ The online examination phase will proceed according to the technical schedule es
   },
   // ── GALLERY (Galeri) ──
   {
+    id: "gallery-round2-2026",
+    slug: "dokumentasi-round2-nygo-iygo-nyeo-iyeo-2026",
+    title: "Dokumentasi Acara Round 2: NYGO, IYGO, NYEO & IYEO 2026",
+    title_en: "Event Documentation Round 2: NYGO, IYGO, NYEO & IYEO 2026",
+    category: "gallery",
+    photo: "/images/galeri/rondee2.png",
+    photos: [
+      "/images/rond2/ron1.jpeg",
+      "/images/rond2/ron2.jpeg",
+      "/images/rond2/ron3.jpeg",
+      "/images/rond2/ron4.jpeg",
+      "/images/rond2/ron5.jpeg",
+      "/images/rond2/ron6.jpeg",
+      "/images/rond2/ron7.jpeg",
+      
+     
+    ],
+    caption: "Kumpulan foto dokumentasi Round 2 NYGO & IYGO serta NYEO & IYEO 2026 yang digelar secara daring pada 24 Agustus 2026..",
+    caption_en: "Photo documentation collection of Round 2 of NYGO, IYGO, NYEO & IYEO 2026 held online on August 24th, 2026.",
+    content: "Berikut adalah dokumentasi foto lengkap dari pelaksanaan Round 2 kompetisi olimpiade tingkat nasional dan internasional NYGO, IYGO, NYEO, dan IYEO 2026. Kegiatan diselenggarakan secara daring bekerja sama dengan IYSA & MIICA serta terintegrasi resmi dengan SIMT Puspresnas Kemendikbudristek RI.",
+    content_en: "Here is the complete photo documentation gallery of Round 2 of the NYGO, IYGO, NYEO, and IYEO 2026 national and international olympiads, held online in collaboration with IYSA & MIICA and officially integrated with SIMT Puspresnas, Ministry of Education, Culture, Research, and Technology of the Republic of Indonesia.",
+    publishedAt: "2026-08-24",
+    author: "IyoraOlympiad",
+    link: "https://drive.google.com/drive/folders/1sVDgJRPsJlt9B8n_jTP_pcq1XNY5k8oC?usp=sharing",
+    linkLabel: "FULL DOKUMENTASI ROUND 2",
+    linkLabel_en: "Full Documentation of Round 2",
+  },
+  {
     id: "gallery-opening-ceremony-2026",
     slug: "dokumentasi-opening-ceremony-nygo-iygo-nyeo-iyeo-2026",
     title: "Dokumentasi Acara Round 1: Upacara Pembukaan Resmi NYGO, IYGO, NYEO & IYEO 2026",
@@ -252,7 +280,7 @@ The online examination phase will proceed according to the technical schedule es
     content: "Berikut adalah dokumentasi foto lengkap dari acara Pembukaan Resmi (Opening Ceremony) kompetisi olimpiade tingkat nasional dan internasional NYGO, IYGO, NYEO, dan IYEO 2026. Acara diselenggarakan secara daring bekerja sama dengan IYSA & MIICA serta terintegrasi resmi dengan SIMT Puspresnas Kemendikbudristek RI.",
     content_en: "Here is the complete photo documentation gallery of the Online Opening Ceremony for NYGO, IYGO, NYEO, and IYEO 2026 national and international olympiads held in collaboration with IYSA & MIICA.",
     publishedAt: "2026-08-20",
-    author: "Humas IYORA",
+    author: "IyoraOlympiad",
     link: "https://drive.google.com/drive/folders/139SZyKKk2xDc6-Kx5FN3zFTsrIhWaLp0?usp=sharing",
     linkLabel: "FULL DOKUMENTASI ROUND 1",
     linkLabel_en: "Full Documentation of Round 1",
