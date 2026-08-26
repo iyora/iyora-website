@@ -49,6 +49,8 @@ const RAW_OLYMPIADS: OlympiadItem[] = [
   { name: "IYAO", emoji: "🔭", side: "right", full: "International Youth Astronomy Olympiad", level: "Internasional", badgeStyle: "bg-sky-50 text-sky-700 border-sky-200", url: "https://iyao.iyora.or.id", openAt: "2026-03-01", closeAt: "2026-03-31" },
   { name: "OS2MN", emoji: "🕌", side: "left", full: "Olimpiade Sains Madrasah Nasional", level: "Nasional", badgeStyle: "bg-teal-50 text-teal-700 border-teal-200", url: "https://os2mn.iyora.or.id", openAt: "2026-02-01", closeAt: "2026-02-28" },
   { name: "WSO", emoji: "🏆", side: "right", full: "World Science Olympiad", level: "Internasional", badgeStyle: "bg-indigo-50 text-indigo-700 border-indigo-200", url: "https://wso.iyora.or.id", openAt: "2026-01-01", closeAt: "2026-01-31" },
+  { name: "NSO", emoji: "🔬", side: "left", full: "National Science Olympiad", level: "Nasional", badgeStyle: "bg-teal-50 text-teal-700 border-teal-200", url: "https://nso.iyora.or.id", openAt: "2026-09-01", closeAt: "2026-09-30" },
+  { name: "NSMO", emoji: "🔬", side: "right", full: "National Science and Math Olympiad", level: "Nasional", badgeStyle: "bg-blue-50 text-blue-700 border-blue-200", url: "https://nsmo.iyora.or.id", openAt: "2026-09-01", closeAt: "2026-09-30" },
 ];
 
 const STATUS_PRIORITY = { open: 0, coming_soon: 1, closed: 2 };

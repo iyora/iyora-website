@@ -6,20 +6,27 @@ import { BookOpen } from "lucide-react";
 import type { CompetitionData } from "@/lib/supabase";
 
 const CATEGORY_ICONS: Record<string, string> = {
-  Biology: "🧬",
-  Physics: "⚛️",
-  Chemistry: "🧪",
-  Mathematics: "➗",
-  Geography: "🌍",
-  Economics: "📊",
-  Astronomy: "🔭",
-  Environment: "🌱",
-  Madrasah: "🕌",
-  Science: "🏆",
+  Biology:            "🧬",
+  Physics:            "⚛️",
+  Chemistry:          "🧪",
+  Mathematics:        "➗",
+  Geography:          "🌍",
+  Economics:          "📊",
+  Astronomy:          "🔭",
+  Environment:        "🌱",
+  Madrasah:           "🕌",
+  Science:            "🏆",
+  "Science and Math": "🔬",
+  "Science & Math":   "🔬",
+  NSO:                "🔬",
+  NSMO:               "🔬",
 };
 
 function getIcon(category: string | null) {
-  return category ? (CATEGORY_ICONS[category] ?? "🏆") : "🏆";
+  if (!category) return "🏆";
+  if (CATEGORY_ICONS[category]) return CATEGORY_ICONS[category];
+  const cleanCat = category.replace(/\s+/g, " ").trim();
+  return CATEGORY_ICONS[cleanCat] ?? "🏆";
 }
 
 const LEVEL_BADGE: Record<string, string> = {

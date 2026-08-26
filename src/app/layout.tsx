@@ -60,6 +60,8 @@ const ORG_JSONLD = {
         { "@type": "Organization", "name": "NYPO", "url": "https://nypo.iyora.or.id" },
         { "@type": "Organization", "name": "WSO",  "url": "https://wso.iyora.or.id" },
         { "@type": "Organization", "name": "OS2MN","url": "https://os2mn.iyora.or.id" },
+        { "@type": "Organization", "name": "NSO", "url": "https://nso.iyora.or.id" },
+        { "@type": "Organization", "name": "NSMO", "url": "https://nsmo.iyora.or.id" },
       ],
     },
     {
