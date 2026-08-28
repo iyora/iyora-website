@@ -81,9 +81,9 @@ const RAW_DEFAULT_COMPETITIONS: RawDefaultCompetition[] = [
   { slug: "nyao", shortName: "NYAO", name: "National Youth Astronomy Olympiad", level: "national", category: "Astronomy", websiteUrl: "https://nyao.iyora.or.id", guidebookUrl: null, openAt: "2026-03-01", closeAt: "2026-03-31" },
   { slug: "iyao", shortName: "IYAO", name: "International Youth Astronomy Olympiad", level: "international", category: "Astronomy", websiteUrl: "https://iyao.iyora.or.id", guidebookUrl: null, openAt: "2026-03-01", closeAt: "2026-03-31" },
   { slug: "os2mn", shortName: "OS2MN", name: "Olimpiade Sains Madrasah Nasional", level: "national", category: "Madrasah", websiteUrl: "https://os2mn.iyora.or.id", guidebookUrl: null, openAt: "2026-02-01", closeAt: "2026-02-28" },
-  { slug: "wso", shortName: "WSO", name: "World Science Olympiad", level: "international", category: "Science", websiteUrl: "https://wso.iyora.or.id", guidebookUrl: null, openAt: "2026-01-01", closeAt: "2026-01-31" },
+  { slug: "wso", shortName: "WSO", name: "World Science Olympiad", level: "international", category: "Science", websiteUrl: "https://wso.iyora.or.id", guidebookUrl: null, openAt: "2026-10-01", closeAt: "2026-11-31" },
   { slug: "nso", shortName: "NSO", name: "National Science Olympiad", level: "national", category: "Science", websiteUrl: "https://nso.iyora.or.id", guidebookUrl: null, openAt: "2026-09-01", closeAt: "2026-09-30" },
-  { slug: "nsmo", shortName: "NSMO", name: "National Science and Math Olympiad", level: "national", category: "Science and Math", websiteUrl: "https://nsmo.iyora.or.id", guidebookUrl: null, openAt: "2026-07-01", closeAt: "2026-07-30" },
+  { slug: "nsmo", shortName: "NSMO", name: "National Science and Math Olympiad", level: "national", category: "Science and Math", websiteUrl: "https://nsmo.iyora.or.id", guidebookUrl: null, openAt: "2026-09-01", closeAt: "2026-10-30" },
 ];
 
 export function getDefaultCompetitions(): CompetitionData[] {
