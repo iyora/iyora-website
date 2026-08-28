@@ -91,9 +91,9 @@ export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
         variant: "teal",
       },
       {
-        label: "Lihat Semua Kompetisi",
-        label_en: "View All Competitions",
-        url: "/competitions",
+        label: "Daftar Sekarang",
+        label_en: "Register Now",
+        url: "https://nso.iyora.or.id/register",
         variant: "primary",
       },
       {
