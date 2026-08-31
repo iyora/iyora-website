@@ -1,5 +1,12 @@
 import { createClient } from "@supabase/supabase-js";
 import { DUMMY_NEWS, getDummyNewsBySlug } from "@/data/dummyNews";
+import {
+  WinnerItem,
+  WinnerAnnouncementDoc,
+  DUMMY_WINNERS,
+  DUMMY_WINNER_ANNOUNCEMENTS,
+  WINNER_STATS,
+} from "@/data/dummyWinners";
 
 export type RegistrationStatus = "open" | "coming_soon" | "closed";
 
@@ -708,5 +715,127 @@ export async function fetchNewsPreview(locale?: string): Promise<NewsPreviewData
     }));
 
     return { news: defaultNews, announcements: defaultAnnouncements, pressRelease: defaultPressRelease, gallery: defaultGallery };
+  }
+}
+
+/* ───────────────────────────────────────────────
+   WINNERS & ANNOUNCEMENTS (Opsi 2: Published Results)
+   ─────────────────────────────────────────────── */
+
+export async function fetchWinnersData(): Promise<WinnerItem[]> {
+  try {
+    const supabase = createSupabase();
+
+    const { data, error } = await supabase
+      .from("winners")
+      .select("*")
+      .eq("is_published", true)
+      .order("edition_year", { ascending: false })
+      .order("created_at", { ascending: false });
+
+    if (error || !data || data.length === 0) {
+      return DUMMY_WINNERS;
+    }
+
+    const dbWinners: WinnerItem[] = data.map((row: any) => ({
+      id: row.id,
+      name: row.name,
+      school: row.school,
+      city: row.city || "",
+      province: row.province || "",
+      country: row.country || "Indonesia",
+      countryCode: row.country_code || "ID",
+      competition: row.competition,
+      competitionFullName: row.competition_full_name || row.competition,
+      category: row.category || "General",
+      level: row.level,
+      editionYear: row.edition_year || new Date().getFullYear(),
+      editionName: row.edition_name || `${row.competition} ${row.edition_year || ""}`.trim(),
+      medal: row.medal,
+      score: row.score ? String(row.score) : undefined,
+      photo: row.photo || undefined,
+      certificateNumber: row.certificate_number || undefined,
+      simtVerified: row.simt_verified ?? true,
+      specialNote: row.special_note || undefined,
+    }));
+
+    // Combine DB winners with fallback dummy winners (DB items prioritized)
+    const combined = [
+      ...dbWinners,
+      ...DUMMY_WINNERS.filter(
+        (dummy) =>
+          !dbWinners.some(
+            (db) => db.id === dummy.id || (db.certificateNumber && db.certificateNumber === dummy.certificateNumber)
+          )
+      ),
+    ];
+
+    return combined;
+  } catch {
+    return DUMMY_WINNERS;
+  }
+}
+
+export async function fetchWinnerAnnouncements(): Promise<WinnerAnnouncementDoc[]> {
+  try {
+    const supabase = createSupabase();
+
+    const { data, error } = await supabase
+      .from("winner_announcements")
+      .select("*")
+      .eq("is_published", true)
+      .order("publish_date", { ascending: false });
+
+    if (error || !data || data.length === 0) {
+      return DUMMY_WINNER_ANNOUNCEMENTS;
+    }
+
+    const dbDocs: WinnerAnnouncementDoc[] = data.map((row: any) => ({
+      id: row.id,
+      competition: row.competition,
+      competitionFullName: row.competition_full_name || row.competition,
+      title: row.title,
+      title_en: row.title_en || row.title,
+      edition: row.edition || "Season 2026",
+      publishDate: row.publish_date ? String(row.publish_date).substring(0, 10) : "",
+      skNumber: row.sk_number,
+      downloadUrl: row.download_url,
+      totalParticipants: Number(row.total_participants) || 0,
+      totalMedals: Number(row.total_medals) || 0,
+      badge: row.badge || "Resmi",
+      category: row.category || "General",
+    }));
+
+    const combined = [
+      ...dbDocs,
+      ...DUMMY_WINNER_ANNOUNCEMENTS.filter(
+        (dummy) => !dbDocs.some((db) => db.id === dummy.id || db.skNumber === dummy.skNumber)
+      ),
+    ];
+
+    return combined;
+  } catch {
+    return DUMMY_WINNER_ANNOUNCEMENTS;
+  }
+}
+
+export async function fetchWinnerStats(winnersList?: WinnerItem[]) {
+  try {
+    const winners = winnersList || (await fetchWinnersData());
+
+    const totalWinners = Math.max(winners.length, WINNER_STATS.totalWinners);
+    const distinctComps = new Set(winners.map((w) => w.competition)).size;
+    const distinctSchools = new Set(winners.map((w) => w.school)).size;
+    const distinctCountries = new Set(winners.map((w) => w.countryCode || w.country)).size;
+
+    return {
+      totalWinners,
+      totalCompetitions: Math.max(distinctComps, WINNER_STATS.totalCompetitions),
+      totalSchools: Math.max(distinctSchools, WINNER_STATS.totalSchools),
+      totalCountries: Math.max(distinctCountries, WINNER_STATS.totalCountries),
+      simtCuratedPercent: WINNER_STATS.simtCuratedPercent,
+    };
+  } catch {
+    return WINNER_STATS;
   }
 }

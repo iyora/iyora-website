@@ -66,7 +66,7 @@ const NEWS_MENU = [
   { key: "news", icon: Newspaper, labelId: "tab_news", hash: "news", descId: "preview_news" },
   { key: "announcements", icon: Megaphone, labelId: "tab_announcements", hash: "announcements", descId: "preview_announcements" },
   { key: "press_release", icon: FileText, labelId: "tab_press_release", hash: "press_release", descId: "preview_press_release" },
-  { key: "gallery Pemenang", icon: Images, labelId: "tab_gallery", hash: "gallery", descId: "preview_gallery" },
+  { key: "gallery", icon: Images, labelId: "tab_gallery", hash: "gallery", descId: "preview_gallery" },
 ] as const;
 
 type NewsMenuKey = typeof NEWS_MENU[number]["key"];
@@ -366,6 +366,10 @@ export default function Navbar({ newsPreview }: NavbarProps) {
             </div>
           </div>
 
+          <Link href={href("/winners")} className={navLinkClass}>
+            {t("winners")}
+          </Link>
+
           <div
             className="relative"
             onMouseEnter={openNewsDropdown}
@@ -561,7 +565,7 @@ export default function Navbar({ newsPreview }: NavbarProps) {
                   )}
 
                   {/* Gallery preview */}
-                  {hoveredNewsKey === "gallery Pemenang" && (
+                  {hoveredNewsKey === "gallery" && (
                     <div className="space-y-3">
                       <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
                         {locale === "id" ? "Galeri Terbaru" : "Recent Gallery"}
@@ -655,6 +659,14 @@ export default function Navbar({ newsPreview }: NavbarProps) {
               onClick={() => setMobileOpen(false)}
             >
               {t("competitions")}
+            </Link>
+            <Link
+              href={href("/winners")}
+              className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors flex items-center justify-between"
+              onClick={() => setMobileOpen(false)}
+            >
+              <span>{t("winners")}</span>
+              <span className="text-[11px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full">🏆 New</span>
             </Link>
             {/* Mobile News accordion */}
             <button

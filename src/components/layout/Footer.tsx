@@ -115,6 +115,14 @@ export default function Footer() {
                   {t("partners_label")}
                 </Link>
               </li>
+              <li>
+                <Link
+                  href={href("/winners")}
+                  className="text-sm text-white/50 hover:text-teal transition-colors"
+                >
+                  {t("winners_label")}
+                </Link>
+              </li>
             </ul>
           </div>
 
