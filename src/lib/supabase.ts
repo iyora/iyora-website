@@ -22,9 +22,14 @@ export interface CompetitionData {
 }
 
 function createSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !anonKey) {
+    console.warn("[Supabase] NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY is not set in environment.");
+  }
   return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    url || "https://placeholder.supabase.co",
+    anonKey || "placeholder"
   );
 }
 
@@ -723,6 +728,45 @@ export async function fetchNewsPreview(locale?: string): Promise<NewsPreviewData
    ─────────────────────────────────────────────── */
 
 export async function fetchWinnersData(): Promise<WinnerItem[]> {
+  // 1. Coba ambil langsung dari Endpoint Public API Dashboard (Opsi 2: Sinkronisasi API langsung)
+  try {
+    const dashboardUrl =
+      process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.iyora.or.id";
+    const res = await fetch(`${dashboardUrl}/api/public/winners`, {
+      next: { revalidate: 60 },
+      signal: AbortSignal.timeout(4000),
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.ok && Array.isArray(json.data) && json.data.length > 0) {
+        return json.data.map((row: any) => ({
+          id: String(row.id),
+          name: row.name || row.team_name,
+          school: row.school || "—",
+          city: row.city || "",
+          province: row.province || "",
+          country: row.country || "Indonesia",
+          countryCode: row.country_code || row.countryCode || "ID",
+          competition: row.competition,
+          competitionFullName: row.competition_full_name || row.competitionFullName || row.competition,
+          category: row.category || "General",
+          level: row.level,
+          editionYear: Number(row.edition_year || row.editionYear) || new Date().getFullYear(),
+          editionName: row.edition_name || row.editionName || `${row.competition} ${row.edition_year || ""}`.trim(),
+          medal: row.medal,
+          score: row.score ? String(row.score) : undefined,
+          photo: row.photo || undefined,
+          certificateNumber: row.certificate_number || row.certificateNumber || undefined,
+          simtVerified: row.simt_verified ?? row.simtVerified ?? true,
+          specialNote: row.special_note || row.specialNote || undefined,
+        }));
+      }
+    }
+  } catch {
+    // Lanjut ke fallback Supabase jika API dashboard tidak merespons
+  }
+
+  // 2. Fallback: Ambil langsung dari Supabase Client
   try {
     const supabase = createSupabase();
 
@@ -766,6 +810,39 @@ export async function fetchWinnersData(): Promise<WinnerItem[]> {
 }
 
 export async function fetchWinnerAnnouncements(): Promise<WinnerAnnouncementDoc[]> {
+  // 1. Coba ambil langsung dari Endpoint Public API Dashboard (Opsi 2: Sinkronisasi API langsung)
+  try {
+    const dashboardUrl =
+      process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.iyora.or.id";
+    const res = await fetch(`${dashboardUrl}/api/public/announcements`, {
+      next: { revalidate: 60 },
+      signal: AbortSignal.timeout(4000),
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.ok && Array.isArray(json.data) && json.data.length > 0) {
+        return json.data.map((row: any) => ({
+          id: String(row.id),
+          competition: row.competition,
+          competitionFullName: row.competition_full_name || row.competitionFullName || row.competition,
+          title: row.title,
+          title_en: row.title_en || row.title,
+          edition: row.edition || "Season 2026",
+          publishDate: row.publish_date ? String(row.publish_date).substring(0, 10) : "",
+          skNumber: row.sk_number || row.skNumber || "",
+          downloadUrl: row.download_url || row.downloadUrl || "#",
+          totalParticipants: Number(row.total_participants || row.totalParticipants) || 0,
+          totalMedals: Number(row.total_medals || row.totalMedals) || 0,
+          badge: row.badge || "Resmi",
+          category: row.category || "General",
+        }));
+      }
+    }
+  } catch {
+    // Fallback ke Supabase jika API dashboard tidak merespons
+  }
+
+  // 2. Fallback: Ambil langsung dari Supabase Client
   try {
     const supabase = createSupabase();
 

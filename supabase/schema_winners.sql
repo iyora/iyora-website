@@ -6,6 +6,8 @@
 -- 1. TABEL DAFTAR PEMENANG (winners)
 CREATE TABLE IF NOT EXISTS public.winners (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    event_id UUID REFERENCES public.events(id) ON DELETE CASCADE,
+    registration_id UUID REFERENCES public.registrations(id) ON DELETE SET NULL,
     name TEXT NOT NULL,
     school TEXT NOT NULL,
     city TEXT NOT NULL DEFAULT '',
@@ -30,6 +32,7 @@ CREATE TABLE IF NOT EXISTS public.winners (
 );
 
 -- Index untuk mempercepat filter & pencarian di website
+CREATE INDEX IF NOT EXISTS idx_winners_event ON public.winners(event_id);
 CREATE INDEX IF NOT EXISTS idx_winners_competition ON public.winners(competition);
 CREATE INDEX IF NOT EXISTS idx_winners_category ON public.winners(category);
 CREATE INDEX IF NOT EXISTS idx_winners_level ON public.winners(level);
@@ -40,22 +43,27 @@ CREATE INDEX IF NOT EXISTS idx_winners_edition_year ON public.winners(edition_ye
 -- Enable RLS & Izinkan publik melihat pemenang yang sudah di-publish
 ALTER TABLE public.winners ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Allow public read published winners" ON public.winners;
 CREATE POLICY "Allow public read published winners"
-ON public.winners
-FOR SELECT
+ON public.winners FOR SELECT
 USING (is_published = true);
 
+DROP POLICY IF EXISTS "Allow authenticated full access to winners" ON public.winners;
 CREATE POLICY "Allow authenticated full access to winners"
-ON public.winners
-FOR ALL
+ON public.winners FOR ALL
 TO authenticated
-USING (true)
-WITH CHECK (true);
+USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow service_role full access to winners" ON public.winners;
+CREATE POLICY "Allow service_role full access to winners"
+ON public.winners FOR ALL
+USING (auth.role() = 'service_role');
 
 
 -- 2. TABEL DOKUMEN SK PENGUMUMAN PEMENANG (winner_announcements)
 CREATE TABLE IF NOT EXISTS public.winner_announcements (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    event_id UUID REFERENCES public.events(id) ON DELETE CASCADE,
     competition VARCHAR(50) NOT NULL,
     competition_full_name TEXT NOT NULL,
     title TEXT NOT NULL,
@@ -73,20 +81,25 @@ CREATE TABLE IF NOT EXISTS public.winner_announcements (
 );
 
 -- Index untuk SK pengumuman
+CREATE INDEX IF NOT EXISTS idx_winner_announcements_event ON public.winner_announcements(event_id);
 CREATE INDEX IF NOT EXISTS idx_winner_announcements_comp ON public.winner_announcements(competition);
 CREATE INDEX IF NOT EXISTS idx_winner_announcements_pub ON public.winner_announcements(is_published);
 
 -- Enable RLS & Izinkan publik membaca SK yang berstatus publish
 ALTER TABLE public.winner_announcements ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Allow public read published announcements" ON public.winner_announcements;
 CREATE POLICY "Allow public read published announcements"
-ON public.winner_announcements
-FOR SELECT
+ON public.winner_announcements FOR SELECT
 USING (is_published = true);
 
+DROP POLICY IF EXISTS "Allow authenticated full access to announcements" ON public.winner_announcements;
 CREATE POLICY "Allow authenticated full access to announcements"
-ON public.winner_announcements
-FOR ALL
+ON public.winner_announcements FOR ALL
 TO authenticated
-USING (true)
-WITH CHECK (true);
+USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow service_role full access to announcements" ON public.winner_announcements;
+CREATE POLICY "Allow service_role full access to announcements"
+ON public.winner_announcements FOR ALL
+USING (auth.role() = 'service_role');
