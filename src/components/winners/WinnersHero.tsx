@@ -14,7 +14,7 @@ export default function WinnersHero({ stats = WINNER_STATS }: WinnersHeroProps) 
   const statItems = [
     {
       icon: Award,
-      value: `${stats.totalWinners.toLocaleString()}+`,
+      value: stats.totalWinners > 0 ? stats.totalWinners.toLocaleString() : "0",
       label: t("stat_winners"),
       color: "text-amber-300",
       bg: "bg-amber-400/10 border-amber-300/30",
@@ -28,7 +28,7 @@ export default function WinnersHero({ stats = WINNER_STATS }: WinnersHeroProps) 
     },
     {
       icon: School,
-      value: `${stats.totalSchools.toLocaleString()}+`,
+      value: stats.totalSchools > 0 ? stats.totalSchools.toLocaleString() : "0",
       label: t("stat_schools"),
       color: "text-purple-300",
       bg: "bg-purple-400/10 border-purple-300/30",

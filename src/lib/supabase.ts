@@ -73,8 +73,8 @@ interface RawDefaultCompetition {
 const RAW_DEFAULT_COMPETITIONS: RawDefaultCompetition[] = [
   { slug: "nygo", shortName: "NYGO", name: "National Youth Geography Olympiad", level: "national", category: "Geography", websiteUrl: "https://nygo.iyora.or.id", guidebookUrl: null, openAt: "2026-08-01", closeAt: "2026-08-16" },
   { slug: "iygo", shortName: "IYGO", name: "International Youth Geography Olympiad", level: "international", category: "Geography", websiteUrl: "https://iygo.iyora.or.id", guidebookUrl: null, openAt: "2026-08-01", closeAt: "2026-08-16" },
-  { slug: "nyeco", shortName: "NYEO", name: "National Youth Economics Olympiad", level: "national", category: "Economics", websiteUrl: "https://nyeo.iyora.or.id", guidebookUrl: null, openAt: "2026-08-01", closeAt: "2026-08-16" },
-  { slug: "iyeco", shortName: "IYEO", name: "International Youth Economics Olympiad", level: "international", category: "Economics", websiteUrl: "https://iyeo.iyora.or.id", guidebookUrl: null, openAt: "2026-08-01", closeAt: "2026-08-16" },
+  { slug: "nyeo", shortName: "NYEO", name: "National Youth Economics Olympiad", level: "national", category: "Economics", websiteUrl: "https://nyeo.iyora.or.id", guidebookUrl: null, openAt: "2026-08-01", closeAt: "2026-08-16" },
+  { slug: "iyeo", shortName: "IYEO", name: "International Youth Economics Olympiad", level: "international", category: "Economics", websiteUrl: "https://iyeo.iyora.or.id", guidebookUrl: null, openAt: "2026-08-01", closeAt: "2026-08-16" },
   { slug: "nymo", shortName: "NYMO", name: "National Youth Mathematics Olympiad", level: "national", category: "Mathematics", websiteUrl: "https://nymo.iyora.or.id", guidebookUrl: null, openAt: "2026-04-01", closeAt: "2026-05-02" },
   { slug: "iymo", shortName: "IYMO", name: "International Youth Mathematics Olympiad", level: "international", category: "Mathematics", websiteUrl: "https://iymo.iyora.or.id", guidebookUrl: null, openAt: "2026-06-01", closeAt: "2026-06-30" },
   { slug: "nybo", shortName: "NYBO", name: "National Youth Biology Olympiad", level: "national", category: "Biology", websiteUrl: "https://nybo.iyora.or.id", guidebookUrl: null, openAt: "2026-07-01", closeAt: "2026-07-31" },
@@ -83,12 +83,12 @@ const RAW_DEFAULT_COMPETITIONS: RawDefaultCompetition[] = [
   { slug: "iypo", shortName: "IYPO", name: "International Youth Physics Olympiad", level: "international", category: "Physics", websiteUrl: "https://iypo.iyora.or.id", guidebookUrl: null, openAt: "2026-06-01", closeAt: "2026-06-30" },
   { slug: "nyco", shortName: "NYCO", name: "National Youth Chemistry Olympiad", level: "national", category: "Chemistry", websiteUrl: "https://nyco.iyora.or.id", guidebookUrl: null, openAt: "2026-05-01", closeAt: "2026-05-31" },
   { slug: "iyco", shortName: "IYCO", name: "International Youth Chemistry Olympiad", level: "international", category: "Chemistry", websiteUrl: "https://iyco.iyora.or.id", guidebookUrl: null, openAt: "2026-05-01", closeAt: "2026-05-31" },
-  { slug: "nyeno", shortName: "NYEnO", name: "National Youth Environment Olympiad", level: "national", category: "Environment", websiteUrl: "https://nyeo.iyora.or.id", guidebookUrl: null, openAt: "2026-04-01", closeAt: "2026-04-30" },
-  { slug: "iyeno", shortName: "IYEnO", name: "International Youth Environment Olympiad", level: "international", category: "Environment", websiteUrl: "https://iyeo.iyora.or.id", guidebookUrl: null, openAt: "2026-04-01", closeAt: "2026-04-30" },
+  { slug: "nyeno", shortName: "NYEnO", name: "National Youth Environment Olympiad", level: "national", category: "Environment", websiteUrl: "https://nyeno.iyora.or.id", guidebookUrl: null, openAt: "2026-04-01", closeAt: "2026-04-30" },
+  { slug: "iyeno", shortName: "IYEnO", name: "International Youth Environment Olympiad", level: "international", category: "Environment", websiteUrl: "https://iyeno.iyora.or.id", guidebookUrl: null, openAt: "2026-04-01", closeAt: "2026-04-30" },
   { slug: "nyao", shortName: "NYAO", name: "National Youth Astronomy Olympiad", level: "national", category: "Astronomy", websiteUrl: "https://nyao.iyora.or.id", guidebookUrl: null, openAt: "2026-03-01", closeAt: "2026-03-31" },
   { slug: "iyao", shortName: "IYAO", name: "International Youth Astronomy Olympiad", level: "international", category: "Astronomy", websiteUrl: "https://iyao.iyora.or.id", guidebookUrl: null, openAt: "2026-03-01", closeAt: "2026-03-31" },
   { slug: "os2mn", shortName: "OS2MN", name: "Olimpiade Sains Madrasah Nasional", level: "national", category: "Madrasah", websiteUrl: "https://os2mn.iyora.or.id", guidebookUrl: null, openAt: "2026-02-01", closeAt: "2026-02-28" },
-  { slug: "wso", shortName: "WSO", name: "World Science Olympiad", level: "international", category: "Science", websiteUrl: "https://wso.iyora.or.id", guidebookUrl: null, openAt: "2026-10-01", closeAt: "2026-11-31" },
+  { slug: "wso", shortName: "WSO", name: "World Science Olympiad", level: "international", category: "Science", websiteUrl: "https://wso.iyora.or.id", guidebookUrl: null, openAt: "2026-10-01", closeAt: "2026-11-30" },
   { slug: "nso", shortName: "NSO", name: "National Science Olympiad", level: "national", category: "Science", websiteUrl: "https://nso.iyora.or.id", guidebookUrl: null, openAt: "2026-08-28", closeAt: "2026-10-16" },
   { slug: "nsmo", shortName: "NSMO", name: "National Science and Math Olympiad", level: "national", category: "Science and Math", websiteUrl: "https://nsmo.iyora.or.id", guidebookUrl: null, openAt: "2026-09-01", closeAt: "2026-10-30" },
 ];
@@ -734,7 +734,7 @@ export async function fetchWinnersData(): Promise<WinnerItem[]> {
       .order("created_at", { ascending: false });
 
     if (error || !data || data.length === 0) {
-      return DUMMY_WINNERS;
+      return [];
     }
 
     const dbWinners: WinnerItem[] = data.map((row: any) => ({
@@ -759,20 +759,9 @@ export async function fetchWinnersData(): Promise<WinnerItem[]> {
       specialNote: row.special_note || undefined,
     }));
 
-    // Combine DB winners with fallback dummy winners (DB items prioritized)
-    const combined = [
-      ...dbWinners,
-      ...DUMMY_WINNERS.filter(
-        (dummy) =>
-          !dbWinners.some(
-            (db) => db.id === dummy.id || (db.certificateNumber && db.certificateNumber === dummy.certificateNumber)
-          )
-      ),
-    ];
-
-    return combined;
+    return dbWinners;
   } catch {
-    return DUMMY_WINNERS;
+    return [];
   }
 }
 
@@ -787,7 +776,7 @@ export async function fetchWinnerAnnouncements(): Promise<WinnerAnnouncementDoc[
       .order("publish_date", { ascending: false });
 
     if (error || !data || data.length === 0) {
-      return DUMMY_WINNER_ANNOUNCEMENTS;
+      return [];
     }
 
     const dbDocs: WinnerAnnouncementDoc[] = data.map((row: any) => ({
@@ -806,16 +795,9 @@ export async function fetchWinnerAnnouncements(): Promise<WinnerAnnouncementDoc[
       category: row.category || "General",
     }));
 
-    const combined = [
-      ...dbDocs,
-      ...DUMMY_WINNER_ANNOUNCEMENTS.filter(
-        (dummy) => !dbDocs.some((db) => db.id === dummy.id || db.skNumber === dummy.skNumber)
-      ),
-    ];
-
-    return combined;
+    return dbDocs;
   } catch {
-    return DUMMY_WINNER_ANNOUNCEMENTS;
+    return [];
   }
 }
 
@@ -823,19 +805,25 @@ export async function fetchWinnerStats(winnersList?: WinnerItem[]) {
   try {
     const winners = winnersList || (await fetchWinnersData());
 
-    const totalWinners = Math.max(winners.length, WINNER_STATS.totalWinners);
-    const distinctComps = new Set(winners.map((w) => w.competition)).size;
-    const distinctSchools = new Set(winners.map((w) => w.school)).size;
-    const distinctCountries = new Set(winners.map((w) => w.countryCode || w.country)).size;
+    const totalWinners = winners.length;
+    const distinctComps = new Set(winners.map((w) => w.competition).filter(Boolean)).size;
+    const distinctSchools = new Set(winners.map((w) => w.school).filter(Boolean)).size;
+    const distinctCountries = new Set(winners.map((w) => w.countryCode || w.country).filter(Boolean)).size;
 
     return {
       totalWinners,
-      totalCompetitions: Math.max(distinctComps, WINNER_STATS.totalCompetitions),
-      totalSchools: Math.max(distinctSchools, WINNER_STATS.totalSchools),
-      totalCountries: Math.max(distinctCountries, WINNER_STATS.totalCountries),
-      simtCuratedPercent: WINNER_STATS.simtCuratedPercent,
+      totalCompetitions: distinctComps,
+      totalSchools: distinctSchools,
+      totalCountries: distinctCountries,
+      simtCuratedPercent: totalWinners > 0 ? 100 : 0,
     };
   } catch {
-    return WINNER_STATS;
+    return {
+      totalWinners: 0,
+      totalCompetitions: 0,
+      totalSchools: 0,
+      totalCountries: 0,
+      simtCuratedPercent: 0,
+    };
   }
 }

@@ -6,7 +6,7 @@ import { routing } from "@/i18n/routing";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import EventPopup from "@/components/common/EventPopup";
-import { fetchNewsPreview } from "@/lib/supabase";
+import { fetchNewsPreview, fetchCompetitionsData } from "@/lib/supabase";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://iyora.or.id"),
@@ -107,13 +107,16 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  const messages = await getMessages();
-  const newsPreview = await fetchNewsPreview(locale);
+  const [messages, newsPreview, competitions] = await Promise.all([
+    getMessages(),
+    fetchNewsPreview(locale),
+    fetchCompetitionsData(),
+  ]);
 
   return (
     <NextIntlClientProvider messages={messages}>
       <EventPopup />
-      <Navbar newsPreview={newsPreview} />
+      <Navbar newsPreview={newsPreview} competitions={competitions} />
       <main>{children}</main>
       <Footer />
     </NextIntlClientProvider>
