@@ -22,7 +22,7 @@ import clsx from "clsx";
 import {
   WinnerItem,
   WinnerMedal,
-  OLYMPIAD_CATEGORIES,
+  ALL_COMPETITIONS,
   MEDAL_TABS,
 } from "@/data/dummyWinners";
 
@@ -35,10 +35,27 @@ export default function WinnersFilterGrid({ initialWinners }: WinnersFilterGridP
   const locale = useLocale();
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedCompetition, setSelectedCompetition] = useState("all");
   const [selectedMedal, setSelectedMedal] = useState<string>("all");
   const [selectedLevel, setSelectedLevel] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
+
+  // Get available competition options including any dynamic competition codes from initialWinners
+  const availableCompetitions = useMemo(() => {
+    const predefinedCodes = new Set(ALL_COMPETITIONS.map((c) => c.code.toUpperCase()));
+    const extraFromData: { code: string; name: string }[] = [];
+    initialWinners.forEach((w) => {
+      const code = (w.competition || "").trim().toUpperCase();
+      if (code && !predefinedCodes.has(code)) {
+        predefinedCodes.add(code);
+        extraFromData.push({
+          code,
+          name: w.competitionFullName || code,
+        });
+      }
+    });
+    return [...ALL_COMPETITIONS, ...extraFromData];
+  }, [initialWinners]);
 
   // Filtering Logic
   const filteredWinners = useMemo(() => {
@@ -50,16 +67,20 @@ export default function WinnersFilterGrid({ initialWinners }: WinnersFilterGridP
         const matchSchool = winner.school.toLowerCase().includes(q);
         const matchCity = winner.city.toLowerCase().includes(q);
         const matchProvince = winner.province.toLowerCase().includes(q);
-        const matchComp = winner.competition.toLowerCase().includes(q);
+        const matchComp = (winner.competition || "").toLowerCase().includes(q) || (winner.competitionFullName || "").toLowerCase().includes(q);
         const matchCert = (winner.certificateNumber || "").toLowerCase().includes(q);
         if (!matchName && !matchSchool && !matchCity && !matchProvince && !matchComp && !matchCert) {
           return false;
         }
       }
 
-      // Category match
-      if (selectedCategory !== "all" && winner.category !== selectedCategory) {
-        return false;
+      // Competition match (individual NYGO, IYGO, NYEO, IYEO, etc.)
+      if (selectedCompetition !== "all") {
+        const winnerComp = (winner.competition || "").trim().toUpperCase();
+        const targetComp = selectedCompetition.trim().toUpperCase();
+        if (winnerComp !== targetComp && !winnerComp.startsWith(targetComp) && !targetComp.startsWith(winnerComp)) {
+          return false;
+        }
       }
 
       // Medal match
@@ -74,17 +95,17 @@ export default function WinnersFilterGrid({ initialWinners }: WinnersFilterGridP
 
       return true;
     });
-  }, [initialWinners, searchQuery, selectedCategory, selectedMedal, selectedLevel]);
+  }, [initialWinners, searchQuery, selectedCompetition, selectedMedal, selectedLevel]);
 
   const hasActiveFilters =
     searchQuery !== "" ||
-    selectedCategory !== "all" ||
+    selectedCompetition !== "all" ||
     selectedMedal !== "all" ||
     selectedLevel !== "all";
 
   function resetFilters() {
     setSearchQuery("");
-    setSelectedCategory("all");
+    setSelectedCompetition("all");
     setSelectedMedal("all");
     setSelectedLevel("all");
   }
@@ -145,11 +166,12 @@ export default function WinnersFilterGrid({ initialWinners }: WinnersFilterGridP
   return (
     <section className="py-16 px-6 bg-gradient-to-b from-white to-gray-50/70">
       <div className="max-w-7xl mx-auto">
-        {/* Controls Container: Search & View Modes */}
-        <div className="bg-white rounded-3xl p-6 border border-gray-200/90 shadow-lg shadow-black/5 mb-8 space-y-6">
-          {/* Top Row: Search Input & View Switcher */}
-          <div className="flex flex-col md:flex-row items-center gap-4 justify-between">
-            <div className="relative w-full md:w-96">
+        {/* Controls Container: Search & Filters */}
+        <div className="bg-white rounded-3xl p-6 border border-gray-200/90 shadow-lg shadow-black/5 mb-8 space-y-5">
+          {/* Top Row: Search Input & Dropdowns (Kompetisi & Jenjang) & View Switcher */}
+          <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3 justify-between">
+            {/* Search Input */}
+            <div className="relative flex-1 min-w-[260px]">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
               <input
                 type="text"
@@ -168,12 +190,27 @@ export default function WinnersFilterGrid({ initialWinners }: WinnersFilterGridP
               )}
             </div>
 
-            {/* Level Filter Dropdown & View Mode Switcher */}
-            <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
+            {/* Filter Dropdowns (Kompetisi Terpisah + Jenjang) & View Mode Switcher */}
+            <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap justify-between lg:justify-end">
+              {/* Dropdown 1 Menu: Cabang / Nama Olimpiade (Terpisah NYGO, IYGO, NYEO, IYEO, dll.) */}
+              <select
+                value={selectedCompetition}
+                onChange={(e) => setSelectedCompetition(e.target.value)}
+                className="w-full sm:w-auto px-3.5 py-2.5 rounded-2xl bg-gray-50 border border-gray-200 text-xs font-bold text-gray-700 focus:outline-none focus:border-primary cursor-pointer hover:bg-gray-100 transition-colors shadow-sm max-w-[240px]"
+              >
+                <option value="all">🏆 {locale === "en" ? "All Competitions" : "Semua Kompetisi"}</option>
+                {availableCompetitions.map((c) => (
+                  <option key={c.code} value={c.code}>
+                    {c.code} — {c.name.replace(`${c.code} - `, "").replace(`${c.code} — `, "")}
+                  </option>
+                ))}
+              </select>
+
+              {/* Dropdown Jenjang */}
               <select
                 value={selectedLevel}
                 onChange={(e) => setSelectedLevel(e.target.value)}
-                className="px-3.5 py-2.5 rounded-2xl bg-gray-50 border border-gray-200 text-xs font-bold text-gray-700 focus:outline-none focus:border-primary cursor-pointer"
+                className="w-full sm:w-auto px-3.5 py-2.5 rounded-2xl bg-gray-50 border border-gray-200 text-xs font-bold text-gray-700 focus:outline-none focus:border-primary cursor-pointer hover:bg-gray-100 transition-colors shadow-sm"
               >
                 <option value="all">{t("level_all")}</option>
                 <option value="SD / MI">{t("level_sd")}</option>
@@ -182,7 +219,8 @@ export default function WinnersFilterGrid({ initialWinners }: WinnersFilterGridP
                 <option value="Universitas / Mahasiswa">{t("level_univ")}</option>
               </select>
 
-              <div className="flex items-center bg-gray-100 p-1 rounded-2xl border border-gray-200/80">
+              {/* View Mode Switcher */}
+              <div className="flex items-center bg-gray-100 p-1 rounded-2xl border border-gray-200/80 shrink-0">
                 <button
                   onClick={() => setViewMode("cards")}
                   className={clsx(
@@ -214,7 +252,7 @@ export default function WinnersFilterGrid({ initialWinners }: WinnersFilterGridP
               {hasActiveFilters && (
                 <button
                   onClick={resetFilters}
-                  className="flex items-center gap-1 px-3 py-2 rounded-2xl bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold transition-colors cursor-pointer"
+                  className="flex items-center gap-1 px-3 py-2 rounded-2xl bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold transition-colors cursor-pointer shrink-0"
                   title={t("reset_filter")}
                 >
                   <RotateCcw size={13} />
@@ -224,56 +262,32 @@ export default function WinnersFilterGrid({ initialWinners }: WinnersFilterGridP
             </div>
           </div>
 
-          {/* Middle Row: Medal Filter Tabs */}
-          <div>
-            <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">
-              Filter Medali:
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {MEDAL_TABS.map((tab) => {
-                const isActive = selectedMedal === tab.key;
-                return (
-                  <button
-                    key={tab.key}
-                    onClick={() => setSelectedMedal(tab.key)}
-                    className={clsx(
-                      "flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer border",
-                      isActive
-                        ? "bg-primary text-white border-primary shadow-md shadow-primary/25 scale-105"
-                        : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:text-gray-900"
-                    )}
-                  >
-                    <span>{tab.icon}</span>
-                    <span>{t(tab.labelId)}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Bottom Row: Category / Branch Filter Pills */}
-          <div>
-            <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">
-              Cabang Olimpiade:
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {OLYMPIAD_CATEGORIES.map((cat) => {
-                const isActive = selectedCategory === cat.key;
-                return (
-                  <button
-                    key={cat.key}
-                    onClick={() => setSelectedCategory(cat.key)}
-                    className={clsx(
-                      "px-3 py-1 rounded-xl text-xs font-semibold transition-all cursor-pointer border",
-                      isActive
-                        ? "bg-teal-600 text-white border-teal-600 shadow-sm"
-                        : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100 hover:text-gray-900"
-                    )}
-                  >
-                    {cat.shortName}
-                  </button>
-                );
-              })}
+          {/* Filter Medali Row */}
+          <div className="pt-2 border-t border-gray-100">
+            <div className="flex items-center gap-3 flex-wrap">
+              <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider shrink-0">
+                Filter Medali:
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {MEDAL_TABS.map((tab) => {
+                  const isActive = selectedMedal === tab.key;
+                  return (
+                    <button
+                      key={tab.key}
+                      onClick={() => setSelectedMedal(tab.key)}
+                      className={clsx(
+                        "flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer border",
+                        isActive
+                          ? "bg-primary text-white border-primary shadow-md shadow-primary/25 scale-105"
+                          : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:text-gray-900"
+                      )}
+                    >
+                      <span>{tab.icon}</span>
+                      <span>{t(tab.labelId)}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>

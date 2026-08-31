@@ -62,6 +62,35 @@ export const WINNER_STATS = {
   simtCuratedPercent: 100,
 };
 
+export interface OlympiadCompetitionOption {
+  code: string;
+  name: string;
+  category: string;
+}
+
+export const ALL_COMPETITIONS: OlympiadCompetitionOption[] = [
+  { code: "NYGO", name: "NYGO - National Youth Geography Olympiad", category: "Geography" },
+  { code: "IYGO", name: "IYGO - International Youth Geography Olympiad", category: "Geography" },
+  { code: "NYEO", name: "NYEO - National Youth Economics Olympiad", category: "Economics" },
+  { code: "IYEO", name: "IYEO - International Youth Economics Olympiad", category: "Economics" },
+  { code: "NYMO", name: "NYMO - National Youth Mathematics Olympiad", category: "Mathematics" },
+  { code: "IYMO", name: "IYMO - International Youth Mathematics Olympiad", category: "Mathematics" },
+  { code: "NYBO", name: "NYBO - National Youth Biology Olympiad", category: "Biology" },
+  { code: "IYBO", name: "IYBO - International Youth Biology Olympiad", category: "Biology" },
+  { code: "NYPO", name: "NYPO - National Youth Physics Olympiad", category: "Physics" },
+  { code: "IYPO", name: "IYPO - International Youth Physics Olympiad", category: "Physics" },
+  { code: "NYCO", name: "NYCO - National Youth Chemistry Olympiad", category: "Chemistry" },
+  { code: "IYCO", name: "IYCO - International Youth Chemistry Olympiad", category: "Chemistry" },
+  { code: "NYEnO", name: "NYEnO - National Youth Environment Olympiad", category: "Environment" },
+  { code: "IYEnO", name: "IYEnO - International Youth Environment Olympiad", category: "Environment" },
+  { code: "NYAO", name: "NYAO - National Youth Astronomy Olympiad", category: "Astronomy" },
+  { code: "IYAO", name: "IYAO - International Youth Astronomy Olympiad", category: "Astronomy" },
+  { code: "OS2MN", name: "OS2MN - Olimpiade Sains Madrasah Nasional", category: "Madrasah" },
+  { code: "WSO", name: "WSO - World Science Olympiad", category: "Science" },
+  { code: "NSO", name: "NSO - National Science Olympiad", category: "Science" },
+  { code: "NSMO", name: "NSMO - National Science and Math Olympiad", category: "Science and Math" },
+];
+
 export const OLYMPIAD_CATEGORIES = [
   { key: "all", labelId: "filter_all", shortName: "Semua" },
   { key: "Geography", labelId: "cat_geography", shortName: "Geografi (NYGO/IYGO)" },
