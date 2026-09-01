@@ -79,10 +79,46 @@ export default function WinnersFilterGrid({
       const finalComp = targetComp !== "ALL" ? targetComp : (doc?.competition || "IYORA");
       const compName = doc?.competitionFullName || (targetComp !== "ALL" ? `${targetComp} Olympiad` : "IYORA Science Olympiad");
       const skNumber = doc?.skNumber || `SK.${finalComp}/PEM/2026/09.01`;
-      const downloadUrl = doc?.downloadUrl || MANUAL_SK_DRIVE_LINKS[finalComp] || MANUAL_SK_DRIVE_LINKS.ALL || "";
+      const rawUrl = doc?.downloadUrl || MANUAL_SK_DRIVE_LINKS[finalComp] || MANUAL_SK_DRIVE_LINKS.ALL || "";
       const filename = `SK_Pemenang_${finalComp}_2026.pdf`;
 
-      const apiDownloadUrl = `/api/download-sk?comp=${encodeURIComponent(finalComp)}&compName=${encodeURIComponent(compName)}&skNumber=${encodeURIComponent(skNumber)}&url=${encodeURIComponent(downloadUrl)}&filename=${encodeURIComponent(filename)}`;
+      // 1. If it's a local static file (e.g. /sk/nygi-sk.pdf or public/sk/nygi-sk.pdf)
+      if (rawUrl && !rawUrl.startsWith("http") && !rawUrl.includes("#")) {
+        let cleanPath = rawUrl.startsWith("/") ? rawUrl : `/${rawUrl}`;
+        if (cleanPath.startsWith("/public/")) {
+          cleanPath = cleanPath.slice("/public".length);
+        }
+        const link = document.createElement("a");
+        link.href = cleanPath;
+        link.setAttribute("download", filename);
+        link.setAttribute("target", "_blank");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        return;
+      }
+
+      // 2. If it's a Google Drive link
+      if (rawUrl && rawUrl.includes("drive.google.com")) {
+        const match =
+          rawUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) ||
+          rawUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+        const gdriveUrl =
+          match && match[1]
+            ? `https://drive.google.com/uc?export=download&id=${match[1]}`
+            : rawUrl;
+        window.open(gdriveUrl, "_blank");
+        return;
+      }
+
+      // 3. If it's an external URL
+      if (rawUrl && rawUrl.startsWith("http") && !rawUrl.includes("#")) {
+        window.open(rawUrl, "_blank");
+        return;
+      }
+
+      // 4. Fallback: Generated PDF via API Route
+      const apiDownloadUrl = `/api/download-sk?comp=${encodeURIComponent(finalComp)}&compName=${encodeURIComponent(compName)}&skNumber=${encodeURIComponent(skNumber)}&filename=${encodeURIComponent(filename)}`;
 
       const link = document.createElement("a");
       link.href = apiDownloadUrl;

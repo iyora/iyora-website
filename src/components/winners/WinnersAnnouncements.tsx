@@ -21,8 +21,45 @@ export default function WinnersAnnouncements({ announcements }: WinnersAnnouncem
     try {
       const comp = doc.competition || "IYORA";
       const filename = `SK_Pemenang_${comp}_2026.pdf`;
-      const downloadUrl = `/api/download-sk?comp=${encodeURIComponent(comp)}&compName=${encodeURIComponent(doc.competitionFullName || doc.title)}&skNumber=${encodeURIComponent(doc.skNumber || "")}&url=${encodeURIComponent(doc.downloadUrl || "")}&filename=${encodeURIComponent(filename)}`;
+      const rawUrl = doc.downloadUrl || "";
 
+      // 1. Local static file in public/
+      if (rawUrl && !rawUrl.startsWith("http") && !rawUrl.includes("#")) {
+        let cleanPath = rawUrl.startsWith("/") ? rawUrl : `/${rawUrl}`;
+        if (cleanPath.startsWith("/public/")) {
+          cleanPath = cleanPath.slice("/public".length);
+        }
+        const link = document.createElement("a");
+        link.href = cleanPath;
+        link.setAttribute("download", filename);
+        link.setAttribute("target", "_blank");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        return;
+      }
+
+      // 2. Google Drive
+      if (rawUrl && rawUrl.includes("drive.google.com")) {
+        const match =
+          rawUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) ||
+          rawUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+        const gdriveUrl =
+          match && match[1]
+            ? `https://drive.google.com/uc?export=download&id=${match[1]}`
+            : rawUrl;
+        window.open(gdriveUrl, "_blank");
+        return;
+      }
+
+      // 3. Other remote URL
+      if (rawUrl && rawUrl.startsWith("http") && !rawUrl.includes("#")) {
+        window.open(rawUrl, "_blank");
+        return;
+      }
+
+      // 4. Fallback generated PDF route
+      const downloadUrl = `/api/download-sk?comp=${encodeURIComponent(comp)}&compName=${encodeURIComponent(doc.competitionFullName || doc.title)}&skNumber=${encodeURIComponent(doc.skNumber || "")}&filename=${encodeURIComponent(filename)}`;
       const link = document.createElement("a");
       link.href = downloadUrl;
       link.setAttribute("download", filename);
