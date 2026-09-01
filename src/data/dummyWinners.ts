@@ -105,9 +105,7 @@ export const OLYMPIAD_CATEGORIES = [
 
 export const MEDAL_TABS = [
   { key: "all", labelId: "medal_all", icon: "🌟" },
-  { key: "Grand Champion", labelId: "medal_gc", icon: "🏆" },
   { key: "Gold Medal", labelId: "medal_gold", icon: "🥇" },
   { key: "Silver Medal", labelId: "medal_silver", icon: "🥈" },
   { key: "Bronze Medal", labelId: "medal_bronze", icon: "🥉" },
-  { key: "Honorable Mention", labelId: "medal_hm", icon: "🎖️" },
 ];
