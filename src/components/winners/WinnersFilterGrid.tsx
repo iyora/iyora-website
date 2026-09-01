@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import {
   Search,
@@ -20,6 +21,7 @@ import {
   Download,
   FileText,
   FileCheck2,
+  ArrowRight,
 } from "lucide-react";
 import clsx from "clsx";
 import {
@@ -178,9 +180,12 @@ export default function WinnersFilterGrid({
         }
       }
 
-      // Medal match
-      if (selectedMedal !== "all" && winner.medal !== selectedMedal) {
-        return false;
+      // Medal match (Grand Champion dialihkan ke Gold Medal)
+      if (selectedMedal !== "all") {
+        const effectiveMedal = (winner.medal as string) === "Grand Champion" ? "Gold Medal" : winner.medal;
+        if (effectiveMedal !== selectedMedal) {
+          return false;
+        }
       }
 
       // Level match
@@ -205,14 +210,9 @@ export default function WinnersFilterGrid({
     setSelectedLevel("all");
   }
 
-  const getMedalBadge = (medal: WinnerMedal) => {
+  const getMedalBadge = (medal: WinnerMedal | string) => {
     switch (medal) {
       case "Grand Champion":
-        return {
-          icon: "🏆",
-          label: locale === "en" ? "Grand Champion" : "Juara Umum",
-          className: "bg-amber-100 text-amber-900 border-amber-300 font-extrabold",
-        };
       case "Gold Medal":
         return {
           icon: "🥇",
@@ -451,22 +451,31 @@ export default function WinnersFilterGrid({
                 </p>
               </div>
             </div>
-            <button
-              onClick={() => handleDirectDownloadSK(selectedCompetition)}
-              disabled={downloadingComp === selectedCompetition}
-              className="relative z-10 w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white text-xs font-extrabold shadow-lg shadow-emerald-500/25 transition-all cursor-pointer active:scale-95 shrink-0 disabled:opacity-75"
-            >
-              {downloadingComp === selectedCompetition ? (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <Download size={15} />
-              )}
-              <span>
-                {downloadingComp === selectedCompetition
-                  ? (locale === "en" ? "Downloading SK..." : "Mengunduh SK...")
-                  : (locale === "en" ? `Download SK ${selectedCompetition} (PDF)` : `Unduh SK ${selectedCompetition} (PDF)`)}
-              </span>
-            </button>
+            <div className="relative z-10 flex flex-col sm:flex-row items-center gap-2.5 w-full sm:w-auto shrink-0">
+              <button
+                onClick={() => handleDirectDownloadSK(selectedCompetition)}
+                disabled={downloadingComp === selectedCompetition}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white text-xs font-extrabold shadow-lg shadow-emerald-500/25 transition-all cursor-pointer active:scale-95 disabled:opacity-75"
+              >
+                {downloadingComp === selectedCompetition ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Download size={15} />
+                )}
+                <span>
+                  {downloadingComp === selectedCompetition
+                    ? (locale === "en" ? "Downloading SK..." : "Mengunduh SK...")
+                    : (locale === "en" ? `Download SK ${selectedCompetition} (PDF)` : `Unduh SK ${selectedCompetition} (PDF)`)}
+                </span>
+              </button>
+              <Link
+                href={`/${locale}/sk`}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-all border border-white/10"
+              >
+                <span>{locale === "en" ? "All SK Decrees" : "Semua SK"}</span>
+                <ArrowRight size={13} />
+              </Link>
+            </div>
           </div>
         )}
 

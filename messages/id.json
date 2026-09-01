@@ -4,6 +4,7 @@
     "about": "Tentang Kami",
     "competitions": "Kompetisi",
     "winners": "Daftar Pemenang",
+    "sk": "Download SK",
     "news": "Berita",
     "partners": "Mitra",
     "contact": "Kontak"
@@ -92,6 +93,7 @@
     "team": "Tim Ahli",
     "partners_label": "Mitra",
     "winners_label": "Daftar Pemenang",
+    "sk_label": "Download SK",
     "follow": "Ikuti Kami",
     "copyright": "© 2025 IYORA — Indonesian Youth Outstanding Recognition Association",
     "born": "Lahir dari IYSA"
@@ -185,8 +187,6 @@
     "stat_schools": "Sekolah & Institusi",
     "stat_countries": "Negara Peserta",
     "stat_curated": "Terkurasi SIMT Puspresnas",
-    "grand_champions_title": "Juara Umum & Peraih Nilai Tertinggi",
-    "grand_champions_desc": "Penghargaan tertinggi atas pencapaian luar biasa dan penguasaan sains mendalam pada kompetisi IYORA.",
     "sk_section_title": "Surat Keputusan (SK) Resmi Pemenang",
     "sk_section_desc": "Unduh dokumen penetapan pemenang resmi yang telah disahkan oleh Dewan Juri & Direksi IYORA.",
     "sk_download_btn": "Unduh SK PDF",
@@ -204,7 +204,6 @@
     "cat_madrasah": "Madrasah (OS2MN)",
     "cat_science": "Sains Terpadu (WSO/NSO)",
     "medal_all": "Semua Medali",
-    "medal_gc": "Grand Champion",
     "medal_gold": "Medali Emas",
     "medal_silver": "Medali Perak",
     "medal_bronze": "Medali Perunggu",
@@ -225,5 +224,21 @@
     "reset_filter": "Reset Filter",
     "curation_notice_title": "Integrasi SIMT Puspresnas Kemendikbudristek RI",
     "curation_notice_desc": "Seluruh sertifikat dan piagam penghargaan kejuaraan IYORA terintegrasi secara sah dengan Sistem Informasi Manajemen Talenta (SIMT) Pusat Prestasi Nasional untuk mendukung portofolio PPDB jalur prestasi dan seleksi perguruan tinggi (SNBT/SNBP)."
+  },
+  "sk_page": {
+    "badge": "Dokumen Resmi & Terakreditasi",
+    "title": "Surat Keputusan (SK) Pemenang",
+    "subtitle": "Unduh dokumen Surat Keputusan (SK) resmi penetapan pemenang dan medalis olimpiade sains IYORA yang telah disahkan Dewan Juri & Direksi IYORA serta terintegrasi SIMT Puspresnas RI.",
+    "stat_docs": "Dokumen SK Resmi",
+    "stat_competitions": "Cabang Olimpiade",
+    "stat_curated": "Terkurasi SIMT",
+    "search_placeholder": "Cari cabang kompetisi, nomor SK, atau kata kunci...",
+    "filter_all": "Semua Cabang",
+    "download_btn": "Unduh SK PDF",
+    "downloading": "Mengunduh...",
+    "no_results": "Tidak ada dokumen SK yang sesuai dengan kriteria pencarian Anda.",
+    "winners_cta_title": "Ingin mencari nama peraih medali secara spesifik?",
+    "winners_cta_desc": "Gunakan database interaktif daftar pemenang untuk mencari nama peserta, sekolah, kota, dan status verifikasi SIMT Puspresnas.",
+    "winners_cta_btn": "Buka Direktori Pemenang"
   }
 }

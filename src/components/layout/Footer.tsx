@@ -123,6 +123,14 @@ export default function Footer() {
                   {t("winners_label")}
                 </Link>
               </li>
+              <li>
+                <Link
+                  href={href("/sk")}
+                  className="text-sm text-white/50 hover:text-teal transition-colors"
+                >
+                  {t("sk_label")}
+                </Link>
+              </li>
             </ul>
           </div>
 

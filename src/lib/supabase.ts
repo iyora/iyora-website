@@ -732,8 +732,9 @@ export async function fetchNewsPreview(locale?: string): Promise<NewsPreviewData
 function normalizeMedal(rawMedal: any): WinnerMedal {
   if (!rawMedal) return "Gold Medal";
   const m = String(rawMedal).trim().toLowerCase();
+  // Alihkan peraih Grand Champion / Juara Umum ke Gold Medal
   if (m.includes("grand") || m.includes("juara umum") || m.includes("champion") || m.includes("overall")) {
-    return "Grand Champion";
+    return "Gold Medal";
   }
   if (m.includes("emas") || m.includes("gold") || m === "1" || m === "juara 1") {
     return "Gold Medal";

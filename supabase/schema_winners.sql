@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS public.winners (
     level VARCHAR(100) NOT NULL DEFAULT 'SMA / MA / SMK', -- e.g. SD / MI, SMP / MTs, SMA / MA / SMK, Universitas / Mahasiswa
     edition_year INTEGER NOT NULL DEFAULT EXTRACT(YEAR FROM CURRENT_DATE),
     edition_name VARCHAR(100) NOT NULL DEFAULT '',
-    medal VARCHAR(50) NOT NULL, -- e.g. Grand Champion, Gold Medal, Silver Medal, Bronze Medal, Honorable Mention, Special Award
+    medal VARCHAR(50) NOT NULL, -- e.g. Gold Medal, Silver Medal, Bronze Medal, Honorable Mention, Special Award
     score VARCHAR(50) DEFAULT NULL,
     photo TEXT DEFAULT NULL,
     certificate_number VARCHAR(100) DEFAULT NULL,
@@ -190,9 +190,9 @@ BEGIN
         COALESCE(r.level, 'SMA / MA / SMK'),
         EXTRACT(YEAR FROM CURRENT_DATE),
         CASE 
-            WHEN r.rank = 1 OR r.medal = 'gold' THEN 'Gold Medal'
-            WHEN r.rank = 2 OR r.medal = 'silver' THEN 'Silver Medal'
-            WHEN r.rank = 3 OR r.medal = 'bronze' THEN 'Bronze Medal'
+            WHEN r.rank = 1 OR r.medal ILIKE '%grand%' OR r.medal ILIKE '%champion%' OR r.medal ILIKE '%gold%' OR r.medal = '1' THEN 'Gold Medal'
+            WHEN r.rank = 2 OR r.medal ILIKE '%silver%' OR r.medal = '2' THEN 'Silver Medal'
+            WHEN r.rank = 3 OR r.medal ILIKE '%bronze%' OR r.medal = '3' THEN 'Bronze Medal'
             ELSE 'Gold Medal'
         END,
         r.final_score::TEXT,
@@ -211,3 +211,9 @@ EXCEPTION
         RETURN 0;
 END;
 $$;
+
+-- 4. MIGRASI: Alihkan seluruh data peraih Grand Champion ke Gold Medal
+UPDATE public.winners 
+SET medal = 'Gold Medal' 
+WHERE LOWER(medal) LIKE '%grand%' OR LOWER(medal) LIKE '%champion%' OR LOWER(medal) LIKE '%juara umum%';
+

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import WinnersHero from "@/components/winners/WinnersHero";
-import WinnersAnnouncements from "@/components/winners/WinnersAnnouncements";
 import WinnersFilterGrid from "@/components/winners/WinnersFilterGrid";
 import {
   fetchWinnersData,
@@ -43,9 +42,6 @@ export default async function WinnersPage() {
     <div className="min-h-screen bg-white">
       {/* Hero Section with Dynamic Stats */}
       <WinnersHero stats={stats} />
-
-      {/* Official SK Announcements & Decree Documents */}
-      <WinnersAnnouncements announcements={announcements} />
 
       {/* Interactive Searchable & Filterable Winners Database */}
       <WinnersFilterGrid initialWinners={winners} announcements={announcements} />

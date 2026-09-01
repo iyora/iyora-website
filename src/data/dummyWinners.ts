@@ -1,5 +1,4 @@
 export type WinnerMedal =
-  | "Grand Champion"
   | "Gold Medal"
   | "Silver Medal"
   | "Bronze Medal"

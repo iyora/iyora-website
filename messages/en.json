@@ -4,6 +4,7 @@
     "about": "About Us",
     "competitions": "Competitions",
     "winners": "Winners",
+    "sk": "Download SK",
     "news": "News",
     "partners": "Partners",
     "contact": "Contact"
@@ -91,7 +92,8 @@
     "vision": "Vision & Mission",
     "team": "Expert Team",
     "partners_label": "Partners",
-    "winners_label": "Winners List",
+    "winners_label": "Winners & Medalists",
+    "sk_label": "Download SK",
     "follow": "Follow Us",
     "copyright": "© 2025 IYORA — Indonesian Youth Outstanding Recognition Association",
     "born": "Born from IYSA"
@@ -185,8 +187,6 @@
     "stat_schools": "Schools & Institutions",
     "stat_countries": "Participating Countries",
     "stat_curated": "SIMT Puspresnas Verified",
-    "grand_champions_title": "Grand Champions & Highest Achievers",
-    "grand_champions_desc": "The highest recognition for exceptional performance and profound scientific mastery across IYORA competitions.",
     "sk_section_title": "Official Decree (SK) of Winners",
     "sk_section_desc": "Download official decree documents authenticated by the IYORA Board of Juries & Directors.",
     "sk_download_btn": "Download SK PDF",
@@ -204,7 +204,6 @@
     "cat_madrasah": "Madrasah (OS2MN)",
     "cat_science": "Integrated Science (WSO/NSO)",
     "medal_all": "All Medals",
-    "medal_gc": "Grand Champion",
     "medal_gold": "Gold Medal",
     "medal_silver": "Silver Medal",
     "medal_bronze": "Bronze Medal",
@@ -225,5 +224,21 @@
     "reset_filter": "Reset Filters",
     "curation_notice_title": "SIMT Puspresnas Indonesian Ministry of Education Integration",
     "curation_notice_desc": "All IYORA championship certificates and honors are officially integrated into the National Talent Management Information System (SIMT) by Puspresnas to support school admission quotas and national university entrance pathways (SNBT/SNBP)."
+  },
+  "sk_page": {
+    "badge": "Official & Authenticated Decrees",
+    "title": "Official Winners Decrees (SK)",
+    "subtitle": "Download official decree documents (Surat Keputusan) of winners and medalists across IYORA Science Olympiads, certified by the Board of Juries & Directors and integrated with SIMT Puspresnas RI.",
+    "stat_docs": "Official Decrees",
+    "stat_competitions": "Olympiad Disciplines",
+    "stat_curated": "SIMT Verified",
+    "search_placeholder": "Search competition, decree number, or keyword...",
+    "filter_all": "All Disciplines",
+    "download_btn": "Download SK PDF",
+    "downloading": "Downloading...",
+    "no_results": "No decree documents match your search criteria.",
+    "winners_cta_title": "Looking for specific medalist names or schools?",
+    "winners_cta_desc": "Explore our interactive winners database to search participant names, schools, cities, and verify SIMT Puspresnas status.",
+    "winners_cta_btn": "Explore Winners Directory"
   }
 }
