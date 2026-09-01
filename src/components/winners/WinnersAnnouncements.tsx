@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { Download, Calendar, Users, Award, ShieldCheck, FileCheck } from "lucide-react";
+import { Download, Calendar, ShieldCheck, FileCheck } from "lucide-react";
 import { WinnerAnnouncementDoc } from "@/data/dummyWinners";
 
 interface WinnersAnnouncementsProps {
@@ -118,24 +118,6 @@ export default function WinnersAnnouncements({ announcements }: WinnersAnnouncem
                 <p className="text-[11px] font-mono text-gray-500 bg-gray-50 px-2.5 py-1 rounded-lg border border-gray-100 mb-4 truncate">
                   No: {doc.skNumber}
                 </p>
-
-                {/* Meta info: participants & medals */}
-                <div className="grid grid-cols-2 gap-2 text-xs text-gray-600 mb-4">
-                  <div className="flex items-center gap-1.5 p-2 rounded-xl bg-gray-50 border border-gray-100">
-                    <Users size={14} className="text-primary/70" />
-                    <div>
-                      <span className="text-[10px] text-gray-400 block">{t("sk_participants")}</span>
-                      <span className="font-bold text-gray-800">{doc.totalParticipants.toLocaleString()}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1.5 p-2 rounded-xl bg-gray-50 border border-gray-100">
-                    <Award size={14} className="text-amber-500" />
-                    <div>
-                      <span className="text-[10px] text-gray-400 block">{t("sk_medals")}</span>
-                      <span className="font-bold text-gray-800">{doc.totalMedals}</span>
-                    </div>
-                  </div>
-                </div>
               </div>
 
               {/* Action Button */}
