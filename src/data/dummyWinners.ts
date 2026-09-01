@@ -87,7 +87,7 @@ export const DUMMY_WINNER_ANNOUNCEMENTS: WinnerAnnouncementDoc[] = [
     competition: "NYGO",
     competitionFullName: "National Youth Geography Olympiad",
     title: "SK Penetapan Pemenang Resmi NYGO Season 2026",
-    title_en: "Official Winners Decree of NYGO Season 2026",
+    title_en: "List of Winners NYGO Season 2026",
     edition: "Season 2026",
     publishDate: "2026-08-20",
     skNumber: "SK.NYGO/PEM/2026/08.01",
@@ -102,7 +102,7 @@ export const DUMMY_WINNER_ANNOUNCEMENTS: WinnerAnnouncementDoc[] = [
     competition: "IYGO",
     competitionFullName: "International Youth Geography Olympiad",
     title: "SK Penetapan Pemenang Resmi IYGO Season 2026",
-    title_en: "Official Winners Decree of IYGO Season 2026",
+    title_en: "List of Winners IYGO Season 2026",
     edition: "Season 2026",
     publishDate: "2026-08-20",
     skNumber: "SK.IYGO/PEM/2026/08.02",
@@ -117,7 +117,7 @@ export const DUMMY_WINNER_ANNOUNCEMENTS: WinnerAnnouncementDoc[] = [
     competition: "NYEO",
     competitionFullName: "National Youth Economics Olympiad",
     title: "SK Penetapan Pemenang Resmi NYEO Season 2026",
-    title_en: "Official Winners Decree of NYEO Season 2026",
+    title_en: "List of Winners NYEO Season 2026",
     edition: "Season 2026",
     publishDate: "2026-08-20",
     skNumber: "SK.NYEO/PEM/2026/08.03",
@@ -132,7 +132,7 @@ export const DUMMY_WINNER_ANNOUNCEMENTS: WinnerAnnouncementDoc[] = [
     competition: "IYEO",
     competitionFullName: "International Youth Economics Olympiad",
     title: "SK Penetapan Pemenang Resmi IYEO Season 2026",
-    title_en: "Official Winners Decree of IYEO Season 2026",
+    title_en: "List of Winners IYEO Season 2026",
     edition: "Season 2026",
     publishDate: "2026-08-20",
     skNumber: "SK.IYEO/PEM/2026/08.04",
@@ -142,7 +142,7 @@ export const DUMMY_WINNER_ANNOUNCEMENTS: WinnerAnnouncementDoc[] = [
     badge: "Terbaru",
     category: "Economics",
   },
-  {
+  /*{
     id: "sk-nymo-2026",
     competition: "NYMO",
     competitionFullName: "National Youth Mathematics Olympiad",
@@ -262,6 +262,7 @@ export const DUMMY_WINNER_ANNOUNCEMENTS: WinnerAnnouncementDoc[] = [
     badge: "Resmi",
     category: "Science and Math",
   },
+  */
 ];
 
 export const DUMMY_WINNERS: WinnerItem[] = [];
