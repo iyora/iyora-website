@@ -26,6 +26,7 @@ import {
   WinnerItem,
   WinnerMedal,
   WinnerAnnouncementDoc,
+  MANUAL_SK_DRIVE_LINKS,
   ALL_COMPETITIONS,
   MEDAL_TABS,
 } from "@/data/dummyWinners";
@@ -78,7 +79,7 @@ export default function WinnersFilterGrid({
       const finalComp = targetComp !== "ALL" ? targetComp : (doc?.competition || "IYORA");
       const compName = doc?.competitionFullName || (targetComp !== "ALL" ? `${targetComp} Olympiad` : "IYORA Science Olympiad");
       const skNumber = doc?.skNumber || `SK.${finalComp}/PEM/2026/09.01`;
-      const downloadUrl = doc?.downloadUrl || "";
+      const downloadUrl = doc?.downloadUrl || MANUAL_SK_DRIVE_LINKS[finalComp] || MANUAL_SK_DRIVE_LINKS.ALL || "";
       const filename = `SK_Pemenang_${finalComp}_2026.pdf`;
 
       const apiDownloadUrl = `/api/download-sk?comp=${encodeURIComponent(finalComp)}&compName=${encodeURIComponent(compName)}&skNumber=${encodeURIComponent(skNumber)}&url=${encodeURIComponent(downloadUrl)}&filename=${encodeURIComponent(filename)}`;
