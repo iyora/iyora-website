@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { FileText, Download, Calendar, Users, Award, ExternalLink, ShieldCheck } from "lucide-react";
+import { Download, Calendar, Users, Award, ShieldCheck, FileCheck } from "lucide-react";
 import { WinnerAnnouncementDoc } from "@/data/dummyWinners";
 
 interface WinnersAnnouncementsProps {
@@ -11,8 +12,31 @@ interface WinnersAnnouncementsProps {
 export default function WinnersAnnouncements({ announcements }: WinnersAnnouncementsProps) {
   const t = useTranslations("winners_page");
   const locale = useLocale();
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   if (!announcements || announcements.length === 0) return null;
+
+  const handleDirectDownload = (doc: WinnerAnnouncementDoc) => {
+    setDownloadingId(doc.id);
+    try {
+      const comp = doc.competition || "IYORA";
+      const filename = `SK_Pemenang_${comp}_2026.pdf`;
+      const downloadUrl = `/api/download-sk?comp=${encodeURIComponent(comp)}&compName=${encodeURIComponent(doc.competitionFullName || doc.title)}&skNumber=${encodeURIComponent(doc.skNumber || "")}&url=${encodeURIComponent(doc.downloadUrl || "")}&filename=${encodeURIComponent(filename)}`;
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      console.error("Failed to download SK:", err);
+    } finally {
+      setTimeout(() => {
+        setDownloadingId(null);
+      }, 1500);
+    }
+  };
 
   return (
     <section className="py-14 px-6 bg-gray-50 border-y border-gray-100">
@@ -83,16 +107,22 @@ export default function WinnersAnnouncements({ announcements }: WinnersAnnouncem
                   <Calendar size={12} />
                   <span>{doc.publishDate}</span>
                 </div>
-                <a
-                  href={doc.downloadUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-dark shadow-sm transition-all group-hover:shadow-primary/20"
+                <button
+                  onClick={() => handleDirectDownload(doc)}
+                  disabled={downloadingId === doc.id}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-dark shadow-sm transition-all group-hover:shadow-primary/20 cursor-pointer active:scale-95 disabled:opacity-75"
                 >
-                  <Download size={13} />
-                  <span>{t("sk_download_btn")}</span>
-                  <ExternalLink size={11} className="opacity-70" />
-                </a>
+                  {downloadingId === doc.id ? (
+                    <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Download size={13} />
+                  )}
+                  <span>
+                    {downloadingId === doc.id
+                      ? (locale === "en" ? "Downloading..." : "Mengunduh...")
+                      : t("sk_download_btn")}
+                  </span>
+                </button>
               </div>
             </div>
           ))}
@@ -101,3 +131,4 @@ export default function WinnersAnnouncements({ announcements }: WinnersAnnouncem
     </section>
   );
 }
+

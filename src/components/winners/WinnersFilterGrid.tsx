@@ -16,21 +16,29 @@ import {
   Sparkles,
   ShieldCheck,
   Building2,
-  GraduationCap
+  GraduationCap,
+  Download,
+  FileText,
+  FileCheck2,
 } from "lucide-react";
 import clsx from "clsx";
 import {
   WinnerItem,
   WinnerMedal,
+  WinnerAnnouncementDoc,
   ALL_COMPETITIONS,
   MEDAL_TABS,
 } from "@/data/dummyWinners";
 
 interface WinnersFilterGridProps {
   initialWinners: WinnerItem[];
+  announcements?: WinnerAnnouncementDoc[];
 }
 
-export default function WinnersFilterGrid({ initialWinners }: WinnersFilterGridProps) {
+export default function WinnersFilterGrid({
+  initialWinners,
+  announcements = [],
+}: WinnersFilterGridProps) {
   const t = useTranslations("winners_page");
   const locale = useLocale();
 
@@ -39,6 +47,56 @@ export default function WinnersFilterGrid({ initialWinners }: WinnersFilterGridP
   const [selectedMedal, setSelectedMedal] = useState<string>("all");
   const [selectedLevel, setSelectedLevel] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
+  const [downloadingComp, setDownloadingComp] = useState<string | null>(null);
+
+  // Match SK announcement document based on selected competition
+  const currentAnnouncement = useMemo(() => {
+    if (selectedCompetition === "all") {
+      return announcements.length > 0 ? announcements[0] : null;
+    }
+    const targetComp = selectedCompetition.trim().toUpperCase();
+    return (
+      announcements.find(
+        (a) => a.competition.trim().toUpperCase() === targetComp
+      ) || null
+    );
+  }, [announcements, selectedCompetition]);
+
+  // Direct download handler for official SK decree PDF
+  const handleDirectDownloadSK = (compCode?: string) => {
+    const targetComp = (compCode || selectedCompetition || "all").trim().toUpperCase();
+    const doc =
+      targetComp === "ALL"
+        ? announcements.length > 0 ? announcements[0] : null
+        : announcements.find(
+            (a) => a.competition.trim().toUpperCase() === targetComp
+          );
+
+    setDownloadingComp(targetComp);
+
+    try {
+      const finalComp = targetComp !== "ALL" ? targetComp : (doc?.competition || "IYORA");
+      const compName = doc?.competitionFullName || (targetComp !== "ALL" ? `${targetComp} Olympiad` : "IYORA Science Olympiad");
+      const skNumber = doc?.skNumber || `SK.${finalComp}/PEM/2026/09.01`;
+      const downloadUrl = doc?.downloadUrl || "";
+      const filename = `SK_Pemenang_${finalComp}_2026.pdf`;
+
+      const apiDownloadUrl = `/api/download-sk?comp=${encodeURIComponent(finalComp)}&compName=${encodeURIComponent(compName)}&skNumber=${encodeURIComponent(skNumber)}&url=${encodeURIComponent(downloadUrl)}&filename=${encodeURIComponent(filename)}`;
+
+      const link = document.createElement("a");
+      link.href = apiDownloadUrl;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      console.error("Failed to download SK:", err);
+    } finally {
+      setTimeout(() => {
+        setDownloadingComp(null);
+      }, 1500);
+    }
+  };
 
   // Get available competition options including any dynamic competition codes from initialWinners
   const availableCompetitions = useMemo(() => {
@@ -190,7 +248,7 @@ export default function WinnersFilterGrid({ initialWinners }: WinnersFilterGridP
               )}
             </div>
 
-            {/* Filter Dropdowns (Kompetisi Terpisah + Jenjang) & View Mode Switcher */}
+            {/* Filter Dropdowns (Kompetisi Terpisah + Jenjang) & View Mode Switcher & Download SK Button */}
             <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap justify-between lg:justify-end">
               {/* Dropdown 1 Menu: Cabang / Nama Olimpiade (Terpisah NYGO, IYGO, NYEO, IYEO, dll.) */}
               <select
@@ -218,6 +276,36 @@ export default function WinnersFilterGrid({ initialWinners }: WinnersFilterGridP
                 <option value="SMA / MA / SMK">{t("level_sma")}</option>
                 <option value="Universitas / Mahasiswa">{t("level_univ")}</option>
               </select>
+
+              {/* Tombol Unduh SK Pemenang Sesuai Kompetisi Terpilih */}
+              <button
+                onClick={() => handleDirectDownloadSK(selectedCompetition)}
+                disabled={downloadingComp === selectedCompetition}
+                className={clsx(
+                  "flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl text-xs font-extrabold transition-all cursor-pointer shadow-sm active:scale-95 shrink-0 disabled:opacity-75",
+                  selectedCompetition !== "all"
+                    ? "bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white shadow-emerald-600/20"
+                    : "bg-teal-50 text-teal-800 border border-teal-200 hover:bg-teal-100"
+                )}
+                title={
+                  selectedCompetition !== "all"
+                    ? `Unduh SK Pemenang ${selectedCompetition} (PDF)`
+                    : "Unduh Dokumen SK Pemenang Resmi"
+                }
+              >
+                {downloadingComp === selectedCompetition ? (
+                  <div className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Download size={13} />
+                )}
+                <span>
+                  {downloadingComp === selectedCompetition
+                    ? (locale === "en" ? "Downloading..." : "Mengunduh...")
+                    : selectedCompetition !== "all"
+                    ? (locale === "en" ? `Download SK ${selectedCompetition}` : `Unduh SK ${selectedCompetition}`)
+                    : (locale === "en" ? "Download SK PDF" : "Unduh SK PDF")}
+                </span>
+              </button>
 
               {/* View Mode Switcher */}
               <div className="flex items-center bg-gray-100 p-1 rounded-2xl border border-gray-200/80 shrink-0">
@@ -291,6 +379,59 @@ export default function WinnersFilterGrid({ initialWinners }: WinnersFilterGridP
             </div>
           </div>
         </div>
+
+        {/* Dynamic SK Decree Banner when a competition is selected */}
+        {selectedCompetition !== "all" && (
+          <div className="mb-8 bg-gradient-to-r from-[#0f172a] via-[#1e293b] to-[#0f283d] rounded-3xl p-5 sm:p-6 text-white border border-teal-500/25 shadow-xl relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="absolute right-0 top-0 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="relative z-10 flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-teal-500/20 border border-teal-400/30 flex items-center justify-center text-teal-300 shrink-0">
+                <FileText size={24} />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
+                  <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-lg bg-teal-500/20 text-teal-300 border border-teal-500/30">
+                    SK Resmi {selectedCompetition}
+                  </span>
+                  <span className="text-[11px] text-teal-200/80 font-mono bg-white/5 px-2 py-0.5 rounded border border-white/10">
+                    No: {currentAnnouncement?.skNumber || `SK.${selectedCompetition}/PEM/2026/09.01`}
+                  </span>
+                  <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                    ✓ Terverifikasi SIMT
+                  </span>
+                </div>
+                <h4 className="text-sm sm:text-base font-extrabold text-white">
+                  {locale === "en"
+                    ? `Official Decree of Winners & Medalists — ${selectedCompetition}`
+                    : `Surat Keputusan (SK) Penetapan Pemenang & Medalis — ${selectedCompetition}`}
+                </h4>
+                <p className="text-xs text-gray-300 mt-0.5">
+                  {currentAnnouncement
+                    ? (locale === "en" ? currentAnnouncement.title_en : currentAnnouncement.title)
+                    : (locale === "en"
+                        ? "Download the authenticated decree document of awardees and medalists."
+                        : "Dokumen penetapan pemenang resmi yang telah disahkan Dewan Juri & Direksi IYORA.")}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => handleDirectDownloadSK(selectedCompetition)}
+              disabled={downloadingComp === selectedCompetition}
+              className="relative z-10 w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white text-xs font-extrabold shadow-lg shadow-emerald-500/25 transition-all cursor-pointer active:scale-95 shrink-0 disabled:opacity-75"
+            >
+              {downloadingComp === selectedCompetition ? (
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <Download size={15} />
+              )}
+              <span>
+                {downloadingComp === selectedCompetition
+                  ? (locale === "en" ? "Downloading SK..." : "Mengunduh SK...")
+                  : (locale === "en" ? `Download SK ${selectedCompetition} (PDF)` : `Unduh SK ${selectedCompetition} (PDF)`)}
+              </span>
+            </button>
+          </div>
+        )}
 
         {/* Results Counter */}
         <div className="flex items-center justify-between mb-6 px-1">

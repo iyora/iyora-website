@@ -48,7 +48,7 @@ export default async function WinnersPage() {
       <WinnersAnnouncements announcements={announcements} />
 
       {/* Interactive Searchable & Filterable Winners Database */}
-      <WinnersFilterGrid initialWinners={winners} />
+      <WinnersFilterGrid initialWinners={winners} announcements={announcements} />
     </div>
   );
 }
