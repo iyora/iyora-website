@@ -2,6 +2,8 @@ import { createClient } from "@supabase/supabase-js";
 import { DUMMY_NEWS, getDummyNewsBySlug } from "@/data/dummyNews";
 import {
   WinnerItem,
+  WinnerMedal,
+  WinnerLevel,
   WinnerAnnouncementDoc,
   DUMMY_WINNERS,
   DUMMY_WINNER_ANNOUNCEMENTS,
@@ -727,6 +729,58 @@ export async function fetchNewsPreview(locale?: string): Promise<NewsPreviewData
    WINNERS & ANNOUNCEMENTS (Opsi 2: Published Results)
    ─────────────────────────────────────────────── */
 
+function normalizeMedal(rawMedal: any): WinnerMedal {
+  if (!rawMedal) return "Gold Medal";
+  const m = String(rawMedal).trim().toLowerCase();
+  if (m.includes("grand") || m.includes("juara umum") || m.includes("champion") || m.includes("overall")) {
+    return "Grand Champion";
+  }
+  if (m.includes("emas") || m.includes("gold") || m === "1" || m === "juara 1") {
+    return "Gold Medal";
+  }
+  if (m.includes("perak") || m.includes("silver") || m === "2" || m === "juara 2") {
+    return "Silver Medal";
+  }
+  if (m.includes("perunggu") || m.includes("bronze") || m === "3" || m === "juara 3") {
+    return "Bronze Medal";
+  }
+  if (m.includes("harapan") || m.includes("honorable") || m.includes("mention")) {
+    return "Honorable Mention";
+  }
+  if (m.includes("special") || m.includes("khusus") || m.includes("award")) {
+    return "Special Award";
+  }
+  return (rawMedal as WinnerMedal) || "Gold Medal";
+}
+
+function mapRawToWinnerItem(row: any): WinnerItem {
+  const medal = normalizeMedal(row.medal || row.medali || row.kategori_juara || row.award || row.rank_label);
+  const compCode = (row.competition || row.kompetisi || row.event_code || row.code || "").trim().toUpperCase();
+  const compName = row.competition_full_name || row.competitionFullName || row.event_name || row.nama_kompetisi || compCode;
+
+  return {
+    id: String(row.id || Math.random().toString(36).substring(2, 9)),
+    name: row.name || row.team_name || row.peserta || row.nama_peserta || row.full_name || "Peserta",
+    school: row.school || row.sekolah || row.institusi || row.institution || row.asal_sekolah || "—",
+    city: row.city || row.kota || row.kabupaten || "",
+    province: row.province || row.provinsi || "",
+    country: row.country || row.negara || "Indonesia",
+    countryCode: (row.country_code || row.countryCode || row.kode_negara || "ID").toUpperCase(),
+    competition: compCode,
+    competitionFullName: compName,
+    category: row.category || row.bidang || row.kategori || "General",
+    level: (row.level || row.jenjang || "SMA / MA / SMK") as any,
+    editionYear: Number(row.edition_year || row.editionYear || row.tahun || row.year) || new Date().getFullYear(),
+    editionName: row.edition_name || row.editionName || `${compCode} ${row.edition_year || row.tahun || new Date().getFullYear()}`.trim(),
+    medal,
+    score: row.score !== undefined && row.score !== null ? String(row.score) : (row.nilai !== undefined && row.nilai !== null ? String(row.nilai) : undefined),
+    photo: row.photo || row.foto || undefined,
+    certificateNumber: row.certificate_number || row.certificateNumber || row.nomor_sertifikat || row.no_sertifikat || undefined,
+    simtVerified: row.simt_verified ?? row.simtVerified ?? row.is_simt ?? true,
+    specialNote: row.special_note || row.specialNote || row.catatan || undefined,
+  };
+}
+
 export async function fetchWinnersData(): Promise<WinnerItem[]> {
   // 1. Coba ambil langsung dari Endpoint Public API Dashboard (Opsi 2: Sinkronisasi API langsung)
   try {
@@ -739,34 +793,14 @@ export async function fetchWinnersData(): Promise<WinnerItem[]> {
     if (res.ok) {
       const json = await res.json();
       if (json.ok && Array.isArray(json.data) && json.data.length > 0) {
-        return json.data.map((row: any) => ({
-          id: String(row.id),
-          name: row.name || row.team_name,
-          school: row.school || "—",
-          city: row.city || "",
-          province: row.province || "",
-          country: row.country || "Indonesia",
-          countryCode: row.country_code || row.countryCode || "ID",
-          competition: row.competition,
-          competitionFullName: row.competition_full_name || row.competitionFullName || row.competition,
-          category: row.category || "General",
-          level: row.level,
-          editionYear: Number(row.edition_year || row.editionYear) || new Date().getFullYear(),
-          editionName: row.edition_name || row.editionName || `${row.competition} ${row.edition_year || ""}`.trim(),
-          medal: row.medal,
-          score: row.score ? String(row.score) : undefined,
-          photo: row.photo || undefined,
-          certificateNumber: row.certificate_number || row.certificateNumber || undefined,
-          simtVerified: row.simt_verified ?? row.simtVerified ?? true,
-          specialNote: row.special_note || row.specialNote || undefined,
-        }));
+        return json.data.map(mapRawToWinnerItem);
       }
     }
   } catch {
     // Lanjut ke fallback Supabase jika API dashboard tidak merespons
   }
 
-  // 2. Fallback: Ambil langsung dari Supabase Client
+  // 2. Fallback: Ambil langsung dari Supabase Client (Tabel winners)
   try {
     const supabase = createSupabase();
 
@@ -777,40 +811,33 @@ export async function fetchWinnersData(): Promise<WinnerItem[]> {
       .order("edition_year", { ascending: false })
       .order("created_at", { ascending: false });
 
-    if (error || !data || data.length === 0) {
-      return [];
+    if (!error && data && data.length > 0) {
+      return data.map(mapRawToWinnerItem);
     }
 
-    const dbWinners: WinnerItem[] = data.map((row: any) => ({
-      id: row.id,
-      name: row.name,
-      school: row.school,
-      city: row.city || "",
-      province: row.province || "",
-      country: row.country || "Indonesia",
-      countryCode: row.country_code || "ID",
-      competition: row.competition,
-      competitionFullName: row.competition_full_name || row.competition,
-      category: row.category || "General",
-      level: row.level,
-      editionYear: row.edition_year || new Date().getFullYear(),
-      editionName: row.edition_name || `${row.competition} ${row.edition_year || ""}`.trim(),
-      medal: row.medal,
-      score: row.score ? String(row.score) : undefined,
-      photo: row.photo || undefined,
-      certificateNumber: row.certificate_number || undefined,
-      simtVerified: row.simt_verified ?? true,
-      specialNote: row.special_note || undefined,
-    }));
+    // 3. Fallback alternatif: cek tabel rekap_nilai jika tabel winners belum terisi
+    try {
+      const { data: rekapData } = await supabase
+        .from("rekap_nilai")
+        .select("*")
+        .eq("is_published", true)
+        .order("created_at", { ascending: false });
 
-    return dbWinners;
+      if (rekapData && rekapData.length > 0) {
+        return rekapData.map(mapRawToWinnerItem);
+      }
+    } catch {
+      // Abaikan jika tabel rekap_nilai tidak ada
+    }
+
+    return [];
   } catch {
     return [];
   }
 }
 
 export async function fetchWinnerAnnouncements(): Promise<WinnerAnnouncementDoc[]> {
-  // 1. Coba ambil langsung dari Endpoint Public API Dashboard (Opsi 2: Sinkronisasi API langsung)
+  // 1. Coba ambil langsung dari Endpoint Public API Dashboard
   try {
     const dashboardUrl =
       process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.iyora.or.id";
@@ -823,18 +850,18 @@ export async function fetchWinnerAnnouncements(): Promise<WinnerAnnouncementDoc[
       if (json.ok && Array.isArray(json.data) && json.data.length > 0) {
         return json.data.map((row: any) => ({
           id: String(row.id),
-          competition: row.competition,
-          competitionFullName: row.competition_full_name || row.competitionFullName || row.competition,
-          title: row.title,
-          title_en: row.title_en || row.title,
-          edition: row.edition || "Season 2026",
-          publishDate: row.publish_date ? String(row.publish_date).substring(0, 10) : "",
-          skNumber: row.sk_number || row.skNumber || "",
-          downloadUrl: row.download_url || row.downloadUrl || "#",
-          totalParticipants: Number(row.total_participants || row.totalParticipants) || 0,
-          totalMedals: Number(row.total_medals || row.totalMedals) || 0,
+          competition: row.competition || row.kompetisi || "",
+          competitionFullName: row.competition_full_name || row.competitionFullName || row.competition || "",
+          title: row.title || row.judul || "",
+          title_en: row.title_en || row.title || row.judul || "",
+          edition: row.edition || row.edisi || "Season 2026",
+          publishDate: row.publish_date ? String(row.publish_date).substring(0, 10) : (row.tanggal_sk ? String(row.tanggal_sk).substring(0, 10) : ""),
+          skNumber: row.sk_number || row.skNumber || row.nomor_sk || "",
+          downloadUrl: row.download_url || row.downloadUrl || row.file_url || "#",
+          totalParticipants: Number(row.total_participants || row.totalParticipants || row.total_peserta) || 0,
+          totalMedals: Number(row.total_medals || row.totalMedals || row.total_medali) || 0,
           badge: row.badge || "Resmi",
-          category: row.category || "General",
+          category: row.category || row.bidang || row.kategori || "General",
         }));
       }
     }
@@ -842,7 +869,7 @@ export async function fetchWinnerAnnouncements(): Promise<WinnerAnnouncementDoc[
     // Fallback ke Supabase jika API dashboard tidak merespons
   }
 
-  // 2. Fallback: Ambil langsung dari Supabase Client
+  // 2. Fallback: Ambil langsung dari Supabase Client (Tabel winner_announcements)
   try {
     const supabase = createSupabase();
 
@@ -858,18 +885,18 @@ export async function fetchWinnerAnnouncements(): Promise<WinnerAnnouncementDoc[
 
     const dbDocs: WinnerAnnouncementDoc[] = data.map((row: any) => ({
       id: row.id,
-      competition: row.competition,
-      competitionFullName: row.competition_full_name || row.competition,
-      title: row.title,
-      title_en: row.title_en || row.title,
-      edition: row.edition || "Season 2026",
-      publishDate: row.publish_date ? String(row.publish_date).substring(0, 10) : "",
-      skNumber: row.sk_number,
-      downloadUrl: row.download_url,
-      totalParticipants: Number(row.total_participants) || 0,
-      totalMedals: Number(row.total_medals) || 0,
+      competition: row.competition || row.kompetisi || "",
+      competitionFullName: row.competition_full_name || row.competition || "",
+      title: row.title || row.judul || "",
+      title_en: row.title_en || row.title || row.judul || "",
+      edition: row.edition || row.edisi || "Season 2026",
+      publishDate: row.publish_date ? String(row.publish_date).substring(0, 10) : (row.tanggal_sk ? String(row.tanggal_sk).substring(0, 10) : ""),
+      skNumber: row.sk_number || row.nomor_sk || "",
+      downloadUrl: row.download_url || row.file_url || "#",
+      totalParticipants: Number(row.total_participants || row.total_peserta) || 0,
+      totalMedals: Number(row.total_medals || row.total_medali) || 0,
       badge: row.badge || "Resmi",
-      category: row.category || "General",
+      category: row.category || row.bidang || row.kategori || "General",
     }));
 
     return dbDocs;
