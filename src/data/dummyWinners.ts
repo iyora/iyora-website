@@ -55,11 +55,11 @@ export interface WinnerAnnouncementDoc {
  * Silakan tempel link Google Drive resmi untuk masing-masing cabang di bawah ini:
  */
 export const MANUAL_SK_DRIVE_LINKS: Record<string, string> = {
-  NYGO: "", // Tempel link SK NYGO di sini
-  IYGO: "", // Tempel link SK IYGO di sini
-  NYEO: "", // Tempel link SK NYEO di sini
-  IYEO: "", // Tempel link SK IYEO di sini
-  NYMO: "", // Tempel link SK NYMO di sini
+  NYGO: "/sk/nygi-sk.pdf",
+  IYGO: "",
+  NYEO: "/sk/nyeo-sk.pdf",
+  IYEO: "/sk/iyeo-list.pdf",
+  NYMO: "",
   IYMO: "", // Tempel link SK IYMO di sini
   NYBO: "", // Tempel link SK NYBO di sini
   IYBO: "", // Tempel link SK IYBO di sini

@@ -227,12 +227,16 @@ export async function GET(req: Request) {
       return Response.redirect(gdriveDirectUrl, 302);
     }
 
-    // 2. If it's a local file path (e.g. /sk/sk-nygo.pdf or sk-nygo.pdf)
+    // 2. If it's a local file path (e.g. /sk/sk-nygo.pdf or public/sk/nygi-sk.pdf or nyeo-sk.pdf)
     if (remoteUrl && !remoteUrl.startsWith("http") && !remoteUrl.includes("#")) {
-      const cleanPath = remoteUrl.startsWith("/") ? remoteUrl.slice(1) : remoteUrl;
+      let cleanPath = remoteUrl.startsWith("/") ? remoteUrl.slice(1) : remoteUrl;
+      if (cleanPath.startsWith("public/")) {
+        cleanPath = cleanPath.slice("public/".length);
+      }
       const localFileCandidates = [
-        path.join(process.cwd(), "public", "sk", cleanPath),
         path.join(process.cwd(), "public", cleanPath),
+        path.join(process.cwd(), "public", "sk", cleanPath),
+        path.join(process.cwd(), "public", "sk", path.basename(cleanPath)),
       ];
 
       for (const candidate of localFileCandidates) {
