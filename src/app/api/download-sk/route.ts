@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import fs from "fs";
+import path from "path";
 
 export const dynamic = "force-dynamic";
 
@@ -219,13 +221,61 @@ export async function GET(req: Request) {
 
     const safeFilename = `SK_Pemenang_${comp.toUpperCase()}_${year}.pdf`;
 
-    // 1. If it's a Google Drive link, redirect to Google Drive Direct Download
+    // 1. If it's a Google Drive link, redirect directly to Google Drive download
     if (remoteUrl && remoteUrl.includes("drive.google.com")) {
       const gdriveDirectUrl = parseGoogleDriveDirectUrl(remoteUrl) || remoteUrl;
       return Response.redirect(gdriveDirectUrl, 302);
     }
 
-    // 2. If a remote direct URL is provided (e.g. Supabase storage), try fetching and streaming it
+    // 2. If it's a local file path (e.g. /sk/sk-nygo.pdf or sk-nygo.pdf)
+    if (remoteUrl && !remoteUrl.startsWith("http") && !remoteUrl.includes("#")) {
+      const cleanPath = remoteUrl.startsWith("/") ? remoteUrl.slice(1) : remoteUrl;
+      const localFileCandidates = [
+        path.join(process.cwd(), "public", "sk", cleanPath),
+        path.join(process.cwd(), "public", cleanPath),
+      ];
+
+      for (const candidate of localFileCandidates) {
+        if (fs.existsSync(candidate) && fs.statSync(candidate).isFile()) {
+          const fileBuffer = fs.readFileSync(candidate);
+          return new Response(new Uint8Array(fileBuffer), {
+            status: 200,
+            headers: {
+              "Content-Type": "application/pdf",
+              "Content-Disposition": `attachment; filename="${safeFilename}"`,
+              "Content-Length": String(fileBuffer.length),
+              "Cache-Control": "no-cache, no-store, must-revalidate",
+            },
+          });
+        }
+      }
+    }
+
+    // 3. Auto-detect if a local PDF file exists in public/sk/ matching the competition name
+    const compCode = comp.toLowerCase();
+    const autoLocalCandidates = [
+      path.join(process.cwd(), "public", "sk", `sk-${compCode}.pdf`),
+      path.join(process.cwd(), "public", "sk", `${compCode}.pdf`),
+      path.join(process.cwd(), "public", "sk", `sk-${comp.toUpperCase()}.pdf`),
+      path.join(process.cwd(), "public", "sk", `${comp.toUpperCase()}.pdf`),
+    ];
+
+    for (const candidate of autoLocalCandidates) {
+      if (fs.existsSync(candidate) && fs.statSync(candidate).isFile()) {
+        const fileBuffer = fs.readFileSync(candidate);
+        return new Response(new Uint8Array(fileBuffer), {
+          status: 200,
+          headers: {
+            "Content-Type": "application/pdf",
+            "Content-Disposition": `attachment; filename="${safeFilename}"`,
+            "Content-Length": String(fileBuffer.length),
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+          },
+        });
+      }
+    }
+
+    // 4. If a remote direct URL is provided (e.g. Supabase storage / CDN), try fetching and streaming it
     if (remoteUrl && remoteUrl.startsWith("http") && !remoteUrl.includes("#")) {
       try {
         const remoteRes = await fetch(remoteUrl, {
@@ -252,7 +302,7 @@ export async function GET(req: Request) {
       }
     }
 
-    // 3. Otherwise, generate official validated PDF document on the fly
+    // 5. Otherwise, generate official validated PDF document on the fly
     const pdfBuffer = generatePdfBuffer(comp, compFullName, skNumber, year);
 
     return new Response(new Uint8Array(pdfBuffer), {
