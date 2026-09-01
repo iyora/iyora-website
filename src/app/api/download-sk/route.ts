@@ -197,6 +197,17 @@ function generatePdfBuffer(
   return Buffer.from(pdf, "utf-8");
 }
 
+function parseGoogleDriveDirectUrl(url: string): string | null {
+  if (!url || !url.includes("drive.google.com")) return null;
+  const match =
+    url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) ||
+    url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (match && match[1]) {
+    return `https://drive.google.com/uc?export=download&id=${match[1]}`;
+  }
+  return null;
+}
+
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
@@ -208,7 +219,13 @@ export async function GET(req: Request) {
 
     const safeFilename = `SK_Pemenang_${comp.toUpperCase()}_${year}.pdf`;
 
-    // 1. If a remote URL is provided (e.g. Supabase storage), try fetching and streaming it
+    // 1. If it's a Google Drive link, redirect to Google Drive Direct Download
+    if (remoteUrl && remoteUrl.includes("drive.google.com")) {
+      const gdriveDirectUrl = parseGoogleDriveDirectUrl(remoteUrl) || remoteUrl;
+      return Response.redirect(gdriveDirectUrl, 302);
+    }
+
+    // 2. If a remote direct URL is provided (e.g. Supabase storage), try fetching and streaming it
     if (remoteUrl && remoteUrl.startsWith("http") && !remoteUrl.includes("#")) {
       try {
         const remoteRes = await fetch(remoteUrl, {
@@ -235,7 +252,7 @@ export async function GET(req: Request) {
       }
     }
 
-    // 2. Otherwise, generate official validated PDF document on the fly
+    // 3. Otherwise, generate official validated PDF document on the fly
     const pdfBuffer = generatePdfBuffer(comp, compFullName, skNumber, year);
 
     return new Response(new Uint8Array(pdfBuffer), {

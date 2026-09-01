@@ -880,7 +880,7 @@ export async function fetchWinnerAnnouncements(): Promise<WinnerAnnouncementDoc[
       .order("publish_date", { ascending: false });
 
     if (error || !data || data.length === 0) {
-      return [];
+      return DUMMY_WINNER_ANNOUNCEMENTS;
     }
 
     const dbDocs: WinnerAnnouncementDoc[] = data.map((row: any) => ({
@@ -899,9 +899,9 @@ export async function fetchWinnerAnnouncements(): Promise<WinnerAnnouncementDoc[
       category: row.category || row.bidang || row.kategori || "General",
     }));
 
-    return dbDocs;
+    return dbDocs.length > 0 ? dbDocs : DUMMY_WINNER_ANNOUNCEMENTS;
   } catch {
-    return [];
+    return DUMMY_WINNER_ANNOUNCEMENTS;
   }
 }
 

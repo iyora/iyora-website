@@ -50,7 +50,133 @@ export interface WinnerAnnouncementDoc {
   category: string;
 }
 
-export const DUMMY_WINNER_ANNOUNCEMENTS: WinnerAnnouncementDoc[] = [];
+/**
+ * DAFTAR DOKUMEN SK PENGUMUMAN PEMENANG (DEFAULT / FALLBACK)
+ * Anda dapat menaruh Link Google Drive pada properti `downloadUrl`.
+ * Format link: https://drive.google.com/file/d/ID_FILE/view?usp=sharing
+ */
+export const DUMMY_WINNER_ANNOUNCEMENTS: WinnerAnnouncementDoc[] = [
+  {
+    id: "sk-nygo-2026",
+    competition: "NYGO",
+    competitionFullName: "National Youth Geography Olympiad",
+    title: "SK Penetapan Pemenang Resmi NYGO Season 2026",
+    title_en: "Official Winners Decree of NYGO Season 2026",
+    edition: "Season 2026",
+    publishDate: "2026-08-20",
+    skNumber: "SK.NYGO/PEM/2026/08.01",
+    downloadUrl: "", // Tempel Link Google Drive SK NYGO di sini
+    totalParticipants: 1420,
+    totalMedals: 180,
+    badge: "Terbaru",
+    category: "Geography",
+  },
+  {
+    id: "sk-iygo-2026",
+    competition: "IYGO",
+    competitionFullName: "International Youth Geography Olympiad",
+    title: "SK Penetapan Pemenang Resmi IYGO Season 2026",
+    title_en: "Official Winners Decree of IYGO Season 2026",
+    edition: "Season 2026",
+    publishDate: "2026-08-20",
+    skNumber: "SK.IYGO/PEM/2026/08.02",
+    downloadUrl: "", // Tempel Link Google Drive SK IYGO di sini
+    totalParticipants: 850,
+    totalMedals: 120,
+    badge: "Terbaru",
+    category: "Geography",
+  },
+  {
+    id: "sk-nyeo-2026",
+    competition: "NYEO",
+    competitionFullName: "National Youth Economics Olympiad",
+    title: "SK Penetapan Pemenang Resmi NYEO Season 2026",
+    title_en: "Official Winners Decree of NYEO Season 2026",
+    edition: "Season 2026",
+    publishDate: "2026-08-20",
+    skNumber: "SK.NYEO/PEM/2026/08.03",
+    downloadUrl: "", // Tempel Link Google Drive SK NYEO di sini
+    totalParticipants: 1100,
+    totalMedals: 150,
+    badge: "Terbaru",
+    category: "Economics",
+  },
+  {
+    id: "sk-iyeo-2026",
+    competition: "IYEO",
+    competitionFullName: "International Youth Economics Olympiad",
+    title: "SK Penetapan Pemenang Resmi IYEO Season 2026",
+    title_en: "Official Winners Decree of IYEO Season 2026",
+    edition: "Season 2026",
+    publishDate: "2026-08-20",
+    skNumber: "SK.IYEO/PEM/2026/08.04",
+    downloadUrl: "", // Tempel Link Google Drive SK IYEO di sini
+    totalParticipants: 720,
+    totalMedals: 95,
+    badge: "Terbaru",
+    category: "Economics",
+  },
+  {
+    id: "sk-nymo-2026",
+    competition: "NYMO",
+    competitionFullName: "National Youth Mathematics Olympiad",
+    title: "SK Penetapan Pemenang Resmi NYMO Season 2026",
+    title_en: "Official Winners Decree of NYMO Season 2026",
+    edition: "Season 2026",
+    publishDate: "2026-05-10",
+    skNumber: "SK.NYMO/PEM/2026/05.01",
+    downloadUrl: "", // Tempel Link Google Drive SK NYMO di sini
+    totalParticipants: 1850,
+    totalMedals: 210,
+    badge: "Resmi",
+    category: "Mathematics",
+  },
+  {
+    id: "sk-os2mn-2026",
+    competition: "OS2MN",
+    competitionFullName: "Olimpiade Sains Madrasah Nasional",
+    title: "SK Penetapan Pemenang Resmi OS2MN Season 2026",
+    title_en: "Official Winners Decree of OS2MN Season 2026",
+    edition: "Season 2026",
+    publishDate: "2026-03-05",
+    skNumber: "SK.OS2MN/PEM/2026/03.01",
+    downloadUrl: "", // Tempel Link Google Drive SK OS2MN di sini
+    totalParticipants: 2100,
+    totalMedals: 250,
+    badge: "Resmi",
+    category: "Madrasah",
+  },
+  {
+    id: "sk-wso-2026",
+    competition: "WSO",
+    competitionFullName: "World Science Olympiad",
+    title: "SK Penetapan Pemenang Resmi WSO Season 2026",
+    title_en: "Official Winners Decree of WSO Season 2026",
+    edition: "Season 2026",
+    publishDate: "2026-08-15",
+    skNumber: "SK.WSO/PEM/2026/08.01",
+    downloadUrl: "", // Tempel Link Google Drive SK WSO di sini
+    totalParticipants: 1600,
+    totalMedals: 200,
+    badge: "Internasional",
+    category: "Science",
+  },
+  {
+    id: "sk-nso-2026",
+    competition: "NSO",
+    competitionFullName: "National Science Olympiad",
+    title: "SK Penetapan Pemenang Resmi NSO Season 2026",
+    title_en: "Official Winners Decree of NSO Season 2026",
+    edition: "Season 2026",
+    publishDate: "2026-08-28",
+    skNumber: "SK.NSO/PEM/2026/08.01",
+    downloadUrl: "", // Tempel Link Google Drive SK NSO di sini
+    totalParticipants: 1350,
+    totalMedals: 160,
+    badge: "Resmi",
+    category: "Science",
+  },
+];
 
 export const DUMMY_WINNERS: WinnerItem[] = [];
 
