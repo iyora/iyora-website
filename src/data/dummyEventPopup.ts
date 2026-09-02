@@ -22,8 +22,63 @@ export interface EventPopupData {
   links: EventPopupLink[];
 }
 
-/* Event Popups Data (Upcoming Events: NSO, NSMO, WSO & Press Releases) */
+/* Event Popups Data (SK Pemenang NYGO/IYGO/NYEO/IYEO & Upcoming Events: NSO, NSMO, WSO) */
 export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
+  {
+    id: "popup-sk-pemenang-nygo-iygo-nyeo-iyeo-2026",
+    isActive: true,
+    badge: "🏆 SK PEMENANG SUDAH BISA DI-DOWNLOAD",
+    badge_en: "🏆 WINNER DECREES (SK) NOW AVAILABLE",
+    title: "SK Pemenang NYGO, IYGO, NYEO & IYEO 2026 Sudah Bisa Diunduh di Setiap Web Event",
+    title_en: "Official Winner Decrees (SK) for NYGO, IYGO, NYEO & IYEO 2026 Now Available on Each Event Website",
+    subtitle: "Surat Keputusan (SK) Penetapan Pemenang & Medalis resmi kini dapat di-download langsung melalui website resmi masing-masing event.",
+    subtitle_en: "Official Ratified Winner Decrees (SK) can now be downloaded directly through each respective official event website.",
+    image: "/images/galeri/skpemenang.png",
+    content:
+      "Pengumuman Resmi: Surat Keputusan (SK) Penetapan Pemenang dan Medalis untuk ajang olimpiade NYGO, IYGO, NYEO, dan IYEO Season 2026 telah resmi dirilis dan sudah dapat di-download langsung di setiap website event masing-masing. Silakan akses website resmi kompetisi Anda melalui tautan di bawah untuk mengunduh dokumen SK pengesahan dewan juri yang terintegrasi resmi dengan SIMT Puspresnas Kemendikbudristek RI.",
+    content_en:
+      "Official Announcement: The Official Winner Decrees (SK) and Medalist lists for NYGO, IYGO, NYEO, and IYEO Season 2026 have been officially released and can now be downloaded directly from each event's website. Please access your respective competition website via the links below to download the official decree documents ratified by the jury board and integrated with SIMT Puspresnas.",
+    author: "Direksi & Panitia IYORA",
+    publishedAt: "2026-09-02",
+    links: [
+      {
+        label: "Website & SK NYGO 2026",
+        label_en: "NYGO 2026 Website & SK",
+        url: "https://nygo.iyora.or.id/nygo/daftar-pemenang",
+        variant: "teal",
+      },
+      {
+        label: "Website & SK IYGO 2026",
+        label_en: "IYGO 2026 Website & SK",
+        url: "https://iygo.iyora.or.id/iygo/daftar-pemenang",
+        variant: "indigo",
+      },
+      {
+        label: "Website & SK NYEO 2026",
+        label_en: "NYEO 2026 Website & SK",
+        url: "https://nyeo.iyora.or.id/nyeo/daftar-pemenang",
+        variant: "primary",
+      },
+      {
+        label: "Website & SK IYEO 2026",
+        label_en: "IYEO 2026 Website & SK",
+        url: "https://iyeo.iyora.or.id/iyeo/daftar-pemenang",
+        variant: "rose",
+      },
+      {
+        label: "Daftar Pemenang",
+        label_en: "IYORA Winners List",
+        url: "/winners",
+        variant: "secondary",
+      },
+      {
+        label: "Instagram @iyoraofficial",
+        label_en: "Instagram @iyoraofficial",
+        url: "https://www.instagram.com/iyoraofficial",
+        variant: "instagram",
+      },
+    ],
+  },
   {
     id: "popup-upcoming-nso-nsmo-wso-2026",
     isActive: true,

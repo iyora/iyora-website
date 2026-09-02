@@ -41,6 +41,7 @@ function formatDate(dateStr: string | null, isEn: boolean): string {
 }
 
 function getSlideShortLabel(id: string, isEn: boolean): string {
+  if (id.includes("sk-pemenang") || id.includes("sk")) return isEn ? "SK Pemenang" : "SK Pemenang";
   if (id.includes("nso-nsmo-wso")) return isEn ? "All Upcoming" : "Semua Upcoming";
   if (id.includes("nso-2026")) return "NSO 2026";
   if (id.includes("nsmo-2026")) return "NSMO 2026";
@@ -184,11 +185,13 @@ export default function EventPopup() {
   const subtitleText = isEn ? currentSlide.subtitle_en || currentSlide.subtitle : currentSlide.subtitle;
   const contentText = isEn ? currentSlide.content_en || currentSlide.content : currentSlide.content;
 
+  const isSkSlide = currentSlide.id.includes("sk");
   const isUpcomingSlide =
-    currentSlide.id.includes("nso") ||
-    currentSlide.id.includes("nsmo") ||
-    currentSlide.id.includes("wso") ||
-    currentSlide.id.includes("upcoming");
+    !isSkSlide &&
+    (currentSlide.id.includes("nso") ||
+      currentSlide.id.includes("nsmo") ||
+      currentSlide.id.includes("wso") ||
+      currentSlide.id.includes("upcoming"));
 
   return (
     <>
@@ -210,7 +213,7 @@ export default function EventPopup() {
           </span>
           <Flame size={16} className="text-amber-300 group-hover:rotate-12 transition-transform" />
           <span className="tracking-wide">
-            {isEn ? "Upcoming Events: NSO, NSMO, WSO" : "Event Upcoming: NSO, NSMO, WSO"}
+            {isEn ? "Event Info: SK Pemenang & Upcoming" : "Info Event: SK Pemenang & Upcoming"}
           </span>
         </motion.button>
       )}
@@ -256,12 +259,17 @@ export default function EventPopup() {
                     {currentIndex + 1} / {totalSlides}
                   </span>
                 </div>
-                {isUpcomingSlide && (
+                {isSkSlide ? (
+                  <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-600/90 text-white backdrop-blur-md text-[11px] font-extrabold shadow-md uppercase tracking-wider">
+                    <Award size={12} className="text-amber-200" />
+                    <span>SK Pemenang 2026</span>
+                  </span>
+                ) : isUpcomingSlide ? (
                   <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/90 text-white backdrop-blur-md text-[11px] font-extrabold shadow-md uppercase tracking-wider">
                     <Flame size={12} className="text-amber-200" />
                     <span>Upcoming 2026</span>
                   </span>
-                )}
+                ) : null}
               </div>
 
               {/* Interactive Quick Tabs Selector */}
@@ -369,13 +377,19 @@ export default function EventPopup() {
                     {/* Meta tags */}
                     <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-gray-500 font-medium mb-3.5">
                       <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-primary font-extrabold uppercase tracking-wider text-[11px] whitespace-nowrap">
-                        {isUpcomingSlide ? (
+                        {isSkSlide ? (
+                          <Award size={13} className="text-amber-500 flex-shrink-0" />
+                        ) : isUpcomingSlide ? (
                           <Flame size={13} className="text-amber-500 flex-shrink-0" />
                         ) : (
                           <Megaphone size={13} className="flex-shrink-0" />
                         )}
                         <span>
-                          {isUpcomingSlide
+                          {isSkSlide
+                            ? isEn
+                              ? "Official Decree (SK)"
+                              : "Pengumuman SK Pemenang"
+                            : isUpcomingSlide
                             ? isEn
                               ? "Upcoming Event"
                               : "Event Akan Datang"

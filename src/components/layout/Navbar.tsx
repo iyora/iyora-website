@@ -3,9 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
-import { useLocale } from "next-intl";
-import { Menu, X, ChevronDown, Newspaper, Megaphone, FileText, Images, Calendar, ArrowRight, Trophy, Download } from "lucide-react";
+import { useTranslations, useLocale } from "next-intl";
+import { Menu, X, ChevronDown, Newspaper, Megaphone, FileText, Images, Calendar, ArrowRight } from "lucide-react";
 import clsx from "clsx";
 import type { NewsPreviewData, CompetitionData } from "@/lib/supabase";
 
@@ -130,9 +129,7 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [newsDropdownOpen, setNewsDropdownOpen] = useState(false);
-  const [winnersDropdownOpen, setWinnersDropdownOpen] = useState(false);
   const [mobileNewsOpen, setMobileNewsOpen] = useState(false);
-  const [mobileWinnersOpen, setMobileWinnersOpen] = useState(false);
   const [hoveredNewsKey, setHoveredNewsKey] = useState<NewsMenuKey>("news");
 
   // Dynamic competitions list from Supabase or fallback
@@ -157,7 +154,6 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
   const [hoveredSide, setHoveredSide] = useState<"left" | "right">("left");
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const newsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const winnersCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const activeOlympiad = olympiadsList.find((o) => o.name === (hoveredOlympiadName || olympiadsList[0]?.name)) || olympiadsList[0];
 
@@ -177,15 +173,6 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
 
   function scheduleNewsClose() {
     newsCloseTimer.current = setTimeout(() => setNewsDropdownOpen(false), 150);
-  }
-
-  function openWinnersDropdown() {
-    if (winnersCloseTimer.current) clearTimeout(winnersCloseTimer.current);
-    setWinnersDropdownOpen(true);
-  }
-
-  function scheduleWinnersClose() {
-    winnersCloseTimer.current = setTimeout(() => setWinnersDropdownOpen(false), 150);
   }
 
   const otherLocale = locale === "id" ? "en" : "id";
@@ -438,80 +425,9 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
             </div>
           </div>
 
-          {/* Winners Dropdown with Download SK submenu */}
-          <div
-            className="relative"
-            onMouseEnter={openWinnersDropdown}
-            onMouseLeave={scheduleWinnersClose}
-          >
-            <Link
-              href={href("/winners")}
-              onClick={() => setWinnersDropdownOpen(false)}
-              className={clsx(
-                navLinkClass,
-                "flex items-center gap-1 cursor-pointer"
-              )}
-            >
-              {t("winners")}
-              <ChevronDown
-                size={14}
-                className={clsx(
-                  "transition-transform duration-200",
-                  winnersDropdownOpen && "rotate-180"
-                )}
-              />
-            </Link>
-
-            <div
-              className={clsx(
-                "absolute top-full left-1/2 -translate-x-1/2 w-[290px] pt-2 transition-all duration-200",
-                winnersDropdownOpen
-                  ? "opacity-100 translate-y-0 pointer-events-auto"
-                  : "opacity-0 -translate-y-1 pointer-events-none"
-              )}
-            >
-              <div className="bg-white rounded-2xl shadow-xl shadow-black/10 border border-gray-100 p-2 flex flex-col gap-1">
-                <Link
-                  href={href("/winners")}
-                  onClick={() => setWinnersDropdownOpen(false)}
-                  className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition-colors group"
-                >
-                  <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                    <Trophy size={18} />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-gray-900 group-hover:text-primary transition-colors">
-                      {locale === "en" ? "Winners & Medalists" : "Daftar Pemenang"}
-                    </div>
-                    <div className="text-[11px] text-gray-400">
-                      {locale === "en" ? "Database of awardees & medalists" : "Pencarian medalis & nomor sertifikat"}
-                    </div>
-                  </div>
-                </Link>
-
-                <Link
-                  href={href("/sk")}
-                  onClick={() => setWinnersDropdownOpen(false)}
-                  className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition-colors group"
-                >
-                  <div className="w-9 h-9 rounded-xl bg-teal-500/10 text-teal-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                    <Download size={18} />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-gray-900 group-hover:text-primary transition-colors flex items-center gap-1.5">
-                      <span>{locale === "en" ? "Download SK Decrees" : "Download SK Resmi"}</span>
-                      <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded-full bg-teal-100 text-teal-700">
-                        PDF
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-gray-400">
-                      {locale === "en" ? "Official decrees & SK documents" : "Unduh SK penetapan pemenang resmi"}
-                    </div>
-                  </div>
-                </Link>
-              </div>
-            </div>
-          </div>
+          <Link href={href("/winners")} className={navLinkClass}>
+            {t("winners")}
+          </Link>
 
           <div
             className="relative"
@@ -803,43 +719,14 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
             >
               {t("competitions")}
             </Link>
-            {/* Mobile Winners accordion */}
-            <button
-              className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors flex items-center justify-between w-full cursor-pointer"
-              onClick={() => setMobileWinnersOpen((v) => !v)}
+            <Link
+              href={href("/winners")}
+              className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors flex items-center justify-between"
+              onClick={() => setMobileOpen(false)}
             >
-              <div className="flex items-center gap-2">
-                <span>{t("winners")}</span>
-                <span className="text-[11px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full">🏆 New</span>
-              </div>
-              <ChevronDown
-                size={16}
-                className={clsx(
-                  "transition-transform duration-200",
-                  mobileWinnersOpen && "rotate-180"
-                )}
-              />
-            </button>
-            {mobileWinnersOpen && (
-              <div className="pl-4 pb-2 flex flex-col gap-0.5">
-                <Link
-                  href={href("/winners")}
-                  className="py-2 text-sm text-gray-600 hover:text-primary transition-colors flex items-center gap-2"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  <Trophy size={14} className="text-amber-500" />
-                  <span>{locale === "en" ? "Winners & Medalists" : "Daftar Pemenang & Medalis"}</span>
-                </Link>
-                <Link
-                  href={href("/sk")}
-                  className="py-2 text-sm text-gray-600 hover:text-primary transition-colors flex items-center gap-2"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  <Download size={14} className="text-teal-600" />
-                  <span>{locale === "en" ? "Download SK Decrees" : "Download SK Resmi (PDF)"}</span>
-                </Link>
-              </div>
-            )}
+              <span>{t("winners")}</span>
+              <span className="text-[11px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full">🏆 New</span>
+            </Link>
             {/* Mobile News accordion */}
             <button
               className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors flex items-center justify-between w-full cursor-pointer"

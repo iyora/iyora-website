@@ -285,7 +285,7 @@ The online examination phase will proceed according to the technical schedule es
     linkLabel: "FULL DOKUMENTASI ROUND 1",
     linkLabel_en: "Full Documentation of Round 1",
   },
-  {
+ /* {
     id: "gallery-1",
     slug: "after-event-biology-physics-olympiad-2026",
     title: "After Event Biology & Physics Olympiad 2026",
@@ -301,6 +301,23 @@ The online examination phase will proceed according to the technical schedule es
     link: "https://www.youtube.com/embed/05RdQgvQiVY?si=KSSadgHGYFNm9do1",
     linkLabel: "Tonton Video Dokumentasi YouTube",
     linkLabel_en: "Watch Video Documentation on YouTube",
+  },*/
+  {
+    id: "gallery-2",
+    slug: "after-event-nygo-iygo-nyeo-iyeo-2026",
+    title: "After Event NYGO & IYGO serta NYEO & IYEO 2026",
+    title_en: "After Event NYGO & IYGO and NYEO & IYEO 2026",
+    category: "gallery",
+    photo: "/images/galeri/aftereventiyora.png",
+    caption: "Momen berkesan, penganugerahan pemenang (Awarding Ceremony), dan rangkuman keseruan kompetisi sains bergengsi NYGO & IYGO serta NYEO & IYEO Season 2026.",
+    caption_en: "Memorable moments, official Awarding Ceremony, and highlight summary of the prestigious science competitions NYGO & IYGO as well as NYEO & IYEO Season 2026.",
+    content: "Kami bangga mempersembahkan dokumentasi after event dan rangkuman momen terbaik dari perhelatan akbar National Youth Geography Olympiad (NYGO), International Youth Geography Olympiad (IYGO), National Youth Earth Science Olympiad (NYEO), dan International Youth Earth Science Olympiad (IYEO) 2026. Melalui kegiatan ini, para peserta dari berbagai sekolah dan negara telah menunjukkan dedikasi, integritas, dan kecemerlangan ilmiah luar biasa dari babak awal hingga penganugerahan pemenang (Awarding Ceremony) resmi yang terintegrasi dengan SIMT Puspresnas Kemendikbudristek RI.",
+    content_en: "We are proud to present the official after-event documentation and highlight summary of the National Youth Geography Olympiad (NYGO), International Youth Geography Olympiad (IYGO), National Youth Earth Science Olympiad (NYEO), and International Youth Earth Science Olympiad (IYEO) 2026. This celebrates the dedication, integrity, and brilliant scientific achievements of participants across schools and countries, up to the official Awarding Ceremony integrated with SIMT Puspresnas.",
+    publishedAt: "2026-08-28",
+    author: "IyoraOlympiad",
+    link: "https://youtu.be/mM9zkqo98pE?si=cWUdxFLbMOHDvAqO",
+    linkLabel: "Tonton Dokumentasi Resmi di YouTube",
+    linkLabel_en: "Watch Official Documentation on YouTube",
   },
 ];
 
@@ -319,7 +336,8 @@ export function getDummyNewsBySlug(slug: string) {
     return (
       item.slug === slug ||
       itemSlugDecoded === decoded ||
-      itemSlugNormalized === normalized
+      itemSlugNormalized === normalized ||
+      item.id === slug
     );
   });
 }
