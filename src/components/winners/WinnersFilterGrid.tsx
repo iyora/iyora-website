@@ -255,30 +255,45 @@ export default function WinnersFilterGrid({
           icon: "🥇",
           label: locale === "en" ? "Gold Medal" : "Medali Emas",
           className: "bg-yellow-50 text-yellow-800 border-yellow-300 font-bold",
+          bottomTabClass: "bg-gradient-to-r from-amber-100 via-amber-50 to-yellow-100 border-amber-300 text-amber-950",
+          scoreClass: "text-amber-900",
+          cardBorderClass: "hover:border-amber-400/70",
         };
       case "Silver Medal":
         return {
           icon: "🥈",
           label: locale === "en" ? "Silver Medal" : "Medali Perak",
           className: "bg-slate-100 text-slate-800 border-slate-300 font-bold",
+          bottomTabClass: "bg-gradient-to-r from-slate-100 via-gray-50 to-slate-100 border-slate-300 text-slate-900",
+          scoreClass: "text-slate-800",
+          cardBorderClass: "hover:border-slate-400/70",
         };
       case "Bronze Medal":
         return {
           icon: "🥉",
           label: locale === "en" ? "Bronze Medal" : "Medali Perunggu",
           className: "bg-orange-50 text-orange-800 border-orange-200 font-bold",
+          bottomTabClass: "bg-gradient-to-r from-orange-100 via-amber-50/50 to-orange-100 border-orange-300 text-orange-950",
+          scoreClass: "text-orange-900",
+          cardBorderClass: "hover:border-orange-400/70",
         };
       case "Honorable Mention":
         return {
           icon: "🎖️",
           label: locale === "en" ? "Honorable Mention" : "Peringkat Harapan",
           className: "bg-purple-50 text-purple-800 border-purple-200 font-semibold",
+          bottomTabClass: "bg-gradient-to-r from-purple-100 via-purple-50 to-purple-100 border-purple-200 text-purple-950",
+          scoreClass: "text-purple-900",
+          cardBorderClass: "hover:border-purple-400/70",
         };
       default:
         return {
           icon: "⭐",
           label: medal,
           className: "bg-blue-50 text-blue-800 border-blue-200 font-semibold",
+          bottomTabClass: "bg-gradient-to-r from-blue-50 via-sky-50 to-blue-50 border-blue-200 text-blue-950",
+          scoreClass: "text-blue-900",
+          cardBorderClass: "hover:border-blue-400/70",
         };
     }
   };
@@ -509,18 +524,20 @@ export default function WinnersFilterGrid({
                 return (
                   <div
                     key={winner.id}
-                    className="bg-white rounded-2xl p-5 border border-gray-200/90 shadow-sm hover:shadow-xl hover:border-primary/40 transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
+                    className={clsx(
+                      "bg-white rounded-2xl p-5 border border-gray-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden",
+                      badge.cardBorderClass
+                    )}
                   >
-                    {/* Top Competition & Medal Badge */}
+                    {/* Top Competition Code & Edition */}
                     <div>
                       <div className="flex items-center justify-between gap-2 mb-3">
                         <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-lg bg-teal-50 text-teal-800 border border-teal-200">
                           {winner.competition} ({winner.editionYear})
                         </span>
-                        <div className={clsx("inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full border", badge.className)}>
-                          <span>{badge.icon}</span>
-                          <span>{badge.label}</span>
-                        </div>
+                        <span className="text-[11px] font-bold text-gray-400">
+                          {winner.editionName || `${winner.competition} ${winner.editionYear}`}
+                        </span>
                       </div>
 
                       {/* Participant Name */}
@@ -546,24 +563,33 @@ export default function WinnersFilterGrid({
                       </div>
                     </div>
 
-                    {/* Card Footer: Certificate & Score */}
-                    <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs">
-                      <div>
+                    {/* Card Footer: Tab Bawah Sesuai Warna Medali yang Didapat */}
+                    <div
+                      className={clsx(
+                        "mt-4 -mx-5 -mb-5 px-5 py-3 border-t flex items-center justify-between text-xs rounded-b-2xl transition-colors",
+                        badge.bottomTabClass
+                      )}
+                    >
+                      <div className="flex items-center gap-1.5 font-extrabold tracking-tight">
+                        <span className="text-sm">{badge.icon}</span>
+                        <span className="text-xs font-black">{badge.label}</span>
+                      </div>
+                      <div className="flex items-center gap-2.5">
                         {winner.score ? (
                           <div className="flex items-baseline gap-1">
-                            <span className="text-[10px] text-gray-400">{t("score_label")}:</span>
-                            <span className="font-extrabold text-primary">{winner.score}</span>
+                            <span className="text-[10px] opacity-75 font-semibold">{t("score_label")}:</span>
+                            <span className={clsx("font-extrabold text-sm", badge.scoreClass)}>{winner.score}</span>
                           </div>
                         ) : (
-                          <span className="text-[10px] font-mono text-gray-400">{winner.certificateNumber}</span>
+                          <span className="text-[10px] font-mono opacity-80">{winner.certificateNumber}</span>
+                        )}
+                        {winner.simtVerified && (
+                          <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-800 bg-white/95 px-2 py-0.5 rounded-md border border-emerald-300 shadow-sm">
+                            <CheckCircle2 size={11} className="text-emerald-600" />
+                            <span>SIMT</span>
+                          </div>
                         )}
                       </div>
-                      {winner.simtVerified && (
-                        <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-                          <CheckCircle2 size={12} className="text-emerald-600" />
-                          <span>SIMT</span>
-                        </div>
-                      )}
                     </div>
                   </div>
                 );
