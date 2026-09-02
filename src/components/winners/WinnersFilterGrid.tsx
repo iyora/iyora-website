@@ -194,6 +194,43 @@ export default function WinnersFilterGrid({
       }
 
       return true;
+    }).sort((a, b) => {
+      // Urutan prioritas medali: Gold (1) -> Silver (2) -> Bronze (3) -> Honorable Mention (4) -> Lainnya
+      const getMedalPriority = (medal: WinnerMedal | string): number => {
+        const m = String(medal || "").toLowerCase().trim();
+        if (m.includes("grand") || m.includes("gold") || m.includes("emas") || m.includes("juara 1") || m === "1") {
+          return 1;
+        }
+        if (m.includes("silver") || m.includes("perak") || m.includes("juara 2") || m === "2") {
+          return 2;
+        }
+        if (m.includes("bronze") || m.includes("perunggu") || m.includes("juara 3") || m === "3") {
+          return 3;
+        }
+        if (m.includes("harapan") || m.includes("honorable") || m.includes("mention")) {
+          return 4;
+        }
+        if (m.includes("special") || m.includes("khusus") || m.includes("award")) {
+          return 5;
+        }
+        return 6;
+      };
+
+      const priorityA = getMedalPriority(a.medal);
+      const priorityB = getMedalPriority(b.medal);
+
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB; // Gold Medal (1) berada paling atas
+      }
+
+      // Jika sama-sama medali emas, urutkan berdasarkan nilai tertinggi
+      const scoreA = parseFloat(a.score || "0");
+      const scoreB = parseFloat(b.score || "0");
+      if (!isNaN(scoreA) && !isNaN(scoreB) && scoreA !== scoreB) {
+        return scoreB - scoreA;
+      }
+
+      return (a.name || "").localeCompare(b.name || "");
     });
   }, [initialWinners, searchQuery, selectedCompetition, selectedMedal, selectedLevel]);
 
@@ -313,36 +350,6 @@ export default function WinnersFilterGrid({
                 <option value="SMA / MA / SMK">{t("level_sma")}</option>
                 <option value="Universitas / Mahasiswa">{t("level_univ")}</option>
               </select>
-
-              {/* Tombol Unduh SK Pemenang Sesuai Kompetisi Terpilih */}
-              <button
-                onClick={() => handleDirectDownloadSK(selectedCompetition)}
-                disabled={downloadingComp === selectedCompetition}
-                className={clsx(
-                  "flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl text-xs font-extrabold transition-all cursor-pointer shadow-sm active:scale-95 shrink-0 disabled:opacity-75",
-                  selectedCompetition !== "all"
-                    ? "bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white shadow-emerald-600/20"
-                    : "bg-teal-50 text-teal-800 border border-teal-200 hover:bg-teal-100"
-                )}
-                title={
-                  selectedCompetition !== "all"
-                    ? `Unduh SK Pemenang ${selectedCompetition} (PDF)`
-                    : "Unduh Dokumen SK Pemenang Resmi"
-                }
-              >
-                {downloadingComp === selectedCompetition ? (
-                  <div className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <Download size={13} />
-                )}
-                <span>
-                  {downloadingComp === selectedCompetition
-                    ? (locale === "en" ? "Downloading..." : "Mengunduh...")
-                    : selectedCompetition !== "all"
-                    ? (locale === "en" ? `Download SK ${selectedCompetition}` : `Unduh SK ${selectedCompetition}`)
-                    : (locale === "en" ? "Download SK PDF" : "Unduh SK PDF")}
-                </span>
-              </button>
 
               {/* View Mode Switcher */}
               <div className="flex items-center bg-gray-100 p-1 rounded-2xl border border-gray-200/80 shrink-0">

@@ -782,6 +782,40 @@ function mapRawToWinnerItem(row: any): WinnerItem {
   };
 }
 
+function sortWinnersByMedal(items: WinnerItem[]): WinnerItem[] {
+  const getMedalPriority = (medal: WinnerMedal | string): number => {
+    const m = String(medal || "").toLowerCase().trim();
+    if (m.includes("grand") || m.includes("gold") || m.includes("emas") || m.includes("juara 1") || m === "1") {
+      return 1;
+    }
+    if (m.includes("silver") || m.includes("perak") || m.includes("juara 2") || m === "2") {
+      return 2;
+    }
+    if (m.includes("bronze") || m.includes("perunggu") || m.includes("juara 3") || m === "3") {
+      return 3;
+    }
+    if (m.includes("harapan") || m.includes("honorable") || m.includes("mention")) {
+      return 4;
+    }
+    if (m.includes("special") || m.includes("khusus") || m.includes("award")) {
+      return 5;
+    }
+    return 6;
+  };
+
+  return items.sort((a, b) => {
+    const pA = getMedalPriority(a.medal);
+    const pB = getMedalPriority(b.medal);
+    if (pA !== pB) return pA - pB;
+    const scoreA = parseFloat(a.score || "0");
+    const scoreB = parseFloat(b.score || "0");
+    if (!isNaN(scoreA) && !isNaN(scoreB) && scoreA !== scoreB) {
+      return scoreB - scoreA;
+    }
+    return (a.name || "").localeCompare(b.name || "");
+  });
+}
+
 export async function fetchWinnersData(): Promise<WinnerItem[]> {
   // 1. Coba ambil langsung dari Endpoint Public API Dashboard (Opsi 2: Sinkronisasi API langsung)
   try {
@@ -794,7 +828,7 @@ export async function fetchWinnersData(): Promise<WinnerItem[]> {
     if (res.ok) {
       const json = await res.json();
       if (json.ok && Array.isArray(json.data) && json.data.length > 0) {
-        return json.data.map(mapRawToWinnerItem);
+        return sortWinnersByMedal(json.data.map(mapRawToWinnerItem));
       }
     }
   } catch {
@@ -813,7 +847,7 @@ export async function fetchWinnersData(): Promise<WinnerItem[]> {
       .order("created_at", { ascending: false });
 
     if (!error && data && data.length > 0) {
-      return data.map(mapRawToWinnerItem);
+      return sortWinnersByMedal(data.map(mapRawToWinnerItem));
     }
 
     // 3. Fallback alternatif: cek tabel rekap_nilai jika tabel winners belum terisi
@@ -825,7 +859,7 @@ export async function fetchWinnersData(): Promise<WinnerItem[]> {
         .order("created_at", { ascending: false });
 
       if (rekapData && rekapData.length > 0) {
-        return rekapData.map(mapRawToWinnerItem);
+        return sortWinnersByMedal(rekapData.map(mapRawToWinnerItem));
       }
     } catch {
       // Abaikan jika tabel rekap_nilai tidak ada
