@@ -255,9 +255,11 @@ export default function WinnersFilterGrid({
           icon: "🥇",
           label: locale === "en" ? "Gold Medal" : "Medali Emas",
           className: "bg-yellow-50 text-yellow-800 border-yellow-300 font-bold",
-          bottomTabClass: "bg-gradient-to-r from-amber-100 via-amber-50 to-yellow-100 border-amber-300 text-amber-950",
-          scoreClass: "text-amber-900",
-          cardBorderClass: "hover:border-amber-400/70",
+          bottomTabClass: "bg-gradient-to-r from-amber-100/90 via-yellow-50 to-amber-100/90 border-amber-300/80 text-amber-950",
+          scoreClass: "text-amber-950",
+          avatarBg: "bg-gradient-to-br from-amber-200 via-yellow-300 to-amber-400 text-amber-950 border-amber-300 shadow-sm",
+          cardBorderClass: "hover:border-amber-400/70 hover:shadow-amber-500/10",
+          sparkleColor: "text-amber-500",
         };
       case "Silver Medal":
         return {
@@ -265,17 +267,21 @@ export default function WinnersFilterGrid({
           label: locale === "en" ? "Silver Medal" : "Medali Perak",
           className: "bg-slate-100 text-slate-800 border-slate-300 font-bold",
           bottomTabClass: "bg-gradient-to-r from-slate-100 via-gray-50 to-slate-100 border-slate-300 text-slate-900",
-          scoreClass: "text-slate-800",
-          cardBorderClass: "hover:border-slate-400/70",
+          scoreClass: "text-slate-900",
+          avatarBg: "bg-gradient-to-br from-slate-100 via-gray-200 to-slate-300 text-slate-800 border-slate-300 shadow-sm",
+          cardBorderClass: "hover:border-slate-400/70 hover:shadow-slate-500/10",
+          sparkleColor: "text-slate-400",
         };
       case "Bronze Medal":
         return {
           icon: "🥉",
           label: locale === "en" ? "Bronze Medal" : "Medali Perunggu",
           className: "bg-orange-50 text-orange-800 border-orange-200 font-bold",
-          bottomTabClass: "bg-gradient-to-r from-orange-100 via-amber-50/50 to-orange-100 border-orange-300 text-orange-950",
-          scoreClass: "text-orange-900",
-          cardBorderClass: "hover:border-orange-400/70",
+          bottomTabClass: "bg-gradient-to-r from-orange-100/90 via-amber-50/50 to-orange-100/90 border-orange-300/80 text-orange-950",
+          scoreClass: "text-orange-950",
+          avatarBg: "bg-gradient-to-br from-orange-200 via-amber-200 to-orange-300 text-orange-950 border-orange-300 shadow-sm",
+          cardBorderClass: "hover:border-orange-400/70 hover:shadow-orange-500/10",
+          sparkleColor: "text-orange-500",
         };
       case "Honorable Mention":
         return {
@@ -283,8 +289,10 @@ export default function WinnersFilterGrid({
           label: locale === "en" ? "Honorable Mention" : "Peringkat Harapan",
           className: "bg-purple-50 text-purple-800 border-purple-200 font-semibold",
           bottomTabClass: "bg-gradient-to-r from-purple-100 via-purple-50 to-purple-100 border-purple-200 text-purple-950",
-          scoreClass: "text-purple-900",
-          cardBorderClass: "hover:border-purple-400/70",
+          scoreClass: "text-purple-950",
+          avatarBg: "bg-gradient-to-br from-purple-200 via-fuchsia-200 to-purple-300 text-purple-950 border-purple-200 shadow-sm",
+          cardBorderClass: "hover:border-purple-400/70 hover:shadow-purple-500/10",
+          sparkleColor: "text-purple-500",
         };
       default:
         return {
@@ -292,8 +300,10 @@ export default function WinnersFilterGrid({
           label: medal,
           className: "bg-blue-50 text-blue-800 border-blue-200 font-semibold",
           bottomTabClass: "bg-gradient-to-r from-blue-50 via-sky-50 to-blue-50 border-blue-200 text-blue-950",
-          scoreClass: "text-blue-900",
-          cardBorderClass: "hover:border-blue-400/70",
+          scoreClass: "text-blue-950",
+          avatarBg: "bg-gradient-to-br from-blue-200 via-sky-200 to-blue-300 text-blue-950 border-blue-200 shadow-sm",
+          cardBorderClass: "hover:border-blue-400/70 hover:shadow-blue-500/10",
+          sparkleColor: "text-blue-500",
         };
     }
   };
@@ -520,71 +530,91 @@ export default function WinnersFilterGrid({
               {filteredWinners.map((winner) => {
                 const badge = getMedalBadge(winner.medal);
                 const flag = getCountryFlag(winner.countryCode, winner.country);
+                const initialLetter = (winner.name || "P").trim().charAt(0).toUpperCase();
 
                 return (
                   <div
                     key={winner.id}
                     className={clsx(
-                      "bg-white rounded-2xl p-5 border border-gray-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden",
+                      "bg-white rounded-3xl p-5 border border-gray-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group relative overflow-hidden",
                       badge.cardBorderClass
                     )}
                   >
-                    {/* Top Competition Code & Edition */}
+                    {/* Cute soft decorative glow corner */}
+                    <div className="absolute -top-8 -right-8 w-24 h-24 bg-gradient-to-br from-primary/5 to-teal-500/10 rounded-full blur-xl pointer-events-none group-hover:scale-125 transition-transform duration-300" />
+
                     <div>
-                      <div className="flex items-center justify-between gap-2 mb-3">
-                        <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-lg bg-teal-50 text-teal-800 border border-teal-200">
-                          {winner.competition} ({winner.editionYear})
-                        </span>
-                        <span className="text-[11px] font-bold text-gray-400">
-                          {winner.editionName || `${winner.competition} ${winner.editionYear}`}
-                        </span>
+                      {/* Top Header: Cute Competition Pill + Level Tag */}
+                      <div className="flex items-center justify-between gap-2 mb-3.5 relative z-10">
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50/90 text-teal-800 border border-teal-200/80 text-[11px] font-black shadow-xs">
+                          <span className="text-xs">🏆</span>
+                          <span>{winner.competition}</span>
+                          <span className="text-teal-300">•</span>
+                          <span className="text-teal-700 font-bold">{winner.editionYear}</span>
+                        </div>
+                        <div className="inline-flex items-center gap-1 text-[11px] font-bold text-gray-500 bg-gray-50/80 px-2.5 py-0.5 rounded-full border border-gray-200/60 shadow-xs">
+                          <Sparkles size={11} className={badge.sparkleColor} />
+                          <span>{winner.level ? winner.level.split(" ")[0] : "SIMT"}</span>
+                        </div>
                       </div>
 
-                      {/* Participant Name */}
-                      <h3 className="text-base font-extrabold text-gray-900 group-hover:text-primary transition-colors flex items-center gap-2 mb-2">
-                        <span>{winner.name}</span>
-                        <span title={winner.country}>{flag}</span>
-                      </h3>
+                      {/* Participant: Cute Squircle Avatar + Name & School */}
+                      <div className="flex items-start gap-3 mb-3 relative z-10">
+                        <div
+                          className={clsx(
+                            "w-11 h-11 rounded-2xl flex items-center justify-center font-black text-base shrink-0 border transition-all duration-300 group-hover:scale-110 group-hover:rotate-6",
+                            badge.avatarBg
+                          )}
+                        >
+                          {initialLetter}
+                        </div>
+                        <div className="min-w-0 flex-1 pt-0.5">
+                          <h3 className="text-base font-extrabold text-gray-900 group-hover:text-primary transition-colors truncate flex items-center gap-1.5">
+                            <span className="truncate">{winner.name}</span>
+                            <span className="shrink-0 text-sm" title={winner.country}>{flag}</span>
+                          </h3>
+                          <p className="text-xs font-semibold text-gray-600 truncate flex items-center gap-1.5 mt-0.5">
+                            <School size={12} className="text-primary/80 shrink-0" />
+                            <span className="truncate">{winner.school}</span>
+                          </p>
+                        </div>
+                      </div>
 
-                      {/* School & Location Info */}
-                      <div className="space-y-1.5 text-xs text-gray-600 mb-4">
-                        <div className="flex items-start gap-2">
-                          <School size={13} className="text-primary mt-0.5 flex-shrink-0" />
-                          <span className="font-semibold text-gray-800 line-clamp-1">{winner.school}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <MapPin size={13} className="text-gray-400 flex-shrink-0" />
-                          <span className="line-clamp-1">{winner.city}, {winner.province} ({winner.country})</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <GraduationCap size={13} className="text-gray-400 flex-shrink-0" />
+                      {/* Cute Informational Chips */}
+                      <div className="flex flex-wrap gap-1.5 text-[11px] text-gray-600 mb-4 relative z-10">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-gray-50/90 border border-gray-200/70 font-medium text-gray-600">
+                          <MapPin size={11} className="text-gray-400 shrink-0" />
+                          <span className="line-clamp-1">{winner.city ? `${winner.city}, ${winner.province}` : winner.country}</span>
+                        </span>
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-purple-50/80 border border-purple-200/60 text-purple-700 font-bold">
+                          <GraduationCap size={11} className="text-purple-500 shrink-0" />
                           <span>{winner.level}</span>
-                        </div>
+                        </span>
                       </div>
                     </div>
 
-                    {/* Card Footer: Tab Bawah Sesuai Warna Medali yang Didapat */}
+                    {/* Card Footer: Tab Bawah Lucu & Simple Sesuai Warna Medali */}
                     <div
                       className={clsx(
-                        "mt-4 -mx-5 -mb-5 px-5 py-3 border-t flex items-center justify-between text-xs rounded-b-2xl transition-colors",
+                        "mt-2 -mx-5 -mb-5 px-5 py-3 border-t flex items-center justify-between text-xs rounded-b-3xl transition-colors relative z-10",
                         badge.bottomTabClass
                       )}
                     >
                       <div className="flex items-center gap-1.5 font-extrabold tracking-tight">
-                        <span className="text-sm">{badge.icon}</span>
+                        <span className="text-base group-hover:scale-110 transition-transform">{badge.icon}</span>
                         <span className="text-xs font-black">{badge.label}</span>
                       </div>
-                      <div className="flex items-center gap-2.5">
+                      <div className="flex items-center gap-2">
                         {winner.score ? (
-                          <div className="flex items-baseline gap-1">
-                            <span className="text-[10px] opacity-75 font-semibold">{t("score_label")}:</span>
-                            <span className={clsx("font-extrabold text-sm", badge.scoreClass)}>{winner.score}</span>
+                          <div className="inline-flex items-center gap-1 bg-white/85 backdrop-blur-xs px-2.5 py-1 rounded-xl border border-black/5 shadow-xs">
+                            <span className="text-[10px] opacity-70 font-semibold">{t("score_label")}:</span>
+                            <span className={clsx("font-black text-xs", badge.scoreClass)}>{winner.score}</span>
                           </div>
                         ) : (
                           <span className="text-[10px] font-mono opacity-80">{winner.certificateNumber}</span>
                         )}
                         {winner.simtVerified && (
-                          <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-800 bg-white/95 px-2 py-0.5 rounded-md border border-emerald-300 shadow-sm">
+                          <div className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-800 bg-white/95 px-2 py-1 rounded-xl border border-emerald-300 shadow-xs">
                             <CheckCircle2 size={11} className="text-emerald-600" />
                             <span>SIMT</span>
                           </div>
