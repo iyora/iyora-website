@@ -255,10 +255,13 @@ export default function WinnersFilterGrid({
           icon: "🥇",
           label: locale === "en" ? "Gold Medal" : "Medali Emas",
           className: "bg-yellow-50 text-yellow-800 border-yellow-300 font-bold",
-          bottomTabClass: "bg-gradient-to-r from-amber-100/90 via-yellow-50 to-amber-100/90 border-amber-300/80 text-amber-950",
+          bottomTabClass: "bg-gradient-to-r from-amber-200/90 via-yellow-100 to-amber-200/90 border-amber-300/90 text-amber-950 shadow-inner",
+          medalPillClass: "bg-white/95 text-amber-950 border-amber-300 shadow-sm shadow-amber-500/10",
+          scorePillClass: "border-amber-300/80 text-amber-950",
           scoreClass: "text-amber-950",
           avatarBg: "bg-gradient-to-br from-amber-200 via-yellow-300 to-amber-400 text-amber-950 border-amber-300 shadow-sm",
-          cardBorderClass: "hover:border-amber-400/70 hover:shadow-amber-500/10",
+          cardBorderClass: "hover:border-amber-400/80 hover:shadow-amber-500/15",
+          topStripeClass: "bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500",
           sparkleColor: "text-amber-500",
         };
       case "Silver Medal":
@@ -266,10 +269,13 @@ export default function WinnersFilterGrid({
           icon: "🥈",
           label: locale === "en" ? "Silver Medal" : "Medali Perak",
           className: "bg-slate-100 text-slate-800 border-slate-300 font-bold",
-          bottomTabClass: "bg-gradient-to-r from-slate-100 via-gray-50 to-slate-100 border-slate-300 text-slate-900",
+          bottomTabClass: "bg-gradient-to-r from-slate-200/90 via-gray-100 to-slate-200/90 border-slate-300/90 text-slate-900 shadow-inner",
+          medalPillClass: "bg-white/95 text-slate-900 border-slate-300 shadow-sm shadow-slate-500/10",
+          scorePillClass: "border-slate-300/80 text-slate-900",
           scoreClass: "text-slate-900",
           avatarBg: "bg-gradient-to-br from-slate-100 via-gray-200 to-slate-300 text-slate-800 border-slate-300 shadow-sm",
-          cardBorderClass: "hover:border-slate-400/70 hover:shadow-slate-500/10",
+          cardBorderClass: "hover:border-slate-400/80 hover:shadow-slate-500/15",
+          topStripeClass: "bg-gradient-to-r from-slate-400 via-gray-300 to-slate-400",
           sparkleColor: "text-slate-400",
         };
       case "Bronze Medal":
@@ -277,10 +283,13 @@ export default function WinnersFilterGrid({
           icon: "🥉",
           label: locale === "en" ? "Bronze Medal" : "Medali Perunggu",
           className: "bg-orange-50 text-orange-800 border-orange-200 font-bold",
-          bottomTabClass: "bg-gradient-to-r from-orange-100/90 via-amber-50/50 to-orange-100/90 border-orange-300/80 text-orange-950",
+          bottomTabClass: "bg-gradient-to-r from-orange-200/90 via-amber-100/70 to-orange-200/90 border-orange-300/90 text-orange-950 shadow-inner",
+          medalPillClass: "bg-white/95 text-orange-950 border-orange-300 shadow-sm shadow-orange-500/10",
+          scorePillClass: "border-orange-300/80 text-orange-950",
           scoreClass: "text-orange-950",
           avatarBg: "bg-gradient-to-br from-orange-200 via-amber-200 to-orange-300 text-orange-950 border-orange-300 shadow-sm",
-          cardBorderClass: "hover:border-orange-400/70 hover:shadow-orange-500/10",
+          cardBorderClass: "hover:border-orange-400/80 hover:shadow-orange-500/15",
+          topStripeClass: "bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500",
           sparkleColor: "text-orange-500",
         };
       case "Honorable Mention":
@@ -288,10 +297,13 @@ export default function WinnersFilterGrid({
           icon: "🎖️",
           label: locale === "en" ? "Honorable Mention" : "Peringkat Harapan",
           className: "bg-purple-50 text-purple-800 border-purple-200 font-semibold",
-          bottomTabClass: "bg-gradient-to-r from-purple-100 via-purple-50 to-purple-100 border-purple-200 text-purple-950",
+          bottomTabClass: "bg-gradient-to-r from-purple-200/90 via-fuchsia-100 to-purple-200/90 border-purple-300/90 text-purple-950 shadow-inner",
+          medalPillClass: "bg-white/95 text-purple-950 border-purple-300 shadow-sm shadow-purple-500/10",
+          scorePillClass: "border-purple-300/80 text-purple-950",
           scoreClass: "text-purple-950",
           avatarBg: "bg-gradient-to-br from-purple-200 via-fuchsia-200 to-purple-300 text-purple-950 border-purple-200 shadow-sm",
-          cardBorderClass: "hover:border-purple-400/70 hover:shadow-purple-500/10",
+          cardBorderClass: "hover:border-purple-400/80 hover:shadow-purple-500/15",
+          topStripeClass: "bg-gradient-to-r from-purple-400 via-fuchsia-300 to-purple-500",
           sparkleColor: "text-purple-500",
         };
       default:
@@ -299,10 +311,13 @@ export default function WinnersFilterGrid({
           icon: "⭐",
           label: medal,
           className: "bg-blue-50 text-blue-800 border-blue-200 font-semibold",
-          bottomTabClass: "bg-gradient-to-r from-blue-50 via-sky-50 to-blue-50 border-blue-200 text-blue-950",
+          bottomTabClass: "bg-gradient-to-r from-blue-200/90 via-sky-100 to-blue-200/90 border-blue-300/90 text-blue-950 shadow-inner",
+          medalPillClass: "bg-white/95 text-blue-950 border-blue-300 shadow-sm shadow-blue-500/10",
+          scorePillClass: "border-blue-300/80 text-blue-950",
           scoreClass: "text-blue-950",
           avatarBg: "bg-gradient-to-br from-blue-200 via-sky-200 to-blue-300 text-blue-950 border-blue-200 shadow-sm",
-          cardBorderClass: "hover:border-blue-400/70 hover:shadow-blue-500/10",
+          cardBorderClass: "hover:border-blue-400/80 hover:shadow-blue-500/15",
+          topStripeClass: "bg-gradient-to-r from-blue-400 via-sky-300 to-blue-500",
           sparkleColor: "text-blue-500",
         };
     }
@@ -536,10 +551,13 @@ export default function WinnersFilterGrid({
                   <div
                     key={winner.id}
                     className={clsx(
-                      "bg-white rounded-3xl p-5 border border-gray-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group relative overflow-hidden",
+                      "bg-white rounded-3xl pt-6 px-5 pb-5 border border-gray-200/90 shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group relative overflow-hidden",
                       badge.cardBorderClass
                     )}
                   >
+                    {/* Top Medal Color Accent Stripe */}
+                    <div className={clsx("absolute top-0 left-0 right-0 h-1.5", badge.topStripeClass)} />
+
                     {/* Cute soft decorative glow corner */}
                     <div className="absolute -top-8 -right-8 w-24 h-24 bg-gradient-to-br from-primary/5 to-teal-500/10 rounded-full blur-xl pointer-events-none group-hover:scale-125 transition-transform duration-300" />
 
@@ -593,29 +611,53 @@ export default function WinnersFilterGrid({
                       </div>
                     </div>
 
-                    {/* Card Footer: Tab Bawah Lucu & Simple Sesuai Warna Medali */}
+                    {/* Card Footer: Tab Bawah Elegan, Menarik & Sesuai Warna Medali */}
                     <div
                       className={clsx(
-                        "mt-2 -mx-5 -mb-5 px-5 py-3 border-t flex items-center justify-between text-xs rounded-b-3xl transition-colors relative z-10",
+                        "mt-3 -mx-5 -mb-5 px-4 sm:px-5 py-3 border-t flex items-center justify-between text-xs rounded-b-3xl transition-all relative overflow-hidden",
                         badge.bottomTabClass
                       )}
                     >
-                      <div className="flex items-center gap-1.5 font-extrabold tracking-tight">
-                        <span className="text-base group-hover:scale-110 transition-transform">{badge.icon}</span>
-                        <span className="text-xs font-black">{badge.label}</span>
+                      {/* Decorative Ambient Light Aura */}
+                      <div className="absolute -left-4 -top-6 w-24 h-24 bg-white/45 rounded-full blur-xl pointer-events-none" />
+                      <div className="absolute right-10 -bottom-4 w-20 h-20 bg-white/35 rounded-full blur-lg pointer-events-none" />
+
+                      {/* Medal Capsule with 3D feel & Sparkle */}
+                      <div
+                        className={clsx(
+                          "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-2xl border shadow-xs transition-transform group-hover:scale-105 relative z-10 backdrop-blur-xs",
+                          badge.medalPillClass
+                        )}
+                      >
+                        <span className="text-base filter drop-shadow-xs group-hover:rotate-12 transition-transform duration-300">
+                          {badge.icon}
+                        </span>
+                        <span className="text-xs font-black tracking-tight">{badge.label}</span>
+                        <Sparkles size={11} className={clsx(badge.sparkleColor, "hidden sm:inline-block animate-pulse")} />
                       </div>
-                      <div className="flex items-center gap-2">
+
+                      {/* Score & SIMT Pills */}
+                      <div className="flex items-center gap-1.5 sm:gap-2 relative z-10">
                         {winner.score ? (
-                          <div className="inline-flex items-center gap-1 bg-white/85 backdrop-blur-xs px-2.5 py-1 rounded-xl border border-black/5 shadow-xs">
-                            <span className="text-[10px] opacity-70 font-semibold">{t("score_label")}:</span>
-                            <span className={clsx("font-black text-xs", badge.scoreClass)}>{winner.score}</span>
+                          <div
+                            className={clsx(
+                              "inline-flex items-center gap-1 bg-white/95 backdrop-blur-xs px-2.5 sm:px-3 py-1.5 rounded-2xl border shadow-xs",
+                              badge.scorePillClass
+                            )}
+                          >
+                            <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">
+                              {t("score_label")}:
+                            </span>
+                            <span className={clsx("font-black text-xs sm:text-sm", badge.scoreClass)}>
+                              {winner.score}
+                            </span>
                           </div>
                         ) : (
                           <span className="text-[10px] font-mono opacity-80">{winner.certificateNumber}</span>
                         )}
                         {winner.simtVerified && (
-                          <div className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-800 bg-white/95 px-2 py-1 rounded-xl border border-emerald-300 shadow-xs">
-                            <CheckCircle2 size={11} className="text-emerald-600" />
+                          <div className="inline-flex items-center gap-1 text-[10px] font-black text-emerald-800 bg-emerald-50/95 px-2.5 py-1.5 rounded-2xl border border-emerald-300/80 shadow-xs">
+                            <CheckCircle2 size={12} className="text-emerald-600" />
                             <span>SIMT</span>
                           </div>
                         )}
