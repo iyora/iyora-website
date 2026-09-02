@@ -262,10 +262,10 @@ export default function WinnersFilterGrid({
           scoreClass: "text-amber-950",
           avatarBg: "bg-gradient-to-br from-amber-200 via-yellow-300 to-amber-400 text-amber-950 border-amber-300 shadow-sm",
           cardBorderClass: "hover:border-amber-400/80 hover:shadow-amber-500/15",
-          topStripeClass: "bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500",
           glossyRibbonClass: "bg-gradient-to-b from-yellow-300 via-amber-400 to-amber-600 shadow-amber-500/30 border-t-2 border-yellow-200 text-white",
           rightGlowClass: "bg-gradient-to-br from-amber-300 via-yellow-400 to-amber-500",
-          cloudFrame: "/images/ornaments/frame-awan-gold.png",
+          cloudTop: "/images/ornaments/awan-top-gold.png",
+          cloudBottom: "/images/ornaments/awan-bottom-gold.png",
           sparkleColor: "text-amber-500",
         };
       case "Silver Medal":
@@ -280,10 +280,10 @@ export default function WinnersFilterGrid({
           scoreClass: "text-slate-900",
           avatarBg: "bg-gradient-to-br from-slate-100 via-gray-200 to-slate-300 text-slate-800 border-slate-300 shadow-sm",
           cardBorderClass: "hover:border-slate-400/80 hover:shadow-slate-500/15",
-          topStripeClass: "bg-gradient-to-r from-slate-400 via-gray-300 to-slate-400",
           glossyRibbonClass: "bg-gradient-to-b from-slate-200 via-gray-300 to-slate-500 shadow-slate-500/30 border-t-2 border-slate-100 text-white",
           rightGlowClass: "bg-gradient-to-br from-slate-300 via-gray-200 to-slate-400",
-          cloudFrame: "/images/ornaments/frame-awan-silver.png",
+          cloudTop: "/images/ornaments/awan-top-silver.png",
+          cloudBottom: "/images/ornaments/awan-bottom-silver.png",
           sparkleColor: "text-slate-400",
         };
       case "Bronze Medal":
@@ -298,10 +298,10 @@ export default function WinnersFilterGrid({
           scoreClass: "text-orange-950",
           avatarBg: "bg-gradient-to-br from-orange-200 via-amber-200 to-orange-300 text-orange-950 border-orange-300 shadow-sm",
           cardBorderClass: "hover:border-orange-400/80 hover:shadow-orange-500/15",
-          topStripeClass: "bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500",
           glossyRibbonClass: "bg-gradient-to-b from-orange-300 via-amber-600 to-orange-700 shadow-orange-500/30 border-t-2 border-orange-200 text-white",
           rightGlowClass: "bg-gradient-to-br from-orange-300 via-amber-500 to-orange-600",
-          cloudFrame: "/images/ornaments/frame-awan-bronze.png",
+          cloudTop: "/images/ornaments/awan-top-bronze.png",
+          cloudBottom: "/images/ornaments/awan-bottom-bronze.png",
           sparkleColor: "text-orange-500",
         };
       case "Honorable Mention":
@@ -316,10 +316,10 @@ export default function WinnersFilterGrid({
           scoreClass: "text-purple-950",
           avatarBg: "bg-gradient-to-br from-purple-200 via-fuchsia-200 to-purple-300 text-purple-950 border-purple-200 shadow-sm",
           cardBorderClass: "hover:border-purple-400/80 hover:shadow-purple-500/15",
-          topStripeClass: "bg-gradient-to-r from-purple-400 via-fuchsia-300 to-purple-500",
           glossyRibbonClass: "bg-gradient-to-b from-purple-300 via-fuchsia-500 to-purple-700 shadow-purple-500/30 border-t-2 border-purple-200 text-white",
           rightGlowClass: "bg-gradient-to-br from-purple-300 via-fuchsia-400 to-purple-500",
-          cloudFrame: "/images/ornaments/frame-awan-purple.png",
+          cloudTop: "/images/ornaments/awan-top-purple.png",
+          cloudBottom: "/images/ornaments/awan-bottom-purple.png",
           sparkleColor: "text-purple-500",
         };
       default:
@@ -334,10 +334,10 @@ export default function WinnersFilterGrid({
           scoreClass: "text-blue-950",
           avatarBg: "bg-gradient-to-br from-blue-200 via-sky-200 to-blue-300 text-blue-950 border-blue-200 shadow-sm",
           cardBorderClass: "hover:border-blue-400/80 hover:shadow-blue-500/15",
-          topStripeClass: "bg-gradient-to-r from-blue-400 via-sky-300 to-blue-500",
           glossyRibbonClass: "bg-gradient-to-b from-sky-300 via-blue-500 to-blue-700 shadow-blue-500/30 border-t-2 border-sky-200 text-white",
           rightGlowClass: "bg-gradient-to-br from-sky-300 via-blue-400 to-blue-500",
-          cloudFrame: "/images/ornaments/frame-awan-blue.png",
+          cloudTop: "/images/ornaments/awan-top-blue.png",
+          cloudBottom: "/images/ornaments/awan-bottom-blue.png",
           sparkleColor: "text-blue-500",
         };
     }
@@ -575,17 +575,21 @@ export default function WinnersFilterGrid({
                       badge.cardBorderClass
                     )}
                   >
-                    {/* Top Medal Color Accent Stripe */}
-                    <div className={clsx("absolute top-0 left-0 right-0 h-1.5 z-20", badge.topStripeClass)} />
-
-                    {/* Auspicious Cloud Frame (Desain Bingkai Awan Emas Sesuai Medali) */}
+                    {/* Top Auspicious Cloud Border (Tidak Peyang / Proporsi Alami 100%) */}
                     <div
-                      className="absolute inset-0 pointer-events-none z-10 bg-no-repeat transition-all duration-500 group-hover:scale-[1.03]"
+                      className="absolute top-0 left-0 right-0 h-16 sm:h-20 pointer-events-none z-10 bg-top bg-cover bg-no-repeat transition-transform duration-500 group-hover:scale-[1.02]"
                       style={{
-                        backgroundImage: `url('${badge.cloudFrame}')`,
-                        backgroundSize: "100% 100%",
-                        backgroundPosition: "center",
-                        opacity: 0.9,
+                        backgroundImage: `url('${badge.cloudTop}')`,
+                        opacity: 0.95,
+                      }}
+                    />
+
+                    {/* Bottom Auspicious Cloud Border (Tidak Peyang / Proporsi Alami 100%) */}
+                    <div
+                      className="absolute bottom-0 left-0 right-0 h-16 sm:h-20 pointer-events-none z-10 bg-bottom bg-cover bg-no-repeat transition-transform duration-500 group-hover:scale-[1.02]"
+                      style={{
+                        backgroundImage: `url('${badge.cloudBottom}')`,
+                        opacity: 0.95,
                       }}
                     />
 
