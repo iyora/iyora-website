@@ -43,11 +43,17 @@ export default function WinnersHero({ stats = WINNER_STATS }: WinnersHeroProps) 
   ];
 
   return (
-    <section className="relative pt-32 pb-20 overflow-hidden bg-gradient-to-br from-[#4b277b] via-[#356d9c] to-[#258b94] text-white">
+    <section className="relative pt-32 pb-20 overflow-hidden bg-gradient-to-br from-[#3B79A7] via-[#358EAA] to-[#2EA3AD] text-white">
       {/* Subtle background glow effect */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-white/10 blur-[100px] rounded-full pointer-events-none" />
       <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-teal-400/20 blur-[80px] rounded-full pointer-events-none" />
       <div className="absolute -top-20 -right-20 w-80 h-80 bg-purple-400/20 blur-[80px] rounded-full pointer-events-none" />
+
+      {/* Animated Floating Balloons / Bubbles */}
+      <div className="absolute top-12 left-10 w-48 h-48 rounded-full bg-white/[0.08] pointer-events-none animate-balloon-1" />
+      <div className="absolute top-20 right-16 w-64 h-64 rounded-full bg-white/[0.07] pointer-events-none animate-balloon-2" />
+      <div className="absolute bottom-10 left-1/4 w-36 h-36 rounded-full bg-white/[0.06] pointer-events-none animate-balloon-3" />
+      <div className="absolute bottom-16 right-1/3 w-28 h-28 rounded-full bg-white/[0.08] pointer-events-none animate-balloon-1" />
 
       <div className="relative max-w-7xl mx-auto px-6 text-center">
         {/* Top Badge */}

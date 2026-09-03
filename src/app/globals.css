@@ -52,3 +52,43 @@ body {
   font-family: "Playfair Display", "Cinzel", Georgia, "Times New Roman", serif;
   letter-spacing: 0.14em;
 }
+
+@keyframes balloonFloat1 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-10px, -16px) scale(1.08);
+  }
+}
+
+@keyframes balloonFloat2 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(12px, -12px) scale(0.94);
+  }
+}
+
+@keyframes balloonFloat3 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-8px, 14px) scale(1.06);
+  }
+}
+
+.animate-balloon-1 {
+  animation: balloonFloat1 7s ease-in-out infinite;
+}
+
+.animate-balloon-2 {
+  animation: balloonFloat2 9s ease-in-out infinite 1s;
+}
+
+.animate-balloon-3 {
+  animation: balloonFloat3 8s ease-in-out infinite 2s;
+}
+

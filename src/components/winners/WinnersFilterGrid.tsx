@@ -12,6 +12,10 @@ import {
   RotateCcw,
   ShieldCheck,
   GraduationCap,
+  Medal,
+  Award,
+  Trophy,
+  Star,
 } from "lucide-react";
 import clsx from "clsx";
 import {
@@ -153,55 +157,76 @@ export default function WinnersFilterGrid({
   const getMedalBadge = (medal: WinnerMedal | string) => {
     switch (medal) {
       case "Grand Champion":
+        return {
+          icon: Trophy,
+          iconColor: "text-amber-300",
+          label: locale === "en" ? "Grand Champion" : "Juara Umum",
+          displayLabel: "GRAND CHAMPION",
+          className: "bg-yellow-50 text-yellow-800 border-yellow-300 font-bold",
+          blockBg: "bg-[#CF9B12] shadow-sm shadow-[#CF9B12]/25 hover:brightness-105",
+          pillBg: "bg-white/15 text-white border-white/30 shadow-xs",
+          tableBadgeBg: "bg-[#CF9B12] text-white",
+          cardHoverClass: "hover:border-amber-300/80 hover:shadow-amber-400/30",
+        };
       case "Gold Medal":
         return {
-          icon: "🥇",
+          icon: Medal,
+          iconColor: "text-amber-300",
           label: locale === "en" ? "Gold Medal" : "Medali Emas",
           displayLabel: "GOLD MEDAL",
           className: "bg-yellow-50 text-yellow-800 border-yellow-300 font-bold",
           blockBg: "bg-[#CF9B12] shadow-sm shadow-[#CF9B12]/25 hover:brightness-105",
+          pillBg: "bg-white/15 text-white border-white/30 shadow-xs",
           tableBadgeBg: "bg-[#CF9B12] text-white",
-          cardHoverClass: "hover:border-[#CF9B12]/60 hover:shadow-[#CF9B12]/15",
+          cardHoverClass: "hover:border-amber-300/80 hover:shadow-amber-400/30",
         };
       case "Silver Medal":
         return {
-          icon: "🥈",
+          icon: Medal,
+          iconColor: "text-slate-200",
           label: locale === "en" ? "Silver Medal" : "Medali Perak",
           displayLabel: "SILVER MEDAL",
           className: "bg-slate-100 text-slate-800 border-slate-300 font-bold",
           blockBg: "bg-[#8494A1] shadow-sm shadow-[#8494A1]/25 hover:brightness-105",
+          pillBg: "bg-white/15 text-white border-white/30 shadow-xs",
           tableBadgeBg: "bg-[#8494A1] text-white",
-          cardHoverClass: "hover:border-[#8494A1]/60 hover:shadow-slate-500/15",
+          cardHoverClass: "hover:border-slate-200/90 hover:shadow-cyan-200/30",
         };
       case "Bronze Medal":
         return {
-          icon: "🥉",
+          icon: Medal,
+          iconColor: "text-orange-300",
           label: locale === "en" ? "Bronze Medal" : "Medali Perunggu",
           displayLabel: "BRONZE MEDAL",
           className: "bg-orange-50 text-orange-800 border-orange-200 font-bold",
           blockBg: "bg-[#BA6832] shadow-sm shadow-[#BA6832]/25 hover:brightness-105",
+          pillBg: "bg-white/15 text-white border-white/30 shadow-xs",
           tableBadgeBg: "bg-[#BA6832] text-white",
-          cardHoverClass: "hover:border-[#BA6832]/60 hover:shadow-orange-500/15",
+          cardHoverClass: "hover:border-orange-300/80 hover:shadow-orange-400/30",
         };
       case "Honorable Mention":
         return {
-          icon: "🎖️",
+          icon: Award,
+          iconColor: "text-purple-200",
           label: locale === "en" ? "Honorable Mention" : "Peringkat Harapan",
           displayLabel: "HONORABLE MENTION",
           className: "bg-purple-50 text-purple-800 border-purple-200 font-semibold",
           blockBg: "bg-[#7C3AED] shadow-sm shadow-[#7C3AED]/25 hover:brightness-105",
+          pillBg: "bg-white/15 text-white border-white/30 shadow-xs",
           tableBadgeBg: "bg-[#7C3AED] text-white",
-          cardHoverClass: "hover:border-[#7C3AED]/60 hover:shadow-purple-500/15",
+          cardHoverClass: "hover:border-purple-300/80 hover:shadow-purple-400/30",
         };
       default:
         return {
-          icon: "⭐",
+          icon: Star,
+          iconColor: "text-teal-200",
           label: medal,
           displayLabel: String(medal || "SPECIAL AWARD").toUpperCase(),
           className: "bg-blue-50 text-blue-800 border-blue-200 font-semibold",
           blockBg: "bg-[#0D9488] shadow-sm shadow-[#0D9488]/25 hover:brightness-105",
+          pillBg: "bg-white/15 text-white border-white/30 shadow-xs",
           tableBadgeBg: "bg-[#0D9488] text-white",
-          cardHoverClass: "hover:border-[#0D9488]/60 hover:shadow-teal-500/15",
+          cardHoverClass: "hover:border-teal-300/80 hover:shadow-teal-400/30",
         };
     }
   };
@@ -373,64 +398,76 @@ export default function WinnersFilterGrid({
                   <div
                     key={winner.id}
                     className={clsx(
-                      "bg-white rounded-3xl p-5 border border-gray-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden",
+                      "relative rounded-3xl p-5 border border-white/25 shadow-lg shadow-teal-950/15 hover:shadow-2xl hover:shadow-teal-900/30 transition-all duration-500 flex flex-col justify-between group overflow-hidden bg-gradient-to-br from-[#3B79A7] via-[#358EAA] to-[#2EA3AD] text-white hover:scale-[1.02]",
                       badge.cardHoverClass
                     )}
                   >
-                    {/* Top Competition, Category & SIMT Badge */}
-                    <div>
-                      <div className="flex items-center justify-between gap-2 mb-3.5">
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-lg bg-teal-50 text-teal-800 border border-teal-200">
-                            {winner.competition} ({winner.editionYear})
-                          </span>
-                          {winner.category && (
-                            <span className="text-[11px] font-semibold text-gray-500 bg-gray-50 px-2.5 py-0.5 rounded-full border border-gray-200">
-                              {winner.category}
+                    {/* Animated Floating Balloons / Bubbles */}
+                    <div className="absolute -top-10 -right-10 w-36 h-36 rounded-full bg-white/10 pointer-events-none animate-balloon-1 group-hover:scale-110 transition-transform duration-700" />
+                    <div className="absolute -bottom-10 -left-6 w-28 h-28 rounded-full bg-white/[0.08] pointer-events-none animate-balloon-2 group-hover:scale-110 transition-transform duration-700" />
+                    <div className="absolute top-1/2 -right-4 w-16 h-16 rounded-full bg-white/[0.07] pointer-events-none animate-balloon-3 group-hover:scale-125 transition-transform duration-700" />
+                    <div className="absolute bottom-16 left-1/3 w-8 h-8 rounded-full bg-white/[0.12] pointer-events-none animate-balloon-1 group-hover:scale-125 transition-transform duration-700" />
+
+                    {/* Foreground Content */}
+                    <div className="relative z-10 flex flex-col justify-between h-full">
+                      {/* Top Competition, Category & SIMT Badge */}
+                      <div>
+                        <div className="flex items-center justify-between gap-2 mb-3.5">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-lg bg-white/20 text-white border border-white/30 backdrop-blur-md shadow-xs">
+                              {winner.competition} ({winner.editionYear})
                             </span>
+                            {winner.category && (
+                              <span className="text-[11px] font-semibold text-white/90 bg-white/10 px-2.5 py-0.5 rounded-full border border-white/20 backdrop-blur-md">
+                                {winner.category}
+                              </span>
+                            )}
+                          </div>
+                          {winner.simtVerified && (
+                            <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-100 bg-emerald-500/25 px-2 py-0.5 rounded-md border border-emerald-300/40 backdrop-blur-md shrink-0 shadow-xs">
+                              <CheckCircle2 size={12} className="text-emerald-300" />
+                              <span>SIMT</span>
+                            </div>
                           )}
                         </div>
-                        {winner.simtVerified && (
-                          <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 shrink-0">
-                            <CheckCircle2 size={12} className="text-emerald-600" />
-                            <span>SIMT</span>
+
+                        {/* Participant Name */}
+                        <h3 className="text-base font-extrabold text-white group-hover:text-amber-200 transition-colors flex items-center gap-2 mb-2 drop-shadow-xs">
+                          <span>{winner.name}</span>
+                          <span title={winner.country}>{flag}</span>
+                        </h3>
+
+                        {/* School & Location Info */}
+                        <div className="space-y-1.5 text-xs text-white/85 mb-4">
+                          <div className="flex items-start gap-2">
+                            <School size={13} className="text-amber-300 mt-0.5 flex-shrink-0 drop-shadow-xs" />
+                            <span className="font-semibold text-white line-clamp-1">{winner.school}</span>
                           </div>
-                        )}
-                      </div>
-
-                      {/* Participant Name */}
-                      <h3 className="text-base font-extrabold text-gray-900 group-hover:text-primary transition-colors flex items-center gap-2 mb-2">
-                        <span>{winner.name}</span>
-                        <span title={winner.country}>{flag}</span>
-                      </h3>
-
-                      {/* School & Location Info */}
-                      <div className="space-y-1.5 text-xs text-gray-600 mb-4">
-                        <div className="flex items-start gap-2">
-                          <School size={13} className="text-primary mt-0.5 flex-shrink-0" />
-                          <span className="font-semibold text-gray-800 line-clamp-1">{winner.school}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <MapPin size={13} className="text-gray-400 flex-shrink-0" />
-                          <span className="line-clamp-1">{winner.city}, {winner.province} ({winner.country})</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <GraduationCap size={13} className="text-gray-400 flex-shrink-0" />
-                          <span>{winner.level}</span>
+                          <div className="flex items-center gap-2">
+                            <MapPin size={13} className="text-teal-200/90 flex-shrink-0" />
+                            <span className="line-clamp-1 text-white/80">{winner.city}, {winner.province} ({winner.country})</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <GraduationCap size={13} className="text-teal-200/90 flex-shrink-0" />
+                            <span className="text-white/80">{winner.level}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    {/* Bottom Medal Banner: Diperkecil Lebih Rapi & Proporsional */}
-                    <div
-                      className={clsx(
-                        "mt-3 w-full py-1.5 sm:py-2 px-3 rounded-xl flex items-center justify-center text-center transition-all duration-300 group-hover:scale-[1.01]",
-                        badge.blockBg
-                      )}
-                    >
-                      <span className="font-medal-serif text-white font-extrabold text-xs sm:text-sm tracking-[0.14em] uppercase select-none">
-                        {badge.displayLabel}
-                      </span>
+                      {/* Bottom Medal Label: Label kecil yang menyesuaikan tema card */}
+                      <div className="mt-3 pt-2.5 border-t border-white/15 flex items-center justify-between">
+                        <div
+                          className={clsx(
+                            "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold backdrop-blur-md border shadow-xs transition-transform group-hover:scale-105",
+                            badge.pillBg
+                          )}
+                        >
+                          <badge.icon size={13} className={clsx("shrink-0", badge.iconColor)} />
+                          <span className="text-[11px] font-extrabold tracking-wider uppercase drop-shadow-xs">
+                            {badge.displayLabel}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 );
