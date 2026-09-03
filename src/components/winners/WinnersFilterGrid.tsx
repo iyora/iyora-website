@@ -1,34 +1,23 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import {
   Search,
-  Filter,
-  Trophy,
-  Award,
   School,
   MapPin,
   CheckCircle2,
   LayoutGrid,
   List,
   RotateCcw,
-  Sparkles,
   ShieldCheck,
-  Building2,
   GraduationCap,
-  Download,
-  FileText,
-  FileCheck2,
-  ArrowRight,
 } from "lucide-react";
 import clsx from "clsx";
 import {
   WinnerItem,
   WinnerMedal,
   WinnerAnnouncementDoc,
-  MANUAL_SK_DRIVE_LINKS,
   ALL_COMPETITIONS,
   MEDAL_TABS,
 } from "@/data/dummyWinners";
@@ -50,92 +39,6 @@ export default function WinnersFilterGrid({
   const [selectedMedal, setSelectedMedal] = useState<string>("all");
   const [selectedLevel, setSelectedLevel] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
-  const [downloadingComp, setDownloadingComp] = useState<string | null>(null);
-
-  // Match SK announcement document based on selected competition
-  const currentAnnouncement = useMemo(() => {
-    if (selectedCompetition === "all") {
-      return announcements.length > 0 ? announcements[0] : null;
-    }
-    const targetComp = selectedCompetition.trim().toUpperCase();
-    return (
-      announcements.find(
-        (a) => a.competition.trim().toUpperCase() === targetComp
-      ) || null
-    );
-  }, [announcements, selectedCompetition]);
-
-  // Direct download handler for official SK decree PDF
-  const handleDirectDownloadSK = (compCode?: string) => {
-    const targetComp = (compCode || selectedCompetition || "all").trim().toUpperCase();
-    const doc =
-      targetComp === "ALL"
-        ? announcements.length > 0 ? announcements[0] : null
-        : announcements.find(
-            (a) => a.competition.trim().toUpperCase() === targetComp
-          );
-
-    setDownloadingComp(targetComp);
-
-    try {
-      const finalComp = targetComp !== "ALL" ? targetComp : (doc?.competition || "IYORA");
-      const compName = doc?.competitionFullName || (targetComp !== "ALL" ? `${targetComp} Olympiad` : "IYORA Science Olympiad");
-      const skNumber = doc?.skNumber || `SK.${finalComp}/PEM/2026/09.01`;
-      const rawUrl = doc?.downloadUrl || MANUAL_SK_DRIVE_LINKS[finalComp] || MANUAL_SK_DRIVE_LINKS.ALL || "";
-      const filename = `SK_Pemenang_${finalComp}_2026.pdf`;
-
-      // 1. If it's a local static file (e.g. /sk/nygi-sk.pdf or public/sk/nygi-sk.pdf)
-      if (rawUrl && !rawUrl.startsWith("http") && !rawUrl.includes("#")) {
-        let cleanPath = rawUrl.startsWith("/") ? rawUrl : `/${rawUrl}`;
-        if (cleanPath.startsWith("/public/")) {
-          cleanPath = cleanPath.slice("/public".length);
-        }
-        const link = document.createElement("a");
-        link.href = cleanPath;
-        link.setAttribute("download", filename);
-        link.setAttribute("target", "_blank");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        return;
-      }
-
-      // 2. If it's a Google Drive link
-      if (rawUrl && rawUrl.includes("drive.google.com")) {
-        const match =
-          rawUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) ||
-          rawUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-        const gdriveUrl =
-          match && match[1]
-            ? `https://drive.google.com/uc?export=download&id=${match[1]}`
-            : rawUrl;
-        window.open(gdriveUrl, "_blank");
-        return;
-      }
-
-      // 3. If it's an external URL
-      if (rawUrl && rawUrl.startsWith("http") && !rawUrl.includes("#")) {
-        window.open(rawUrl, "_blank");
-        return;
-      }
-
-      // 4. Fallback: Generated PDF via API Route
-      const apiDownloadUrl = `/api/download-sk?comp=${encodeURIComponent(finalComp)}&compName=${encodeURIComponent(compName)}&skNumber=${encodeURIComponent(skNumber)}&filename=${encodeURIComponent(filename)}`;
-
-      const link = document.createElement("a");
-      link.href = apiDownloadUrl;
-      link.setAttribute("download", filename);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (err) {
-      console.error("Failed to download SK:", err);
-    } finally {
-      setTimeout(() => {
-        setDownloadingComp(null);
-      }, 1500);
-    }
-  };
 
   // Get available competition options including any dynamic competition codes from initialWinners
   const availableCompetitions = useMemo(() => {
@@ -254,31 +157,51 @@ export default function WinnersFilterGrid({
         return {
           icon: "🥇",
           label: locale === "en" ? "Gold Medal" : "Medali Emas",
+          displayLabel: "GOLD MEDAL",
           className: "bg-yellow-50 text-yellow-800 border-yellow-300 font-bold",
+          blockBg: "bg-[#CF9B12] shadow-sm shadow-[#CF9B12]/25 hover:brightness-105",
+          tableBadgeBg: "bg-[#CF9B12] text-white",
+          cardHoverClass: "hover:border-[#CF9B12]/60 hover:shadow-[#CF9B12]/15",
         };
       case "Silver Medal":
         return {
           icon: "🥈",
           label: locale === "en" ? "Silver Medal" : "Medali Perak",
+          displayLabel: "SILVER MEDAL",
           className: "bg-slate-100 text-slate-800 border-slate-300 font-bold",
+          blockBg: "bg-[#8494A1] shadow-sm shadow-[#8494A1]/25 hover:brightness-105",
+          tableBadgeBg: "bg-[#8494A1] text-white",
+          cardHoverClass: "hover:border-[#8494A1]/60 hover:shadow-slate-500/15",
         };
       case "Bronze Medal":
         return {
           icon: "🥉",
           label: locale === "en" ? "Bronze Medal" : "Medali Perunggu",
+          displayLabel: "BRONZE MEDAL",
           className: "bg-orange-50 text-orange-800 border-orange-200 font-bold",
+          blockBg: "bg-[#BA6832] shadow-sm shadow-[#BA6832]/25 hover:brightness-105",
+          tableBadgeBg: "bg-[#BA6832] text-white",
+          cardHoverClass: "hover:border-[#BA6832]/60 hover:shadow-orange-500/15",
         };
       case "Honorable Mention":
         return {
           icon: "🎖️",
           label: locale === "en" ? "Honorable Mention" : "Peringkat Harapan",
+          displayLabel: "HONORABLE MENTION",
           className: "bg-purple-50 text-purple-800 border-purple-200 font-semibold",
+          blockBg: "bg-[#7C3AED] shadow-sm shadow-[#7C3AED]/25 hover:brightness-105",
+          tableBadgeBg: "bg-[#7C3AED] text-white",
+          cardHoverClass: "hover:border-[#7C3AED]/60 hover:shadow-purple-500/15",
         };
       default:
         return {
           icon: "⭐",
           label: medal,
+          displayLabel: String(medal || "SPECIAL AWARD").toUpperCase(),
           className: "bg-blue-50 text-blue-800 border-blue-200 font-semibold",
+          blockBg: "bg-[#0D9488] shadow-sm shadow-[#0D9488]/25 hover:brightness-105",
+          tableBadgeBg: "bg-[#0D9488] text-white",
+          cardHoverClass: "hover:border-[#0D9488]/60 hover:shadow-teal-500/15",
         };
     }
   };
@@ -424,67 +347,7 @@ export default function WinnersFilterGrid({
           </div>
         </div>
 
-        {/* Dynamic SK Decree Banner when a competition is selected */}
-        {selectedCompetition !== "all" && (
-          <div className="mb-8 bg-gradient-to-r from-[#0f172a] via-[#1e293b] to-[#0f283d] rounded-3xl p-5 sm:p-6 text-white border border-teal-500/25 shadow-xl relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="absolute right-0 top-0 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
-            <div className="relative z-10 flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-teal-500/20 border border-teal-400/30 flex items-center justify-center text-teal-300 shrink-0">
-                <FileText size={24} />
-              </div>
-              <div>
-                <div className="flex items-center gap-2 mb-1 flex-wrap">
-                  <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-lg bg-teal-500/20 text-teal-300 border border-teal-500/30">
-                    SK Resmi {selectedCompetition}
-                  </span>
-                  <span className="text-[11px] text-teal-200/80 font-mono bg-white/5 px-2 py-0.5 rounded border border-white/10">
-                    No: {currentAnnouncement?.skNumber || `SK.${selectedCompetition}/PEM/2026/09.01`}
-                  </span>
-                  <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                    ✓ Terverifikasi SIMT
-                  </span>
-                </div>
-                <h4 className="text-sm sm:text-base font-extrabold text-white">
-                  {locale === "en"
-                    ? `Official Decree of Winners & Medalists — ${selectedCompetition}`
-                    : `Surat Keputusan (SK) Penetapan Pemenang & Medalis — ${selectedCompetition}`}
-                </h4>
-                <p className="text-xs text-gray-300 mt-0.5">
-                  {currentAnnouncement
-                    ? (locale === "en" ? currentAnnouncement.title_en : currentAnnouncement.title)
-                    : (locale === "en"
-                        ? "Download the authenticated decree document of awardees and medalists."
-                        : "Dokumen penetapan pemenang resmi yang telah disahkan Dewan Juri & Direksi IYORA.")}
-                </p>
-              </div>
-            </div>
-            <div className="relative z-10 flex flex-col sm:flex-row items-center gap-2.5 w-full sm:w-auto shrink-0">
-              <button
-                onClick={() => handleDirectDownloadSK(selectedCompetition)}
-                disabled={downloadingComp === selectedCompetition}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white text-xs font-extrabold shadow-lg shadow-emerald-500/25 transition-all cursor-pointer active:scale-95 disabled:opacity-75"
-              >
-                {downloadingComp === selectedCompetition ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <Download size={15} />
-                )}
-                <span>
-                  {downloadingComp === selectedCompetition
-                    ? (locale === "en" ? "Downloading SK..." : "Mengunduh SK...")
-                    : (locale === "en" ? `Download SK ${selectedCompetition} (PDF)` : `Unduh SK ${selectedCompetition} (PDF)`)}
-                </span>
-              </button>
-              <Link
-                href={`/${locale}/sk`}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-all border border-white/10"
-              >
-                <span>{locale === "en" ? "All SK Decrees" : "Semua SK"}</span>
-                <ArrowRight size={13} />
-              </Link>
-            </div>
-          </div>
-        )}
+
 
         {/* Results Counter */}
         <div className="flex items-center justify-between mb-6 px-1">
@@ -509,18 +372,30 @@ export default function WinnersFilterGrid({
                 return (
                   <div
                     key={winner.id}
-                    className="bg-white rounded-2xl p-5 border border-gray-200/90 shadow-sm hover:shadow-xl hover:border-primary/40 transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
+                    className={clsx(
+                      "bg-white rounded-3xl p-5 border border-gray-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden",
+                      badge.cardHoverClass
+                    )}
                   >
-                    {/* Top Competition & Medal Badge */}
+                    {/* Top Competition, Category & SIMT Badge */}
                     <div>
-                      <div className="flex items-center justify-between gap-2 mb-3">
-                        <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-lg bg-teal-50 text-teal-800 border border-teal-200">
-                          {winner.competition} ({winner.editionYear})
-                        </span>
-                        <div className={clsx("inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full border", badge.className)}>
-                          <span>{badge.icon}</span>
-                          <span>{badge.label}</span>
+                      <div className="flex items-center justify-between gap-2 mb-3.5">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-lg bg-teal-50 text-teal-800 border border-teal-200">
+                            {winner.competition} ({winner.editionYear})
+                          </span>
+                          {winner.category && (
+                            <span className="text-[11px] font-semibold text-gray-500 bg-gray-50 px-2.5 py-0.5 rounded-full border border-gray-200">
+                              {winner.category}
+                            </span>
+                          )}
                         </div>
+                        {winner.simtVerified && (
+                          <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 shrink-0">
+                            <CheckCircle2 size={12} className="text-emerald-600" />
+                            <span>SIMT</span>
+                          </div>
+                        )}
                       </div>
 
                       {/* Participant Name */}
@@ -546,24 +421,16 @@ export default function WinnersFilterGrid({
                       </div>
                     </div>
 
-                    {/* Card Footer: Certificate & Score */}
-                    <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs">
-                      <div>
-                        {winner.score ? (
-                          <div className="flex items-baseline gap-1">
-                            <span className="text-[10px] text-gray-400">{t("score_label")}:</span>
-                            <span className="font-extrabold text-primary">{winner.score}</span>
-                          </div>
-                        ) : (
-                          <span className="text-[10px] font-mono text-gray-400">{winner.certificateNumber}</span>
-                        )}
-                      </div>
-                      {winner.simtVerified && (
-                        <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-                          <CheckCircle2 size={12} className="text-emerald-600" />
-                          <span>SIMT</span>
-                        </div>
+                    {/* Bottom Medal Banner: Sesuai Gambar Referensi Pengguna */}
+                    <div
+                      className={clsx(
+                        "mt-4 w-full py-3 sm:py-3.5 px-4 rounded-2xl flex items-center justify-center text-center transition-all duration-300 group-hover:scale-[1.01]",
+                        badge.blockBg
                       )}
+                    >
+                      <span className="font-medal-serif text-white font-black text-base sm:text-lg tracking-[0.16em] uppercase select-none">
+                        {badge.displayLabel}
+                      </span>
                     </div>
                   </div>
                 );
@@ -576,12 +443,12 @@ export default function WinnersFilterGrid({
                 <table className="w-full text-left text-xs text-gray-700">
                   <thead className="bg-gray-50 border-b border-gray-200 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
                     <tr>
-                      <th className="px-5 py-3.5">Peserta</th>
-                      <th className="px-5 py-3.5">Sekolah / Asal</th>
-                      <th className="px-5 py-3.5">Cabang</th>
-                      <th className="px-5 py-3.5">Jenjang</th>
-                      <th className="px-5 py-3.5">Penghargaan</th>
-                      <th className="px-5 py-3.5 text-right">Nilai / SIMT</th>
+                      <th className="px-5 py-3.5">{locale === "en" ? "Participant" : "Peserta"}</th>
+                      <th className="px-5 py-3.5">{locale === "en" ? "School / Origin" : "Sekolah / Asal"}</th>
+                      <th className="px-5 py-3.5">{locale === "en" ? "Competition" : "Cabang"}</th>
+                      <th className="px-5 py-3.5">{locale === "en" ? "Level" : "Jenjang"}</th>
+                      <th className="px-5 py-3.5">{locale === "en" ? "Award" : "Penghargaan"}</th>
+                      <th className="px-5 py-3.5 text-right">SIMT</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -605,18 +472,23 @@ export default function WinnersFilterGrid({
                           </td>
                           <td className="px-5 py-3.5 text-gray-600">{winner.level}</td>
                           <td className="px-5 py-3.5">
-                            <span className={clsx("inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border text-[11px]", badge.className)}>
-                              <span>{badge.icon}</span>
-                              <span>{badge.label}</span>
+                            <span
+                              className={clsx(
+                                "inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold font-medal-serif tracking-wider uppercase shadow-xs",
+                                badge.tableBadgeBg
+                              )}
+                            >
+                              {badge.displayLabel}
                             </span>
                           </td>
                           <td className="px-5 py-3.5 text-right">
-                            <div className="font-extrabold text-primary">{winner.score ? `${winner.score}` : "-"}</div>
-                            {winner.simtVerified && (
+                            {winner.simtVerified ? (
                               <div className="inline-flex items-center gap-0.5 text-[10px] font-bold text-emerald-700">
                                 <CheckCircle2 size={10} />
                                 <span>SIMT</span>
                               </div>
+                            ) : (
+                              <span className="text-gray-400 text-xs">-</span>
                             )}
                           </td>
                         </tr>

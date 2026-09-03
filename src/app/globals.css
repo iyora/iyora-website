@@ -47,3 +47,8 @@ body {
 .animate-fadeIn {
   animation: fadeIn 0.2s ease-out;
 }
+
+.font-medal-serif {
+  font-family: "Playfair Display", "Cinzel", Georgia, "Times New Roman", serif;
+  letter-spacing: 0.14em;
+}
