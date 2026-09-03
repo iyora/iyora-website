@@ -159,14 +159,14 @@ export default function WinnersFilterGrid({
       case "Grand Champion":
         return {
           icon: Trophy,
-          iconColor: "text-amber-300",
+          iconColor: "text-amber-200",
           label: locale === "en" ? "Grand Champion" : "Juara Umum",
           displayLabel: "GRAND CHAMPION",
           className: "bg-yellow-50 text-yellow-800 border-yellow-300 font-bold",
           blockBg: "bg-[#CF9B12] shadow-sm shadow-[#CF9B12]/25 hover:brightness-105",
           pillBg: "bg-white/15 text-white border-white/30 shadow-xs",
           tableBadgeBg: "bg-[#CF9B12] text-white",
-          cardHoverClass: "hover:border-amber-300/80 hover:shadow-amber-400/30",
+          cardHoverClass: "hover:border-amber-300/60 hover:shadow-amber-400/20",
         };
       case "Gold Medal":
         return {
@@ -178,31 +178,31 @@ export default function WinnersFilterGrid({
           blockBg: "bg-[#CF9B12] shadow-sm shadow-[#CF9B12]/25 hover:brightness-105",
           pillBg: "bg-white/15 text-white border-white/30 shadow-xs",
           tableBadgeBg: "bg-[#CF9B12] text-white",
-          cardHoverClass: "hover:border-amber-300/80 hover:shadow-amber-400/30",
+          cardHoverClass: "hover:border-amber-300/60 hover:shadow-amber-400/20",
         };
       case "Silver Medal":
         return {
           icon: Medal,
-          iconColor: "text-slate-200",
+          iconColor: "text-slate-100",
           label: locale === "en" ? "Silver Medal" : "Medali Perak",
           displayLabel: "SILVER MEDAL",
           className: "bg-slate-100 text-slate-800 border-slate-300 font-bold",
           blockBg: "bg-[#8494A1] shadow-sm shadow-[#8494A1]/25 hover:brightness-105",
           pillBg: "bg-white/15 text-white border-white/30 shadow-xs",
           tableBadgeBg: "bg-[#8494A1] text-white",
-          cardHoverClass: "hover:border-slate-200/90 hover:shadow-cyan-200/30",
+          cardHoverClass: "hover:border-slate-200/60 hover:shadow-cyan-200/20",
         };
       case "Bronze Medal":
         return {
           icon: Medal,
-          iconColor: "text-orange-300",
+          iconColor: "text-orange-200",
           label: locale === "en" ? "Bronze Medal" : "Medali Perunggu",
           displayLabel: "BRONZE MEDAL",
           className: "bg-orange-50 text-orange-800 border-orange-200 font-bold",
           blockBg: "bg-[#BA6832] shadow-sm shadow-[#BA6832]/25 hover:brightness-105",
           pillBg: "bg-white/15 text-white border-white/30 shadow-xs",
           tableBadgeBg: "bg-[#BA6832] text-white",
-          cardHoverClass: "hover:border-orange-300/80 hover:shadow-orange-400/30",
+          cardHoverClass: "hover:border-orange-300/60 hover:shadow-orange-400/20",
         };
       case "Honorable Mention":
         return {
@@ -214,7 +214,7 @@ export default function WinnersFilterGrid({
           blockBg: "bg-[#7C3AED] shadow-sm shadow-[#7C3AED]/25 hover:brightness-105",
           pillBg: "bg-white/15 text-white border-white/30 shadow-xs",
           tableBadgeBg: "bg-[#7C3AED] text-white",
-          cardHoverClass: "hover:border-purple-300/80 hover:shadow-purple-400/30",
+          cardHoverClass: "hover:border-purple-300/60 hover:shadow-purple-400/20",
         };
       default:
         return {
@@ -226,7 +226,7 @@ export default function WinnersFilterGrid({
           blockBg: "bg-[#0D9488] shadow-sm shadow-[#0D9488]/25 hover:brightness-105",
           pillBg: "bg-white/15 text-white border-white/30 shadow-xs",
           tableBadgeBg: "bg-[#0D9488] text-white",
-          cardHoverClass: "hover:border-teal-300/80 hover:shadow-teal-400/30",
+          cardHoverClass: "hover:border-teal-300/60 hover:shadow-teal-400/20",
         };
     }
   };
@@ -398,7 +398,7 @@ export default function WinnersFilterGrid({
                   <div
                     key={winner.id}
                     className={clsx(
-                      "relative rounded-3xl p-5 border border-white/25 shadow-lg shadow-teal-950/15 hover:shadow-2xl hover:shadow-teal-900/30 transition-all duration-500 flex flex-col justify-between group overflow-hidden bg-gradient-to-br from-[#3B79A7] via-[#358EAA] to-[#2EA3AD] text-white hover:scale-[1.02]",
+                      "relative rounded-3xl p-5 border border-white/20 shadow-lg shadow-[#3B79A7]/20 hover:shadow-2xl transition-all duration-500 flex flex-col justify-between group overflow-hidden bg-[#3B79A7] text-white hover:scale-[1.02]",
                       badge.cardHoverClass
                     )}
                   >
