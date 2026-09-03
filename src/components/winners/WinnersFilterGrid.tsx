@@ -421,14 +421,14 @@ export default function WinnersFilterGrid({
                       </div>
                     </div>
 
-                    {/* Bottom Medal Banner: Sesuai Gambar Referensi Pengguna */}
+                    {/* Bottom Medal Banner: Diperkecil Lebih Rapi & Proporsional */}
                     <div
                       className={clsx(
-                        "mt-4 w-full py-3 sm:py-3.5 px-4 rounded-2xl flex items-center justify-center text-center transition-all duration-300 group-hover:scale-[1.01]",
+                        "mt-3 w-full py-1.5 sm:py-2 px-3 rounded-xl flex items-center justify-center text-center transition-all duration-300 group-hover:scale-[1.01]",
                         badge.blockBg
                       )}
                     >
-                      <span className="font-medal-serif text-white font-black text-base sm:text-lg tracking-[0.16em] uppercase select-none">
+                      <span className="font-medal-serif text-white font-extrabold text-xs sm:text-sm tracking-[0.14em] uppercase select-none">
                         {badge.displayLabel}
                       </span>
                     </div>
