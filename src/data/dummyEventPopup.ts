@@ -24,7 +24,7 @@ export interface EventPopupData {
 
 /* Event Popups Data (SK Pemenang NYGO/IYGO/NYEO/IYEO & Upcoming Events: NSO, NSMO, WSO) */
 export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
-  {
+  /*{
     id: "popup-sk-pemenang-nygo-iygo-nyeo-iyeo-2026",
     isActive: true,
     badge: "🏆 SK PEMENANG SUDAH BISA DI-DOWNLOAD",
@@ -78,8 +78,8 @@ export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
         variant: "instagram",
       },
     ],
-  },
-  {
+  },*/
+ /* {
     id: "popup-upcoming-nso-nsmo-wso-2026",
     isActive: true,
     badge: "🚀 UPCOMING OLYMPIADS 2026",
@@ -121,7 +121,7 @@ export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
         variant: "instagram",
       },
     ],
-  },
+  },*/
   {
     id: "popup-upcoming-nso-2026",
     isActive: true,
@@ -131,7 +131,7 @@ export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
     title_en: "NSO 2026 — National Science Olympiad",
     subtitle: "Pendaftaran Resmi Dibuka! Kompetisi Sains Terpadu Nasional untuk Jenjang SD, SMP, SMA & Mahasiswa se-Indonesia.",
     subtitle_en: "Registration Now Open! Prestigious National Science Competition for Elementary, Junior High, High School & University.",
-    image: "/images/events/nso-upcoming.jpg",
+    image: "/images/pop up/nso.jpeg",
     content:
       "Pendaftaran NSO (National Science Olympiad) 2026 resmi dibuka! Menguji penguasaan sains mendalam (Biologi, Fisika, Kimia, IPA Terpadu) melalui ujian berbasis CBT daring dengan standarisasi nasional. Dapatkan medali penghargaan eksklusif, e-sertifikat resmi SIMT Puspresnas, serta piagam pembina berprestasi untuk mendukung portofolio PPDB & SNBT.",
     content_en:
@@ -174,7 +174,7 @@ export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
     title_en: "NSMO 2026 — National Science and Math Olympiad",
     subtitle: "Tantangan Integrasi Sains & Matematika untuk Mengasah Daya Nalar & Berpikir Kritis.",
     subtitle_en: "Integrated Science & Math Challenge to Elevate Analytical & Critical Thinking.",
-    image: "/images/events/nsmo-upcoming.jpg",
+    image: "/images/pop up/nsmo.png",
     content:
       "NSMO (National Science and Math Olympiad) 2026 hadir sebagai wadah unjuk kebolehan dalam pemecahan soal analitis matematika dan penerapan konsep sains terintegrasi. Dirancang khusus untuk mengasah daya nalar kuantitatif dan logika ilmiah generasi muda berprestasi.",
     content_en:
@@ -202,7 +202,7 @@ export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
       },
     ],
   },
-  {
+  /*{
     id: "popup-upcoming-wso-2026",
     isActive: true,
     badge: "🌍 UPCOMING: WORLD SCIENCE OLYMPIAD",
@@ -238,7 +238,7 @@ export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
         variant: "instagram",
       },
     ],
-  },
+  },*/
   ];
 
 export const DUMMY_EVENT_POPUP: EventPopupData = DUMMY_EVENT_POPUPS[0];
