@@ -32,7 +32,7 @@ export default async function HomePage({
       <HomePreloader />
       <HeroSection />
       <OriginStory />
-      <StatsSection />
+      <StatsSection totalCompetitions={competitions.length} />
       <CompetitionsSection competitions={competitions} />
       <HomeNewsSection news={news} announcements={announcements} pressRelease={pressRelease} gallery={gallery} />
       <WhyIYORA />

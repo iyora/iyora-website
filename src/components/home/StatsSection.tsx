@@ -11,12 +11,18 @@ interface StatItem {
   color: string;
 }
 
-const STATS: StatItem[] = [
-  { value: 12, suffix: "+", labelKey: "olympiads", color: "#66449b" },
-  { value: 20, suffix: "+", labelKey: "countries", color: "#39bcbe" },
-  { value: 50000, suffix: "+", labelKey: "students", color: "#fb9722" },
-  { value: 10, suffix: "+", labelKey: "years", color: "#66449b" },
-];
+interface StatsSectionProps {
+  totalCompetitions?: number;
+}
+
+function getStats(totalCompetitions?: number): StatItem[] {
+  return [
+    { value: totalCompetitions && totalCompetitions > 0 ? totalCompetitions : 23, suffix: "+", labelKey: "olympiads", color: "#66449b" },
+    { value: 20, suffix: "+", labelKey: "countries", color: "#39bcbe" },
+    { value: 50000, suffix: "+", labelKey: "students", color: "#fb9722" },
+    { value: 10, suffix: "+", labelKey: "years", color: "#66449b" },
+  ];
+}
 
 function CountUp({
   target,
@@ -58,8 +64,9 @@ function CountUp({
   );
 }
 
-export default function StatsSection() {
+export default function StatsSection({ totalCompetitions }: StatsSectionProps) {
   const t = useTranslations("stats");
+  const stats = getStats(totalCompetitions);
 
   return (
     <section className="bg-gray-50 py-24 px-6">
@@ -77,7 +84,7 @@ export default function StatsSection() {
         </motion.div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {STATS.map((stat, i) => (
+          {stats.map((stat, i) => (
             <motion.div
               key={stat.labelKey}
               initial={{ opacity: 0, y: 30 }}

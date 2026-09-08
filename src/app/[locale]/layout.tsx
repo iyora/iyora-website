@@ -94,6 +94,8 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function LocaleLayout({
   children,
   params,
@@ -115,7 +117,7 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <EventPopup />
+      <EventPopup competitions={competitions} />
       <Navbar newsPreview={newsPreview} competitions={competitions} />
       <main>{children}</main>
       <Footer />

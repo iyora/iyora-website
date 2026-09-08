@@ -20,7 +20,8 @@ interface OlympiadItem {
   guidebookUrl?: string | null;
 }
 
-function computeOlympiadStatus(openAt: string, closeAt: string): "open" | "coming_soon" | "closed" {
+function computeOlympiadStatus(openAt: string | null, closeAt: string | null): "open" | "coming_soon" | "closed" {
+  if (!openAt || !closeAt) return "coming_soon";
   const now = new Date();
   if (now < new Date(openAt)) return "coming_soon";
   const closeDate = new Date(closeAt);
@@ -73,26 +74,34 @@ function getOlympiadMeta(slug: string, shortName: string, category: string | nul
 }
 
 const RAW_OLYMPIADS: OlympiadItem[] = [
-  { name: "NYBO", emoji: "🧬", side: "left", full: "National Youth Biology Olympiad", level: "Nasional", badgeStyle: "bg-blue-50 text-blue-700 border-blue-200", url: "https://nybo.iyora.or.id", status: computeOlympiadStatus("2026-07-01", "2026-07-31") },
-  { name: "IYBO", emoji: "🧬", side: "right", full: "International Youth Biology Olympiad", level: "Internasional", badgeStyle: "bg-purple-50 text-purple-700 border-purple-200", url: "https://iybo.iyora.or.id", status: computeOlympiadStatus("2026-07-01", "2026-07-31") },
-  { name: "NYPO", emoji: "⚛️", side: "left", full: "National Youth Physics Olympiad", level: "Nasional", badgeStyle: "bg-blue-50 text-blue-700 border-blue-200", url: "https://nypo.iyora.or.id", status: computeOlympiadStatus("2026-06-01", "2026-06-30") },
-  { name: "IYPO", emoji: "⚛️", side: "right", full: "International Youth Physics Olympiad", level: "Internasional", badgeStyle: "bg-purple-50 text-purple-700 border-purple-200", url: "https://iypo.iyora.or.id", status: computeOlympiadStatus("2026-06-01", "2026-06-30") },
-  { name: "NYCO", emoji: "🧪", side: "left", full: "National Youth Chemistry Olympiad", level: "Nasional", badgeStyle: "bg-blue-50 text-blue-700 border-blue-200", url: "https://nyco.iyora.or.id", status: computeOlympiadStatus("2026-05-01", "2026-05-31") },
-  { name: "IYCO", emoji: "🧪", side: "right", full: "International Youth Chemistry Olympiad", level: "Internasional", badgeStyle: "bg-purple-50 text-purple-700 border-purple-200", url: "https://iyco.iyora.or.id", status: computeOlympiadStatus("2026-05-01", "2026-05-31") },
-  { name: "NYMO", emoji: "➗", side: "left", full: "National Youth Mathematics Olympiad", level: "Nasional", badgeStyle: "bg-blue-50 text-blue-700 border-blue-200", url: "https://nymo.iyora.or.id", status: computeOlympiadStatus("2026-04-01", "2026-05-02") },
-  { name: "IYMO", emoji: "➗", side: "right", full: "International Youth Mathematics Olympiad", level: "Internasional", badgeStyle: "bg-purple-50 text-purple-700 border-purple-200", url: "https://iymo.iyora.or.id", status: computeOlympiadStatus("2026-06-01", "2026-07-30") },
-  { name: "NYGO", emoji: "🌍", side: "left", full: "National Youth Geography Olympiad", level: "Nasional", badgeStyle: "bg-teal-50 text-teal-700 border-teal-200", url: "https://nygo.iyora.or.id", status: computeOlympiadStatus("2026-08-01", "2026-08-16") },
-  { name: "IYGO", emoji: "🌍", side: "right", full: "International Youth Geography Olympiad", level: "Internasional", badgeStyle: "bg-teal-50 text-teal-700 border-teal-200", url: "https://iygo.iyora.or.id", status: computeOlympiadStatus("2026-08-01", "2026-08-16") },
-  { name: "NYEO", emoji: "📊", side: "left", full: "National Youth Economics Olympiad", level: "Nasional", badgeStyle: "bg-indigo-50 text-indigo-700 border-indigo-200", url: "https://nyeo.iyora.or.id", status: computeOlympiadStatus("2026-08-01", "2026-08-16") },
-  { name: "IYEO", emoji: "📊", side: "right", full: "International Youth Economics Olympiad", level: "Internasional", badgeStyle: "bg-indigo-50 text-indigo-700 border-indigo-200", url: "https://iyeo.iyora.or.id", status: computeOlympiadStatus("2026-08-01", "2026-08-16") },
-  { name: "NYEnO", emoji: "🌱", side: "left", full: "National Youth Environment Olympiad", level: "Nasional", badgeStyle: "bg-emerald-50 text-emerald-700 border-emerald-200", url: "https://nyeno.iyora.or.id", status: computeOlympiadStatus("2026-04-01", "2026-04-30") },
-  { name: "IYEnO", emoji: "🌱", side: "right", full: "International Youth Environment Olympiad", level: "Internasional", badgeStyle: "bg-emerald-50 text-emerald-700 border-emerald-200", url: "https://iyeno.iyora.or.id", status: computeOlympiadStatus("2026-04-01", "2026-04-30") },
-  { name: "NYAO", emoji: "🔭", side: "left", full: "National Youth Astronomy Olympiad", level: "Nasional", badgeStyle: "bg-sky-50 text-sky-700 border-sky-200", url: "https://nyao.iyora.or.id", status: computeOlympiadStatus("2026-03-01", "2026-03-31") },
-  { name: "IYAO", emoji: "🔭", side: "right", full: "International Youth Astronomy Olympiad", level: "Internasional", badgeStyle: "bg-sky-50 text-sky-700 border-sky-200", url: "https://iyao.iyora.or.id", status: computeOlympiadStatus("2026-03-01", "2026-03-31") },
-  { name: "OS2MN", emoji: "🕌", side: "left", full: "Olimpiade Sains Madrasah Nasional", level: "Nasional", badgeStyle: "bg-teal-50 text-teal-700 border-teal-200", url: "https://os2mn.iyora.or.id", status: computeOlympiadStatus("2026-02-01", "2026-02-28") },
-  { name: "WSO", emoji: "🏆", side: "right", full: "World Science Olympiad", level: "Internasional", badgeStyle: "bg-amber-50 text-amber-700 border-amber-200", url: "https://wso.iyora.or.id", status: computeOlympiadStatus("2026-10-01", "2026-11-30") },
-  { name: "NSO", emoji: "🔬", side: "left", full: "National Science Olympiad", level: "Nasional", badgeStyle: "bg-teal-50 text-teal-700 border-teal-200", url: "https://nso.iyora.or.id", status: computeOlympiadStatus("2026-08-28", "2026-10-16") },
-  { name: "NSMO", emoji: "🔬", side: "right", full: "National Science and Math Olympiad", level: "Nasional", badgeStyle: "bg-blue-50 text-blue-700 border-blue-200", url: "https://nsmo.iyora.or.id", status: computeOlympiadStatus("2026-09-01", "2026-10-30") },
+  // Open Registration
+  { name: "NSO", emoji: "🔬", side: "left", full: "National Science Olympiad", level: "Nasional", badgeStyle: "bg-teal-50 text-teal-700 border-teal-200", url: "https://nso.iyora.or.id", status: computeOlympiadStatus("2026-09-03", "2026-10-16"), guidebookUrl: "https://rncldvdwrcipnlgdvcxr.supabase.co/storage/v1/object/public/event-media/cf86f6fb-83e8-4fd4-8356-e3ac76936b50/guidebooks/1788455563288-BUKU-PANDUAN-NSO-2026.pdf" },
+
+  // Coming Soon
+  { name: "NSMO", emoji: "🔬", side: "right", full: "National Science and Math Olympiad", level: "Nasional", badgeStyle: "bg-blue-50 text-blue-700 border-blue-200", url: "https://nsmo.iyora.or.id", status: computeOlympiadStatus(null, null) },
+  { name: "NYMO", emoji: "➗", side: "left", full: "National Youth Mathematics Olympiad", level: "Nasional", badgeStyle: "bg-blue-50 text-blue-700 border-blue-200", url: "https://nymo.iyora.or.id", status: computeOlympiadStatus(null, null) },
+  { name: "IYMO", emoji: "➗", side: "right", full: "International Youth Mathematics Olympiad", level: "Internasional", badgeStyle: "bg-purple-50 text-purple-700 border-purple-200", url: "https://iymo.iyora.or.id", status: computeOlympiadStatus(null, null) },
+  { name: "NYBO", emoji: "🧬", side: "left", full: "National Youth Biology Olympiad", level: "Nasional", badgeStyle: "bg-blue-50 text-blue-700 border-blue-200", url: "https://nybo.iyora.or.id", status: computeOlympiadStatus(null, null) },
+  { name: "IYBO", emoji: "🧬", side: "right", full: "International Youth Biology Olympiad", level: "Internasional", badgeStyle: "bg-purple-50 text-purple-700 border-purple-200", url: "https://iybo.iyora.or.id", status: computeOlympiadStatus(null, null) },
+  { name: "NYPO", emoji: "⚛️", side: "left", full: "National Youth Physics Olympiad", level: "Nasional", badgeStyle: "bg-blue-50 text-blue-700 border-blue-200", url: "https://nypo.iyora.or.id", status: computeOlympiadStatus(null, null) },
+  { name: "IYPO", emoji: "⚛️", side: "right", full: "International Youth Physics Olympiad", level: "Internasional", badgeStyle: "bg-purple-50 text-purple-700 border-purple-200", url: "https://iypo.iyora.or.id", status: computeOlympiadStatus(null, null) },
+  { name: "NYCO", emoji: "🧪", side: "left", full: "National Youth Chemistry Olympiad", level: "Nasional", badgeStyle: "bg-blue-50 text-blue-700 border-blue-200", url: "https://nyco.iyora.or.id", status: computeOlympiadStatus(null, null) },
+  { name: "IYCO", emoji: "🧪", side: "right", full: "International Youth Chemistry Olympiad", level: "Internasional", badgeStyle: "bg-purple-50 text-purple-700 border-purple-200", url: "https://iyco.iyora.or.id", status: computeOlympiadStatus(null, null) },
+  { name: "OS2MN", emoji: "🕌", side: "left", full: "Olimpiade Sains Madrasah Nasional", level: "Madrasah", badgeStyle: "bg-teal-50 text-teal-700 border-teal-200", url: "https://os2mn.iyora.or.id", status: computeOlympiadStatus(null, null) },
+  { name: "WSO", emoji: "🏆", side: "right", full: "World Science Olympiad", level: "Dunia", badgeStyle: "bg-amber-50 text-amber-700 border-amber-200", url: "https://wso.iyora.or.id", status: computeOlympiadStatus(null, null) },
+  { name: "KISO", emoji: "🔬", side: "right", full: "KOREA INTERNATIONAL SCIENCE OLYMPIAD", level: "Internasional", badgeStyle: "bg-purple-50 text-purple-700 border-purple-200", url: "https://kiso.iyora.or.id", status: computeOlympiadStatus(null, null) },
+  { name: "TISO", emoji: "🔬", side: "right", full: "THAILAND INTERNATIONAL SCIENCE OLYMPIAD", level: "Internasional", badgeStyle: "bg-purple-50 text-purple-700 border-purple-200", url: "https://tiso.iyora.or.id", status: computeOlympiadStatus(null, null) },
+  { name: "HISO", emoji: "🔬", side: "right", full: "HANOI INTERNATIONAL SCIENCE OLYMPIAD", level: "Internasional", badgeStyle: "bg-purple-50 text-purple-700 border-purple-200", url: "https://hiso.iyora.or.id", status: computeOlympiadStatus(null, null) },
+  { name: "MISO", emoji: "🔬", side: "right", full: "MANILA INTERNATIONAL SCIENCE OLYMPIAD", level: "Internasional", badgeStyle: "bg-purple-50 text-purple-700 border-purple-200", url: "https://miso.iyora.or.id", status: computeOlympiadStatus(null, null) },
+  { name: "MEISO", emoji: "🔬", side: "right", full: "MEXICO INTERNATIONAL SCIENCE OLYMPIAD", level: "Internasional", badgeStyle: "bg-purple-50 text-purple-700 border-purple-200", url: "https://meiso.iyora.or.id", status: computeOlympiadStatus(null, null) },
+  { name: "NMISO", emoji: "🔬", side: "right", full: "NORTH MACEDONIA INTERNATIONAL SCIENCE OLYMPIAD", level: "Internasional", badgeStyle: "bg-purple-50 text-purple-700 border-purple-200", url: "https://nmiso.iyora.or.id", status: computeOlympiadStatus(null, null) },
+
+  // Closed
+  { name: "DMO", emoji: "➗", side: "left", full: "Diponegoro Mathematics Olympiad", level: "Nasional", badgeStyle: "bg-blue-50 text-blue-700 border-blue-200", url: "https://dmo.iyora.or.id", status: computeOlympiadStatus("2026-06-01", "2026-08-01"), guidebookUrl: "https://rncldvdwrcipnlgdvcxr.supabase.co/storage/v1/object/public/event-media/99fe4bb3-2e06-4444-93ec-e8b2649b1ff3/guidebooks/1788772757309-JUKNIS_EVENT_DSCF_2026.pdf" },
+  { name: "NYGO", emoji: "🌍", side: "left", full: "National Youth Geography Olympiad", level: "Nasional", badgeStyle: "bg-teal-50 text-teal-700 border-teal-200", url: "https://nygo.iyora.or.id", status: computeOlympiadStatus("2026-06-30", "2026-08-16"), guidebookUrl: "https://rncldvdwrcipnlgdvcxr.supabase.co/storage/v1/object/public/event-media/0a2f7235-47dc-4988-8096-b11665778032/guidebooks/1785738982960-GUIDEBOOK_NYGO_2026.pdf" },
+  { name: "IYGO", emoji: "🌍", side: "right", full: "International Youth Geography Olympiad", level: "Internasional", badgeStyle: "bg-teal-50 text-teal-700 border-teal-200", url: "https://iygo.iyora.or.id", status: computeOlympiadStatus("2026-06-30", "2026-08-16"), guidebookUrl: "https://rncldvdwrcipnlgdvcxr.supabase.co/storage/v1/object/public/event-media/028b2c71-c7d7-4bfa-98f5-0be973bdd2ff/guidebooks/1785738887590-GUIDEBOOK_IYGO_2026__1_.pdf" },
+  { name: "NYEO", emoji: "📊", side: "left", full: "National Youth Economics Olympiad", level: "Nasional", badgeStyle: "bg-indigo-50 text-indigo-700 border-indigo-200", url: "https://nyeo.iyora.or.id", status: computeOlympiadStatus("2026-06-30", "2026-08-16"), guidebookUrl: "https://rncldvdwrcipnlgdvcxr.supabase.co/storage/v1/object/public/event-media/3c12e84f-ced0-457b-a4cc-7bb06aae1e1e/guidebooks/1787733952986-Guidebook-NYEO-2026.pdf" },
+  { name: "IYEO", emoji: "📊", side: "right", full: "International Youth Economics Olympiad", level: "Internasional", badgeStyle: "bg-indigo-50 text-indigo-700 border-indigo-200", url: "https://iyeo.iyora.or.id", status: computeOlympiadStatus("2026-06-30", "2026-08-19"), guidebookUrl: "https://rncldvdwrcipnlgdvcxr.supabase.co/storage/v1/object/public/event-media/189299c9-d901-42cc-9650-0464c33e6026/guidebooks/1785116985719-GUIDEBOOK_IYEO_2026.pdf" },
 ];
 
 const STATUS_PRIORITY = { open: 0, coming_soon: 1, closed: 2 };
@@ -100,6 +109,7 @@ const STATUS_PRIORITY = { open: 0, coming_soon: 1, closed: 2 };
 export const OLYMPIADS = [...RAW_OLYMPIADS].sort(
   (a, b) => STATUS_PRIORITY[a.status] - STATUS_PRIORITY[b.status]
 );
+
 
 const NEWS_MENU = [
   { key: "news", icon: Newspaper, labelId: "tab_news", hash: "news", descId: "preview_news" },
@@ -387,7 +397,7 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
                       )}>
                         {activeOlympiad.url && (
                           <a
-                            href={activeOlympiad.url}
+                            href={activeOlympiad.status === "open" ? (activeOlympiad.url.endsWith("/register") ? activeOlympiad.url : `${activeOlympiad.url}/register`) : activeOlympiad.url}
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={() => setDropdownOpen(false)}
@@ -400,8 +410,29 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
                                   : "bg-primary text-white hover:bg-primary-dark"
                             )}
                           >
-                            <span>{locale === "id" ? "Kunjungi Website" : "Visit Website"}</span>
+                            <span>
+                              {activeOlympiad.status === "open"
+                                ? (locale === "id" ? "Daftar Sekarang" : "Register Now")
+                                : (locale === "id" ? "Kunjungi Website" : "Visit Website")}
+                            </span>
                             <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
+                          </a>
+                        )}
+
+                        {activeOlympiad.guidebookUrl && (
+                          <a
+                            href={activeOlympiad.guidebookUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => setDropdownOpen(false)}
+                            className={clsx(
+                              "flex items-center justify-center gap-1 w-full py-1.5 rounded-xl text-xs font-semibold transition-all shadow-xs",
+                              (activeOlympiad.status === "open" || activeOlympiad.status === "coming_soon")
+                                ? "bg-white/15 text-white hover:bg-white/25 border border-white/30"
+                                : "border border-gray-200 text-gray-700 hover:bg-gray-50"
+                            )}
+                          >
+                            <span>{locale === "id" ? "📖 Buku Panduan" : "📖 Guidebook"}</span>
                           </a>
                         )}
 

@@ -20,6 +20,7 @@ import {
   BookOpen,
 } from "lucide-react";
 import { DUMMY_EVENT_POPUPS, type EventPopupData, type EventPopupLink } from "@/data/dummyEventPopup";
+import type { CompetitionData } from "@/lib/supabase";
 
 const BUTTON_VARIANTS: Record<string, string> = {
   primary: "bg-primary hover:bg-primary/90 text-white shadow-md shadow-primary/20",
@@ -68,7 +69,11 @@ const slideVariants = {
   }),
 };
 
-export default function EventPopup() {
+interface EventPopupProps {
+  competitions?: CompetitionData[];
+}
+
+export default function EventPopup({ competitions }: EventPopupProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);

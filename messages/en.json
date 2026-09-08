@@ -14,7 +14,7 @@
     "subheadlines": [
       "Born from the legacy of IYSA, IYORA stands as Indonesia's dedicated home for science olympiads — ensuring every outstanding scientific talent receives a stage worthy of their greatness.",
       "We believe every brilliant mind deserves recognition. IYORA is here to discover, challenge, and elevate Indonesia's finest young scientists to the world stage.",
-      "From biology to mathematics, from physics to geography — IYORA manages 12 branches of science olympiads at national and international levels.",
+      "From biology to mathematics, from physics to geography — IYORA manages 20+ branches of science olympiads at national and international levels.",
       "Over 50,000 students from 20 countries have proven themselves through our olympiads. Now it's your turn."
     ],
     "cta_primary": "Discover IYORA",
@@ -38,8 +38,8 @@
     "years": "Years of Experience"
   },
   "competitions_section": {
-    "title": "Olympiads We Organize",
-    "subtitle": "Twelve olympiad disciplines, one mission: discovering and elevating Indonesia's finest talent.",
+    "title": "Olimpiads We Organize",
+    "subtitle": "20+ prestigious olympiad disciplines, one mission: discovering and elevating Indonesia's finest talent.",
     "view_detail": "View Details",
     "visit_website": "Visit Website",
     "filter_all": "All",
@@ -50,6 +50,7 @@
     "open": "Registration Open",
     "coming_soon": "Coming Soon",
     "closed": "Closed",
+    "register_now": "Register Now",
     "show_more": "Show More",
     "show_less": "Show Less"
   },
@@ -136,6 +137,7 @@
     "filter_closed": "Closed",
     "visit_site": "Visit Website",
     "register": "Visit Website",
+    "register_now": "Register Now",
     "status_open": "Registration Open",
     "guidebook": "Guidebook",
     "coming_soon": "Coming Soon",

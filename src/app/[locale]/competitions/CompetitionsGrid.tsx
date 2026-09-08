@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useState, useMemo } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { BookOpen } from "lucide-react";
 import type { CompetitionData } from "@/lib/supabase";
 
@@ -20,6 +20,15 @@ const CATEGORY_ICONS: Record<string, string> = {
   "Science & Math":   "🔬",
   NSO:                "🔬",
   NSMO:               "🔬",
+  Biologi:            "🧬",
+  Fisika:             "⚛️",
+  Kimia:              "🧪",
+  Matematika:         "➗",
+  Geografi:           "🌍",
+  Ekonomi:            "📊",
+  Astronomi:          "🔭",
+  Lingkungan:         "🌱",
+  Sains:              "🏆",
 };
 
 function getIcon(category: string | null) {
@@ -36,7 +45,8 @@ const LEVEL_BADGE: Record<string, string> = {
   world:         "bg-yellow-100 text-yellow-700 border border-yellow-300",
 };
 
-type FilterKey = "all" | "national" | "international";
+type LevelFilterKey = "all" | "national" | "international";
+type StatusFilterKey = "all" | "open" | "coming_soon" | "closed";
 
 interface Props {
   competitions: CompetitionData[];
@@ -44,51 +54,123 @@ interface Props {
 
 export default function CompetitionsGrid({ competitions }: Props) {
   const t = useTranslations("competitions_page");
-  const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
+  const locale = useLocale();
+  const [activeLevel, setActiveLevel] = useState<LevelFilterKey>("all");
+  const [activeStatus, setActiveStatus] = useState<StatusFilterKey>("all");
 
-  const filters: { key: FilterKey; label: string }[] = [
+  const levelFilters: { key: LevelFilterKey; label: string }[] = [
     { key: "all", label: t("filter_all") },
     { key: "national", label: t("filter_national") },
     { key: "international", label: t("filter_international") },
   ];
 
-  const filtered = activeFilter === "all"
-    ? competitions
-    : competitions.filter((c) => c.level === activeFilter);
+  // Hitung jumlah item untuk tiap status
+  const counts = useMemo(() => {
+    return {
+      all: competitions.length,
+      open: competitions.filter((c) => c.registrationStatus === "open").length,
+      coming_soon: competitions.filter((c) => c.registrationStatus === "coming_soon").length,
+      closed: competitions.filter((c) => c.registrationStatus === "closed").length,
+    };
+  }, [competitions]);
+
+  const statusFilters: { key: StatusFilterKey; label: string; count: number }[] = [
+    { key: "all", label: locale === "id" ? "Semua Status" : "All Status", count: counts.all },
+    { key: "open", label: locale === "id" ? "Pendaftaran Dibuka" : "Open Register", count: counts.open },
+    { key: "coming_soon", label: locale === "id" ? "Segera Dibuka" : "Coming Soon", count: counts.coming_soon },
+    { key: "closed", label: locale === "id" ? "Ditutup" : "Closed", count: counts.closed },
+  ];
+
+  const filtered = useMemo(() => {
+    return competitions.filter((c) => {
+      const matchLevel = activeLevel === "all" || c.level === activeLevel;
+      const matchStatus = activeStatus === "all" || c.registrationStatus === activeStatus;
+      return matchLevel && matchStatus;
+    });
+  }, [competitions, activeLevel, activeStatus]);
 
   return (
     <>
-      {/* Filter pills */}
-      <div className="flex flex-wrap justify-center gap-2 mb-10">
-        {filters.map(({ key, label }) => (
-          <button
-            key={key}
-            onClick={() => setActiveFilter(key)}
-            className={`px-6 py-2.5 rounded-full font-bold text-sm transition-all duration-200 cursor-pointer ${
-              activeFilter === key
-                ? "bg-primary text-white shadow-md shadow-primary/30 scale-105"
-                : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
-            }`}
-          >
-            {label}
-          </button>
-        ))}
+      {/* Dual Filter: Level & Registration Status */}
+      <div className="flex flex-col items-center gap-4 mb-10">
+        {/* Status Filter Bar */}
+        <div className="flex flex-wrap justify-center gap-2 p-1.5 bg-gray-100/80 rounded-2xl border border-gray-200/80 backdrop-blur-xs">
+          {statusFilters.map(({ key, label, count }) => {
+            const isActive = activeStatus === key;
+            return (
+              <button
+                key={key}
+                onClick={() => setActiveStatus(key)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
+                  isActive
+                    ? key === "open"
+                      ? "bg-emerald-600 text-white shadow-md shadow-emerald-700/20"
+                      : key === "coming_soon"
+                        ? "bg-purple-700 text-white shadow-md shadow-purple-800/20"
+                        : key === "closed"
+                          ? "bg-gray-700 text-white shadow-md shadow-gray-700/20"
+                          : "bg-primary text-white shadow-md shadow-primary/20"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-white/60"
+                }`}
+              >
+                {key === "open" && <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse" />}
+                {key === "coming_soon" && <span className="w-2 h-2 rounded-full bg-amber-400" />}
+                {key === "closed" && <span className="w-2 h-2 rounded-full bg-gray-400" />}
+                <span>{label}</span>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                  isActive ? "bg-white/20 text-white" : "bg-gray-200 text-gray-700"
+                }`}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Level pills */}
+        <div className="flex flex-wrap justify-center gap-2">
+          {levelFilters.map(({ key, label }) => (
+            <button
+              key={key}
+              onClick={() => setActiveLevel(key)}
+              className={`px-5 py-2 rounded-full font-bold text-xs transition-all duration-200 cursor-pointer ${
+                activeLevel === key
+                  ? "bg-white text-primary border-2 border-primary shadow-sm scale-105"
+                  : "bg-white text-gray-500 hover:text-gray-800 hover:bg-gray-50 border border-gray-200"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Empty state */}
       {filtered.length === 0 && (
-        <div className="text-center py-20 text-gray-400">
+        <div className="text-center py-20 text-gray-400 bg-white rounded-3xl border border-gray-100 shadow-sm p-8">
           <div className="text-5xl mb-4">🔍</div>
-          <p className="font-semibold text-gray-500">{t("no_results")}</p>
+          <p className="font-semibold text-gray-600 mb-2">{t("no_results")}</p>
+          <button
+            onClick={() => {
+              setActiveLevel("all");
+              setActiveStatus("all");
+            }}
+            className="text-xs font-bold text-primary hover:underline cursor-pointer"
+          >
+            {locale === "id" ? "Reset Filter" : "Reset Filters"}
+          </button>
         </div>
       )}
 
       {/* Cards grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
         {filtered.map((comp) => {
-          const isOpen   = comp.registrationStatus === "open";
-          const isComing = comp.registrationStatus === "coming_soon";
           const targetUrl = comp.websiteUrl ?? `https://${comp.slug}.iyora.or.id`;
+          const isOpen = comp.registrationStatus === "open";
+          const isComing = comp.registrationStatus === "coming_soon";
+          const regUrl = isOpen
+            ? (comp.registrationUrl || (targetUrl.endsWith("/register") ? targetUrl : `${targetUrl}/register`))
+            : targetUrl;
           const badge = LEVEL_BADGE[comp.level] ?? LEVEL_BADGE.national;
 
           return (
@@ -144,7 +226,11 @@ export default function CompetitionsGrid({ competitions }: Props) {
                             ? "bg-amber-300"
                             : "bg-gray-400"
                       }`} />
-                      {isOpen ? t("status_open") : isComing ? t("coming_soon") : t("closed")}
+                      {isOpen
+                        ? (locale === "id" ? "Pendaftaran Dibuka" : "Registration Open")
+                        : isComing
+                          ? (locale === "id" ? "Segera Dibuka" : "Coming Soon")
+                          : (locale === "id" ? "Ditutup" : "Closed")}
                     </span>
                   </div>
                 </div>
@@ -153,7 +239,7 @@ export default function CompetitionsGrid({ competitions }: Props) {
                 <div className="pt-2 mt-auto">
                   <div className="flex gap-2">
                     <a
-                      href={targetUrl}
+                      href={regUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={`flex-1 text-center py-2.5 rounded-xl font-bold text-sm transition-all duration-200 shadow-md ${
@@ -164,7 +250,9 @@ export default function CompetitionsGrid({ competitions }: Props) {
                             : "bg-gray-50 text-gray-700 border border-gray-200 hover:bg-primary hover:text-white hover:border-primary"
                       }`}
                     >
-                      {t("register")} →
+                      {isOpen
+                        ? (locale === "id" ? "Daftar Sekarang →" : "Register Now →")
+                        : (locale === "id" ? "Kunjungi Website →" : "Visit Website →")}
                     </a>
                     {comp.guidebookUrl && (
                       <a
@@ -176,10 +264,10 @@ export default function CompetitionsGrid({ competitions }: Props) {
                             ? "bg-white/15 text-white border border-white/30 hover:bg-white/25"
                             : "border-2 border-primary text-primary hover:bg-primary/5"
                         }`}
-                        title={t("guidebook")}
+                        title={locale === "id" ? "Unduh Buku Panduan" : "Download Guidebook"}
                       >
                         <BookOpen size={15} />
-                        <span className="hidden sm:inline">{t("guidebook")}</span>
+                        <span className="hidden sm:inline">Guidebook</span>
                       </a>
                     )}
                   </div>

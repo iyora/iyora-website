@@ -14,7 +14,7 @@
     "subheadlines": [
       "Tumbuh dari IYSA, IYORA hadir sebagai rumah khusus bagi olimpiade sains Indonesia — untuk memastikan setiap bakat ilmiah terbaik mendapat panggung yang setara dengan kebesarannya.",
       "Kami percaya setiap pikiran yang brilian layak mendapat pengakuan. IYORA hadir untuk menemukan, menguji, dan mengangkat generasi ilmuwan muda terbaik Indonesia.",
-      "Dari biologi hingga matematika, dari fisika hingga geografi — IYORA mengelola 12 cabang olimpiade sains bertaraf nasional dan internasional.",
+      "Dari biologi hingga matematika, dari fisika hingga geografi — IYORA mengelola 20+ cabang olimpiade sains bertaraf nasional dan internasional.",
       "Lebih dari 50.000 siswa dari 20 negara telah membuktikan diri melalui olimpiade yang kami selenggarakan. Saatnya giliran kamu."
     ],
     "cta_primary": "Kenali IYORA",
@@ -39,7 +39,7 @@
   },
   "competitions_section": {
     "title": "Olimpiade yang Kami Selenggarakan",
-    "subtitle": "Dua belas cabang olimpiade, satu misi: menemukan dan mengangkat talenta terbaik Indonesia.",
+    "subtitle": "20+ cabang olimpiade bergengsi, satu misi: menemukan dan mengangkat talenta terbaik Indonesia.",
     "view_detail": "Lihat Detail",
     "visit_website": "Kunjungi Website",
     "filter_all": "Semua",
@@ -50,6 +50,7 @@
     "open": "Pendaftaran Dibuka",
     "coming_soon": "Segera Dibuka",
     "closed": "Ditutup",
+    "register_now": "Daftar Sekarang",
     "show_more": "Selengkapnya",
     "show_less": "Lebih Sedikit"
   },
@@ -136,6 +137,7 @@
     "filter_closed": "Ditutup",
     "visit_site": "Kunjungi Website",
     "register": "Kunjungi Website",
+    "register_now": "Daftar Sekarang",
     "status_open": "Pendaftaran Dibuka",
     "guidebook": "Guidebook",
     "coming_soon": "Segera Dibuka",

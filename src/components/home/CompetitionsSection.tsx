@@ -26,6 +26,15 @@ const CATEGORY_ICONS: Record<string, string> = {
   "Science & Math":   "🔬",
   NSO:                "🔬",
   NSMO:               "🔬",
+  Biologi:            "🧬",
+  Fisika:             "⚛️",
+  Kimia:              "🧪",
+  Matematika:         "➗",
+  Geografi:           "🌍",
+  Ekonomi:            "📊",
+  Astronomi:          "🔭",
+  Lingkungan:         "🌱",
+  Sains:              "🏆",
 };
 
 function getIcon(category: string | null) {
@@ -88,10 +97,10 @@ export default function CompetitionsSection({ competitions }: Props) {
         ? "bg-amber-400/20 text-amber-200 border border-amber-300/40 backdrop-blur-xs"
         : STATUS_STYLE[status] ?? STATUS_STYLE.coming_soon;
     const label = status === "open"
-      ? t("open")
+      ? (locale === "id" ? "Pendaftaran Dibuka" : "Registration Open")
       : status === "closed"
-        ? t("closed")
-        : t("coming_soon");
+        ? (locale === "id" ? "Ditutup" : "Closed")
+        : (locale === "id" ? "Segera Dibuka" : "Coming Soon");
     return (
       <span className={`inline-flex items-center gap-1.5 text-[10px] px-2.5 py-0.5 rounded-full font-bold ${cls}`}>
         {status === "open" && <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" />}
@@ -106,6 +115,9 @@ export default function CompetitionsSection({ competitions }: Props) {
     const targetUrl = c.websiteUrl ?? `https://${c.slug}.iyora.or.id`;
     const isOpen = c.registrationStatus === "open";
     const isComing = c.registrationStatus === "coming_soon";
+    const regUrl = isOpen
+      ? (c.registrationUrl || (targetUrl.endsWith("/register") ? targetUrl : `${targetUrl}/register`))
+      : targetUrl;
 
     if (size === "sm") {
       return (
@@ -133,20 +145,37 @@ export default function CompetitionsSection({ competitions }: Props) {
               <p className={`text-xs leading-snug mb-2 line-clamp-2 min-h-[2rem] ${(isOpen || isComing) ? "text-white/90" : "text-gray-500"}`}>{c.name}</p>
               <div className="mb-2"><StatusBadge status={c.registrationStatus} /></div>
             </div>
-            <a
-              href={targetUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`block text-center py-2 rounded-xl text-xs font-bold transition-all duration-200 mt-auto shadow-md ${
-                isOpen
-                  ? "bg-white text-[#2b608a] hover:bg-white/95 hover:text-[#1d4669]"
-                  : isComing
-                    ? "bg-white text-[#66449b] hover:bg-white/95 hover:text-[#4d2d7a]"
-                    : "bg-gray-50 text-gray-600 border border-gray-200 group-hover:bg-primary group-hover:text-white group-hover:border-primary"
-              }`}
-            >
-              {t("visit_website")}
-            </a>
+            <div className="flex items-center gap-1.5 mt-auto">
+              <a
+                href={regUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`flex-1 text-center py-2 rounded-xl text-xs font-bold transition-all duration-200 shadow-md ${
+                  isOpen
+                    ? "bg-white text-[#2b608a] hover:bg-white/95 hover:text-[#1d4669]"
+                    : isComing
+                      ? "bg-white text-[#66449b] hover:bg-white/95 hover:text-[#4d2d7a]"
+                      : "bg-gray-50 text-gray-600 border border-gray-200 group-hover:bg-primary group-hover:text-white group-hover:border-primary"
+                }`}
+              >
+                {isOpen ? (locale === "id" ? "Daftar Sekarang" : "Register Now") : (locale === "id" ? "Kunjungi Website" : "Visit Website")}
+              </a>
+              {c.guidebookUrl && (
+                <a
+                  href={c.guidebookUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={locale === "id" ? "Unduh Buku Panduan" : "Download Guidebook"}
+                  className={`px-2.5 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex-shrink-0 ${
+                    (isOpen || isComing)
+                      ? "bg-white/20 text-white hover:bg-white/30 border border-white/30"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200"
+                  }`}
+                >
+                  📖
+                </a>
+              )}
+            </div>
           </div>
         </div>
       );
@@ -176,20 +205,37 @@ export default function CompetitionsSection({ competitions }: Props) {
             <p className={`text-sm leading-snug mb-4 line-clamp-2 min-h-[2.5rem] ${(isOpen || isComing) ? "text-white/90" : "text-gray-500"}`}>{c.name}</p>
             <div className="mb-4"><StatusBadge status={c.registrationStatus} /></div>
           </div>
-          <a
-            href={targetUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`block text-center py-2.5 rounded-xl text-sm font-bold transition-all duration-200 mt-auto shadow-md ${
-              isOpen
-                ? "bg-white text-[#2b608a] hover:bg-white/95 hover:text-[#1d4669]"
-                : isComing
-                  ? "bg-white text-[#66449b] hover:bg-white/95 hover:text-[#4d2d7a]"
-                  : "bg-gray-50 text-gray-700 border border-gray-200 group-hover:bg-primary group-hover:text-white group-hover:border-primary"
-            }`}
-          >
-            {t("visit_website")} →
-          </a>
+          <div className="flex items-center gap-2 mt-auto">
+            <a
+              href={regUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`flex-1 text-center py-2.5 rounded-xl text-sm font-bold transition-all duration-200 shadow-md ${
+                isOpen
+                  ? "bg-white text-[#2b608a] hover:bg-white/95 hover:text-[#1d4669] hover:shadow-lg"
+                  : isComing
+                    ? "bg-white text-[#66449b] hover:bg-white/95 hover:text-[#4d2d7a] hover:shadow-lg"
+                    : "bg-gray-50 text-gray-700 border border-gray-200 group-hover:bg-primary group-hover:text-white group-hover:border-primary"
+              }`}
+            >
+              {isOpen ? (locale === "id" ? "Daftar Sekarang →" : "Register Now →") : (locale === "id" ? "Kunjungi Website →" : "Visit Website →")}
+            </a>
+            {c.guidebookUrl && (
+              <a
+                href={c.guidebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={locale === "id" ? "Unduh Buku Panduan" : "Download Guidebook"}
+                className={`flex items-center justify-center px-3 py-2.5 rounded-xl font-bold text-xs transition-all shadow-md ${
+                  (isOpen || isComing)
+                    ? "bg-white/20 text-white hover:bg-white/30 border border-white/30"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200"
+                }`}
+              >
+                📖 Guidebook
+              </a>
+            )}
+          </div>
         </div>
       </div>
     );
