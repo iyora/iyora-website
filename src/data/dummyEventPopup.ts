@@ -154,7 +154,7 @@ export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
       {
         label: "Buku Panduan NSO",
         label_en: "NSO Guidebook",
-        url: "https://rncldvdwrcipnlgdvcxr.supabase.co/storage/v1/object/public/event-media/cf86f6fb-83e8-4fd4-8356-e3ac76936b50/guidebooks/1788455563288-BUKU-PANDUAN-NSO-2026.pdf",
+        url: "https://api.iyora.or.id/storage/v1/object/public/event-media/cf86f6fb-83e8-4fd4-8356-e3ac76936b50/guidebooks/1788455563288-BUKU-PANDUAN-NSO-2026.pdf",
         variant: "indigo",
       },
       {

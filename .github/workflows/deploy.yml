@@ -29,6 +29,11 @@ jobs:
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          # Menang atas nilai hasil `vercel pull`, sama seperti di iyora-dashboard:
+          # alamat Supabase diatur dari secret GitHub supaya bisa diganti tanpa
+          # akses ke dasbor Vercel.
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
 
       - name: Deploy to Vercel
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}

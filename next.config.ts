@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "api.iyora.or.id",
+      },
+      {
+        protocol: "https",
         hostname: "res.cloudinary.com",
       },
       {
