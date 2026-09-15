@@ -176,28 +176,50 @@ export default function CompetitionsGrid({ competitions }: Props) {
               key={comp.slug}
               className={`group rounded-2xl transition-all duration-300 overflow-hidden flex flex-col h-full relative ${
                 isOpen
-                  ? "bg-gradient-to-br from-[#3B79A7] via-[#358EAA] to-[#2EA3AD] text-white shadow-xl shadow-teal-900/20 border border-teal-300/30 hover:scale-[1.02] hover:shadow-2xl hover:shadow-teal-800/30"
+                  ? "bg-gradient-to-br from-[#1b0d30] via-[#10192b] to-[#0a2026] text-white shadow-xl shadow-purple-950/30 border border-purple-400/25 hover:border-teal-400/50 hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-900/40"
                   : isComing
                     ? "bg-gradient-to-br from-[#66449b] via-[#523380] to-[#3f2366] text-white shadow-xl shadow-purple-950/20 border border-purple-300/30 hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-900/30"
                     : "bg-white border border-gray-100 text-gray-900 hover:border-gray-200 hover:shadow-xl hover:shadow-gray-200/50"
               }`}
             >
-              {/* Decorative background watermark circles */}
-              <div className={`absolute -top-10 -right-10 w-40 h-40 rounded-full pointer-events-none ${isOpen || isComing ? "bg-white/10" : "bg-gray-200/50"}`} />
-              <div className={`absolute -bottom-10 -right-4 w-32 h-32 rounded-full pointer-events-none ${isOpen || isComing ? "bg-white/10" : "bg-gray-200/50"}`} />
+              {/* Dashboard banner/hero background image if provided */}
+              {comp.bannerUrl && (
+                <>
+                  <div
+                    className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105 pointer-events-none"
+                    style={{ backgroundImage: `url(${comp.bannerUrl})` }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0d071a]/95 via-[#0e1626]/85 to-[#071720]/80 pointer-events-none" />
+                </>
+              )}
+
+              {/* Event hero ambient lighting */}
+              <div className={`absolute -top-12 -left-12 w-44 h-44 rounded-full pointer-events-none ${isOpen ? "bg-[#66449b]/40 blur-2xl" : isComing ? "bg-white/10" : "bg-gray-200/50"}`} />
+              <div className={`absolute -bottom-12 -right-12 w-44 h-44 rounded-full pointer-events-none ${isOpen ? "bg-[#39bcbe]/30 blur-2xl" : isComing ? "bg-white/10" : "bg-gray-200/50"}`} />
+              {isOpen && <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none opacity-40" />}
 
               <div className="p-6 flex flex-col flex-1 justify-between relative z-10">
                 {/* Top content area with fixed layout for perfect button alignment */}
                 <div>
                   <div className="flex items-start gap-4 mb-4">
-                    <div className="text-5xl leading-none flex-shrink-0">{getIcon(comp.category)}</div>
+                    {comp.logoUrl ? (
+                      <div className="w-14 h-14 rounded-xl bg-white/10 backdrop-blur-md p-1.5 flex items-center justify-center border border-white/20 flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                        <img src={comp.logoUrl} alt={comp.shortName} className="w-full h-full object-contain" />
+                      </div>
+                    ) : (
+                      <div className="text-5xl leading-none flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 origin-left">{getIcon(comp.category)}</div>
+                    )}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
                         <h3 className={`text-xl font-extrabold ${(isOpen || isComing) ? "text-white" : "text-primary"}`}>
                           {comp.shortName}
                         </h3>
-                        <span className={`text-xs px-2.5 py-0.5 rounded-full font-semibold uppercase tracking-wide ${
-                          (isOpen || isComing) ? "bg-white/20 text-white border border-white/30 backdrop-blur-xs" : badge
+                        <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider ${
+                          isOpen
+                            ? "bg-gradient-to-r from-[#66449b]/60 to-[#39bcbe]/40 text-white border border-[#39bcbe]/50 backdrop-blur-md shadow-xs"
+                            : isComing
+                              ? "bg-white/20 text-white border border-white/30 backdrop-blur-xs"
+                              : badge
                         }`}>
                           {t(`filter_${comp.level}` as Parameters<typeof t>[0])}
                         </span>
@@ -242,7 +264,7 @@ export default function CompetitionsGrid({ competitions }: Props) {
                           href={regUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex-1 text-center py-2.5 rounded-xl font-bold text-sm transition-all duration-200 shadow-md bg-white text-[#2b608a] hover:bg-white/95 hover:text-[#1d4669] hover:shadow-lg"
+                          className="flex-1 text-center py-2.5 rounded-xl font-bold text-sm transition-all duration-200 shadow-md bg-white text-[#1a0f30] hover:bg-white/95 hover:text-[#66449b] hover:shadow-lg active:scale-98"
                         >
                           {locale === "id" ? "Daftar Sekarang →" : "Register Now →"}
                         </a>
@@ -256,7 +278,7 @@ export default function CompetitionsGrid({ competitions }: Props) {
                             isOpen ? "px-3 flex-shrink-0" : "w-full"
                           } ${
                             (isOpen || isComing)
-                              ? "bg-white/15 text-white border border-white/30 hover:bg-white/25"
+                              ? "bg-white/15 text-white border border-white/30 hover:bg-white/25 backdrop-blur-xs"
                               : "border-2 border-primary text-primary hover:bg-primary/5"
                           }`}
                           title={locale === "id" ? "Unduh Buku Panduan" : "Download Guidebook"}

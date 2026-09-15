@@ -24,6 +24,9 @@ export interface CompetitionData {
   guidebookUrl: string | null;
   registrationOpenAt?: string | null;
   registrationCloseAt?: string | null;
+  bannerUrl?: string | null;
+  heroUrl?: string | null;
+  logoUrl?: string | null;
   edition?: number | string | null;
   year?: number | null;
 }
@@ -197,6 +200,26 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
           const websiteUrl = getValidEventWebsiteUrl(c.slug, c.websiteUrl || c.website_url);
           const registrationUrl = getValidEventRegistrationUrl(c.slug, c.registrationUrl || c.registration_url, websiteUrl);
 
+          const bannerUrl =
+            c.bannerUrl ||
+            c.banner_url ||
+            c.heroUrl ||
+            c.hero_url ||
+            c.heroImageUrl ||
+            c.hero_image_url ||
+            c.banner ||
+            c.hero ||
+            c.coverUrl ||
+            c.cover_url ||
+            null;
+          const logoUrl =
+            c.logoUrl ||
+            c.logo_url ||
+            c.logo ||
+            c.iconUrl ||
+            c.icon_url ||
+            null;
+
           return {
             slug: c.slug,
             shortName: c.shortName || c.short_name,
@@ -209,6 +232,9 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
             guidebookUrl: c.guidebookUrl || c.guidebook_url || null,
             registrationOpenAt: c.registrationOpenAt || c.registration_open_at || null,
             registrationCloseAt: c.registrationCloseAt || c.registration_close_at || null,
+            bannerUrl,
+            heroUrl: bannerUrl,
+            logoUrl,
             edition: c.edition ?? null,
             year: c.year ?? null,
           };
@@ -282,6 +308,21 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
         const websiteUrl = getValidEventWebsiteUrl(comp.slug, comp.website_url);
         const registrationUrl = getValidEventRegistrationUrl(comp.slug, comp.registration_url, websiteUrl);
 
+        const bannerUrl =
+          comp.banner_url ||
+          comp.bannerUrl ||
+          comp.hero_url ||
+          comp.heroUrl ||
+          comp.hero_image_url ||
+          event?.banner_url ||
+          event?.hero_url ||
+          null;
+        const logoUrl =
+          comp.logo_url ||
+          comp.logoUrl ||
+          event?.logo_url ||
+          null;
+
         return {
           slug: comp.slug,
           shortName: comp.short_name,
@@ -294,6 +335,9 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
           guidebookUrl: guidebook?.file_url ?? null,
           registrationOpenAt: event?.registration_open_at ?? null,
           registrationCloseAt: event?.registration_close_at ?? null,
+          bannerUrl,
+          heroUrl: bannerUrl,
+          logoUrl,
         };
       });
 
