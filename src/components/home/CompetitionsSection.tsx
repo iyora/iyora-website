@@ -132,23 +132,23 @@ export default function CompetitionsSection({ competitions }: Props) {
           {c.bannerUrl && (
             <>
               <div
-                className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105 pointer-events-none"
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110 pointer-events-none"
                 style={{ backgroundImage: `url(${c.bannerUrl})` }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0d071a]/95 via-[#0e1626]/85 to-[#071720]/80 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0518]/92 via-[#0d1222]/65 to-[#08151f]/45 pointer-events-none" />
             </>
           )}
 
           {/* Event hero ambient lighting */}
-          <div className={`absolute -top-10 -left-10 w-32 h-32 rounded-full pointer-events-none ${isOpen ? "bg-[#66449b]/40 blur-xl" : isComing ? "bg-white/10" : "bg-gray-200/50"}`} />
-          <div className={`absolute -bottom-10 -right-10 w-32 h-32 rounded-full pointer-events-none ${isOpen ? "bg-[#39bcbe]/30 blur-xl" : isComing ? "bg-white/10" : "bg-gray-200/50"}`} />
-          {isOpen && <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:12px_12px] pointer-events-none opacity-40" />}
+          <div className={`absolute -top-10 -left-10 w-32 h-32 rounded-full pointer-events-none ${isOpen ? "bg-[#66449b]/35 blur-xl" : isComing ? "bg-white/10" : "bg-gray-200/50"}`} />
+          <div className={`absolute -bottom-10 -right-10 w-32 h-32 rounded-full pointer-events-none ${isOpen ? "bg-[#39bcbe]/25 blur-xl" : isComing ? "bg-white/10" : "bg-gray-200/50"}`} />
+          {isOpen && !c.bannerUrl && <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:12px_12px] pointer-events-none opacity-40" />}
 
           <div className="flex-1 flex flex-col justify-between relative z-10">
             <div>
               {c.logoUrl ? (
-                <div className="w-10 h-10 rounded-lg bg-white/10 backdrop-blur-md p-1 flex items-center justify-center border border-white/20 mb-2 group-hover:scale-110 transition-transform duration-300">
-                  <img src={c.logoUrl} alt={c.shortName} className="w-full h-full object-contain" />
+                <div className="h-8 w-auto max-w-[120px] mb-2 flex items-center group-hover:scale-105 transition-transform duration-300">
+                  <img src={c.logoUrl} alt={c.shortName} className="h-full w-auto max-w-full object-contain drop-shadow-md" />
                 </div>
               ) : (
                 <div className="text-3xl mb-2 leading-none transition-transform duration-300 group-hover:scale-110 origin-left">{getIcon(c.category)}</div>
@@ -215,23 +215,23 @@ export default function CompetitionsSection({ competitions }: Props) {
         {c.bannerUrl && (
           <>
             <div
-              className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105 pointer-events-none"
+              className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110 pointer-events-none"
               style={{ backgroundImage: `url(${c.bannerUrl})` }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0d071a]/95 via-[#0e1626]/85 to-[#071720]/80 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0518]/92 via-[#0d1222]/65 to-[#08151f]/45 pointer-events-none" />
           </>
         )}
 
         {/* Event hero ambient lighting */}
-        <div className={`absolute -top-12 -left-12 w-44 h-44 rounded-full pointer-events-none ${isOpen ? "bg-[#66449b]/40 blur-2xl" : isComing ? "bg-white/10" : "bg-gray-200/50"}`} />
-        <div className={`absolute -bottom-12 -right-12 w-44 h-44 rounded-full pointer-events-none ${isOpen ? "bg-[#39bcbe]/30 blur-2xl" : isComing ? "bg-white/10" : "bg-gray-200/50"}`} />
-        {isOpen && <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none opacity-40" />}
+        <div className={`absolute -top-12 -left-12 w-44 h-44 rounded-full pointer-events-none ${isOpen ? "bg-[#66449b]/35 blur-2xl" : isComing ? "bg-white/10" : "bg-gray-200/50"}`} />
+        <div className={`absolute -bottom-12 -right-12 w-44 h-44 rounded-full pointer-events-none ${isOpen ? "bg-[#39bcbe]/25 blur-2xl" : isComing ? "bg-white/10" : "bg-gray-200/50"}`} />
+        {isOpen && !c.bannerUrl && <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none opacity-40" />}
 
         <div className="flex-1 flex flex-col justify-between relative z-10">
           <div>
             {c.logoUrl ? (
-              <div className="w-14 h-14 rounded-xl bg-white/10 backdrop-blur-md p-1.5 flex items-center justify-center border border-white/20 mb-3 group-hover:scale-110 transition-transform duration-300">
-                <img src={c.logoUrl} alt={c.shortName} className="w-full h-full object-contain" />
+              <div className="h-10 sm:h-12 w-auto max-w-[160px] mb-3.5 flex items-center group-hover:scale-105 transition-transform duration-300">
+                <img src={c.logoUrl} alt={c.shortName} className="h-full w-auto max-w-full object-contain drop-shadow-md" />
               </div>
             ) : (
               <div className="text-5xl mb-4 leading-none transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 origin-left">{getIcon(c.category)}</div>

@@ -150,10 +150,48 @@ const RAW_DEFAULT_COMPETITIONS: RawDefaultCompetition[] = [
   { slug: "iyeo", shortName: "IYEO", name: "International Youth Economics Olympiad", level: "international", category: "Economics", websiteUrl: "https://iyeo.iyora.or.id", registrationUrl: null, guidebookUrl: "https://api.iyora.or.id/storage/v1/object/public/event-media/189299c9-d901-42cc-9650-0464c33e6026/guidebooks/1785116985719-GUIDEBOOK_IYEO_2026.pdf", openAt: "2026-06-30", closeAt: "2026-08-19" },
 ];
 
+export const KNOWN_EVENT_MEDIA: Record<string, { banner?: string; logo?: string }> = {
+  nsmo: {
+    banner: "https://api.iyora.or.id/storage/v1/object/public/event-media/58a9dcaa-e853-4c64-bd16-906d362c9585/banner.png",
+    logo: "https://api.iyora.or.id/storage/v1/object/public/event-media/58a9dcaa-e853-4c64-bd16-906d362c9585/logo.png",
+  },
+  nso: {
+    banner: "https://api.iyora.or.id/storage/v1/object/public/event-media/cf86f6fb-83e8-4fd4-8356-e3ac76936b50/banner.png",
+    logo: "https://api.iyora.or.id/storage/v1/object/public/event-media/cf86f6fb-83e8-4fd4-8356-e3ac76936b50/logo.png",
+  },
+};
+
+export function resolveEventMedia(
+  slug: string,
+  rawBanner?: string | null,
+  rawLogo?: string | null,
+  guidebookUrl?: string | null
+): { bannerUrl: string | null; logoUrl: string | null } {
+  let banner = rawBanner || null;
+  let logo = rawLogo || null;
+
+  const key = slug?.toLowerCase() || "";
+  const known = KNOWN_EVENT_MEDIA[key];
+  if (!banner && known?.banner) banner = known.banner;
+  if (!logo && known?.logo) logo = known.logo;
+
+  if ((!banner || !logo) && guidebookUrl) {
+    const match = guidebookUrl.match(/event-media\/([a-f0-9-]+)\//i);
+    if (match?.[1]) {
+      const uuid = match[1];
+      if (!banner) banner = `https://api.iyora.or.id/storage/v1/object/public/event-media/${uuid}/banner.png`;
+      if (!logo) logo = `https://api.iyora.or.id/storage/v1/object/public/event-media/${uuid}/logo.png`;
+    }
+  }
+
+  return { bannerUrl: banner, logoUrl: logo };
+}
+
 export function getDefaultCompetitions(): CompetitionData[] {
   return RAW_DEFAULT_COMPETITIONS.map((c) => {
     const websiteUrl = getValidEventWebsiteUrl(c.slug, c.websiteUrl);
     const registrationUrl = getValidEventRegistrationUrl(c.slug, c.registrationUrl, websiteUrl);
+    const media = resolveEventMedia(c.slug, null, null, c.guidebookUrl);
     return {
       slug: c.slug,
       shortName: c.shortName,
@@ -166,6 +204,9 @@ export function getDefaultCompetitions(): CompetitionData[] {
       guidebookUrl: c.guidebookUrl,
       registrationOpenAt: c.openAt,
       registrationCloseAt: c.closeAt,
+      bannerUrl: media.bannerUrl,
+      heroUrl: media.bannerUrl,
+      logoUrl: media.logoUrl,
     };
   });
 }
@@ -199,8 +240,9 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
 
           const websiteUrl = getValidEventWebsiteUrl(c.slug, c.websiteUrl || c.website_url);
           const registrationUrl = getValidEventRegistrationUrl(c.slug, c.registrationUrl || c.registration_url, websiteUrl);
+          const guidebookUrl = c.guidebookUrl || c.guidebook_url || null;
 
-          const bannerUrl =
+          const rawBanner =
             c.bannerUrl ||
             c.banner_url ||
             c.heroUrl ||
@@ -212,13 +254,15 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
             c.coverUrl ||
             c.cover_url ||
             null;
-          const logoUrl =
+          const rawLogo =
             c.logoUrl ||
             c.logo_url ||
             c.logo ||
             c.iconUrl ||
             c.icon_url ||
             null;
+
+          const media = resolveEventMedia(c.slug, rawBanner, rawLogo, guidebookUrl);
 
           return {
             slug: c.slug,
@@ -229,12 +273,12 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
             websiteUrl,
             registrationUrl,
             registrationStatus: (c.registrationStatus || computeStatus(c.registrationOpenAt, c.registrationCloseAt)) as RegistrationStatus,
-            guidebookUrl: c.guidebookUrl || c.guidebook_url || null,
+            guidebookUrl,
             registrationOpenAt: c.registrationOpenAt || c.registration_open_at || null,
             registrationCloseAt: c.registrationCloseAt || c.registration_close_at || null,
-            bannerUrl,
-            heroUrl: bannerUrl,
-            logoUrl,
+            bannerUrl: media.bannerUrl,
+            heroUrl: media.bannerUrl,
+            logoUrl: media.logoUrl,
             edition: c.edition ?? null,
             year: c.year ?? null,
           };
@@ -308,7 +352,7 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
         const websiteUrl = getValidEventWebsiteUrl(comp.slug, comp.website_url);
         const registrationUrl = getValidEventRegistrationUrl(comp.slug, comp.registration_url, websiteUrl);
 
-        const bannerUrl =
+        const rawBanner =
           comp.banner_url ||
           comp.bannerUrl ||
           comp.hero_url ||
@@ -317,11 +361,14 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
           event?.banner_url ||
           event?.hero_url ||
           null;
-        const logoUrl =
+        const rawLogo =
           comp.logo_url ||
           comp.logoUrl ||
           event?.logo_url ||
           null;
+
+        const guidebookUrl = guidebook?.file_url ?? null;
+        const media = resolveEventMedia(comp.slug, rawBanner, rawLogo, guidebookUrl);
 
         return {
           slug: comp.slug,
@@ -332,12 +379,12 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
           websiteUrl,
           registrationUrl,
           registrationStatus: status,
-          guidebookUrl: guidebook?.file_url ?? null,
+          guidebookUrl,
           registrationOpenAt: event?.registration_open_at ?? null,
           registrationCloseAt: event?.registration_close_at ?? null,
-          bannerUrl,
-          heroUrl: bannerUrl,
-          logoUrl,
+          bannerUrl: media.bannerUrl,
+          heroUrl: media.bannerUrl,
+          logoUrl: media.logoUrl,
         };
       });
 
