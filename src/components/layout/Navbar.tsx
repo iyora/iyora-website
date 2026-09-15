@@ -7,8 +7,10 @@ import { useTranslations, useLocale } from "next-intl";
 import { Menu, X, ChevronDown, Newspaper, Megaphone, FileText, Images, Calendar, ArrowRight } from "lucide-react";
 import clsx from "clsx";
 import type { NewsPreviewData, CompetitionData } from "@/lib/supabase";
+import { getValidEventRegistrationUrl } from "@/lib/supabase";
 
 interface OlympiadItem {
+  slug?: string;
   name: string;
   emoji: string;
   side: "left" | "right";
@@ -16,6 +18,7 @@ interface OlympiadItem {
   level: string;
   badgeStyle: string;
   url: string;
+  registrationUrl?: string | null;
   status: "open" | "coming_soon" | "closed";
   guidebookUrl?: string | null;
 }
@@ -147,6 +150,7 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
     ? competitions.map((c) => {
         const { emoji, badgeStyle, side } = getOlympiadMeta(c.slug, c.shortName, c.category, c.level);
         return {
+          slug: c.slug,
           name: c.shortName,
           emoji,
           side,
@@ -154,6 +158,7 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
           level: c.level === "national" ? "Nasional" : c.level === "international" ? "Internasional" : c.level === "madrasah" ? "Madrasah" : "Dunia",
           badgeStyle,
           url: c.websiteUrl || `https://${c.slug}.iyora.or.id`,
+          registrationUrl: c.registrationUrl,
           status: c.registrationStatus,
           guidebookUrl: c.guidebookUrl,
         };
@@ -395,25 +400,16 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
                         "flex flex-col gap-1.5 pt-3 border-t",
                         (activeOlympiad.status === "open" || activeOlympiad.status === "coming_soon") ? "border-white/20" : "border-gray-100"
                       )}>
-                        {activeOlympiad.url && (
+                        {activeOlympiad.status === "open" && activeOlympiad.url && (
                           <a
-                            href={activeOlympiad.status === "open" ? (activeOlympiad.url.endsWith("/register") ? activeOlympiad.url : `${activeOlympiad.url}/register`) : activeOlympiad.url}
+                            href={getValidEventRegistrationUrl(activeOlympiad.slug || activeOlympiad.name.toLowerCase(), activeOlympiad.registrationUrl, activeOlympiad.url)}
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={() => setDropdownOpen(false)}
-                            className={clsx(
-                              "flex items-center justify-center gap-1.5 w-full py-2 rounded-xl text-xs font-bold transition-all shadow-sm group",
-                              activeOlympiad.status === "open"
-                                ? "bg-white text-[#2b608a] hover:bg-white/95 hover:text-[#1d4669]"
-                                : activeOlympiad.status === "coming_soon"
-                                  ? "bg-white text-[#66449b] hover:bg-white/95 hover:text-[#4d2d7a]"
-                                  : "bg-primary text-white hover:bg-primary-dark"
-                            )}
+                            className="flex items-center justify-center gap-1.5 w-full py-2 rounded-xl text-xs font-bold transition-all shadow-sm group bg-white text-[#2b608a] hover:bg-white/95 hover:text-[#1d4669]"
                           >
                             <span>
-                              {activeOlympiad.status === "open"
-                                ? (locale === "id" ? "Daftar Sekarang" : "Register Now")
-                                : (locale === "id" ? "Kunjungi Website" : "Visit Website")}
+                              {locale === "id" ? "Daftar Sekarang" : "Register Now"}
                             </span>
                             <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
                           </a>

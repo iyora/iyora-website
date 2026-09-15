@@ -6,6 +6,7 @@ import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import type { CompetitionData } from "@/lib/supabase";
+import { getValidEventRegistrationUrl } from "@/lib/supabase";
 
 type FilterKey = "all" | "national" | "international";
 
@@ -112,16 +113,13 @@ export default function CompetitionsSection({ competitions }: Props) {
 
   function OlympiadCard({ c, size }: { c: CompetitionData; size: "sm" | "lg" }) {
     const styles = LEVEL_STYLES[c.level] ?? LEVEL_STYLES.national;
-    const targetUrl = c.websiteUrl ?? `https://${c.slug}.iyora.or.id`;
     const isOpen = c.registrationStatus === "open";
     const isComing = c.registrationStatus === "coming_soon";
-    const regUrl = isOpen
-      ? (c.registrationUrl || (targetUrl.endsWith("/register") ? targetUrl : `${targetUrl}/register`))
-      : targetUrl;
+    const regUrl = getValidEventRegistrationUrl(c.slug, c.registrationUrl, c.websiteUrl);
 
     if (size === "sm") {
       return (
-        <div className={`group rounded-2xl transition-all duration-300 flex flex-col p-4 cursor-pointer overflow-hidden relative h-full justify-between ${
+        <div className={`group rounded-2xl transition-all duration-300 flex flex-col p-4 overflow-hidden relative h-full justify-between ${
           isOpen
             ? "bg-gradient-to-br from-[#3B79A7] via-[#358EAA] to-[#2EA3AD] text-white shadow-xl shadow-teal-900/20 border border-teal-300/30 hover:scale-[1.02]"
             : isComing
@@ -145,43 +143,43 @@ export default function CompetitionsSection({ competitions }: Props) {
               <p className={`text-xs leading-snug mb-2 line-clamp-2 min-h-[2rem] ${(isOpen || isComing) ? "text-white/90" : "text-gray-500"}`}>{c.name}</p>
               <div className="mb-2"><StatusBadge status={c.registrationStatus} /></div>
             </div>
-            <div className="flex items-center gap-1.5 mt-auto">
-              <a
-                href={regUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`flex-1 text-center py-2 rounded-xl text-xs font-bold transition-all duration-200 shadow-md ${
-                  isOpen
-                    ? "bg-white text-[#2b608a] hover:bg-white/95 hover:text-[#1d4669]"
-                    : isComing
-                      ? "bg-white text-[#66449b] hover:bg-white/95 hover:text-[#4d2d7a]"
-                      : "bg-gray-50 text-gray-600 border border-gray-200 group-hover:bg-primary group-hover:text-white group-hover:border-primary"
-                }`}
-              >
-                {isOpen ? (locale === "id" ? "Daftar Sekarang" : "Register Now") : (locale === "id" ? "Kunjungi Website" : "Visit Website")}
-              </a>
-              {c.guidebookUrl && (
-                <a
-                  href={c.guidebookUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title={locale === "id" ? "Unduh Buku Panduan" : "Download Guidebook"}
-                  className={`px-2.5 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex-shrink-0 ${
-                    (isOpen || isComing)
-                      ? "bg-white/20 text-white hover:bg-white/30 border border-white/30"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200"
-                  }`}
-                >
-                  📖
-                </a>
-              )}
-            </div>
+            {(isOpen || c.guidebookUrl) && (
+              <div className="flex items-center gap-1.5 mt-auto">
+                {isOpen && (
+                  <a
+                    href={regUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 text-center py-2 rounded-xl text-xs font-bold transition-all duration-200 shadow-md bg-white text-[#2b608a] hover:bg-white/95 hover:text-[#1d4669]"
+                  >
+                    {locale === "id" ? "Daftar Sekarang" : "Register Now"}
+                  </a>
+                )}
+                {c.guidebookUrl && (
+                  <a
+                    href={c.guidebookUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={locale === "id" ? "Unduh Buku Panduan" : "Download Guidebook"}
+                    className={`py-2 rounded-xl text-xs font-bold transition-all shadow-md text-center ${
+                      isOpen ? "px-2.5 flex-shrink-0" : "w-full"
+                    } ${
+                      (isOpen || isComing)
+                        ? "bg-white/20 text-white hover:bg-white/30 border border-white/30"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200"
+                    }`}
+                  >
+                    📖 {isOpen ? "" : (locale === "id" ? "Buku Panduan" : "Guidebook")}
+                  </a>
+                )}
+              </div>
+            )}
           </div>
         </div>
       );
     }
     return (
-      <div className={`group rounded-2xl transition-all duration-300 flex flex-col p-6 cursor-pointer overflow-hidden relative h-full justify-between ${
+      <div className={`group rounded-2xl transition-all duration-300 flex flex-col p-6 overflow-hidden relative h-full justify-between ${
         isOpen
           ? "bg-gradient-to-br from-[#3B79A7] via-[#358EAA] to-[#2EA3AD] text-white shadow-xl shadow-teal-900/20 border border-teal-300/30 hover:scale-[1.02] hover:shadow-2xl"
           : isComing
@@ -205,37 +203,37 @@ export default function CompetitionsSection({ competitions }: Props) {
             <p className={`text-sm leading-snug mb-4 line-clamp-2 min-h-[2.5rem] ${(isOpen || isComing) ? "text-white/90" : "text-gray-500"}`}>{c.name}</p>
             <div className="mb-4"><StatusBadge status={c.registrationStatus} /></div>
           </div>
-          <div className="flex items-center gap-2 mt-auto">
-            <a
-              href={regUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`flex-1 text-center py-2.5 rounded-xl text-sm font-bold transition-all duration-200 shadow-md ${
-                isOpen
-                  ? "bg-white text-[#2b608a] hover:bg-white/95 hover:text-[#1d4669] hover:shadow-lg"
-                  : isComing
-                    ? "bg-white text-[#66449b] hover:bg-white/95 hover:text-[#4d2d7a] hover:shadow-lg"
-                    : "bg-gray-50 text-gray-700 border border-gray-200 group-hover:bg-primary group-hover:text-white group-hover:border-primary"
-              }`}
-            >
-              {isOpen ? (locale === "id" ? "Daftar Sekarang →" : "Register Now →") : (locale === "id" ? "Kunjungi Website →" : "Visit Website →")}
-            </a>
-            {c.guidebookUrl && (
-              <a
-                href={c.guidebookUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                title={locale === "id" ? "Unduh Buku Panduan" : "Download Guidebook"}
-                className={`flex items-center justify-center px-3 py-2.5 rounded-xl font-bold text-xs transition-all shadow-md ${
-                  (isOpen || isComing)
-                    ? "bg-white/20 text-white hover:bg-white/30 border border-white/30"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200"
-                }`}
-              >
-                📖 Guidebook
-              </a>
-            )}
-          </div>
+          {(isOpen || c.guidebookUrl) && (
+            <div className="flex items-center gap-2 mt-auto">
+              {isOpen && (
+                <a
+                  href={regUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 text-center py-2.5 rounded-xl text-sm font-bold transition-all duration-200 shadow-md bg-white text-[#2b608a] hover:bg-white/95 hover:text-[#1d4669] hover:shadow-lg"
+                >
+                  {locale === "id" ? "Daftar Sekarang →" : "Register Now →"}
+                </a>
+              )}
+              {c.guidebookUrl && (
+                <a
+                  href={c.guidebookUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={locale === "id" ? "Unduh Buku Panduan" : "Download Guidebook"}
+                  className={`flex items-center justify-center py-2.5 rounded-xl font-bold text-xs transition-all shadow-md ${
+                    isOpen ? "px-3" : "w-full"
+                  } ${
+                    (isOpen || isComing)
+                      ? "bg-white/20 text-white hover:bg-white/30 border border-white/30"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200"
+                  }`}
+                >
+                  📖 Guidebook
+                </a>
+              )}
+            </div>
+          )}
         </div>
       </div>
     );

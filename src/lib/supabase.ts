@@ -28,12 +28,37 @@ export interface CompetitionData {
   year?: number | null;
 }
 
-function normalizeUrl(url: string | null | undefined): string | null {
+export function normalizeUrl(url: string | null | undefined): string | null {
   if (!url) return null;
   const trimmed = url.trim();
   if (!trimmed) return null;
   if (/^https?:\/\//i.test(trimmed)) return trimmed;
   return `https://${trimmed}`;
+}
+
+export function getValidEventWebsiteUrl(slug: string, url?: string | null): string {
+  if (!url) return `https://${slug}.iyora.or.id`;
+  const clean = normalizeUrl(url);
+  if (!clean || /^https?:\/\/(www\.)?iyora\.or\.id\/?$/i.test(clean)) {
+    return `https://${slug}.iyora.or.id`;
+  }
+  return clean;
+}
+
+export function getValidEventRegistrationUrl(slug: string, regUrl?: string | null, webUrl?: string | null): string {
+  const eventBase = getValidEventWebsiteUrl(slug, webUrl);
+  if (regUrl) {
+    const cleanReg = normalizeUrl(regUrl);
+    if (
+      cleanReg &&
+      !/^https?:\/\/(www\.)?iyora\.or\.id(\/(en|id))?\/register\/?$/i.test(cleanReg) &&
+      !/^https?:\/\/(www\.)?iyora\.or\.id\/?$/i.test(cleanReg) &&
+      cleanReg !== "/register"
+    ) {
+      return cleanReg.endsWith("/register") ? cleanReg : cleanReg;
+    }
+  }
+  return `${eventBase.replace(/\/+$/, "")}/register`;
 }
 
 function createSupabase() {
@@ -93,7 +118,7 @@ interface RawDefaultCompetition {
 
 const RAW_DEFAULT_COMPETITIONS: RawDefaultCompetition[] = [
   // 1. Open Registration
-  { slug: "nso", shortName: "NSO", name: "National Science Olympiad", level: "national", category: "Science", websiteUrl: "https://nso.iyora.or.id", registrationUrl: "https://iyora.or.id/register", guidebookUrl: "https://api.iyora.or.id/storage/v1/object/public/event-media/cf86f6fb-83e8-4fd4-8356-e3ac76936b50/guidebooks/1788455563288-BUKU-PANDUAN-NSO-2026.pdf", openAt: "2026-09-03", closeAt: "2026-10-16" },
+  { slug: "nso", shortName: "NSO", name: "National Science Olympiad", level: "national", category: "Science", websiteUrl: "https://nso.iyora.or.id", registrationUrl: "https://nso.iyora.or.id/register", guidebookUrl: "https://api.iyora.or.id/storage/v1/object/public/event-media/cf86f6fb-83e8-4fd4-8356-e3ac76936b50/guidebooks/1788455563288-BUKU-PANDUAN-NSO-2026.pdf", openAt: "2026-09-03", closeAt: "2026-10-16" },
 
   // 2. Coming Soon
   { slug: "nsmo", shortName: "NSMO", name: "National Science Math Olympiad", level: "national", category: "Mathematics", websiteUrl: "https://nsmo.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: "2026-06-01", closeAt: "2026-08-01" },
@@ -123,19 +148,23 @@ const RAW_DEFAULT_COMPETITIONS: RawDefaultCompetition[] = [
 ];
 
 export function getDefaultCompetitions(): CompetitionData[] {
-  return RAW_DEFAULT_COMPETITIONS.map((c) => ({
-    slug: c.slug,
-    shortName: c.shortName,
-    name: c.name,
-    level: c.level,
-    category: c.category,
-    websiteUrl: normalizeUrl(c.websiteUrl),
-    registrationUrl: normalizeUrl(c.registrationUrl),
-    registrationStatus: computeStatus(c.openAt, c.closeAt),
-    guidebookUrl: c.guidebookUrl,
-    registrationOpenAt: c.openAt,
-    registrationCloseAt: c.closeAt,
-  }));
+  return RAW_DEFAULT_COMPETITIONS.map((c) => {
+    const websiteUrl = getValidEventWebsiteUrl(c.slug, c.websiteUrl);
+    const registrationUrl = getValidEventRegistrationUrl(c.slug, c.registrationUrl, websiteUrl);
+    return {
+      slug: c.slug,
+      shortName: c.shortName,
+      name: c.name,
+      level: c.level,
+      category: c.category,
+      websiteUrl,
+      registrationUrl,
+      registrationStatus: computeStatus(c.openAt, c.closeAt),
+      guidebookUrl: c.guidebookUrl,
+      registrationOpenAt: c.openAt,
+      registrationCloseAt: c.closeAt,
+    };
+  });
 }
 
 export const DEFAULT_COMPETITIONS: CompetitionData[] = getDefaultCompetitions();
@@ -165,8 +194,8 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
             resolvedLevel = "international";
           }
 
-          const websiteUrl = normalizeUrl(c.websiteUrl || c.website_url || `https://${c.slug}.iyora.or.id`);
-          const registrationUrl = normalizeUrl(c.registrationUrl || c.registration_url);
+          const websiteUrl = getValidEventWebsiteUrl(c.slug, c.websiteUrl || c.website_url);
+          const registrationUrl = getValidEventRegistrationUrl(c.slug, c.registrationUrl || c.registration_url, websiteUrl);
 
           return {
             slug: c.slug,
@@ -250,14 +279,17 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
           ? computeStatus(event?.registration_open_at ?? null, event?.registration_close_at ?? null)
           : "closed";
 
+        const websiteUrl = getValidEventWebsiteUrl(comp.slug, comp.website_url);
+        const registrationUrl = getValidEventRegistrationUrl(comp.slug, comp.registration_url, websiteUrl);
+
         return {
           slug: comp.slug,
           shortName: comp.short_name,
           name: comp.name,
           level: resolvedLevel,
           category,
-          websiteUrl: normalizeUrl(comp.website_url ?? `https://${comp.slug}.iyora.or.id`),
-          registrationUrl: normalizeUrl(comp.registration_url),
+          websiteUrl,
+          registrationUrl,
           registrationStatus: status,
           guidebookUrl: guidebook?.file_url ?? null,
           registrationOpenAt: event?.registration_open_at ?? null,
