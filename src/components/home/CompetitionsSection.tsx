@@ -78,6 +78,8 @@ export default function CompetitionsSection({ competitions }: Props) {
   const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
   const [showAll, setShowAll] = useState(false);
 
+  const openCompetitions = competitions.filter((c) => c.registrationStatus === "open");
+
   const filters: { key: FilterKey; label: string }[] = [
     { key: "all", label: t("filter_all") },
     { key: "national", label: t("national") },
@@ -85,8 +87,8 @@ export default function CompetitionsSection({ competitions }: Props) {
   ];
 
   const filtered = activeFilter === "all"
-    ? competitions
-    : competitions.filter((c) => c.level === activeFilter);
+    ? openCompetitions
+    : openCompetitions.filter((c) => c.level === activeFilter);
 
   const visibleOnMobile = showAll ? filtered : filtered.slice(0, MOBILE_LIMIT);
   const hiddenCount = Math.max(0, filtered.length - MOBILE_LIMIT);
@@ -294,56 +296,66 @@ export default function CompetitionsSection({ competitions }: Props) {
 
         {/* Mobile grid */}
         <div className="sm:hidden">
-          <motion.div
-            key={`mobile-${activeFilter}`}
-            variants={container}
-            initial="hidden"
-            animate="visible"
-            className="grid grid-cols-2 gap-3"
-          >
-            {visibleOnMobile.map((c) => (
-              <motion.div key={c.slug} variants={cardVariant}>
-                <OlympiadCard c={c} size="sm" />
-              </motion.div>
-            ))}
-          </motion.div>
-
-          <AnimatePresence>
-            {showAll && hiddenCount <= 0 && null}
-          </AnimatePresence>
-
-          {hiddenCount > 0 && (
-            <div className="text-center mt-6">
-              <button
-                onClick={() => setShowAll((v) => !v)}
-                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold border-2 transition-all duration-200"
-                style={{
-                  borderColor: "#66449b",
-                  color: showAll ? "#fff" : "#66449b",
-                  backgroundColor: showAll ? "#66449b" : "transparent",
-                }}
+          {filtered.length > 0 ? (
+            <>
+              <motion.div
+                key={`mobile-${activeFilter}`}
+                variants={container}
+                initial="hidden"
+                animate="visible"
+                className="grid grid-cols-2 gap-3"
               >
-                {showAll ? t("show_less") : `${t("show_more")} (${hiddenCount})`}
-              </button>
+                {visibleOnMobile.map((c) => (
+                  <motion.div key={c.slug} variants={cardVariant}>
+                    <OlympiadCard c={c} size="sm" />
+                  </motion.div>
+                ))}
+              </motion.div>
+
+              {hiddenCount > 0 && (
+                <div className="text-center mt-6">
+                  <button
+                    onClick={() => setShowAll((v) => !v)}
+                    className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold border-2 transition-all duration-200"
+                    style={{
+                      borderColor: "#66449b",
+                      color: showAll ? "#fff" : "#66449b",
+                      backgroundColor: showAll ? "#66449b" : "transparent",
+                    }}
+                  >
+                    {showAll ? t("show_less") : `${t("show_more")} (${hiddenCount})`}
+                  </button>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="text-center py-8 text-gray-500 text-sm font-medium">
+              {locale === "id" ? "Tidak ada event pendaftaran yang sedang dibuka saat ini." : "No open registrations available at the moment."}
             </div>
           )}
         </div>
 
         {/* Desktop grid */}
-        <motion.div
-          key={`desktop-${activeFilter}`}
-          variants={container}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-60px" }}
-          className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-5"
-        >
-          {filtered.map((c) => (
-            <motion.div key={c.slug} variants={cardVariant}>
-              <OlympiadCard c={c} size="lg" />
-            </motion.div>
-          ))}
-        </motion.div>
+        {filtered.length > 0 ? (
+          <motion.div
+            key={`desktop-${activeFilter}`}
+            variants={container}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-60px" }}
+            className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-5"
+          >
+            {filtered.map((c) => (
+              <motion.div key={c.slug} variants={cardVariant}>
+                <OlympiadCard c={c} size="lg" />
+              </motion.div>
+            ))}
+          </motion.div>
+        ) : (
+          <div className="hidden sm:block text-center py-12 text-gray-500 font-medium">
+            {locale === "id" ? "Tidak ada event pendaftaran yang sedang dibuka saat ini." : "No open registrations available at the moment."}
+          </div>
+        )}
 
         {/* View All Competitions Button */}
         <div className="text-center mt-12">
