@@ -5,10 +5,13 @@ const LOCALES = ["id", "en"];
 const PAGES = [
   { path: "",              priority: 1.0,  changeFreq: "weekly"  as const },
   { path: "/competitions", priority: 0.9,  changeFreq: "weekly"  as const },
+  { path: "/winners",      priority: 0.9,  changeFreq: "weekly"  as const },
+  { path: "/team",         priority: 0.8,  changeFreq: "monthly" as const },
   { path: "/about",        priority: 0.8,  changeFreq: "monthly" as const },
   { path: "/contact",      priority: 0.7,  changeFreq: "monthly" as const },
   { path: "/news",         priority: 0.7,  changeFreq: "weekly"  as const },
   { path: "/partners",     priority: 0.6,  changeFreq: "monthly" as const },
+  { path: "/sk",           priority: 0.6,  changeFreq: "monthly" as const },
 ];
 
 const EVENT_SLUGS = [

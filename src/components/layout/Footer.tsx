@@ -101,7 +101,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href={href("/about")}
+                  href={href("/team")}
                   className="text-sm text-white/50 hover:text-teal transition-colors"
                 >
                   {t("team")}

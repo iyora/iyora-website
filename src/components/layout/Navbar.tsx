@@ -697,6 +697,9 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
           <Link href={href("/partners")} className={navLinkClass}>
             {t("partners")}
           </Link>
+          <Link href={href("/team")} className={navLinkClass}>
+            {t("team")}
+          </Link>
           <Link href={href("/about")} className={navLinkClass}>
             {t("about")}
           </Link>
@@ -799,6 +802,13 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
               onClick={() => setMobileOpen(false)}
             >
               {t("partners")}
+            </Link>
+            <Link
+              href={href("/team")}
+              className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors"
+              onClick={() => setMobileOpen(false)}
+            >
+              {t("team")}
             </Link>
             <Link
               href={href("/about")}
