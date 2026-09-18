@@ -10,8 +10,11 @@ export default function TeamDirectory() {
   const isEn = locale === "en";
 
   const founder = OUR_TEAM.filter((m) => m.level === "founder");
-  const management = OUR_TEAM.filter((m) => m.level === "management");
-  const staff = OUR_TEAM.filter((m) => m.level === "team");
+  const gm = OUR_TEAM.filter((m) => m.level === "GM");
+  const supervisory = OUR_TEAM.filter((m) => m.level === "CEO");
+  const pm = OUR_TEAM.filter((m) => m.level === "PM");
+  const operational = OUR_TEAM.filter((m) => m.level === "operational");
+  const publication = OUR_TEAM.filter((m) => m.level === "publication");
 
   // Reusable IYSA-Style Team Card Component
   const MemberCard = ({
@@ -50,7 +53,7 @@ export default function TeamDirectory() {
 
           {/* Role / Position */}
           <p className="text-xs sm:text-sm font-semibold text-primary leading-snug">
-            {member.role}
+            {isEn ? (member.role_en || member.role) : member.role}
           </p>
         </div>
       </div>
@@ -79,60 +82,148 @@ export default function TeamDirectory() {
       {/* 2. STRUCTURE HIERARCHY SECTIONS */}
       <div className="max-w-7xl mx-auto px-6 py-16 space-y-16">
         {/* LEVEL 1: FOUNDER */}
-        <section className="text-center">
-          <div className="mb-8">
-            <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 uppercase tracking-wide mb-2">
-              Founder
-            </h2>
-            <div className="w-12 h-1 bg-gradient-to-r from-primary to-teal mx-auto rounded-full" />
-          </div>
-
-          <div className="flex justify-center">
-            {founder.map((member) => (
-              <MemberCard key={member.id} member={member} isTop />
-            ))}
-          </div>
-        </section>
-
-        {/* Tree Connector */}
-        <div className="w-px h-8 bg-gray-200 mx-auto -my-4" />
-
-        {/* LEVEL 2: MANAGEMENT */}
-        <section className="text-center">
-          <div className="mb-8">
-            <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 uppercase tracking-wide mb-2">
-              Management
-            </h2>
-            <div className="w-12 h-1 bg-gradient-to-r from-primary to-teal mx-auto rounded-full" />
-          </div>
-
-          <div className="flex flex-wrap items-center justify-center gap-8 max-w-2xl mx-auto">
-            {management.map((member) => (
-              <div key={member.id} className="w-full sm:w-[calc(50%-1rem)] max-w-[280px]">
-                <MemberCard member={member} />
+        {founder.length > 0 && (
+          <>
+            <section className="text-center">
+              <div className="mb-8">
+                <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 uppercase tracking-wide mb-2">
+                  Founder
+                </h2>
+                <div className="w-12 h-1 bg-gradient-to-r from-primary to-teal mx-auto rounded-full" />
               </div>
-            ))}
-          </div>
-        </section>
 
-        {/* Tree Connector */}
-        <div className="w-px h-8 bg-gray-200 mx-auto -my-4" />
+              <div className="flex justify-center">
+                {founder.map((member) => (
+                  <MemberCard key={member.id} member={member} isTop />
+                ))}
+              </div>
+            </section>
 
-        {/* LEVEL 3: OPERATIONAL & PUBLICATION TEAMS */}
-        <section className="text-center">
-          <div className="mb-8">
-            <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 uppercase tracking-wide mb-2">
-              {isEn ? "Operational & Publication Team" : "Tim Operasional & Publikasi"}
-            </h2>
-            <div className="w-12 h-1 bg-gradient-to-r from-primary to-teal mx-auto rounded-full" />
-          </div>
+            <div className="w-px h-8 bg-gray-200 mx-auto -my-4" />
+          </>
+        )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
-            {staff.map((member) => (
-              <MemberCard key={member.id} member={member} />
-            ))}
-          </div>
-        </section>
+        {/* LEVEL 2: GENERAL MANAGER */}
+        {gm.length > 0 && (
+          <>
+            <section className="text-center">
+              <div className="mb-8">
+                <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 uppercase tracking-wide mb-2">
+                  General Manager
+                </h2>
+                <div className="w-12 h-1 bg-gradient-to-r from-primary to-teal mx-auto rounded-full" />
+              </div>
+
+              <div className="flex justify-center">
+                {gm.map((member) => (
+                  <MemberCard key={member.id} member={member} isTop />
+                ))}
+              </div>
+            </section>
+
+            <div className="w-px h-8 bg-gray-200 mx-auto -my-4" />
+          </>
+        )}
+
+        {/* LEVEL 3: DEWAN PENGAWAS / SUPERVISORY BOARD */}
+        {supervisory.length > 0 && (
+          <>
+            <section className="text-center">
+              <div className="mb-8">
+                <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 uppercase tracking-wide mb-2">
+                  {isEn ? "Supervisory Board" : "Dewan Pengawas"}
+                </h2>
+                <div className="w-12 h-1 bg-gradient-to-r from-primary to-teal mx-auto rounded-full" />
+              </div>
+
+              <div className="flex justify-center">
+                {supervisory.map((member) => (
+                  <MemberCard key={member.id} member={member} isTop />
+                ))}
+              </div>
+            </section>
+
+            <div className="w-px h-8 bg-gray-200 mx-auto -my-4" />
+          </>
+        )}
+
+        {/* LEVEL 4: PROJECT MANAGER */}
+        {pm.length > 0 && (
+          <>
+            <section className="text-center">
+              <div className="mb-8">
+                <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 uppercase tracking-wide mb-2">
+                  Project Manager
+                </h2>
+                <div className="w-12 h-1 bg-gradient-to-r from-primary to-teal mx-auto rounded-full" />
+              </div>
+
+              <div className="flex justify-center">
+                {pm.map((member) => (
+                  <MemberCard key={member.id} member={member} isTop />
+                ))}
+              </div>
+            </section>
+
+            <div className="w-px h-8 bg-gray-200 mx-auto -my-4" />
+          </>
+        )}
+
+        {/* LEVEL 4: OPERATIONAL TEAM (IT & ADMINISTRATION) */}
+        {operational.length > 0 && (
+          <>
+            <section className="text-center">
+              <div className="mb-8">
+                <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 uppercase tracking-wide mb-2">
+                  {isEn ? "Operational Team" : "Tim Operasional"}
+                </h2>
+                <p className="text-xs sm:text-sm text-gray-500 font-medium -mt-1 mb-2">
+                  {isEn ? "IT & Administration Team" : "Tim IT & Administrasi"}
+                </p>
+                <div className="w-12 h-1 bg-gradient-to-r from-primary to-teal mx-auto rounded-full" />
+              </div>
+
+              <div className="flex flex-wrap items-center justify-center gap-8 max-w-2xl mx-auto">
+                {operational.map((member) => (
+                  <div
+                    key={member.id}
+                    className="w-full sm:w-[calc(50%-1rem)] max-w-[280px]"
+                  >
+                    <MemberCard member={member} />
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <div className="w-px h-8 bg-gray-200 mx-auto -my-4" />
+          </>
+        )}
+
+        {/* LEVEL 5: PUBLICATION TEAM */}
+        {publication.length > 0 && (
+          <section className="text-center">
+            <div className="mb-8">
+              <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 uppercase tracking-wide mb-2">
+                {isEn ? "Publication Team" : "Tim Publikasi"}
+              </h2>
+              <p className="text-xs sm:text-sm text-gray-500 font-medium -mt-1 mb-2">
+                {isEn ? "Promotion & Publication Team" : "Tim Promosi & Publikasi"}
+              </p>
+              <div className="w-12 h-1 bg-gradient-to-r from-primary to-teal mx-auto rounded-full" />
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-8 max-w-2xl mx-auto">
+              {publication.map((member) => (
+                <div
+                  key={member.id}
+                  className="w-full sm:w-[calc(50%-1rem)] max-w-[280px]"
+                >
+                  <MemberCard member={member} />
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );
