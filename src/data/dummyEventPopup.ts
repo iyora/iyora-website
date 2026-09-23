@@ -79,49 +79,49 @@ export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
       },
     ],
   },*/
- /* {
-    id: "popup-upcoming-nso-nsmo-wso-2026",
-    isActive: true,
-    badge: "🚀 UPCOMING OLYMPIADS 2026",
-    badge_en: "🚀 UPCOMING OLYMPIADS 2026",
-    title: "UPCOMING EVENTS: NSO, NSMO & WSO 2026",
-    title_en: "UPCOMING EVENTS: NSO, NSMO & WSO 2026",
-    subtitle: "Pendaftaran 3 Olimpiade Bergengsi (NSO, NSMO, WSO) Segera Dibuka — Terkurasi Resmi SIMT Puspresnas RI.",
-    subtitle_en: "Registrations for 3 Prestigious Olympiads (NSO, NSMO, WSO) Opening Soon — Officially Curated by SIMT Puspresnas.",
-    image: "/images/events/upcoming-olympiads-2026.jpg",
-    content:
-      "Persiapkan diri Anda untuk ajang olimpiade sains & matematika paling bergengsi musim ini! IYORA menghadirkan NSO (National Science Olympiad), NSMO (National Science and Math Olympiad), dan WSO (World Science Olympiad) 2026. Terbuka untuk jenjang SD, SMP, SMA/SMK hingga Mahasiswa/Umum dengan sertifikat resmi SIMT Puspresnas Kemendikdasmen RI.",
-    content_en:
-      "Prepare yourself for the most prestigious science & mathematics olympiads of the season! IYORA proudly presents NSO (National Science Olympiad), NSMO (National Science and Math Olympiad), and WSO (World Science Olympiad) 2026. Open for Elementary, Junior High, Senior High, and University levels with official SIMT Puspresnas accredited certificates.",
-    author: "IyoraOlympiad",
-    publishedAt: "2026-08-28",
-    links: [
-      {
-        label: "Website NSO 2026",
-        label_en: "NSO 2026 Website",
-        url: "https://nso.iyora.or.id",
-        variant: "teal",
-      },
-      {
-        label: "Website NSMO 2026",
-        label_en: "NSMO 2026 Website",
-        url: "https://nsmo.iyora.or.id",
-        variant: "indigo",
-      },
-      {
-        label: "Website WSO 2026",
-        label_en: "WSO 2026 Website",
-        url: "https://wso.iyora.or.id",
-        variant: "primary",
-      },
-      {
-        label: "Instagram @iyoraofficial",
-        label_en: "Instagram @iyoraofficial",
-        url: "https://www.instagram.com/iyoraofficial",
-        variant: "instagram",
-      },
-    ],
-  },*/
+  /* {
+     id: "popup-upcoming-nso-nsmo-wso-2026",
+     isActive: true,
+     badge: "🚀 UPCOMING OLYMPIADS 2026",
+     badge_en: "🚀 UPCOMING OLYMPIADS 2026",
+     title: "UPCOMING EVENTS: NSO, NSMO & WSO 2026",
+     title_en: "UPCOMING EVENTS: NSO, NSMO & WSO 2026",
+     subtitle: "Pendaftaran 3 Olimpiade Bergengsi (NSO, NSMO, WSO) Segera Dibuka — Terkurasi Resmi SIMT Puspresnas RI.",
+     subtitle_en: "Registrations for 3 Prestigious Olympiads (NSO, NSMO, WSO) Opening Soon — Officially Curated by SIMT Puspresnas.",
+     image: "/images/events/upcoming-olympiads-2026.jpg",
+     content:
+       "Persiapkan diri Anda untuk ajang olimpiade sains & matematika paling bergengsi musim ini! IYORA menghadirkan NSO (National Science Olympiad), NSMO (National Science and Math Olympiad), dan WSO (World Science Olympiad) 2026. Terbuka untuk jenjang SD, SMP, SMA/SMK hingga Mahasiswa/Umum dengan sertifikat resmi SIMT Puspresnas Kemendikdasmen RI.",
+     content_en:
+       "Prepare yourself for the most prestigious science & mathematics olympiads of the season! IYORA proudly presents NSO (National Science Olympiad), NSMO (National Science and Math Olympiad), and WSO (World Science Olympiad) 2026. Open for Elementary, Junior High, Senior High, and University levels with official SIMT Puspresnas accredited certificates.",
+     author: "IyoraOlympiad",
+     publishedAt: "2026-08-28",
+     links: [
+       {
+         label: "Website NSO 2026",
+         label_en: "NSO 2026 Website",
+         url: "https://nso.iyora.or.id",
+         variant: "teal",
+       },
+       {
+         label: "Website NSMO 2026",
+         label_en: "NSMO 2026 Website",
+         url: "https://nsmo.iyora.or.id",
+         variant: "indigo",
+       },
+       {
+         label: "Website WSO 2026",
+         label_en: "WSO 2026 Website",
+         url: "https://wso.iyora.or.id",
+         variant: "primary",
+       },
+       {
+         label: "Instagram @iyoraofficial",
+         label_en: "Instagram @iyoraofficial",
+         url: "https://www.instagram.com/iyoraofficial",
+         variant: "instagram",
+       },
+     ],
+   },*/
   {
     id: "popup-upcoming-nso-2026",
     isActive: true,
@@ -202,7 +202,7 @@ export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
       },
     ],
   },
-  /*{
+  {
     id: "popup-upcoming-wso-2026",
     isActive: true,
     badge: "🌍 UPCOMING: WORLD SCIENCE OLYMPIAD",
@@ -211,7 +211,7 @@ export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
     title_en: "WSO 2026 — World Science Olympiad",
     subtitle: "Panggung Olimpiade Sains Tingkat Dunia Berkolaborasi dengan Delegasi 20+ Negara.",
     subtitle_en: "World-Class Science Olympiad Stage Collaborating with International Delegates from 20+ Countries.",
-    image: "/images/events/wso-upcoming.jpg",
+    image: "/images/pop up/wso.png",
     content:
       "WSO (World Science Olympiad) 2026 adalah kompetisi sains tingkat global puncak yang diselenggarakan bersama asosiasi sains dunia (IYSA & MIICA Malaysia). Mempertemukan pelajar berprestasi dari berbagai belahan dunia untuk memperebutkan medali dunia dan sertifikat internasional resmi.",
     content_en:
@@ -238,7 +238,7 @@ export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
         variant: "instagram",
       },
     ],
-  },*/
-  ];
+  },
+];
 
 export const DUMMY_EVENT_POPUP: EventPopupData = DUMMY_EVENT_POPUPS[0];

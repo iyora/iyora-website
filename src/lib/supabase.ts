@@ -122,9 +122,9 @@ interface RawDefaultCompetition {
 const RAW_DEFAULT_COMPETITIONS: RawDefaultCompetition[] = [
   // 1. Open Registration
   { slug: "nso", shortName: "NSO", name: "National Science Olympiad", level: "national", category: "Science", websiteUrl: "https://nso.iyora.or.id", registrationUrl: "https://nso.iyora.or.id/register", guidebookUrl: "https://api.iyora.or.id/storage/v1/object/public/event-media/cf86f6fb-83e8-4fd4-8356-e3ac76936b50/guidebooks/1788455563288-BUKU-PANDUAN-NSO-2026.pdf", openAt: "2026-09-03", closeAt: "2026-10-16" },
+  { slug: "nsmo", shortName: "NSMO", name: "National Science Math Olympiad", level: "national", category: "Mathematics", websiteUrl: "https://nsmo.iyora.or.id", registrationUrl: "https://nsmo.iyora.or.id/register", guidebookUrl: "https://api.iyora.or.id/storage/v1/object/public/event-media/58a9dcaa-e853-4c64-bd16-906d362c9585/guidebooks/1790154027781-Guidebook-DMO-2026.pdf", openAt: "2026-09-08", closeAt: "2026-10-27" },
 
   // 2. Coming Soon
-  { slug: "nsmo", shortName: "NSMO", name: "National Science Math Olympiad", level: "national", category: "Mathematics", websiteUrl: "https://nsmo.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: "2026-06-01", closeAt: "2026-08-01" },
   { slug: "nymo", shortName: "NYMO", name: "National Youth Mathematics Olympiad", level: "national", category: "Mathematics", websiteUrl: "https://nymo.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: "2026-06-01", closeAt: "2026-08-01" },
   { slug: "iymo", shortName: "IYMO", name: "International Youth Mathematics Olympiad", level: "international", category: "Mathematics", websiteUrl: "https://iymo.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: "2026-06-01", closeAt: "2026-08-01" },
   { slug: "nybo", shortName: "NYBO", name: "National Youth Biology Olympiad", level: "national", category: "Biology", websiteUrl: "https://nybo.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: "2026-06-01", closeAt: "2026-08-01" },
@@ -153,7 +153,7 @@ const RAW_DEFAULT_COMPETITIONS: RawDefaultCompetition[] = [
 export const KNOWN_EVENT_MEDIA: Record<string, { banner?: string; logo?: string }> = {
   nsmo: {
     banner: "https://api.iyora.or.id/storage/v1/object/public/event-media/58a9dcaa-e853-4c64-bd16-906d362c9585/banner.png",
-    logo: "https://api.iyora.or.id/storage/v1/object/public/event-media/58a9dcaa-e853-4c64-bd16-906d362c9585/logo.png",
+    logo: "https://api.iyora.or.id/storage/v1/object/public/event-media/58a9dcaa-e853-4c64-bd16-906d362c9585/logo-1789961665293.png",
   },
   nso: {
     banner: "https://api.iyora.or.id/storage/v1/object/public/event-media/cf86f6fb-83e8-4fd4-8356-e3ac76936b50/banner.png",

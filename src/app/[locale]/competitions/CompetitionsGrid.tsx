@@ -204,7 +204,14 @@ export default function CompetitionsGrid({ competitions }: Props) {
                   <div className="flex items-start gap-4 mb-4">
                     {comp.logoUrl ? (
                       <div className="h-12 w-auto max-w-[140px] flex-shrink-0 group-hover:scale-105 transition-transform duration-300 flex items-center">
-                        <img src={comp.logoUrl} alt={comp.shortName} className="h-full w-auto max-w-full object-contain drop-shadow-md" />
+                        <img
+                          src={comp.logoUrl}
+                          alt={comp.shortName}
+                          className="h-full w-auto max-w-full object-contain drop-shadow-md"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLElement).style.display = "none";
+                          }}
+                        />
                       </div>
                     ) : (
                       <div className="text-5xl leading-none flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 origin-left">{getIcon(comp.category)}</div>

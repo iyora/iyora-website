@@ -77,9 +77,9 @@ function getOlympiadMeta(slug: string, shortName: string, category: string | nul
 const RAW_OLYMPIADS: OlympiadItem[] = [
   // Open Registration
   { name: "NSO", emoji: "🔬", full: "National Science Olympiad", level: "Nasional", badgeStyle: "bg-teal-50 text-teal-700 border-teal-200", url: "https://nso.iyora.or.id", status: computeOlympiadStatus("2026-09-03", "2026-10-16"), guidebookUrl: "https://api.iyora.or.id/storage/v1/object/public/event-media/cf86f6fb-83e8-4fd4-8356-e3ac76936b50/guidebooks/1788455563288-BUKU-PANDUAN-NSO-2026.pdf" },
+  { name: "NSMO", emoji: "🔬", full: "National Science and Math Olympiad", level: "Nasional", badgeStyle: "bg-blue-50 text-blue-700 border-blue-200", url: "https://nsmo.iyora.or.id", status: computeOlympiadStatus("2026-09-08", "2026-10-27"), guidebookUrl: "https://api.iyora.or.id/storage/v1/object/public/event-media/58a9dcaa-e853-4c64-bd16-906d362c9585/guidebooks/1790154027781-Guidebook-DMO-2026.pdf" },
 
   // Coming Soon
-  { name: "NSMO", emoji: "🔬", full: "National Science and Math Olympiad", level: "Nasional", badgeStyle: "bg-blue-50 text-blue-700 border-blue-200", url: "https://nsmo.iyora.or.id", status: computeOlympiadStatus(null, null) },
   { name: "NYMO", emoji: "➗", full: "National Youth Mathematics Olympiad", level: "Nasional", badgeStyle: "bg-blue-50 text-blue-700 border-blue-200", url: "https://nymo.iyora.or.id", status: computeOlympiadStatus(null, null) },
   { name: "IYMO", emoji: "➗", full: "International Youth Mathematics Olympiad", level: "Internasional", badgeStyle: "bg-purple-50 text-purple-700 border-purple-200", url: "https://iymo.iyora.or.id", status: computeOlympiadStatus(null, null) },
   { name: "NYBO", emoji: "🧬", full: "National Youth Biology Olympiad", level: "Nasional", badgeStyle: "bg-blue-50 text-blue-700 border-blue-200", url: "https://nybo.iyora.or.id", status: computeOlympiadStatus(null, null) },

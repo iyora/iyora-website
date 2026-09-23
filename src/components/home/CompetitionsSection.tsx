@@ -148,7 +148,14 @@ export default function CompetitionsSection({ competitions }: Props) {
             <div>
               {c.logoUrl ? (
                 <div className="h-8 w-auto max-w-[120px] mb-2 flex items-center group-hover:scale-105 transition-transform duration-300">
-                  <img src={c.logoUrl} alt={c.shortName} className="h-full w-auto max-w-full object-contain drop-shadow-md" />
+                  <img
+                    src={c.logoUrl}
+                    alt={c.shortName}
+                    className="h-full w-auto max-w-full object-contain drop-shadow-md"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLElement).style.display = "none";
+                    }}
+                  />
                 </div>
               ) : (
                 <div className="text-3xl mb-2 leading-none transition-transform duration-300 group-hover:scale-110 origin-left">{getIcon(c.category)}</div>
@@ -231,7 +238,14 @@ export default function CompetitionsSection({ competitions }: Props) {
           <div>
             {c.logoUrl ? (
               <div className="h-10 sm:h-12 w-auto max-w-[160px] mb-3.5 flex items-center group-hover:scale-105 transition-transform duration-300">
-                <img src={c.logoUrl} alt={c.shortName} className="h-full w-auto max-w-full object-contain drop-shadow-md" />
+                <img
+                  src={c.logoUrl}
+                  alt={c.shortName}
+                  className="h-full w-auto max-w-full object-contain drop-shadow-md"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLElement).style.display = "none";
+                  }}
+                />
               </div>
             ) : (
               <div className="text-5xl mb-4 leading-none transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 origin-left">{getIcon(c.category)}</div>

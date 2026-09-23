@@ -5,6 +5,54 @@ import { useLocale } from "next-intl";
 import clsx from "clsx";
 import { OUR_TEAM, TeamMember } from "@/data/team";
 
+// Reusable Team Card Component
+function MemberCard({
+  member,
+  isEn = false,
+}: {
+  member: TeamMember;
+  isEn?: boolean;
+}) {
+  return (
+    <div
+      className={clsx(
+        "group relative bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between select-none w-[280px] sm:w-[300px] h-full"
+      )}
+    >
+      {/* Main Primary Photo Container */}
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-gray-100">
+        <Image
+          src={member.image}
+          alt={member.name}
+          fill
+          sizes="(max-width: 640px) 280px, 300px"
+          className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+        />
+        {/* Subtle bottom gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      </div>
+
+      {/* Info Container */}
+      <div className="p-5 text-center bg-white flex-1 flex flex-col justify-center min-h-[110px]">
+        {/* Name */}
+        <h3 className="text-base sm:text-lg font-bold text-gray-900 group-hover:text-primary transition-colors leading-snug mb-1">
+          {member.name}
+        </h3>
+
+        {/* Role / Position */}
+        <p className="text-xs sm:text-sm font-semibold text-primary leading-snug mb-1">
+          {isEn ? (member.role_en || member.role) : member.role}
+        </p>
+
+        {/* Department */}
+        <p className="text-[11px] sm:text-xs text-gray-500 font-medium">
+          {isEn ? (member.department_en || member.department) : member.department}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function TeamDirectory() {
   const locale = useLocale();
   const isEn = locale === "en";
@@ -15,50 +63,6 @@ export default function TeamDirectory() {
   const pm = OUR_TEAM.filter((m) => m.level === "PM");
   const operational = OUR_TEAM.filter((m) => m.level === "operational");
   const publication = OUR_TEAM.filter((m) => m.level === "publication");
-
-  // Reusable IYSA-Style Team Card Component
-  const MemberCard = ({
-    member,
-    isTop = false,
-  }: {
-    member: TeamMember;
-    isTop?: boolean;
-  }) => (
-    <div
-      className={clsx(
-        "group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between hover:-translate-y-1.5",
-        isTop ? "w-full max-w-[280px] sm:max-w-[320px]" : "w-full"
-      )}
-    >
-      <div>
-        {/* Photo Container */}
-        <div className="relative aspect-[4/5] w-full overflow-hidden bg-gray-100">
-          <Image
-            src={member.image}
-            alt={member.name}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
-          />
-          {/* Subtle bottom gradient on hover */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        </div>
-
-        {/* Info Container */}
-        <div className="p-5 text-center">
-          {/* Name */}
-          <h3 className="text-base sm:text-lg font-bold text-gray-900 group-hover:text-primary transition-colors leading-snug mb-1">
-            {member.name}
-          </h3>
-
-          {/* Role / Position */}
-          <p className="text-xs sm:text-sm font-semibold text-primary leading-snug">
-            {isEn ? (member.role_en || member.role) : member.role}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
 
   return (
     <div className="bg-[#fcfbfd] min-h-screen">
@@ -94,7 +98,7 @@ export default function TeamDirectory() {
 
               <div className="flex justify-center">
                 {founder.map((member) => (
-                  <MemberCard key={member.id} member={member} isTop />
+                  <MemberCard key={member.id} member={member} isEn={isEn} />
                 ))}
               </div>
             </section>
@@ -116,7 +120,7 @@ export default function TeamDirectory() {
 
               <div className="flex justify-center">
                 {gm.map((member) => (
-                  <MemberCard key={member.id} member={member} isTop />
+                  <MemberCard key={member.id} member={member} isEn={isEn} />
                 ))}
               </div>
             </section>
@@ -138,7 +142,7 @@ export default function TeamDirectory() {
 
               <div className="flex justify-center">
                 {supervisory.map((member) => (
-                  <MemberCard key={member.id} member={member} isTop />
+                  <MemberCard key={member.id} member={member} isEn={isEn} />
                 ))}
               </div>
             </section>
@@ -160,7 +164,7 @@ export default function TeamDirectory() {
 
               <div className="flex justify-center">
                 {pm.map((member) => (
-                  <MemberCard key={member.id} member={member} isTop />
+                  <MemberCard key={member.id} member={member} isEn={isEn} />
                 ))}
               </div>
             </section>
@@ -183,13 +187,16 @@ export default function TeamDirectory() {
                 <div className="w-12 h-1 bg-gradient-to-r from-primary to-teal mx-auto rounded-full" />
               </div>
 
-              <div className="flex flex-wrap items-center justify-center gap-8 max-w-2xl mx-auto">
+              <div className="flex flex-wrap items-center justify-center gap-8 max-w-5xl mx-auto">
                 {operational.map((member) => (
                   <div
                     key={member.id}
-                    className="w-full sm:w-[calc(50%-1rem)] max-w-[280px]"
+                    className="flex justify-center"
                   >
-                    <MemberCard member={member} />
+                    <MemberCard
+                      member={member}
+                      isEn={isEn}
+                    />
                   </div>
                 ))}
               </div>
@@ -212,13 +219,16 @@ export default function TeamDirectory() {
               <div className="w-12 h-1 bg-gradient-to-r from-primary to-teal mx-auto rounded-full" />
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-8 max-w-2xl mx-auto">
+            <div className="flex flex-wrap items-center justify-center gap-8 max-w-5xl mx-auto">
               {publication.map((member) => (
                 <div
                   key={member.id}
-                  className="w-full sm:w-[calc(50%-1rem)] max-w-[280px]"
+                  className="flex justify-center"
                 >
-                  <MemberCard member={member} />
+                  <MemberCard
+                    member={member}
+                    isEn={isEn}
+                  />
                 </div>
               ))}
             </div>
