@@ -46,7 +46,7 @@ export const DUMMY_NEWS: DummyNewsItem[] = [
       "/images/OPENING/dokum5.jpeg",
       "/images/OPENING/dokum3.jpeg",
       "/images/OPENING/dokum4.jpeg",
-    
+
     ],
     caption: "Resmi Dibuka! Opening Ceremony NYGO & IYGO serta NYEO & IYEO 2026 Sukses Digelar Secara Daring pada 20 Agustus 2026.",
     caption_en: "Officially Opened! Online Opening Ceremony for NYGO, IYGO, NYEO & IYEO 2026 Successfully Held on August 20th, 2026.",
@@ -69,6 +69,68 @@ The 2026 NYGO, IYGO, NYEO, and IYEO series serves as a prestigious platform for 
 
 The online examination phase will proceed according to the technical schedule established by the IYORA platform. The public and schools can monitor updates regarding announcements and final round results via the official portal at https://iyora.or.id.`,
     publishedAt: "2026-08-20",
+    author: "IyoraOlympiad",
+  },
+  {
+    id: "press-releas-nygo-iygo-nyeo-iyeo-2026",
+    slug: "siaran-pers-nygo-iygo-nyeo-iyeo-2026",
+    title: "4 ajang olympiad bergengsi tingkat Nasional dan Internasional",
+    title_en: "4 Prestigious National and International Olympiad Competitions",
+    category: "press_release",
+    photo: "/images/galeri/press.jpeg",
+    /* 📸 DOKUMENTASI FOTO (Bisa Diubah / Ditambah Foto Baru di Sini) */
+    photos: [
+      "/images/press/iyora.png",
+      "/images/press/open.jpg",
+      "/images/OPENING/dokum3.jpeg",
+      "/images/press/award.png",
+      "/images/press/spc1.png",
+      "/images/OPENING/dokum6.jpeg",
+      "/images/press/spc2.png",
+
+      "/images/press/spc3.png",
+      "/images/OPENING/dokum5.jpeg",
+      "/images/press/spc4.png",
+      "/images/OPENING/dokum2.png",
+      "/images/press/spc5.jpg",
+      "/images/OPENING/dokum1.png",
+    ],
+    caption: "NYGO & IYGO serta NYEO & IYEO 2026 Sukses Digelar Secara Daring pada 20 Agustus 2026.",
+    caption_en: "NYGO, IYGO, NYEO & IYEO 2026 Successfully Held on August 20th, 2026.",
+    content: `Depok, 28 September 2026 - Indonesia Young Scientist Association (IYSA) kembali sukses menyelenggarakan empat ajang olimpiade bergengsi, yaitu National Youth Geography Olympiad (NYGO), International Youth Geography Olympiad (IYGO), National Youth Economics Olympiad (NYEO), dan International Youth Economics Olympiad (IYEO) secara daring pada 20 - 27 September 2026. Kegiatan ini menjadi wadah bagi pelajar untuk menguji kemampuan akademik sekaligus memperluas jejaring internasional di bidang Geografi dan Ekonomi.
+
+Pelaksanaan olimpiade dilakukan melalui dua putaran ujian. Putaran pertama diselenggarakan pada 20 September 2026, sementara putaran kedua berlangsung pada 21 September 2026. Sistem kompetisi yang dirancang secara bertahap ini memberikan kesempatan kepada peserta untuk menunjukkan kemampuan terbaik mereka melalui proses seleksi yang objektif dan kompetitif.
+
+Dalam penyelenggaraannya, IYSA bekerja sama dengan Yayasan Prestasi Belia Indonesia (YPBI) sebagai mitra akademik yang mendukung kelancaran dan kredibilitas pelaksanaan kegiatan. Kolaborasi ini menjadi bentuk komitmen bersama dalam mendorong peningkatan kualitas pendidikan serta pengembangan sumber daya manusia yang unggul di bidang sains.
+
+Tahun ini, olimpiade berhasil menarik partisipasi sebanyak 146 tim dari 5 negara. Untuk bidang Geografi, NYGO dan IYGO diikuti oleh 71 tim, sedangkan bidang Ekonomi melalui NYEO dan IYEO diikuti oleh 75 tim. Antusiasme peserta menunjukkan tingginya minat generasi muda terhadap kompetisi akademik yang menantang dan berstandar internasional.
+
+Lima negara yang turut berpartisipasi dalam ajang ini adalah Indonesia, Thailand, Korea Selatan, Amerika Serikat, dan Uzbekistan. Kehadiran peserta dari berbagai negara menciptakan suasana kompetisi yang dinamis sekaligus memperkuat semangat kolaborasi global di kalangan pelajar.
+
+Setelah melalui proses ujian yang dilakukan secara profesional dengan adanya pengawasan oleh tim IYSA, para peserta terbaik berhasil menunjukkan kemampuan luar biasa dalam menyelesaikan berbagai tantangan akademik yang diberikan. Prestasi yang diraih para pemenang menjadi bukti kerja keras, dedikasi, dan semangat belajar yang tinggi dalam mengembangkan kompetensi di bidang Geografi maupun Ekonomi.
+
+Pengumuman pemenang dan pelaksanaan Awarding Ceremony diselenggarakan pada 27 September 2026 dan diumumkan bersamaan dengan rangkaian kegiatan kompetisi dan invensi lainnya yang diselenggarakan oleh IYSA, yaitu Indonesia International Invention Expo (IIIEX). Momentum ini menjadi ajang apresiasi bagi para peserta yang telah menunjukkan pencapaian terbaiknya selama kompetisi berlangsung.
+
+Selamat kepada seluruh peraih penghargaan atas prestasi yang telah diraih. Bagi peserta yang belum memperoleh hasil sesuai harapan, semoga pengalaman berharga selama kompetisi menjadi motivasi untuk terus belajar dan berkembang. Terima kasih atas partisipasi seluruh peserta, guru pembimbing, orang tua, dan pihak yang telah mendukung terselenggaranya olimpiade ini. Sampai bertemu kembali pada olimpiade IYSA tahun depan dengan semangat, inovasi, dan prestasi yang lebih gemilang.
+`,
+    content_en: `Depok, September 28, 2026 — Indonesia Young Scientist Association (IYSA) has once again successfully organized four prestigious Olympiad competitions, namely the National Youth Geography Olympiad (NYGO), International Youth Geography Olympiad (IYGO), National Youth Economics Olympiad (NYEO), and International Youth Economics Olympiad (IYEO), which were held online from September 20–27, 2026. The event served as a platform for students to test their academic abilities while expanding their international networks in the fields of Geography and Economics.
+
+The Olympiads were conducted through two examination rounds. The first round was held on September 20, 2026, while the second round took place on September 21, 2026. This structured competition system provided participants with an opportunity to demonstrate their best abilities through an objective and competitive selection process.
+
+In organizing the Olympiads, IYSA collaborated with Yayasan Prestasi Belia Indonesia (YPBI) as an academic partner supporting the smooth and credible implementation of the event. This collaboration reflects a shared commitment to improving the quality of education and developing outstanding human resources in the field of science.
+
+This year, the Olympiads successfully attracted 146 teams from 5 countries. In the field of Geography, NYGO and IYGO were participated in by 71 teams, while the Economics competitions, NYEO and IYEO, attracted 75 teams. The strong enthusiasm from participants demonstrates the high level of interest among young people in challenging academic competitions with international standards.
+
+The five countries participating in the event were Indonesia, Thailand, South Korea, the United States, and Uzbekistan. The participation of students from various countries created a dynamic competitive atmosphere while strengthening the spirit of global collaboration among young learners.
+
+After completing the examination process, which was professionally conducted under the supervision of the IYSA team, the top participants demonstrated outstanding abilities in tackling various academic challenges. The achievements of the winners are a testament to their hard work, dedication, and strong enthusiasm for learning and developing their competencies in Geography and Economics.
+
+The winners were announced and the Awarding Ceremony was held on September 27, 2026, as part of a series of competitions and invention activities organized by IYSA, namely the Indonesia International Invention Expo (IIIEX). This moment served as an opportunity to recognize and appreciate the participants who achieved outstanding results throughout the competition.
+
+Congratulations to all award recipients on their achievements. For participants who did not achieve the results they had hoped for, may the valuable experience gained throughout the competition serve as motivation to continue learning and growing. We extend our sincere gratitude to all participants, supervising teachers, parents, and everyone who supported the successful implementation of these Olympiads.
+
+We look forward to welcoming you again at the IYSA Olympiads next year, with greater enthusiasm, innovation, and outstanding achievements.`,
+    publishedAt: "2026-09-28",
     author: "IyoraOlympiad",
   },
   // ── NEWS / ANNOUNCEMENT ──
@@ -244,8 +306,8 @@ The online examination phase will proceed according to the technical schedule es
       "/images/rond2/ron5.jpeg",
       "/images/rond2/ron6.jpeg",
       "/images/rond2/ron7.jpeg",
-      
-     
+
+
     ],
     caption: "Kumpulan foto dokumentasi Round 2 NYGO & IYGO serta NYEO & IYEO 2026 yang digelar secara daring pada 24 Agustus 2026..",
     caption_en: "Photo documentation collection of Round 2 of NYGO, IYGO, NYEO & IYEO 2026 held online on August 24th, 2026.",
@@ -271,9 +333,9 @@ The online examination phase will proceed according to the technical schedule es
       "/images/OPENING/dokum1.png",
       "/images/OPENING/dokum3.jpeg",
       "/images/OPENING/dokum4.jpeg",
-      
-      
-     
+
+
+
     ],
     caption: "Kumpulan foto dokumentasi Pembukaan Resmi (Opening Ceremony) NYGO & IYGO serta NYEO & IYEO 2026 yang digelar secara daring pada 20 Agustus 2026.",
     caption_en: "Photo documentation collection of the Online Opening Ceremony for NYGO, IYGO, NYEO & IYEO 2026 held on August 20th, 2026.",
@@ -285,23 +347,23 @@ The online examination phase will proceed according to the technical schedule es
     linkLabel: "FULL DOKUMENTASI ROUND 1",
     linkLabel_en: "Full Documentation of Round 1",
   },
- /* {
-    id: "gallery-1",
-    slug: "after-event-biology-physics-olympiad-2026",
-    title: "After Event Biology & Physics Olympiad 2026",
-    title_en: "After Event Biology & Physics Olympiad 2026",
-    category: "gallery",
-    photo: "/images/galeri/afterevent.png",
-    caption: "Momen berkesan dan rangkuman keseruan kompetisi sains nasional Biology & Physics Olympiad 2026.",
-    caption_en: "Memorable moments and highlight summary of the national science competition Biology & Physics Olympiad 2026.",
-    content: "Kami bangga mempersembahkan video rangkuman dari acara yang tak terlupakan ini, sebagai bukti semangat, dedikasi, dan kecemerlangan yang telah ditunjukkan oleh setiap peserta. Melalui video pasca-acara ini, Anda akan disuguhi berbagai momen berkesan yang telah kita lalui bersama.",
-    content_en: "We are proud to present a summary video of this unforgettable event, as a testament to the passion, dedication, and brilliance demonstrated by every participant. Through this post-event video, you will be treated to various memorable moments we shared together.",
-    publishedAt: "2026-08-13",
-    author: "IyoraOlympiade",
-    link: "https://www.youtube.com/embed/05RdQgvQiVY?si=KSSadgHGYFNm9do1",
-    linkLabel: "Tonton Video Dokumentasi YouTube",
-    linkLabel_en: "Watch Video Documentation on YouTube",
-  },*/
+  /* {
+     id: "gallery-1",
+     slug: "after-event-biology-physics-olympiad-2026",
+     title: "After Event Biology & Physics Olympiad 2026",
+     title_en: "After Event Biology & Physics Olympiad 2026",
+     category: "gallery",
+     photo: "/images/galeri/afterevent.png",
+     caption: "Momen berkesan dan rangkuman keseruan kompetisi sains nasional Biology & Physics Olympiad 2026.",
+     caption_en: "Memorable moments and highlight summary of the national science competition Biology & Physics Olympiad 2026.",
+     content: "Kami bangga mempersembahkan video rangkuman dari acara yang tak terlupakan ini, sebagai bukti semangat, dedikasi, dan kecemerlangan yang telah ditunjukkan oleh setiap peserta. Melalui video pasca-acara ini, Anda akan disuguhi berbagai momen berkesan yang telah kita lalui bersama.",
+     content_en: "We are proud to present a summary video of this unforgettable event, as a testament to the passion, dedication, and brilliance demonstrated by every participant. Through this post-event video, you will be treated to various memorable moments we shared together.",
+     publishedAt: "2026-08-13",
+     author: "IyoraOlympiade",
+     link: "https://www.youtube.com/embed/05RdQgvQiVY?si=KSSadgHGYFNm9do1",
+     linkLabel: "Tonton Video Dokumentasi YouTube",
+     linkLabel_en: "Watch Video Documentation on YouTube",
+   },*/
   {
     id: "gallery-2",
     slug: "after-event-nygo-iygo-nyeo-iyeo-2026",

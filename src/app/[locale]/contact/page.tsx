@@ -86,7 +86,7 @@ export default function ContactPage() {
                 </svg>
               </div>
               <h3 className="font-bold text-primary mb-1">{t("our_email")}</h3>
-              <p className="text-gray-500 text-sm">info@iyora.or.id</p>
+              <p className="text-gray-500 text-sm">olympiad.iyora@gmail.com</p>
             </div>
 
             {/* Location */}
