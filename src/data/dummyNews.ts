@@ -74,8 +74,8 @@ The online examination phase will proceed according to the technical schedule es
   {
     id: "press-releas-nygo-iygo-nyeo-iyeo-2026",
     slug: "siaran-pers-nygo-iygo-nyeo-iyeo-2026",
-    title: "4 ajang olympiad bergengsi tingkat Nasional dan Internasional",
-    title_en: "4 Prestigious National and International Olympiad Competitions",
+    title: "NYGO & IYGO serta NYEO & IYEO 2026 Sukses Digelar Secara Daring pada 20 Agustus 2026.",
+    title_en: "NYGO, IYGO, NYEO & IYEO 2026 Successfully Held on August 20th, 2026.",
     category: "press_release",
     photo: "/images/galeri/press.jpeg",
     /* 📸 DOKUMENTASI FOTO (Bisa Diubah / Ditambah Foto Baru di Sini) */
@@ -87,7 +87,6 @@ The online examination phase will proceed according to the technical schedule es
       "/images/press/spc1.png",
       "/images/OPENING/dokum6.jpeg",
       "/images/press/spc2.png",
-
       "/images/press/spc3.png",
       "/images/OPENING/dokum5.jpeg",
       "/images/press/spc4.png",
@@ -95,9 +94,9 @@ The online examination phase will proceed according to the technical schedule es
       "/images/press/spc5.jpg",
       "/images/OPENING/dokum1.png",
     ],
-    caption: "NYGO & IYGO serta NYEO & IYEO 2026 Sukses Digelar Secara Daring pada 20 Agustus 2026.",
-    caption_en: "NYGO, IYGO, NYEO & IYEO 2026 Successfully Held on August 20th, 2026.",
-    content: `Depok, 28 September 2026 - Indonesia Young Scientist Association (IYSA) kembali sukses menyelenggarakan empat ajang olimpiade bergengsi, yaitu National Youth Geography Olympiad (NYGO), International Youth Geography Olympiad (IYGO), National Youth Economics Olympiad (NYEO), dan International Youth Economics Olympiad (IYEO) secara daring pada 20 - 27 September 2026. Kegiatan ini menjadi wadah bagi pelajar untuk menguji kemampuan akademik sekaligus memperluas jejaring internasional di bidang Geografi dan Ekonomi.
+    caption: "Empat ajang olympiad NYGO IYGO & NYEO IYEO tingkat Nasional dan Internasional",
+    caption_en: "Four Olympiad competitions NYGO, IYGO, NYEO, and IYEO at national and international levels.",
+    content: `Depok, 28 Agustus 2026 - Indonesia Young Scientist Association (IYSA) kembali sukses menyelenggarakan empat ajang olimpiade bergengsi, yaitu National Youth Geography Olympiad (NYGO), International Youth Geography Olympiad (IYGO), National Youth Economics Olympiad (NYEO), dan International Youth Economics Olympiad (IYEO) secara daring pada 20 - 27 September 2026. Kegiatan ini menjadi wadah bagi pelajar untuk menguji kemampuan akademik sekaligus memperluas jejaring internasional di bidang Geografi dan Ekonomi.
 
 Pelaksanaan olimpiade dilakukan melalui dua putaran ujian. Putaran pertama diselenggarakan pada 20 September 2026, sementara putaran kedua berlangsung pada 21 September 2026. Sistem kompetisi yang dirancang secara bertahap ini memberikan kesempatan kepada peserta untuk menunjukkan kemampuan terbaik mereka melalui proses seleksi yang objektif dan kompetitif.
 
@@ -113,7 +112,7 @@ Pengumuman pemenang dan pelaksanaan Awarding Ceremony diselenggarakan pada 27 Se
 
 Selamat kepada seluruh peraih penghargaan atas prestasi yang telah diraih. Bagi peserta yang belum memperoleh hasil sesuai harapan, semoga pengalaman berharga selama kompetisi menjadi motivasi untuk terus belajar dan berkembang. Terima kasih atas partisipasi seluruh peserta, guru pembimbing, orang tua, dan pihak yang telah mendukung terselenggaranya olimpiade ini. Sampai bertemu kembali pada olimpiade IYSA tahun depan dengan semangat, inovasi, dan prestasi yang lebih gemilang.
 `,
-    content_en: `Depok, September 28, 2026 — Indonesia Young Scientist Association (IYSA) has once again successfully organized four prestigious Olympiad competitions, namely the National Youth Geography Olympiad (NYGO), International Youth Geography Olympiad (IYGO), National Youth Economics Olympiad (NYEO), and International Youth Economics Olympiad (IYEO), which were held online from September 20–27, 2026. The event served as a platform for students to test their academic abilities while expanding their international networks in the fields of Geography and Economics.
+    content_en: `Depok, August 28, 2026 — Indonesia Young Scientist Association (IYSA) has once again successfully organized four prestigious Olympiad competitions, namely the National Youth Geography Olympiad (NYGO), International Youth Geography Olympiad (IYGO), National Youth Economics Olympiad (NYEO), and International Youth Economics Olympiad (IYEO), which were held online from September 20–27, 2026. The event served as a platform for students to test their academic abilities while expanding their international networks in the fields of Geography and Economics.
 
 The Olympiads were conducted through two examination rounds. The first round was held on September 20, 2026, while the second round took place on September 21, 2026. This structured competition system provided participants with an opportunity to demonstrate their best abilities through an objective and competitive selection process.
 
@@ -130,7 +129,7 @@ The winners were announced and the Awarding Ceremony was held on September 27, 2
 Congratulations to all award recipients on their achievements. For participants who did not achieve the results they had hoped for, may the valuable experience gained throughout the competition serve as motivation to continue learning and growing. We extend our sincere gratitude to all participants, supervising teachers, parents, and everyone who supported the successful implementation of these Olympiads.
 
 We look forward to welcoming you again at the IYSA Olympiads next year, with greater enthusiasm, innovation, and outstanding achievements.`,
-    publishedAt: "2026-09-28",
+    publishedAt: "2026-08-28",
     author: "IyoraOlympiad",
   },
   // ── NEWS / ANNOUNCEMENT ──
