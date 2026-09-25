@@ -7,7 +7,6 @@ import {
   BookOpen,
   FileText,
   Sparkles,
-  ExternalLink,
   X,
   Share2,
   Eye,
@@ -19,6 +18,14 @@ interface NewsletterDirectoryProps {
   newsletters: NewsletterItem[];
 }
 
+function getSafeViewerUrl(fileUrl: string | undefined): string {
+  if (!fileUrl || fileUrl === "#") return "";
+  if (fileUrl.startsWith("http://") || fileUrl.startsWith("https://")) {
+    return `https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true`;
+  }
+  return fileUrl;
+}
+
 export default function NewsletterDirectory({ newsletters }: NewsletterDirectoryProps) {
   const t = useTranslations("newsletter_page");
   const locale = useLocale();
@@ -26,7 +33,8 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
   const [activePdfModal, setActivePdfModal] = useState<NewsletterItem | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const [featuredViewMode, setFeaturedViewMode] = useState<"preview" | "overview">("preview");
+  // Default to overview so page navigation never triggers background downloads
+  const [featuredViewMode, setFeaturedViewMode] = useState<"preview" | "overview">("overview");
 
   // Featured Newsletter (latest or explicitly featured)
   const featuredNewsletter = useMemo(() => {
@@ -68,7 +76,7 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
       </section>
 
       <div className="max-w-7xl mx-auto px-6 -mt-8 relative z-20 space-y-16">
-        {/* ── 2. Featured Issue Spotlight Card with Inline Scrollable Preview ── */}
+        {/* ── 2. Featured Issue Spotlight Card ── */}
         {featuredNewsletter && (
           <div className="bg-white rounded-3xl shadow-xl shadow-black/5 border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-2xl">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 p-6 md:p-8 items-start">
@@ -96,7 +104,7 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
                 </div>
               </div>
 
-              {/* Interactive Scrollable Preview & Reader (Right - 8 Cols) */}
+              {/* Interactive Preview & Reader (Right - 8 Cols) */}
               <div className="lg:col-span-8 flex flex-col h-full space-y-4">
                 {/* Header with Title, Badges, and Mode Switcher */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gray-100">
@@ -123,18 +131,6 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
                   <div className="flex items-center gap-2 flex-shrink-0 self-start sm:self-center">
                     <div className="flex items-center gap-1 p-1 bg-gray-100 rounded-xl">
                       <button
-                        onClick={() => setFeaturedViewMode("preview")}
-                        className={clsx(
-                          "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
-                          featuredViewMode === "preview"
-                            ? "bg-white text-primary shadow-xs"
-                            : "text-gray-600 hover:text-gray-900"
-                        )}
-                      >
-                        <BookOpen size={13} />
-                        <span>{t("tab_preview")}</span>
-                      </button>
-                      <button
                         onClick={() => setFeaturedViewMode("overview")}
                         className={clsx(
                           "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
@@ -145,6 +141,18 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
                       >
                         <FileText size={13} />
                         <span>{t("tab_overview")}</span>
+                      </button>
+                      <button
+                        onClick={() => setFeaturedViewMode("preview")}
+                        className={clsx(
+                          "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
+                          featuredViewMode === "preview"
+                            ? "bg-white text-primary shadow-xs"
+                            : "text-gray-600 hover:text-gray-900"
+                        )}
+                      >
+                        <BookOpen size={13} />
+                        <span>{t("tab_preview")}</span>
                       </button>
                     </div>
 
@@ -176,28 +184,19 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => setActivePdfModal(featuredNewsletter)}
-                          className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition-colors cursor-pointer"
+                          className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition-colors cursor-pointer text-xs"
                           title="Layar Penuh"
                         >
-                          <Eye size={12} />
-                          <span className="hidden sm:inline">{t("expand_fullscreen")}</span>
+                          <Eye size={13} />
+                          <span>{t("expand_fullscreen")}</span>
                         </button>
-                        <a
-                          href={featuredNewsletter.file_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-1 rounded-lg hover:bg-white/20 text-white transition-colors"
-                          title={t("open_new_tab")}
-                        >
-                          <ExternalLink size={14} />
-                        </a>
                       </div>
                     </div>
 
-                    {/* Scrollable Frame */}
+                    {/* Scrollable Frame using Safe Viewer (no download triggered) */}
                     <div className="relative w-full h-[480px] md:h-[530px] bg-gray-950 rounded-b-2xl border border-gray-800 overflow-hidden shadow-inner">
                       <iframe
-                        src={`${featuredNewsletter.file_url}#toolbar=1&navpanes=0`}
+                        src={getSafeViewerUrl(featuredNewsletter.file_url)}
                         title={featuredNewsletter.title}
                         className="w-full h-full border-0"
                       />
@@ -206,7 +205,7 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
                     {/* Scroll Hint Helper */}
                     <div className="flex items-center justify-between text-[11px] text-gray-500 px-2 pt-1 font-medium">
                       <span>💡 {t("scroll_hint")}</span>
-                      <span className="text-primary font-bold">100% PDF Interactive</span>
+                      <span className="text-primary font-bold">100% Online Reader</span>
                     </div>
                   </div>
                 ) : (
@@ -291,15 +290,6 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
               </div>
 
               <div className="flex items-center gap-2 flex-shrink-0">
-                <a
-                  href={activePdfModal.file_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold transition-colors"
-                >
-                  <ExternalLink size={13} />
-                  <span className="hidden sm:inline">{t("open_new_tab")}</span>
-                </a>
                 <button
                   onClick={() => setActivePdfModal(null)}
                   className="p-2 rounded-xl text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors ml-1 cursor-pointer"
@@ -310,10 +300,10 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
               </div>
             </div>
 
-            {/* Modal PDF Viewer / Iframe */}
+            {/* Modal PDF Viewer / Iframe using Safe Viewer */}
             <div className="flex-1 bg-gray-900 relative">
               <iframe
-                src={`${activePdfModal.file_url}#toolbar=1&navpanes=0`}
+                src={getSafeViewerUrl(activePdfModal.file_url)}
                 title={activePdfModal.title}
                 className="w-full h-full border-0"
               />
