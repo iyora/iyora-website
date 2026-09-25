@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
@@ -9,8 +9,10 @@ import {
   FileText,
   Sparkles,
   X,
-  Share2,
   Eye,
+  ArrowRight,
+  ExternalLink,
+  Calendar,
 } from "lucide-react";
 import clsx from "clsx";
 import type { NewsletterItem } from "@/lib/supabase";
@@ -32,32 +34,6 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
   const locale = useLocale();
 
   const [activePdfModal, setActivePdfModal] = useState<NewsletterItem | null>(null);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
-
-  // Default to overview so page navigation never triggers background downloads
-  const [featuredViewMode, setFeaturedViewMode] = useState<"preview" | "overview">("overview");
-
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-
-  // Active/Featured Newsletter
-  const activeNewsletter = useMemo(() => {
-    if (selectedId) {
-      const found = newsletters.find((n) => n.id === selectedId || n.slug === selectedId);
-      if (found) return found;
-    }
-    const feat = newsletters.find((n) => n.featured);
-    return feat || newsletters[0] || null;
-  }, [newsletters, selectedId]);
-
-  const handleShare = (item: NewsletterItem, e: React.MouseEvent) => {
-    e.stopPropagation();
-    const url = typeof window !== "undefined" ? `${window.location.origin}/${locale}/newsletter` : "";
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(url);
-      setCopiedId(item.id);
-      setTimeout(() => setCopiedId(null), 2000);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50/50 pb-24">
@@ -82,202 +58,148 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-6 -mt-8 relative z-20 space-y-16">
-        {/* ── 2. Featured Issue Spotlight Card or Empty State ── */}
-        {activeNewsletter ? (
-          <div className="bg-white rounded-3xl shadow-xl shadow-black/5 border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-2xl">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 p-6 md:p-8 items-start">
-              {/* Cover & Quick Info (Left - 4 Cols) */}
-              <div className="lg:col-span-4 flex flex-col justify-between h-full space-y-6">
-                <div className="relative group">
-                  <div className="relative aspect-[3/4] max-w-[280px] lg:max-w-full mx-auto rounded-2xl overflow-hidden shadow-2xl shadow-primary/15 border-4 border-white transform lg:-rotate-1 group-hover:rotate-0 transition-transform duration-500 bg-gradient-to-br from-gray-900 to-primary/80 flex items-center justify-center">
-                    {activeNewsletter.cover_image && !activeNewsletter.cover_image.includes("placeholder") ? (
-                      <Image
-                        src={activeNewsletter.cover_image}
-                        alt={activeNewsletter.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-700"
-                        priority
-                      />
-                    ) : (
-                      <div className="p-6 text-center text-white flex flex-col items-center justify-center space-y-3">
-                        <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
-                          <BookOpen size={32} className="text-amber-300" />
-                        </div>
-                        <span className="text-xs font-bold uppercase tracking-wider text-white/80">{activeNewsletter.edition}</span>
-                        <h4 className="text-sm font-extrabold line-clamp-3 leading-snug text-white">{activeNewsletter.title}</h4>
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-                      <button
-                        onClick={() => setActivePdfModal(activeNewsletter)}
-                        className="w-full py-2 px-3 bg-white/95 text-gray-900 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg hover:bg-white transition-colors cursor-pointer"
-                      >
-                        <Eye size={14} className="text-primary" />
-                        <span>{t("expand_fullscreen")}</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
+      {/* ── 2. Newsletter Cards Grid Section ── */}
+      <div className="max-w-7xl mx-auto px-6 -mt-8 relative z-20 space-y-12">
+        {newsletters && newsletters.length > 0 ? (
+          <div className="space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/80 backdrop-blur-md p-6 rounded-2xl border border-gray-100 shadow-sm">
+              <div>
+                <h2 className="text-xl md:text-2xl font-extrabold text-gray-900">
+                  {t("all_issues_title")}
+                </h2>
+                <p className="text-sm text-gray-500 mt-0.5">
+                  {t("all_issues_subtitle")} ({newsletters.length} {locale === "en" ? "publications" : "dokumen rilis"})
+                </p>
               </div>
+            </div>
 
-              {/* Interactive Preview & Reader (Right - 8 Cols) */}
-              <div className="lg:col-span-8 flex flex-col h-full space-y-4">
-                {/* Header with Title, Badges, and Mode Switcher */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gray-100">
-                  <div className="space-y-1.5">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="bg-gradient-to-r from-teal-500 to-primary text-white text-[11px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-xs flex items-center gap-1">
-                        <Sparkles size={11} />
-                        {t("featured_badge")}
-                      </span>
-                      <span className="bg-gray-100 text-gray-700 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-gray-200">
-                        {activeNewsletter.edition}
-                      </span>
-                      <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 text-[11px] font-extrabold px-3 py-0.5 rounded-full border border-emerald-200/80 shadow-2xs">
-                        <Eye size={13} className="text-emerald-600 animate-pulse" />
-                        <span>{(activeNewsletter.views || 100).toLocaleString(locale === "en" ? "en-US" : "id-ID")} {t("views_short")}</span>
-                      </span>
-                    </div>
-                    <h2 className="text-xl md:text-2xl font-extrabold text-gray-900 leading-snug">
-                      {activeNewsletter.title}
-                    </h2>
-                  </div>
+            {/* Grid of Newsletter Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {newsletters.map((item) => {
+                const detailUrl = `/${locale}/newsletter/${encodeURIComponent(item.slug || item.id)}`;
 
-                  {/* Tabs toggle & Share */}
-                  <div className="flex items-center gap-2 flex-shrink-0 self-start sm:self-center">
-                    <div className="flex items-center gap-1 p-1 bg-gray-100 rounded-xl">
-                      <button
-                        onClick={() => setFeaturedViewMode("overview")}
-                        className={clsx(
-                          "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
-                          featuredViewMode === "overview"
-                            ? "bg-white text-primary shadow-xs"
-                            : "text-gray-600 hover:text-gray-900"
-                        )}
-                      >
-                        <FileText size={13} />
-                        <span>{t("tab_overview")}</span>
-                      </button>
-                      <button
-                        onClick={() => setFeaturedViewMode("preview")}
-                        className={clsx(
-                          "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
-                          featuredViewMode === "preview"
-                            ? "bg-white text-primary shadow-xs"
-                            : "text-gray-600 hover:text-gray-900"
-                        )}
-                      >
-                        <BookOpen size={13} />
-                        <span>{t("tab_preview")}</span>
-                      </button>
-                    </div>
-
-                    <button
-                      onClick={(e) => handleShare(activeNewsletter, e)}
-                      className="p-2 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-100 hover:text-primary transition-colors cursor-pointer relative"
-                      title="Bagikan"
+                return (
+                  <div
+                    key={item.id}
+                    className="group bg-white rounded-3xl overflow-hidden border border-gray-200/90 shadow-md hover:shadow-2xl hover:shadow-primary/15 transition-all duration-300 hover:-translate-y-2 flex flex-col justify-between h-full"
+                  >
+                    {/* Top Cover / Media Banner - Clickable in New Tab */}
+                    <Link
+                      href={detailUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="relative block w-full aspect-[16/10] bg-gradient-to-br from-gray-900 via-[#1e3a5f] to-[#122842] overflow-hidden"
                     >
-                      <Share2 size={15} />
-                      {copiedId === activeNewsletter.id && (
-                        <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-md whitespace-nowrap animate-fadeIn">
-                          Tersalin!
-                        </span>
+                      {item.cover_image && !item.cover_image.includes("placeholder") ? (
+                        <>
+                          <Image
+                            src={item.cover_image}
+                            alt=""
+                            fill
+                            aria-hidden="true"
+                            className="object-cover blur-md scale-110 opacity-30"
+                          />
+                          <Image
+                            src={item.cover_image}
+                            alt={item.title}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        </>
+                      ) : (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-white space-y-2">
+                          <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-inner group-hover:scale-110 transition-transform">
+                            <BookOpen size={28} className="text-amber-300" />
+                          </div>
+                          <span className="text-[11px] font-extrabold uppercase tracking-wider text-teal-300">
+                            {item.edition}
+                          </span>
+                        </div>
                       )}
-                    </button>
-                  </div>
-                </div>
 
-                {/* ── View 1: Scrollable PDF Document Reader ── */}
-                {featuredViewMode === "preview" ? (
-                  <div className="space-y-2">
-                    {/* Toolbar on top of viewer */}
-                    <div className="flex items-center justify-between text-xs px-3 py-2 bg-gray-900 text-gray-200 rounded-t-2xl border border-b-0 border-gray-800">
-                      <div className="flex items-center gap-2 font-medium">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                        <span className="truncate max-w-[200px] md:max-w-xs">{activeNewsletter.title}</span>
+                      {/* Top Badges */}
+                      <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5">
+                        <span className="bg-white/95 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-extrabold text-primary shadow-md uppercase tracking-wider">
+                          {item.edition}
+                        </span>
                       </div>
 
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => setActivePdfModal(activeNewsletter)}
-                          className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition-colors cursor-pointer text-xs"
-                          title="Layar Penuh"
+                      <div className="absolute top-3 right-3 z-10">
+                        <span className="bg-black/60 backdrop-blur-md text-white px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center gap-1">
+                          <Eye size={11} className="text-teal-300" />
+                          <span>{(item.views || 1200).toLocaleString(locale === "en" ? "en-US" : "id-ID")}</span>
+                        </span>
+                      </div>
+                    </Link>
+
+                    {/* Card Content */}
+                    <div className="p-6 flex flex-col justify-between flex-1 space-y-4 bg-white">
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-1.5 text-xs text-gray-500 font-semibold">
+                          <Calendar size={13} className="text-primary" />
+                          <time>{item.published_at ? item.published_at.slice(0, 10) : "2026-09-25"}</time>
+                        </div>
+
+                        {/* Title - Clickable in New Tab */}
+                        <Link
+                          href={detailUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block"
                         >
-                          <Eye size={13} />
-                          <span>{t("expand_fullscreen")}</span>
-                        </button>
-                      </div>
-                    </div>
+                          <h3 className="text-lg font-extrabold text-gray-900 group-hover:text-primary transition-colors line-clamp-2 leading-snug">
+                            {item.title}
+                          </h3>
+                        </Link>
 
-                    {/* Scrollable Frame using Safe Viewer (no download triggered) */}
-                    <div className="relative w-full h-[480px] md:h-[530px] bg-gray-950 rounded-b-2xl border border-gray-800 overflow-hidden shadow-inner">
-                      <iframe
-                        src={getSafeViewerUrl(activeNewsletter.file_url)}
-                        title={activeNewsletter.title}
-                        className="w-full h-full border-0"
-                      />
-                    </div>
+                        {/* Description */}
+                        <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed">
+                          {item.description || `Publikasi resmi IYORA edisi ${item.edition}. Klik untuk membaca dokumen lengkap buletin.`}
+                        </p>
 
-                    {/* Scroll Hint Helper */}
-                    <div className="flex items-center justify-between text-[11px] text-gray-500 px-2 pt-1 font-medium">
-                      <span>💡 {t("scroll_hint")}</span>
-                      <span className="text-primary font-bold">100% Online Reader</span>
-                    </div>
-                  </div>
-                ) : (
-                  /* ── View 2: Detailed Overview & Highlights ── */
-                  <div className="bg-gray-50/70 rounded-2xl p-6 border border-gray-100 flex flex-col justify-between space-y-6 min-h-[460px]">
-                    <div className="space-y-4">
-                      <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider">
-                        Ringkasan Dokumen & Edisi
-                      </h4>
-                      <p className="text-sm md:text-base text-gray-700 leading-relaxed">
-                        {activeNewsletter.description || `Publikasi resmi IYORA edisi ${activeNewsletter.edition}. Silakan buka dokumen pratinjau untuk melihat isi lengkap buletin.`}
-                      </p>
-
-                      {/* Topic tags */}
-                      {activeNewsletter.tags && activeNewsletter.tags.length > 0 && (
-                        <div className="pt-2">
-                          <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-                            Topik Utama
-                          </p>
-                          <div className="flex flex-wrap gap-1.5">
-                            {activeNewsletter.tags.map((tag) => (
+                        {/* Topic Tags */}
+                        {item.tags && item.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5 pt-1">
+                            {item.tags.slice(0, 3).map((tag) => (
                               <span
                                 key={tag}
-                                className="bg-white text-primary text-xs font-bold px-3 py-1 rounded-lg border border-primary/20 shadow-xs"
+                                className="text-[10px] font-bold text-primary bg-primary/5 border border-primary/15 px-2.5 py-0.5 rounded-lg"
                               >
                                 #{tag}
                               </span>
                             ))}
                           </div>
-                        </div>
-                      )}
-                    </div>
+                        )}
+                      </div>
 
-                    <div className="pt-4 border-t border-gray-200 flex flex-wrap gap-3">
-                      <button
-                        onClick={() => setFeaturedViewMode("preview")}
-                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-primary text-white font-bold text-xs shadow-md hover:bg-primary-dark transition-all cursor-pointer"
-                      >
-                        <BookOpen size={15} />
-                        <span>Buka Preview Dokumen</span>
-                      </button>
-                      <button
-                        onClick={() => setActivePdfModal(activeNewsletter)}
-                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white border border-gray-200 text-gray-800 font-bold text-xs hover:bg-gray-50 transition-all cursor-pointer"
-                      >
-                        <Eye size={15} className="text-primary" />
-                        <span>{t("expand_fullscreen")}</span>
-                      </button>
+                      {/* Action Buttons */}
+                      <div className="pt-4 border-t border-gray-100 flex items-center justify-between gap-2">
+                        <Link
+                          href={detailUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-primary text-white font-bold text-xs shadow-md shadow-primary/20 hover:bg-primary-dark transition-all group-hover:shadow-lg"
+                        >
+                          <span>{locale === "en" ? "Read Issue" : "Baca Dokumen"}</span>
+                          <ExternalLink size={13} />
+                        </Link>
+
+                        <button
+                          onClick={() => setActivePdfModal(item)}
+                          className="p-2.5 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors cursor-pointer"
+                          title="Layar Penuh"
+                        >
+                          <Eye size={16} />
+                        </button>
+                      </div>
                     </div>
                   </div>
-                )}
-              </div>
+                );
+              })}
             </div>
           </div>
         ) : (
+          /* Empty State */
           <div className="bg-white rounded-3xl p-10 md:p-16 border border-gray-100 shadow-xl shadow-black/5 text-center flex flex-col items-center justify-center max-w-2xl mx-auto">
             <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 text-primary">
               <BookOpen size={36} />
@@ -306,108 +228,9 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
             </div>
           </div>
         )}
-
-        {/* ── 3. All Issues Grid List (when there are uploaded newsletters) ── */}
-        {newsletters && newsletters.length > 0 && (
-          <div className="space-y-8 pt-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-4">
-              <div>
-                <h3 className="text-2xl font-extrabold text-gray-900">
-                  {t("all_issues_title")}
-                </h3>
-                <p className="text-sm text-gray-500 mt-1">
-                  {t("all_issues_subtitle")} ({newsletters.length} {locale === "en" ? "publications" : "dokumen rilis"})
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {newsletters.map((item) => {
-                const isSelected = activeNewsletter?.id === item.id;
-                return (
-                  <div
-                    key={item.id}
-                    className={clsx(
-                      "bg-white rounded-2xl border p-5 flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:-translate-y-1",
-                      isSelected
-                        ? "border-primary ring-2 ring-primary/20 shadow-md"
-                        : "border-gray-200/80 shadow-sm"
-                    )}
-                  >
-                    <div className="space-y-3">
-                      {/* Top Badges */}
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
-                          {item.edition}
-                        </span>
-                        <span className="text-[11px] text-gray-400 font-semibold">
-                          {item.published_at ? item.published_at.slice(0, 10) : ""}
-                        </span>
-                      </div>
-
-                      {/* Title */}
-                      <h4 className="text-base font-extrabold text-gray-900 line-clamp-2 leading-snug">
-                        {item.title}
-                      </h4>
-
-                      {/* Description */}
-                      <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed">
-                        {item.description || "Dokumen publikasi dan buletin resmi IYORA."}
-                      </p>
-
-                      {/* Tags */}
-                      {item.tags && item.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-1 pt-1">
-                          {item.tags.slice(0, 3).map((tag) => (
-                            <span
-                              key={tag}
-                              className="text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md"
-                            >
-                              #{tag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="pt-4 mt-4 border-t border-gray-100 flex items-center justify-between gap-2">
-                      <button
-                        onClick={() => {
-                          setSelectedId(item.id);
-                          setFeaturedViewMode("preview");
-                          window.scrollTo({ top: 300, behavior: "smooth" });
-                        }}
-                        className={clsx(
-                          "px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
-                          isSelected
-                            ? "bg-primary text-white shadow-xs"
-                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                        )}
-                      >
-                        <BookOpen size={13} />
-                        <span>{isSelected ? "Sedang Dibuka" : "Baca Online"}</span>
-                      </button>
-
-                      <button
-                        onClick={() => setActivePdfModal(item)}
-                        className="px-3 py-2 rounded-xl text-xs font-bold bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 flex items-center gap-1.5 transition-colors cursor-pointer"
-                        title="Layar Penuh"
-                      >
-                        <Eye size={13} className="text-primary" />
-                        <span>Layar Penuh</span>
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
       </div>
 
-      {/* ── 6. PDF Interactive Preview Modal ── */}
+      {/* ── PDF Interactive Preview Modal ── */}
       {activePdfModal && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 md:p-6 animate-fadeIn">
           <div className="bg-white rounded-3xl w-full max-w-5xl h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-scaleUp">
@@ -443,7 +266,7 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
               </div>
             </div>
 
-            {/* Modal PDF Viewer / Iframe using Safe Viewer */}
+            {/* Modal PDF Viewer / Iframe */}
             <div className="flex-1 bg-gray-900 relative">
               <iframe
                 src={getSafeViewerUrl(activePdfModal.file_url)}
