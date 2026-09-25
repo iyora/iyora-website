@@ -8,12 +8,6 @@ import {
   DUMMY_WINNER_ANNOUNCEMENTS,
   WINNER_STATS,
 } from "@/data/dummyWinners";
-import {
-  DUMMY_NEWSLETTERS,
-  getDummyNewsletters,
-  getDummyNewsletterBySlug,
-  DummyNewsletterItem,
-} from "@/data/dummyNewsletter";
 
 export type RegistrationStatus = "open" | "coming_soon" | "closed";
 
@@ -1068,22 +1062,21 @@ export interface NewsletterItem {
 }
 
 function mapRawToNewsletter(row: any, isEn: boolean = false): NewsletterItem {
-  const dummy = getDummyNewsletterBySlug(row.slug || String(row.id));
-  const rawTags = row.tags || row.tag || row.categories || dummy?.tags;
+  const rawTags = row.tags || row.tag || row.categories;
   const tags = Array.isArray(rawTags)
     ? rawTags
     : typeof rawTags === "string"
       ? rawTags.split(",").map((s: string) => s.trim()).filter(Boolean)
       : [];
 
-  const rawTitle = row.title || row.judul || row.name || dummy?.title || "";
-  const rawTitleEn = row.title_en || row.titleEn || row.judul_en || dummy?.title_en || rawTitle;
+  const rawTitle = row.title || row.judul || row.name || "";
+  const rawTitleEn = row.title_en || row.titleEn || row.judul_en || rawTitle;
 
-  const rawEdition = row.edition || row.edisi || row.volume || row.issue || dummy?.edition || "Edisi Terbaru";
-  const rawEditionEn = row.edition_en || row.editionEn || row.edisi_en || dummy?.edition_en || rawEdition;
+  const rawEdition = row.edition || row.edisi || row.volume || row.issue || "Edisi Terbaru";
+  const rawEditionEn = row.edition_en || row.editionEn || row.edisi_en || rawEdition;
 
-  const rawDesc = row.description || row.deskripsi || row.summary || row.ringkasan || row.excerpt || dummy?.description || "";
-  const rawDescEn = row.description_en || row.descriptionEn || row.deskripsi_en || dummy?.description_en || rawDesc;
+  const rawDesc = row.description || row.deskripsi || row.summary || row.ringkasan || row.excerpt || "";
+  const rawDescEn = row.description_en || row.descriptionEn || row.deskripsi_en || rawDesc;
 
   const rawCover =
     row.cover_image ||
@@ -1096,7 +1089,6 @@ function mapRawToNewsletter(row: any, isEn: boolean = false): NewsletterItem {
     row.image ||
     row.thumbnail ||
     row.thumbnail_url ||
-    dummy?.coverImage ||
     "/images/galeri/press.jpeg";
 
   const rawFileUrl =
@@ -1109,7 +1101,6 @@ function mapRawToNewsletter(row: any, isEn: boolean = false): NewsletterItem {
     row.file ||
     row.document_url ||
     row.url ||
-    dummy?.fileUrl ||
     "#";
 
   const rawPublishedAt =
@@ -1120,12 +1111,11 @@ function mapRawToNewsletter(row: any, isEn: boolean = false): NewsletterItem {
     row.tanggal_terbit ||
     row.release_date ||
     row.created_at ||
-    dummy?.publishedAt ||
     new Date().toISOString();
 
   return {
     id: String(row.id || row._id || row.slug || "newsletter"),
-    slug: row.slug || dummy?.slug || String(row.id || "newsletter"),
+    slug: row.slug || String(row.id || "newsletter"),
     title: isEn && rawTitleEn ? rawTitleEn : rawTitle,
     title_en: rawTitleEn,
     edition: isEn && rawEditionEn ? rawEditionEn : rawEdition,
@@ -1135,13 +1125,13 @@ function mapRawToNewsletter(row: any, isEn: boolean = false): NewsletterItem {
     cover_image: rawCover,
     file_url: rawFileUrl,
     published_at: rawPublishedAt,
-    created_at: row.created_at || dummy?.publishedAt,
-    author: row.author || row.penulis || row.creator || dummy?.author || "Redaksi IYORA Bulletin",
-    pages: Number(row.pages || row.jumlah_halaman || row.page_count || row.totalPages || dummy?.pages) || null,
-    featured: Boolean(row.featured ?? row.is_featured ?? row.isFeatured ?? dummy?.featured ?? false),
+    created_at: row.created_at || rawPublishedAt,
+    author: row.author || row.penulis || row.creator || "Redaksi IYORA Bulletin",
+    pages: Number(row.pages || row.jumlah_halaman || row.page_count || row.totalPages) || null,
+    featured: Boolean(row.featured ?? row.is_featured ?? row.isFeatured ?? false),
     tags,
-    read_time: row.read_time || row.readTime || row.estimasi_baca || dummy?.readTime || "5 min read",
-    views: Number(row.views || row.view_count || row.viewCount || row.readers || dummy?.views) || 1200,
+    read_time: row.read_time || row.readTime || row.estimasi_baca || "5 min read",
+    views: Number(row.views || row.view_count || row.viewCount || row.readers) || 1200,
   };
 }
 
@@ -1175,7 +1165,7 @@ export async function fetchNewslettersData(locale?: string): Promise<NewsletterI
                   ? json.results
                   : null;
 
-          if (items && items.length > 0) {
+          if (items !== null) {
             return items.map((row: any) => mapRawToNewsletter(row, isEn));
           }
         }
@@ -1198,30 +1188,29 @@ export async function fetchNewslettersData(locale?: string): Promise<NewsletterI
       .eq("is_published", true)
       .order("published_at", { ascending: false });
 
-    if (!error && data && data.length > 0) {
+    if (!error && Array.isArray(data)) {
       return data.map((row: any) => mapRawToNewsletter(row, isEn));
     }
 
     // Cek tabel 'news' dengan category 'newsletter'
     try {
-      const { data: newsCategoryData } = await supabase
+      const { data: newsCategoryData, error: newsErr } = await supabase
         .from("news")
         .select("*")
         .eq("category", "newsletter")
         .eq("is_published", true)
         .order("published_at", { ascending: false });
 
-      if (newsCategoryData && newsCategoryData.length > 0) {
+      if (!newsErr && Array.isArray(newsCategoryData)) {
         return newsCategoryData.map((row: any) => mapRawToNewsletter(row, isEn));
       }
     } catch {
       // Abaikan jika tidak ada category newsletter di tabel news
     }
 
-    // 3. Fallback dummy data jika data dashboard belum terisi
-    return getDummyNewsletters().map((item) => mapRawToNewsletter(item, isEn));
+    return [];
   } catch {
-    return getDummyNewsletters().map((item) => mapRawToNewsletter(item, isEn));
+    return [];
   }
 }
 
@@ -1263,8 +1252,6 @@ export async function fetchNewsletterBySlug(slug: string, locale?: string): Prom
   const found = all.find((n) => n.slug === slug || n.id === slug);
   if (found) return found;
 
-  const dummy = getDummyNewsletterBySlug(slug);
-  if (dummy) return mapRawToNewsletter(dummy, isEn);
   return null;
 }
 

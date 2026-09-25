@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import {
   BookOpen,
@@ -76,8 +77,8 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
       </section>
 
       <div className="max-w-7xl mx-auto px-6 -mt-8 relative z-20 space-y-16">
-        {/* ── 2. Featured Issue Spotlight Card ── */}
-        {featuredNewsletter && (
+        {/* ── 2. Featured Issue Spotlight Card or Empty State ── */}
+        {featuredNewsletter ? (
           <div className="bg-white rounded-3xl shadow-xl shadow-black/5 border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-2xl">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 p-6 md:p-8 items-start">
               {/* Cover & Quick Info (Left - 4 Cols) */}
@@ -258,6 +259,34 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
                   </div>
                 )}
               </div>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-white rounded-3xl p-10 md:p-16 border border-gray-100 shadow-xl shadow-black/5 text-center flex flex-col items-center justify-center max-w-2xl mx-auto">
+            <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 text-primary">
+              <BookOpen size={36} />
+            </div>
+            <h3 className="text-2xl font-extrabold text-gray-900 mb-3">
+              {locale === "en" ? "No Newsletters Published Yet" : "Belum Ada Newsletter Dipublikasikan"}
+            </h3>
+            <p className="text-sm md:text-base text-gray-600 max-w-md mx-auto leading-relaxed mb-8">
+              {locale === "en"
+                ? "Official IYORA newsletters and bulletins will appear here once published via the dashboard. Stay tuned for the latest updates."
+                : "Edisi buletin dan newsletter resmi IYORA akan segera hadir di sini setelah diunggah melalui dashboard. Pantau terus informasi dan berita terbaru seputar olimpiade sains."}
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <Link
+                href={`/${locale}/news`}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-white text-xs md:text-sm font-bold shadow-md hover:bg-primary-dark transition-all"
+              >
+                <span>{locale === "en" ? "View Latest News" : "Lihat Berita Terkini"}</span>
+              </Link>
+              <Link
+                href={`/${locale}/competitions`}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gray-100 text-gray-700 text-xs md:text-sm font-bold hover:bg-gray-200 transition-all"
+              >
+                <span>{locale === "en" ? "Browse Competitions" : "Jelajahi Kompetisi"}</span>
+              </Link>
             </div>
           </div>
         )}
