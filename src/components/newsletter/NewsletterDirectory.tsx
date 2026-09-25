@@ -121,13 +121,6 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
                           {item.edition}
                         </span>
                       </div>
-
-                      <div className="absolute top-3 right-3 z-10">
-                        <span className="bg-black/60 backdrop-blur-md text-white px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center gap-1">
-                          <Eye size={11} className="text-teal-300" />
-                          <span>{(item.views || 1200).toLocaleString(locale === "en" ? "en-US" : "id-ID")}</span>
-                        </span>
-                      </div>
                     </Link>
 
                     {/* Card Content */}

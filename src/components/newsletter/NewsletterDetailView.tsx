@@ -126,10 +126,6 @@ export default function NewsletterDetailView({ newsletter }: NewsletterDetailVie
                     <span className="bg-gray-100 text-gray-700 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-gray-200">
                       {newsletter.edition}
                     </span>
-                    <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 text-[11px] font-extrabold px-3 py-0.5 rounded-full border border-emerald-200/80 shadow-2xs">
-                      <Eye size={13} className="text-emerald-600 animate-pulse" />
-                      <span>{(newsletter.views || 1200).toLocaleString(locale === "en" ? "en-US" : "id-ID")} {t("views_short")}</span>
-                    </span>
                   </div>
                   <h1 className="text-xl md:text-2xl lg:text-3xl font-extrabold text-gray-900 leading-snug">
                     {newsletter.title}
@@ -298,11 +294,6 @@ export default function NewsletterDetailView({ newsletter }: NewsletterDetailVie
                   </h3>
                   <div className="flex items-center gap-2 text-xs text-gray-500 truncate">
                     <span>{activePdfModal.edition}</span>
-                    <span>•</span>
-                    <span className="inline-flex items-center gap-1 text-emerald-600 font-semibold">
-                      <Eye size={12} />
-                      {(activePdfModal.views || 1200).toLocaleString(locale === "en" ? "en-US" : "id-ID")} {t("views_short")}
-                    </span>
                   </div>
                 </div>
               </div>
