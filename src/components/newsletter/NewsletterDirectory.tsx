@@ -37,11 +37,17 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
   // Default to overview so page navigation never triggers background downloads
   const [featuredViewMode, setFeaturedViewMode] = useState<"preview" | "overview">("overview");
 
-  // Featured Newsletter (latest or explicitly featured)
-  const featuredNewsletter = useMemo(() => {
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  // Active/Featured Newsletter
+  const activeNewsletter = useMemo(() => {
+    if (selectedId) {
+      const found = newsletters.find((n) => n.id === selectedId || n.slug === selectedId);
+      if (found) return found;
+    }
     const feat = newsletters.find((n) => n.featured);
     return feat || newsletters[0] || null;
-  }, [newsletters]);
+  }, [newsletters, selectedId]);
 
   const handleShare = (item: NewsletterItem, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -78,23 +84,33 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
 
       <div className="max-w-7xl mx-auto px-6 -mt-8 relative z-20 space-y-16">
         {/* ── 2. Featured Issue Spotlight Card or Empty State ── */}
-        {featuredNewsletter ? (
+        {activeNewsletter ? (
           <div className="bg-white rounded-3xl shadow-xl shadow-black/5 border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-2xl">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 p-6 md:p-8 items-start">
               {/* Cover & Quick Info (Left - 4 Cols) */}
               <div className="lg:col-span-4 flex flex-col justify-between h-full space-y-6">
                 <div className="relative group">
-                  <div className="relative aspect-[3/4] max-w-[280px] lg:max-w-full mx-auto rounded-2xl overflow-hidden shadow-2xl shadow-primary/15 border-4 border-white transform lg:-rotate-1 group-hover:rotate-0 transition-transform duration-500">
-                    <Image
-                      src={featuredNewsletter.cover_image}
-                      alt={featuredNewsletter.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-700"
-                      priority
-                    />
+                  <div className="relative aspect-[3/4] max-w-[280px] lg:max-w-full mx-auto rounded-2xl overflow-hidden shadow-2xl shadow-primary/15 border-4 border-white transform lg:-rotate-1 group-hover:rotate-0 transition-transform duration-500 bg-gradient-to-br from-gray-900 to-primary/80 flex items-center justify-center">
+                    {activeNewsletter.cover_image && !activeNewsletter.cover_image.includes("placeholder") ? (
+                      <Image
+                        src={activeNewsletter.cover_image}
+                        alt={activeNewsletter.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-700"
+                        priority
+                      />
+                    ) : (
+                      <div className="p-6 text-center text-white flex flex-col items-center justify-center space-y-3">
+                        <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
+                          <BookOpen size={32} className="text-amber-300" />
+                        </div>
+                        <span className="text-xs font-bold uppercase tracking-wider text-white/80">{activeNewsletter.edition}</span>
+                        <h4 className="text-sm font-extrabold line-clamp-3 leading-snug text-white">{activeNewsletter.title}</h4>
+                      </div>
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
                       <button
-                        onClick={() => setActivePdfModal(featuredNewsletter)}
+                        onClick={() => setActivePdfModal(activeNewsletter)}
                         className="w-full py-2 px-3 bg-white/95 text-gray-900 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg hover:bg-white transition-colors cursor-pointer"
                       >
                         <Eye size={14} className="text-primary" />
@@ -116,15 +132,15 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
                         {t("featured_badge")}
                       </span>
                       <span className="bg-gray-100 text-gray-700 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-gray-200">
-                        {featuredNewsletter.edition}
+                        {activeNewsletter.edition}
                       </span>
                       <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 text-[11px] font-extrabold px-3 py-0.5 rounded-full border border-emerald-200/80 shadow-2xs">
                         <Eye size={13} className="text-emerald-600 animate-pulse" />
-                        <span>{(featuredNewsletter.views || 1485).toLocaleString(locale === "en" ? "en-US" : "id-ID")} {t("views_short")}</span>
+                        <span>{(activeNewsletter.views || 100).toLocaleString(locale === "en" ? "en-US" : "id-ID")} {t("views_short")}</span>
                       </span>
                     </div>
                     <h2 className="text-xl md:text-2xl font-extrabold text-gray-900 leading-snug">
-                      {featuredNewsletter.title}
+                      {activeNewsletter.title}
                     </h2>
                   </div>
 
@@ -158,12 +174,12 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
                     </div>
 
                     <button
-                      onClick={(e) => handleShare(featuredNewsletter, e)}
+                      onClick={(e) => handleShare(activeNewsletter, e)}
                       className="p-2 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-100 hover:text-primary transition-colors cursor-pointer relative"
                       title="Bagikan"
                     >
                       <Share2 size={15} />
-                      {copiedId === featuredNewsletter.id && (
+                      {copiedId === activeNewsletter.id && (
                         <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-md whitespace-nowrap animate-fadeIn">
                           Tersalin!
                         </span>
@@ -179,12 +195,12 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
                     <div className="flex items-center justify-between text-xs px-3 py-2 bg-gray-900 text-gray-200 rounded-t-2xl border border-b-0 border-gray-800">
                       <div className="flex items-center gap-2 font-medium">
                         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                        <span className="truncate max-w-[200px] md:max-w-xs">{featuredNewsletter.title}</span>
+                        <span className="truncate max-w-[200px] md:max-w-xs">{activeNewsletter.title}</span>
                       </div>
 
                       <div className="flex items-center gap-2">
                         <button
-                          onClick={() => setActivePdfModal(featuredNewsletter)}
+                          onClick={() => setActivePdfModal(activeNewsletter)}
                           className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition-colors cursor-pointer text-xs"
                           title="Layar Penuh"
                         >
@@ -197,8 +213,8 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
                     {/* Scrollable Frame using Safe Viewer (no download triggered) */}
                     <div className="relative w-full h-[480px] md:h-[530px] bg-gray-950 rounded-b-2xl border border-gray-800 overflow-hidden shadow-inner">
                       <iframe
-                        src={getSafeViewerUrl(featuredNewsletter.file_url)}
-                        title={featuredNewsletter.title}
+                        src={getSafeViewerUrl(activeNewsletter.file_url)}
+                        title={activeNewsletter.title}
                         className="w-full h-full border-0"
                       />
                     </div>
@@ -214,20 +230,20 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
                   <div className="bg-gray-50/70 rounded-2xl p-6 border border-gray-100 flex flex-col justify-between space-y-6 min-h-[460px]">
                     <div className="space-y-4">
                       <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider">
-                        Ringkasan Isi Edisi
+                        Ringkasan Dokumen & Edisi
                       </h4>
                       <p className="text-sm md:text-base text-gray-700 leading-relaxed">
-                        {featuredNewsletter.description}
+                        {activeNewsletter.description || `Publikasi resmi IYORA edisi ${activeNewsletter.edition}. Silakan buka dokumen pratinjau untuk melihat isi lengkap buletin.`}
                       </p>
 
                       {/* Topic tags */}
-                      {featuredNewsletter.tags && featuredNewsletter.tags.length > 0 && (
+                      {activeNewsletter.tags && activeNewsletter.tags.length > 0 && (
                         <div className="pt-2">
                           <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
                             Topik Utama
                           </p>
                           <div className="flex flex-wrap gap-1.5">
-                            {featuredNewsletter.tags.map((tag) => (
+                            {activeNewsletter.tags.map((tag) => (
                               <span
                                 key={tag}
                                 className="bg-white text-primary text-xs font-bold px-3 py-1 rounded-lg border border-primary/20 shadow-xs"
@@ -249,7 +265,7 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
                         <span>Buka Preview Dokumen</span>
                       </button>
                       <button
-                        onClick={() => setActivePdfModal(featuredNewsletter)}
+                        onClick={() => setActivePdfModal(activeNewsletter)}
                         className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white border border-gray-200 text-gray-800 font-bold text-xs hover:bg-gray-50 transition-all cursor-pointer"
                       >
                         <Eye size={15} className="text-primary" />
@@ -287,6 +303,104 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
               >
                 <span>{locale === "en" ? "Browse Competitions" : "Jelajahi Kompetisi"}</span>
               </Link>
+            </div>
+          </div>
+        )}
+
+        {/* ── 3. All Issues Grid List (when there are uploaded newsletters) ── */}
+        {newsletters && newsletters.length > 0 && (
+          <div className="space-y-8 pt-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-4">
+              <div>
+                <h3 className="text-2xl font-extrabold text-gray-900">
+                  {t("all_issues_title")}
+                </h3>
+                <p className="text-sm text-gray-500 mt-1">
+                  {t("all_issues_subtitle")} ({newsletters.length} {locale === "en" ? "publications" : "dokumen rilis"})
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {newsletters.map((item) => {
+                const isSelected = activeNewsletter?.id === item.id;
+                return (
+                  <div
+                    key={item.id}
+                    className={clsx(
+                      "bg-white rounded-2xl border p-5 flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:-translate-y-1",
+                      isSelected
+                        ? "border-primary ring-2 ring-primary/20 shadow-md"
+                        : "border-gray-200/80 shadow-sm"
+                    )}
+                  >
+                    <div className="space-y-3">
+                      {/* Top Badges */}
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+                          {item.edition}
+                        </span>
+                        <span className="text-[11px] text-gray-400 font-semibold">
+                          {item.published_at ? item.published_at.slice(0, 10) : ""}
+                        </span>
+                      </div>
+
+                      {/* Title */}
+                      <h4 className="text-base font-extrabold text-gray-900 line-clamp-2 leading-snug">
+                        {item.title}
+                      </h4>
+
+                      {/* Description */}
+                      <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed">
+                        {item.description || "Dokumen publikasi dan buletin resmi IYORA."}
+                      </p>
+
+                      {/* Tags */}
+                      {item.tags && item.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-1 pt-1">
+                          {item.tags.slice(0, 3).map((tag) => (
+                            <span
+                              key={tag}
+                              className="text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md"
+                            >
+                              #{tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="pt-4 mt-4 border-t border-gray-100 flex items-center justify-between gap-2">
+                      <button
+                        onClick={() => {
+                          setSelectedId(item.id);
+                          setFeaturedViewMode("preview");
+                          window.scrollTo({ top: 300, behavior: "smooth" });
+                        }}
+                        className={clsx(
+                          "px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
+                          isSelected
+                            ? "bg-primary text-white shadow-xs"
+                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        )}
+                      >
+                        <BookOpen size={13} />
+                        <span>{isSelected ? "Sedang Dibuka" : "Baca Online"}</span>
+                      </button>
+
+                      <button
+                        onClick={() => setActivePdfModal(item)}
+                        className="px-3 py-2 rounded-xl text-xs font-bold bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 flex items-center gap-1.5 transition-colors cursor-pointer"
+                        title="Layar Penuh"
+                      >
+                        <Eye size={13} className="text-primary" />
+                        <span>Layar Penuh</span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
