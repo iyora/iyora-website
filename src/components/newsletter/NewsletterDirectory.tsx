@@ -83,11 +83,9 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
                     key={item.id}
                     className="group bg-white rounded-3xl overflow-hidden border border-gray-200/90 shadow-md hover:shadow-2xl hover:shadow-primary/15 transition-all duration-300 hover:-translate-y-2 flex flex-col justify-between h-full"
                   >
-                    {/* Top Cover / Media Banner - Clickable in New Tab */}
+                    {/* Top Cover / Media Banner - Clickable in Same Tab */}
                     <Link
                       href={detailUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
                       className="relative block w-full aspect-[16/10] bg-gradient-to-br from-gray-900 via-[#1e3a5f] to-[#122842] overflow-hidden"
                     >
                       {item.cover_image && !item.cover_image.includes("placeholder") ? (
@@ -140,11 +138,9 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
                           <time>{item.published_at ? item.published_at.slice(0, 10) : "2026-09-25"}</time>
                         </div>
 
-                        {/* Title - Clickable in New Tab */}
+                        {/* Title - Clickable in Same Tab */}
                         <Link
                           href={detailUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
                           className="block"
                         >
                           <h3 className="text-lg font-extrabold text-gray-900 group-hover:text-primary transition-colors line-clamp-2 leading-snug">
@@ -176,12 +172,10 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
                       <div className="pt-4 border-t border-gray-100 flex items-center justify-between gap-2">
                         <Link
                           href={detailUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
                           className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-primary text-white font-bold text-xs shadow-md shadow-primary/20 hover:bg-primary-dark transition-all group-hover:shadow-lg"
                         >
                           <span>{locale === "en" ? "Read Issue" : "Baca Dokumen"}</span>
-                          <ExternalLink size={13} />
+                          <ArrowRight size={13} />
                         </Link>
 
                         <button
