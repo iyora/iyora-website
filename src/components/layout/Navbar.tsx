@@ -692,6 +692,9 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
               </div>
             </div>
           </div>
+          <Link href={href("/newsletter")} className={navLinkClass}>
+            {t("newsletter")}
+          </Link>
           <Link href={href("/partners")} className={navLinkClass}>
             {t("partners")}
           </Link>
@@ -794,6 +797,13 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
                 })}
               </div>
             )}
+            <Link
+              href={href("/newsletter")}
+              className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors"
+              onClick={() => setMobileOpen(false)}
+            >
+              {t("newsletter")}
+            </Link>
             <Link
               href={href("/partners")}
               className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors"

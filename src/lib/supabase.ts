@@ -1,5 +1,4 @@
 import { createClient } from "@supabase/supabase-js";
-import { DUMMY_NEWS, getDummyNewsBySlug } from "@/data/dummyNews";
 import {
   WinnerItem,
   WinnerMedal,
@@ -9,6 +8,12 @@ import {
   DUMMY_WINNER_ANNOUNCEMENTS,
   WINNER_STATS,
 } from "@/data/dummyWinners";
+import {
+  DUMMY_NEWSLETTERS,
+  getDummyNewsletters,
+  getDummyNewsletterBySlug,
+  DummyNewsletterItem,
+} from "@/data/dummyNewsletter";
 
 export type RegistrationStatus = "open" | "coming_soon" | "closed";
 
@@ -448,21 +453,109 @@ export interface GalleryItem {
   author?: string | null;
 }
 
+export function mapRawToNewsArticle(row: any, isEn: boolean = false): NewsArticle {
+  return {
+    id: String(row.id),
+    title: (isEn && (row.title_en || row.judul_en)) ? (row.title_en || row.judul_en) : (row.title || row.judul || ""),
+    slug: row.slug || String(row.id),
+    excerpt: (isEn && (row.caption_en || row.excerpt_en || row.summary_en))
+      ? (row.caption_en || row.excerpt_en || row.summary_en)
+      : (row.excerpt || row.caption || row.summary || row.ringkasan || null),
+    content: (isEn && (row.content_en || row.body_en || row.isi_en))
+      ? (row.content_en || row.body_en || row.isi_en)
+      : (row.content || row.body || row.isi || null),
+    cover_image: row.cover_image || row.image_url || row.photo || row.thumbnail_url || row.cover || null,
+    photos: Array.isArray(row.photos) ? row.photos : (Array.isArray(row.gallery_images) ? row.gallery_images : null),
+    category: (row.category || row.kategori || "news") as NewsCategory,
+    published_at: row.published_at || row.publish_date || row.tanggal_terbit || row.created_at || null,
+    created_at: row.created_at || row.published_at || new Date().toISOString(),
+    external_link: row.external_link || row.link || row.url || null,
+    external_link_label: (isEn && (row.external_link_label_en || row.linkLabel_en || row.link_label_en))
+      ? (row.external_link_label_en || row.linkLabel_en || row.link_label_en)
+      : (row.external_link_label || row.linkLabel || row.link_label || null),
+    external_link2: row.external_link2 || row.link2 || null,
+    external_link2_label: (isEn && (row.external_link2_label_en || row.link2Label_en))
+      ? (row.external_link2_label_en || row.link2Label_en)
+      : (row.external_link2_label || row.link2Label || null),
+    external_link3: row.external_link3 || row.link3 || null,
+    external_link3_label: (isEn && (row.external_link3_label_en || row.link3Label_en))
+      ? (row.external_link3_label_en || row.link3Label_en)
+      : (row.external_link3_label || row.link3Label || null),
+    external_link4: row.external_link4 || row.link4 || null,
+    external_link4_label: (isEn && (row.external_link4_label_en || row.link4Label_en))
+      ? (row.external_link4_label_en || row.link4Label_en)
+      : (row.external_link4_label || row.link4Label || null),
+    external_link5: row.external_link5 || row.link5 || null,
+    external_link5_label: (isEn && (row.external_link5_label_en || row.link5Label_en))
+      ? (row.external_link5_label_en || row.link5Label_en)
+      : (row.external_link5_label || row.link5Label || null),
+    author: row.author || row.penulis || "IyoraOlympiade",
+  };
+}
+
+export function mapRawToGalleryItem(row: any, isEn: boolean = false): GalleryItem {
+  return {
+    id: String(row.id),
+    title: (isEn && (row.title_en || row.judul_en)) ? (row.title_en || row.judul_en) : (row.title || row.judul || ""),
+    slug: row.slug || String(row.id),
+    description: (isEn && (row.caption_en || row.description_en))
+      ? (row.caption_en || row.description_en)
+      : (row.description || row.caption || row.excerpt || null),
+    excerpt: (isEn && (row.caption_en || row.excerpt_en))
+      ? (row.caption_en || row.excerpt_en)
+      : (row.excerpt || row.description || row.caption || null),
+    content: (isEn && (row.content_en || row.body_en))
+      ? (row.content_en || row.body_en)
+      : (row.content || row.description || null),
+    image_url: row.image_url || row.cover_image || row.photo || "",
+    cover_image: row.cover_image || row.image_url || row.photo || null,
+    photos: Array.isArray(row.photos) ? row.photos : (Array.isArray(row.gallery_images) ? row.gallery_images : null),
+    category: row.category || "gallery",
+    created_at: row.created_at || row.published_at || new Date().toISOString(),
+    published_at: row.published_at || row.created_at || null,
+    external_link: row.external_link || row.link || null,
+    external_link_label: (isEn && (row.external_link_label_en || row.linkLabel_en))
+      ? (row.external_link_label_en || row.linkLabel_en)
+      : (row.external_link_label || row.linkLabel || null),
+    author: row.author || row.penulis || "IyoraOlympiade",
+  };
+}
+
 export async function fetchNewsByCategory(
-  category: NewsCategory
+  category: NewsCategory,
+  locale?: string
 ): Promise<NewsArticle[]> {
+  const isEn = locale === "en";
+  const dashboardUrl =
+    process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.iyora.or.id";
+
+  // 1. Coba ambil dari Dashboard API
+  try {
+    const res = await fetch(`${dashboardUrl}/api/public/news?category=${category}`, {
+      next: { revalidate: 60 },
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (Array.isArray(json.data) && json.data.length > 0) {
+        return json.data.map((row: any) => mapRawToNewsArticle(row, isEn));
+      }
+    }
+  } catch {
+    // Lanjut ke Supabase client
+  }
+
+  // 2. Query langsung ke Supabase
   try {
     const supabase = createSupabase();
-
     const { data, error } = await supabase
       .from("news")
-      .select("id, title, slug, excerpt, content, cover_image, category, published_at, created_at")
+      .select("*")
       .eq("category", category)
       .eq("is_published", true)
       .order("published_at", { ascending: false });
 
     if (error || !data) return [];
-    return data as NewsArticle[];
+    return data.map((row: any) => mapRawToNewsArticle(row, isEn));
   } catch {
     return [];
   }
@@ -473,88 +566,50 @@ export async function fetchNewsBySlug(
   locale?: string
 ): Promise<NewsArticle | null> {
   const isEn = locale === "en";
+  const dashboardUrl =
+    process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.iyora.or.id";
+
+  // 1. Coba ambil dari Dashboard API
+  try {
+    const res = await fetch(`${dashboardUrl}/api/public/news/${encodeURIComponent(slug)}`, {
+      next: { revalidate: 60 },
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.data) {
+        return mapRawToNewsArticle(json.data, isEn);
+      }
+    }
+  } catch {
+    // Lanjut ke Supabase client
+  }
+
+  // 2. Query ke Supabase table news
   try {
     const supabase = createSupabase();
-
     const { data, error } = await supabase
       .from("news")
-      .select("id, title, slug, excerpt, content, cover_image, category, published_at, created_at")
+      .select("*")
       .eq("slug", slug)
       .eq("is_published", true)
-      .single();
+      .maybeSingle();
 
     if (error || !data) {
-      const dummy = getDummyNewsBySlug(slug);
-      if (!dummy) return null;
-      return {
-        id: dummy.id,
-        title: (isEn && dummy.title_en) ? dummy.title_en : dummy.title,
-        slug: dummy.slug,
-        excerpt: (isEn && dummy.caption_en) ? dummy.caption_en : dummy.caption,
-        content: (isEn && dummy.content_en) ? dummy.content_en : (dummy.content ?? null),
-        cover_image: dummy.photo,
-        photos: dummy.photos ?? null,
-        category: (dummy.category as NewsCategory) || "news",
-        published_at: dummy.publishedAt,
-        created_at: dummy.publishedAt,
-        external_link: dummy.link,
-        external_link_label: (isEn && dummy.linkLabel_en) ? dummy.linkLabel_en : (dummy.linkLabel ?? null),
-        external_link2: dummy.link2 ?? null,
-        external_link2_label: (isEn && dummy.link2Label_en) ? dummy.link2Label_en : (dummy.link2Label ?? null),
-        external_link3: dummy.link3 ?? null,
-        external_link3_label: (isEn && dummy.link3Label_en) ? dummy.link3Label_en : (dummy.link3Label ?? null),
-        external_link4: dummy.link4 ?? null,
-        external_link4_label: (isEn && dummy.link4Label_en) ? dummy.link4Label_en : (dummy.link4Label ?? null),
-        external_link5: dummy.link5 ?? null,
-        external_link5_label: (isEn && dummy.link5Label_en) ? dummy.link5Label_en : (dummy.link5Label ?? null),
-        author: dummy.author ?? "IyoraOlympiade",
-      };
+      // Coba cari berdasarkan ID jika slug berupa UUID/ID
+      const { data: idData } = await supabase
+        .from("news")
+        .select("*")
+        .eq("id", slug)
+        .eq("is_published", true)
+        .maybeSingle();
+
+      if (idData) return mapRawToNewsArticle(idData, isEn);
+      return null;
     }
-    const dummy = getDummyNewsBySlug(slug);
-    return {
-      ...(data as NewsArticle),
-      title: isEn && dummy?.title_en ? dummy.title_en : (data as NewsArticle).title,
-      excerpt: isEn && dummy?.caption_en ? dummy.caption_en : (data as NewsArticle).excerpt,
-      content: isEn && dummy?.content_en ? dummy.content_en : (data as NewsArticle).content,
-      photos: dummy?.photos ?? null,
-      external_link: dummy?.link ?? null,
-      external_link_label: (isEn && dummy?.linkLabel_en) ? dummy.linkLabel_en : (dummy?.linkLabel ?? null),
-      external_link2: dummy?.link2 ?? null,
-      external_link2_label: (isEn && dummy?.link2Label_en) ? dummy.link2Label_en : (dummy?.link2Label ?? null),
-      external_link3: dummy?.link3 ?? null,
-      external_link3_label: (isEn && dummy?.link3Label_en) ? dummy.link3Label_en : (dummy?.link3Label ?? null),
-      external_link4: dummy?.link4 ?? null,
-      external_link4_label: (isEn && dummy?.link4Label_en) ? dummy.link4Label_en : (dummy?.link4Label ?? null),
-      external_link5: dummy?.link5 ?? null,
-      external_link5_label: (isEn && dummy?.link5Label_en) ? dummy.link5Label_en : (dummy?.link5Label ?? null),
-      author: dummy?.author ?? "IyoraOlympiade",
-    };
+
+    return mapRawToNewsArticle(data, isEn);
   } catch {
-    const dummy = getDummyNewsBySlug(slug);
-    if (!dummy) return null;
-    return {
-      id: dummy.id,
-      title: (isEn && dummy.title_en) ? dummy.title_en : dummy.title,
-      slug: dummy.slug,
-      excerpt: (isEn && dummy.caption_en) ? dummy.caption_en : dummy.caption,
-      content: (isEn && dummy.content_en) ? dummy.content_en : (dummy.content ?? null),
-      cover_image: dummy.photo,
-      photos: dummy.photos ?? null,
-      category: (dummy.category as NewsCategory) || "news",
-      published_at: dummy.publishedAt,
-      created_at: dummy.publishedAt,
-      external_link: dummy.link,
-      external_link_label: (isEn && dummy.linkLabel_en) ? dummy.linkLabel_en : (dummy.linkLabel ?? null),
-      external_link2: dummy.link2 ?? null,
-      external_link2_label: (isEn && dummy.link2Label_en) ? dummy.link2Label_en : (dummy.link2Label ?? null),
-      external_link3: dummy.link3 ?? null,
-      external_link3_label: (isEn && dummy.link3Label_en) ? dummy.link3Label_en : (dummy.link3Label ?? null),
-      external_link4: dummy.link4 ?? null,
-      external_link4_label: (isEn && dummy.link4Label_en) ? dummy.link4Label_en : (dummy.link4Label ?? null),
-      external_link5: dummy.link5 ?? null,
-      external_link5_label: (isEn && dummy.link5Label_en) ? dummy.link5Label_en : (dummy.link5Label ?? null),
-      author: dummy.author ?? "IyoraOlympiade",
-    };
+    return null;
   }
 }
 
@@ -566,211 +621,111 @@ export async function fetchAllNews(locale?: string): Promise<{
   gallery: GalleryItem[];
 }> {
   const isEn = locale === "en";
+  const dashboardUrl =
+    process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.iyora.or.id";
+
+  // 1. Coba ambil dari Dashboard Public API
+  try {
+    const [newsRes, galleryRes] = await Promise.all([
+      fetch(`${dashboardUrl}/api/public/news`, { next: { revalidate: 60 } }),
+      fetch(`${dashboardUrl}/api/public/gallery`, { next: { revalidate: 60 } }),
+    ]);
+
+    if (newsRes.ok) {
+      const newsJson = await newsRes.json();
+      if (Array.isArray(newsJson.data) && newsJson.data.length > 0) {
+        const allArticles: NewsArticle[] = newsJson.data.map((row: any) => mapRawToNewsArticle(row, isEn));
+        let galleryItems: GalleryItem[] = [];
+
+        if (galleryRes.ok) {
+          const galleryJson = await galleryRes.json();
+          if (Array.isArray(galleryJson.data)) {
+            galleryItems = galleryJson.data.map((row: any) => mapRawToGalleryItem(row, isEn));
+          }
+        }
+
+        return {
+          news: allArticles.filter((a: NewsArticle) => a.category === "news"),
+          announcements: allArticles.filter((a: NewsArticle) => a.category === "announcement"),
+          pressRelease: allArticles.filter((a: NewsArticle) => a.category === "press_release"),
+          documentation: allArticles.filter((a: NewsArticle) => a.category === "documentation"),
+          gallery: galleryItems.length > 0 ? galleryItems : allArticles.filter((a: NewsArticle) => a.category === "gallery").map((a: NewsArticle) => ({
+            id: a.id,
+            title: a.title,
+            description: a.excerpt,
+            image_url: a.cover_image || "",
+            photos: a.photos,
+            category: "gallery",
+            created_at: a.created_at,
+            slug: a.slug,
+            excerpt: a.excerpt,
+            content: a.content,
+            cover_image: a.cover_image,
+            published_at: a.published_at,
+            external_link: a.external_link,
+            external_link_label: a.external_link_label,
+            author: a.author,
+          })),
+        };
+      }
+    }
+  } catch {
+    // Fallback ke Supabase langsung
+  }
+
+  // 2. Query langsung ke tabel Supabase
   try {
     const supabase = createSupabase();
 
-    const [newsRes, announcementsRes, pressReleaseRes, documentationRes, galleryRes] =
-      await Promise.all([
-        supabase
-          .from("news")
-          .select("id, title, slug, excerpt, content, cover_image, category, published_at, created_at")
-          .eq("category", "news")
-          .eq("is_published", true)
-          .order("published_at", { ascending: false }),
-        supabase
-          .from("news")
-          .select("id, title, slug, excerpt, content, cover_image, category, published_at, created_at")
-          .eq("category", "announcement")
-          .eq("is_published", true)
-          .order("published_at", { ascending: false }),
-        supabase
-          .from("news")
-          .select("id, title, slug, excerpt, content, cover_image, category, published_at, created_at")
-          .eq("category", "press_release")
-          .eq("is_published", true)
-          .order("published_at", { ascending: false }),
-        supabase
-          .from("news")
-          .select("id, title, slug, excerpt, content, cover_image, category, published_at, created_at")
-          .eq("category", "documentation")
-          .eq("is_published", true)
-          .order("published_at", { ascending: false }),
-        supabase
-          .from("gallery")
-          .select("id, title, description, image_url, category, created_at")
-          .eq("is_published", true)
-          .order("created_at", { ascending: false }),
-      ]);
+    const [newsRes, galleryRes] = await Promise.all([
+      supabase
+        .from("news")
+        .select("*")
+        .eq("is_published", true)
+        .order("published_at", { ascending: false }),
+      supabase
+        .from("gallery")
+        .select("*")
+        .eq("is_published", true)
+        .order("created_at", { ascending: false }),
+    ]);
 
-    const newsData = (newsRes.data as NewsArticle[]) ?? [];
-    const announcementsData = (announcementsRes.data as NewsArticle[]) ?? [];
-    const pressReleaseData = (pressReleaseRes.data as NewsArticle[]) ?? [];
-    const documentationData = (documentationRes.data as NewsArticle[]) ?? [];
-    const galleryData = (galleryRes.data as GalleryItem[]) ?? [];
+    const rawNews = (newsRes.data as any[]) ?? [];
+    const rawGallery = (galleryRes.data as any[]) ?? [];
 
-    const defaultNews: NewsArticle[] = DUMMY_NEWS.filter((item) => item.category === "news")
-      .map((item) => ({
-        id: item.id,
-        title: (isEn && item.title_en) ? item.title_en : item.title,
-        slug: item.slug,
-        excerpt: (isEn && item.caption_en) ? item.caption_en : item.caption,
-        content: (isEn && item.content_en) ? item.content_en : (item.content ?? null),
-        cover_image: item.photo,
-        category: "news" as const,
-        published_at: item.publishedAt,
-        created_at: item.publishedAt,
-        external_link: item.link,
-        author: item.author ?? null,
-      }))
-      .sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime());
-
-    const defaultAnnouncements: NewsArticle[] = DUMMY_NEWS.filter((item) => item.category === "announcement")
-      .map((item) => ({
-        id: item.id,
-        title: (isEn && item.title_en) ? item.title_en : item.title,
-        slug: item.slug,
-        excerpt: (isEn && item.caption_en) ? item.caption_en : item.caption,
-        content: (isEn && item.content_en) ? item.content_en : (item.content ?? null),
-        cover_image: item.photo,
-        category: "announcement" as const,
-        published_at: item.publishedAt,
-        created_at: item.publishedAt,
-        external_link: item.link,
-        author: item.author ?? null,
-      }))
-      .sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime());
-
-    const defaultPressRelease: NewsArticle[] = DUMMY_NEWS.filter((item) => item.category === "press_release")
-      .map((item) => ({
-        id: item.id,
-        title: (isEn && item.title_en) ? item.title_en : item.title,
-        slug: item.slug,
-        excerpt: (isEn && item.caption_en) ? item.caption_en : item.caption,
-        content: (isEn && item.content_en) ? item.content_en : (item.content ?? null),
-        cover_image: item.photo,
-        category: "press_release" as const,
-        published_at: item.publishedAt,
-        created_at: item.publishedAt,
-        external_link: item.link,
-        author: item.author ?? null,
-      }))
-      .sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime());
-
-    const defaultGallery: GalleryItem[] = DUMMY_NEWS.filter((item) => item.category === "gallery").map((item) => ({
-      id: item.id,
-      title: (isEn && item.title_en) ? item.title_en : item.title,
-      slug: item.slug,
-      description: (isEn && item.caption_en) ? item.caption_en : item.caption,
-      excerpt: (isEn && item.caption_en) ? item.caption_en : item.caption,
-      content: (isEn && item.content_en) ? item.content_en : (item.content ?? null),
-      image_url: item.photo,
-      cover_image: item.photo,
-      photos: item.photos ?? null,
-      category: "gallery",
-      created_at: item.publishedAt,
-      published_at: item.publishedAt,
-      external_link: item.link ?? null,
-      external_link_label: (isEn && item.linkLabel_en) ? item.linkLabel_en : (item.linkLabel ?? null),
-      author: item.author ?? "IyoraOlympiade",
-    }));
-
-    const formattedGalleryData: GalleryItem[] = galleryData.map((item) => {
-      const dummy = getDummyNewsBySlug(item.slug || item.id);
-      return {
-        ...item,
-        title: (isEn && dummy?.title_en) ? dummy.title_en : (item.title || dummy?.title || ""),
-        slug: item.slug || dummy?.slug || item.id,
-        description: (isEn && dummy?.caption_en) ? dummy.caption_en : (item.description || dummy?.caption || null),
-        excerpt: (isEn && dummy?.caption_en) ? dummy.caption_en : (item.description || dummy?.caption || null),
-        content: (isEn && dummy?.content_en) ? dummy.content_en : (dummy?.content ?? item.description ?? null),
-        cover_image: item.image_url || dummy?.photo,
-        image_url: item.image_url || dummy?.photo || "",
-        published_at: item.created_at || dummy?.publishedAt,
-        external_link: item.external_link || dummy?.link || null,
-        external_link_label: (isEn && dummy?.linkLabel_en) ? dummy.linkLabel_en : (dummy?.linkLabel ?? null),
-        author: dummy?.author ?? "IyoraOlympiade",
-      };
-    });
-
-    const combinedNews = [...newsData, ...defaultNews.filter((d) => !newsData.some((n) => n.id === d.id))];
-    const combinedAnnouncements = [...announcementsData, ...defaultAnnouncements.filter((d) => !announcementsData.some((n) => n.id === d.id))];
-    const combinedPressRelease = [...pressReleaseData, ...defaultPressRelease.filter((d) => !pressReleaseData.some((n) => n.id === d.id))];
-    const combinedGallery = [...formattedGalleryData, ...defaultGallery.filter((d) => !formattedGalleryData.some((n) => n.id === d.id))];
+    const articles: NewsArticle[] = rawNews.map((r: any) => mapRawToNewsArticle(r, isEn));
+    const galleryItems: GalleryItem[] = rawGallery.map((g: any) => mapRawToGalleryItem(g, isEn));
 
     return {
-      news: combinedNews.sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime()),
-      announcements: combinedAnnouncements.sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime()),
-      pressRelease: combinedPressRelease.sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime()),
-      documentation: documentationData,
-      gallery: combinedGallery.sort((a, b) => new Date(b.published_at ?? b.created_at ?? 0).getTime() - new Date(a.published_at ?? a.created_at ?? 0).getTime()),
+      news: articles.filter((a: NewsArticle) => a.category === "news"),
+      announcements: articles.filter((a: NewsArticle) => a.category === "announcement"),
+      pressRelease: articles.filter((a: NewsArticle) => a.category === "press_release"),
+      documentation: articles.filter((a: NewsArticle) => a.category === "documentation"),
+      gallery: galleryItems.length > 0 ? galleryItems : articles.filter((a: NewsArticle) => a.category === "gallery").map((a: NewsArticle) => ({
+        id: a.id,
+        title: a.title,
+        description: a.excerpt,
+        image_url: a.cover_image || "",
+        photos: a.photos,
+        category: "gallery",
+        created_at: a.created_at,
+        slug: a.slug,
+        excerpt: a.excerpt,
+        content: a.content,
+        cover_image: a.cover_image,
+        published_at: a.published_at,
+        external_link: a.external_link,
+        author: a.author,
+      })),
     };
   } catch {
-    const defaultNews: NewsArticle[] = DUMMY_NEWS.filter((item) => item.category === "news")
-      .map((item) => ({
-        id: item.id,
-        title: (isEn && item.title_en) ? item.title_en : item.title,
-        slug: item.slug,
-        excerpt: (isEn && item.caption_en) ? item.caption_en : item.caption,
-        content: (isEn && item.content_en) ? item.content_en : (item.content ?? null),
-        cover_image: item.photo,
-        category: "news" as const,
-        published_at: item.publishedAt,
-        created_at: item.publishedAt,
-        external_link: item.link,
-        author: item.author ?? null,
-      }))
-      .sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime());
-
-    const defaultAnnouncements: NewsArticle[] = DUMMY_NEWS.filter((item) => item.category === "announcement")
-      .map((item) => ({
-        id: item.id,
-        title: (isEn && item.title_en) ? item.title_en : item.title,
-        slug: item.slug,
-        excerpt: (isEn && item.caption_en) ? item.caption_en : item.caption,
-        content: (isEn && item.content_en) ? item.content_en : (item.content ?? null),
-        cover_image: item.photo,
-        category: "announcement" as const,
-        published_at: item.publishedAt,
-        created_at: item.publishedAt,
-        external_link: item.link,
-        author: item.author ?? null,
-      }))
-      .sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime());
-
-    const defaultPressRelease: NewsArticle[] = DUMMY_NEWS.filter((item) => item.category === "press_release")
-      .map((item) => ({
-        id: item.id,
-        title: (isEn && item.title_en) ? item.title_en : item.title,
-        slug: item.slug,
-        excerpt: (isEn && item.caption_en) ? item.caption_en : item.caption,
-        content: (isEn && item.content_en) ? item.content_en : (item.content ?? null),
-        cover_image: item.photo,
-        category: "press_release" as const,
-        published_at: item.publishedAt,
-        created_at: item.publishedAt,
-        external_link: item.link,
-        author: item.author ?? null,
-      }))
-      .sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime());
-
-    const defaultGallery: GalleryItem[] = DUMMY_NEWS.filter((item) => item.category === "gallery").map((item) => ({
-      id: item.id,
-      title: (isEn && item.title_en) ? item.title_en : item.title,
-      slug: item.slug,
-      description: (isEn && item.caption_en) ? item.caption_en : item.caption,
-      excerpt: (isEn && item.caption_en) ? item.caption_en : item.caption,
-      content: (isEn && item.content_en) ? item.content_en : (item.content ?? null),
-      image_url: item.photo,
-      cover_image: item.photo,
-      category: "gallery",
-      created_at: item.publishedAt,
-      published_at: item.publishedAt,
-      external_link: item.link ?? null,
-      external_link_label: (isEn && item.linkLabel_en) ? item.linkLabel_en : (item.linkLabel ?? null),
-      author: item.author ?? "IyoraOlympiade",
-    }));
-
-    return { news: defaultNews, announcements: defaultAnnouncements, pressRelease: defaultPressRelease, documentation: [], gallery: defaultGallery };
+    return {
+      news: [],
+      announcements: [],
+      pressRelease: [],
+      documentation: [],
+      gallery: [],
+    };
   }
 }
 
@@ -805,137 +760,43 @@ export interface NewsPreviewData {
 export async function fetchNewsPreview(locale?: string): Promise<NewsPreviewData> {
   const isEn = locale === "en";
   try {
-    const supabase = createSupabase();
-
-    const [newsRes, announcementsRes, pressReleaseRes, galleryRes] = await Promise.all([
-      supabase
-        .from("news")
-        .select("id, title, slug, cover_image, published_at, created_at")
-        .eq("category", "news")
-        .eq("is_published", true)
-        .order("published_at", { ascending: false })
-        .limit(3),
-      supabase
-        .from("news")
-        .select("id, title, slug, cover_image, published_at, created_at")
-        .eq("category", "announcement")
-        .eq("is_published", true)
-        .order("published_at", { ascending: false })
-        .limit(3),
-      supabase
-        .from("news")
-        .select("id, title, slug, cover_image, published_at, created_at")
-        .eq("category", "press_release")
-        .eq("is_published", true)
-        .order("published_at", { ascending: false })
-        .limit(3),
-      supabase
-        .from("gallery")
-        .select("id, title, image_url, created_at")
-        .eq("is_published", true)
-        .order("created_at", { ascending: false })
-        .limit(3),
-    ]);
-
-    const newsData = (newsRes.data as NewsPreviewItem[]) ?? [];
-    const announcementsData = (announcementsRes.data as NewsPreviewItem[]) ?? [];
-    const pressReleaseData = (pressReleaseRes.data as NewsPreviewItem[]) ?? [];
-    const galleryData = (galleryRes.data as GalleryPreviewItem[]) ?? [];
-
-    const defaultNews: NewsPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "news").slice(0, 3).map((item) => ({
-      id: item.id,
-      title: (isEn && item.title_en) ? item.title_en : item.title,
-      slug: item.slug,
-      cover_image: item.photo,
-      published_at: item.publishedAt,
-      created_at: item.publishedAt,
-    }));
-
-    const defaultAnnouncements: NewsPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "announcement").slice(0, 3).map((item) => ({
-      id: item.id,
-      title: (isEn && item.title_en) ? item.title_en : item.title,
-      slug: item.slug,
-      cover_image: item.photo,
-      published_at: item.publishedAt,
-      created_at: item.publishedAt,
-    }));
-
-    const defaultPressRelease: NewsPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "press_release").slice(0, 3).map((item) => ({
-      id: item.id,
-      title: (isEn && item.title_en) ? item.title_en : item.title,
-      slug: item.slug,
-      cover_image: item.photo,
-      published_at: item.publishedAt,
-      created_at: item.publishedAt,
-    }));
-
-    const defaultGallery: GalleryPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "gallery").slice(0, 3).map((item) => ({
-      id: item.id,
-      title: (isEn && item.title_en) ? item.title_en : item.title,
-      slug: item.slug,
-      image_url: item.photo,
-      created_at: item.publishedAt,
-    }));
-
-    const formattedGalleryData: GalleryPreviewItem[] = galleryData.map((item) => {
-      const dummy = getDummyNewsBySlug(item.slug || item.id);
-      return {
-        id: item.id,
-        title: (isEn && dummy?.title_en) ? dummy.title_en : (item.title || dummy?.title || ""),
-        slug: item.slug || dummy?.slug || item.id,
-        image_url: item.image_url || dummy?.photo || "",
-        created_at: item.created_at || dummy?.publishedAt,
-      };
-    });
-
-    const combinedNews = [...newsData, ...defaultNews.filter((d) => !newsData.some((n) => n.id === d.id))].slice(0, 3);
-    const combinedAnnouncements = [...announcementsData, ...defaultAnnouncements.filter((d) => !announcementsData.some((n) => n.id === d.id))].slice(0, 3);
-    const combinedPressRelease = [...pressReleaseData, ...defaultPressRelease.filter((d) => !pressReleaseData.some((n) => n.id === d.id))].slice(0, 3);
-    const combinedGallery = [...formattedGalleryData, ...defaultGallery.filter((d) => !formattedGalleryData.some((n) => n.id === d.id))].slice(0, 3);
+    const all = await fetchAllNews(locale);
 
     return {
-      news: combinedNews,
-      announcements: combinedAnnouncements,
-      pressRelease: combinedPressRelease,
-      gallery: combinedGallery,
+      news: all.news.slice(0, 3).map((item) => ({
+        id: item.id,
+        title: item.title,
+        slug: item.slug,
+        cover_image: item.cover_image,
+        published_at: item.published_at,
+        created_at: item.created_at,
+      })),
+      announcements: all.announcements.slice(0, 3).map((item) => ({
+        id: item.id,
+        title: item.title,
+        slug: item.slug,
+        cover_image: item.cover_image,
+        published_at: item.published_at,
+        created_at: item.created_at,
+      })),
+      pressRelease: all.pressRelease.slice(0, 3).map((item) => ({
+        id: item.id,
+        title: item.title,
+        slug: item.slug,
+        cover_image: item.cover_image,
+        published_at: item.published_at,
+        created_at: item.created_at,
+      })),
+      gallery: all.gallery.slice(0, 3).map((item) => ({
+        id: item.id,
+        title: item.title,
+        slug: item.slug,
+        image_url: item.image_url,
+        created_at: item.created_at,
+      })),
     };
   } catch {
-    const defaultNews: NewsPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "news").slice(0, 3).map((item) => ({
-      id: item.id,
-      title: (isEn && item.title_en) ? item.title_en : item.title,
-      slug: item.slug,
-      cover_image: item.photo,
-      published_at: item.publishedAt,
-      created_at: item.publishedAt,
-    }));
-
-    const defaultAnnouncements: NewsPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "announcement").slice(0, 3).map((item) => ({
-      id: item.id,
-      title: (isEn && item.title_en) ? item.title_en : item.title,
-      slug: item.slug,
-      cover_image: item.photo,
-      published_at: item.publishedAt,
-      created_at: item.publishedAt,
-    }));
-
-    const defaultPressRelease: NewsPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "press_release").slice(0, 3).map((item) => ({
-      id: item.id,
-      title: (isEn && item.title_en) ? item.title_en : item.title,
-      slug: item.slug,
-      cover_image: item.photo,
-      published_at: item.publishedAt,
-      created_at: item.publishedAt,
-    }));
-
-    const defaultGallery: GalleryPreviewItem[] = DUMMY_NEWS.filter((item) => item.category === "gallery").slice(0, 3).map((item) => ({
-      id: item.id,
-      title: (isEn && item.title_en) ? item.title_en : item.title,
-      slug: item.slug,
-      image_url: item.photo,
-      created_at: item.publishedAt,
-    }));
-
-    return { news: defaultNews, announcements: defaultAnnouncements, pressRelease: defaultPressRelease, gallery: defaultGallery };
+    return { news: [], announcements: [], pressRelease: [], gallery: [] };
   }
 }
 
@@ -1180,3 +1041,141 @@ export async function fetchWinnerStats(winnersList?: WinnerItem[]) {
     };
   }
 }
+
+/* ───────────────────────────────────────────────
+   NEWSLETTER / WARTA IYORA
+   ─────────────────────────────────────────────── */
+
+export interface NewsletterItem {
+  id: string;
+  slug: string;
+  title: string;
+  title_en?: string;
+  edition: string;
+  edition_en?: string;
+  description: string;
+  description_en?: string;
+  cover_image: string;
+  file_url: string;
+  published_at: string;
+  created_at?: string;
+  author?: string;
+  pages?: number | null;
+  featured?: boolean;
+  tags?: string[];
+  read_time?: string;
+  views?: number;
+}
+
+function mapRawToNewsletter(row: any, isEn: boolean = false): NewsletterItem {
+  const dummy = getDummyNewsletterBySlug(row.slug || String(row.id));
+  const rawTags = row.tags || dummy?.tags;
+  const tags = Array.isArray(rawTags)
+    ? rawTags
+    : typeof rawTags === "string"
+      ? rawTags.split(",").map((s: string) => s.trim()).filter(Boolean)
+      : [];
+
+  return {
+    id: String(row.id),
+    slug: row.slug || dummy?.slug || String(row.id),
+    title: (isEn && (row.title_en || dummy?.title_en)) ? (row.title_en || dummy?.title_en) : (row.title || row.judul || dummy?.title || ""),
+    title_en: row.title_en || dummy?.title_en || row.title || row.judul,
+    edition: (isEn && (row.edition_en || dummy?.edition_en)) ? (row.edition_en || dummy?.edition_en) : (row.edition || row.edisi || dummy?.edition || "Edisi Terbaru"),
+    edition_en: row.edition_en || dummy?.edition_en || row.edition || row.edisi,
+    description: (isEn && (row.description_en || dummy?.description_en)) ? (row.description_en || dummy?.description_en) : (row.description || row.deskripsi || row.summary || dummy?.description || ""),
+    description_en: row.description_en || dummy?.description_en || row.description || row.deskripsi,
+    cover_image: row.cover_image || row.cover_url || row.cover || row.image_url || dummy?.coverImage || "/images/galeri/press.jpeg",
+    file_url: row.file_url || row.pdf_url || row.download_url || row.file || dummy?.fileUrl || "#",
+    published_at: row.published_at || row.publish_date || row.tanggal_terbit || dummy?.publishedAt || row.created_at || new Date().toISOString(),
+    created_at: row.created_at || dummy?.publishedAt,
+    author: row.author || row.penulis || dummy?.author || "Redaksi IYORA Bulletin",
+    pages: Number(row.pages || row.jumlah_halaman || row.page_count || dummy?.pages) || null,
+    featured: Boolean(row.featured ?? row.is_featured ?? dummy?.featured ?? false),
+    tags,
+    read_time: row.read_time || dummy?.readTime || "5 min read",
+    views: Number(row.views || row.view_count || row.readers || dummy?.views) || 1200,
+  };
+}
+
+export async function fetchNewslettersData(locale?: string): Promise<NewsletterItem[]> {
+  const isEn = locale === "en";
+
+  // 1. Coba ambil dari Endpoint Public API Dashboard
+  try {
+    const dashboardUrl =
+      process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.iyora.or.id";
+    const endpoints = [
+      `${dashboardUrl}/api/public/newsletters`,
+      `${dashboardUrl}/api/public/newsletter`,
+    ];
+
+    for (const url of endpoints) {
+      try {
+        const res = await fetch(url, {
+          next: { revalidate: 60 },
+          signal: AbortSignal.timeout(4000),
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.ok && Array.isArray(json.data) && json.data.length > 0) {
+            return json.data.map((row: any) => mapRawToNewsletter(row, isEn));
+          }
+        }
+      } catch {
+        // Coba endpoint selanjutnya
+      }
+    }
+  } catch {
+    // Fallback ke Supabase / Dummy
+  }
+
+  // 2. Fallback: Ambil langsung dari Supabase Client (Tabel newsletters atau news dengan category newsletter)
+  try {
+    const supabase = createSupabase();
+
+    // Cek tabel 'newsletters'
+    const { data, error } = await supabase
+      .from("newsletters")
+      .select("*")
+      .eq("is_published", true)
+      .order("published_at", { ascending: false });
+
+    if (!error && data && data.length > 0) {
+      return data.map((row: any) => mapRawToNewsletter(row, isEn));
+    }
+
+    // Cek tabel 'news' dengan category 'newsletter'
+    try {
+      const { data: newsCategoryData } = await supabase
+        .from("news")
+        .select("*")
+        .eq("category", "newsletter")
+        .eq("is_published", true)
+        .order("published_at", { ascending: false });
+
+      if (newsCategoryData && newsCategoryData.length > 0) {
+        return newsCategoryData.map((row: any) => mapRawToNewsletter(row, isEn));
+      }
+    } catch {
+      // Abaikan jika tidak ada category newsletter di tabel news
+    }
+
+    // 3. Fallback dummy data
+    return getDummyNewsletters().map((item) => mapRawToNewsletter(item, isEn));
+  } catch {
+    return getDummyNewsletters().map((item) => mapRawToNewsletter(item, isEn));
+  }
+}
+
+export async function fetchNewsletterBySlug(slug: string, locale?: string): Promise<NewsletterItem | null> {
+  const isEn = locale === "en";
+  const all = await fetchNewslettersData(locale);
+  const found = all.find((n) => n.slug === slug || n.id === slug);
+  if (found) return found;
+
+  const dummy = getDummyNewsletterBySlug(slug);
+  if (dummy) return mapRawToNewsletter(dummy, isEn);
+  return null;
+}
+

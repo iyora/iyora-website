@@ -131,6 +131,14 @@ export default function Footer() {
                   {t("sk_label")}
                 </Link>
               </li>
+              <li>
+                <Link
+                  href={href("/newsletter")}
+                  className="text-sm text-white/50 hover:text-teal transition-colors"
+                >
+                  {t("newsletter_label")}
+                </Link>
+              </li>
             </ul>
           </div>
 
