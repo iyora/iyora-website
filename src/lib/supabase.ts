@@ -1,4 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
+import { STATISTIK_CADANGAN, type StatistikSitus } from "@/data/statistik";
+import { DUMMY_NEWS, getDummyNewsBySlug } from "@/data/dummyNews";
 import {
   WinnerItem,
   WinnerMedal,
@@ -1256,3 +1258,36 @@ export async function fetchNewsletterBySlug(slug: string, locale?: string): Prom
 }
 
 
+/**
+ * Angka untuk blok statistik beranda.
+ *
+ * Dihitung di dashboard, bukan di sini: sebagian datanya berasal dari CBT lama
+ * IYSA yang sudah tidak punya koneksi dari situs ini, dan sebagian lagi dari
+ * tabel yang tertutup RLS untuk kunci anon.
+ */
+export async function fetchSiteStats(): Promise<StatistikSitus> {
+  try {
+    const dashboardUrl =
+      process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.iyora.or.id";
+    const res = await fetch(`${dashboardUrl}/api/public/stats`, {
+      next: { revalidate: 300 },
+      signal: AbortSignal.timeout(10000),
+    });
+    if (res.ok) {
+      const json = await res.json();
+      const d = json?.data;
+      // Nol berarti hitungannya gagal, bukan pencapaian nol — pakai cadangan.
+      if (json?.ok && d && d.students > 0 && d.disciplines > 0) {
+        return {
+          disciplines: Number(d.disciplines),
+          countries:   Number(d.countries),
+          students:    Number(d.students),
+          medals:      Number(d.medals),
+        };
+      }
+    }
+  } catch {
+    // jatuh ke cadangan
+  }
+  return STATISTIK_CADANGAN;
+}

@@ -16,8 +16,8 @@
     "subheadlines": [
       "Tumbuh dari IYSA, IYORA hadir sebagai rumah khusus bagi olimpiade sains Indonesia — untuk memastikan setiap bakat ilmiah terbaik mendapat panggung yang setara dengan kebesarannya.",
       "Kami percaya setiap pikiran yang brilian layak mendapat pengakuan. IYORA hadir untuk menemukan, menguji, dan mengangkat generasi ilmuwan muda terbaik Indonesia.",
-      "Dari biologi hingga matematika, dari fisika hingga geografi — IYORA mengelola 20+ cabang olimpiade sains bertaraf nasional dan internasional.",
-      "Lebih dari 50.000 siswa dari 20 negara telah membuktikan diri melalui olimpiade yang kami selenggarakan. Saatnya giliran kamu."
+      "Dari biologi hingga matematika, dari fisika hingga geografi — IYORA mengelola 24 cabang olimpiade sains bertaraf nasional dan internasional.",
+      "Lebih dari 700 siswa dari delapan negara telah membuktikan diri melalui olimpiade yang kami selenggarakan. Saatnya giliran kamu."
     ],
     "cta_primary": "Kenali IYORA",
     "cta_secondary": "Lihat Kompetisi"
@@ -34,14 +34,14 @@
   },
   "stats": {
     "title": "Pencapaian Sejauh Ini",
-    "olympiads": "Cabang Olimpiade",
+    "olympiads": "Cabang Olimpiade Terselenggara",
     "countries": "Negara Peserta",
     "students": "Siswa Terdaftar",
-    "years": "Tahun Pengalaman"
+    "medals": "Medali Diberikan"
   },
   "competitions_section": {
     "title": "Olimpiade yang Kami Selenggarakan",
-    "subtitle": "20+ cabang olimpiade bergengsi, satu misi: menemukan dan mengangkat talenta terbaik Indonesia.",
+    "subtitle": "24 cabang olimpiade bergengsi, satu misi: menemukan dan mengangkat talenta terbaik Indonesia.",
     "view_detail": "Lihat Detail",
     "visit_website": "Kunjungi Website",
     "filter_all": "Semua",
@@ -62,9 +62,9 @@
     "focus_title": "Fokus Penuh pada Olimpiade",
     "focus_desc": "Tidak terbagi antara invensi dan olimpiade — 100% energi, sumber daya, dan inovasi kami dicurahkan untuk satu tujuan: melahirkan juara sains muda Indonesia.",
     "network_title": "Jaringan Internasional",
-    "network_desc": "Terhubung dengan lebih dari 20 negara, IYORA membuka pintu bagi siswa Indonesia untuk bersaing di panggung dunia dan membawa nama bangsa.",
+    "network_desc": "Peserta dari delapan negara sudah bertanding di olimpiade IYORA, dan edisi internasional berikutnya disiapkan bersama mitra penyelenggara di enam negara.",
     "trust_title": "Diakui & Dipercaya",
-    "trust_desc": "Dibangun di atas rekam jejak IYSA yang telah teruji selama lebih dari satu dekade, IYORA hadir dengan fondasi kepercayaan yang sudah terbentuk."
+    "trust_desc": "Dibangun di atas rekam jejak IYSA yang telah teruji sejak 2018, IYORA hadir dengan fondasi kepercayaan yang sudah terbentuk."
   },
   "kurasi": {
     "badge": "Terkurasi Puspresnas",
@@ -106,7 +106,7 @@
     "hero_title": "Tentang IYORA",
     "hero_subtitle": "Memahami siapa kami, dari mana kami berasal, dan ke mana kami melangkah.",
     "story_title": "Kisah Kami",
-    "story_body": "IYORA lahir dari sebuah keyakinan sederhana namun kuat: bahwa keunggulan membutuhkan fokus. Selama lebih dari satu dekade, IYSA telah membuktikan bahwa generasi muda Indonesia mampu bersaing di panggung sains dunia. Kini, dengan membentuk IYORA sebagai lembaga khusus olimpiade, kami membawa komitmen itu ke level berikutnya.\n\nSetiap olimpiade yang kami selenggarakan adalah kesempatan bagi seorang siswa untuk menemukan potensi terbaiknya. Setiap medali adalah pengakuan atas kerja keras dan kecerdasan yang telah dipupuk bertahun-tahun. Itulah inti dari nama kami: Recognition — pengakuan atas keunggulan.",
+    "story_body": "IYORA lahir dari sebuah keyakinan sederhana namun kuat: bahwa keunggulan membutuhkan fokus. Sejak 2018, IYSA telah membuktikan bahwa generasi muda Indonesia mampu bersaing di panggung sains dunia. Kini, dengan membentuk IYORA sebagai lembaga khusus olimpiade, kami membawa komitmen itu ke level berikutnya.\n\nSetiap olimpiade yang kami selenggarakan adalah kesempatan bagi seorang siswa untuk menemukan potensi terbaiknya. Setiap medali adalah pengakuan atas kerja keras dan kecerdasan yang telah dipupuk bertahun-tahun. Itulah inti dari nama kami: Recognition — pengakuan atas keunggulan.",
     "vision_title": "Visi",
     "vision_body": "Menjadi lembaga olimpiade sains pemuda terdepan di Asia Tenggara yang melahirkan generasi ilmuwan muda berprestasi, berkarakter, dan berdaya saing global.",
     "mission_title": "Misi",

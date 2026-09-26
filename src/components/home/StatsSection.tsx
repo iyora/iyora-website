@@ -3,24 +3,30 @@
 import { useTranslations } from "next-intl";
 import { motion, useInView, useMotionValue, useTransform, animate } from "framer-motion";
 import { useEffect, useRef } from "react";
+import type { StatistikSitus } from "@/data/statistik";
 
 interface StatItem {
   value: number;
   suffix: string;
-  labelKey: "olympiads" | "countries" | "students" | "years";
+  labelKey: "olympiads" | "countries" | "students" | "medals";
   color: string;
 }
 
 interface StatsSectionProps {
-  totalCompetitions?: number;
+  stats: StatistikSitus;
 }
 
-function getStats(totalCompetitions?: number): StatItem[] {
+/**
+ * Keempatnya dihitung dari data peserta dan hasil yang sudah diumumkan, jadi
+ * ditulis apa adanya tanpa "+". Angka bulat yang dibesar-besarkan justru yang
+ * pertama diperiksa calon mitra.
+ */
+function getStats(s: StatistikSitus): StatItem[] {
   return [
-    { value: totalCompetitions && totalCompetitions > 0 ? totalCompetitions : 23, suffix: "+", labelKey: "olympiads", color: "#66449b" },
-    { value: 20, suffix: "+", labelKey: "countries", color: "#39bcbe" },
-    { value: 50000, suffix: "+", labelKey: "students", color: "#fb9722" },
-    { value: 10, suffix: "+", labelKey: "years", color: "#66449b" },
+    { value: s.disciplines, suffix: "", labelKey: "olympiads", color: "#66449b" },
+    { value: s.countries,   suffix: "", labelKey: "countries", color: "#39bcbe" },
+    { value: s.students,    suffix: "", labelKey: "students",  color: "#fb9722" },
+    { value: s.medals,      suffix: "", labelKey: "medals",    color: "#66449b" },
   ];
 }
 
@@ -64,9 +70,9 @@ function CountUp({
   );
 }
 
-export default function StatsSection({ totalCompetitions }: StatsSectionProps) {
+export default function StatsSection({ stats: angka }: StatsSectionProps) {
   const t = useTranslations("stats");
-  const stats = getStats(totalCompetitions);
+  const stats = getStats(angka);
 
   return (
     <section className="bg-gray-50 py-24 px-6">

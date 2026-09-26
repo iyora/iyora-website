@@ -16,8 +16,8 @@
     "subheadlines": [
       "Born from the legacy of IYSA, IYORA stands as Indonesia's dedicated home for science olympiads — ensuring every outstanding scientific talent receives a stage worthy of their greatness.",
       "We believe every brilliant mind deserves recognition. IYORA is here to discover, challenge, and elevate Indonesia's finest young scientists to the world stage.",
-      "From biology to mathematics, from physics to geography — IYORA manages 20+ branches of science olympiads at national and international levels.",
-      "Over 50,000 students from 20 countries have proven themselves through our olympiads. Now it's your turn."
+      "From biology to mathematics, from physics to geography — IYORA manages 24 branches of science olympiads at national and international levels.",
+      "More than 700 students from eight countries have proven themselves through our olympiads. Now it's your turn."
     ],
     "cta_primary": "Discover IYORA",
     "cta_secondary": "View Competitions"
@@ -34,14 +34,14 @@
   },
   "stats": {
     "title": "How Far We've Come",
-    "olympiads": "Olympiad Disciplines",
+    "olympiads": "Olympiad Disciplines Held",
     "countries": "Participating Countries",
     "students": "Registered Students",
-    "years": "Years of Experience"
+    "medals": "Medals Awarded"
   },
   "competitions_section": {
     "title": "Olimpiads We Organize",
-    "subtitle": "20+ prestigious olympiad disciplines, one mission: discovering and elevating Indonesia's finest talent.",
+    "subtitle": "24 prestigious olympiad disciplines, one mission: discovering and elevating Indonesia's finest talent.",
     "view_detail": "View Details",
     "visit_website": "Visit Website",
     "filter_all": "All",
@@ -62,9 +62,9 @@
     "focus_title": "Fully Focused on Olympiads",
     "focus_desc": "Undivided between invention and olympiads — 100% of our energy, resources, and innovation is devoted to one purpose: producing Indonesia's next generation of science champions.",
     "network_title": "International Network",
-    "network_desc": "Connected with more than 20 countries, IYORA opens doors for Indonesian students to compete on the world stage and carry the nation's name with pride.",
+    "network_desc": "Students from eight countries have already competed in IYORA olympiads, and the next international editions are being prepared with host partners in six countries.",
     "trust_title": "Recognized & Trusted",
-    "trust_desc": "Built upon the proven track record of IYSA spanning over a decade, IYORA stands on a foundation of trust already earned and deeply established."
+    "trust_desc": "Built upon the proven track record IYSA has earned since 2018, IYORA stands on a foundation of trust already established."
   },
   "kurasi": {
     "badge": "Puspresnas Accredited",
@@ -106,7 +106,7 @@
     "hero_title": "About IYORA",
     "hero_subtitle": "Understanding who we are, where we come from, and where we are headed.",
     "story_title": "Our Story",
-    "story_body": "IYORA was born from a simple yet powerful conviction: that excellence demands focus. For more than a decade, IYSA has demonstrated that Indonesia's youth are capable of competing on the world science stage. Now, by establishing IYORA as a dedicated olympiad institution, we carry that commitment to the next level.\n\nEvery olympiad we organize is an opportunity for a student to discover their greatest potential. Every medal is recognition of years of dedication and intellectual discipline. That is the essence of our name: Recognition — acknowledgment of excellence.",
+    "story_body": "IYORA was born from a simple yet powerful conviction: that excellence demands focus. Since 2018, IYSA has demonstrated that Indonesia's youth are capable of competing on the world science stage. Now, by establishing IYORA as a dedicated olympiad institution, we carry that commitment to the next level.\n\nEvery olympiad we organize is an opportunity for a student to discover their greatest potential. Every medal is recognition of years of dedication and intellectual discipline. That is the essence of our name: Recognition — acknowledgment of excellence.",
     "vision_title": "Vision",
     "vision_body": "To become Southeast Asia's foremost youth science olympiad institution, nurturing a generation of accomplished young scientists who are principled, globally competitive, and equipped to lead.",
     "mission_title": "Mission",
