@@ -209,8 +209,8 @@ export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
     badge_en: "🌍 UPCOMING: WORLD SCIENCE OLYMPIAD",
     title: "WSO 2026 — World Science Olympiad",
     title_en: "WSO 2026 — World Science Olympiad",
-    subtitle: "Panggung Olimpiade Sains Tingkat Dunia Berkolaborasi dengan Delegasi 20+ Negara.",
-    subtitle_en: "World-Class Science Olympiad Stage Collaborating with International Delegates from 20+ Countries.",
+    subtitle: "Panggung olimpiade sains tingkat dunia, terbuka bagi delegasi dari berbagai negara.",
+    subtitle_en: "A world-class science olympiad stage, open to delegates from many countries.",
     image: "/images/pop up/wso.png",
     content:
       "WSO (World Science Olympiad) 2026 adalah kompetisi sains tingkat global puncak yang diselenggarakan bersama asosiasi sains dunia (IYSA & MIICA Malaysia). Mempertemukan pelajar berprestasi dari berbagai belahan dunia untuk memperebutkan medali dunia dan sertifikat internasional resmi.",

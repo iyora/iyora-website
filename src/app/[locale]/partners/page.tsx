@@ -109,7 +109,7 @@ function PartnersContent() {
                   </svg>
                 ),
                 title: "Jangkauan Luas",
-                desc: "Akses ke puluhan ribu siswa, guru, dan orang tua dari seluruh Indonesia dan lebih dari 20 negara.",
+                desc: "Akses ke peserta olimpiade IYORA dari delapan negara, ditambah jaringan ekosistem IYSA yang mencatat 19.727 peserta dari 55 negara sejak 2021.",
               },
               {
                 icon: (
@@ -118,7 +118,7 @@ function PartnersContent() {
                   </svg>
                 ),
                 title: "Reputasi Terpercaya",
-                desc: "Dibangun di atas fondasi IYSA yang telah beroperasi lebih dari satu dekade dengan rekam jejak yang teruji.",
+                desc: "Dibangun di atas fondasi IYSA yang beroperasi sejak November 2018 dengan rekam jejak yang teruji.",
               },
               {
                 icon: (

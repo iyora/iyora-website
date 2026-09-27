@@ -43,12 +43,13 @@ Seluruh olimpiade yang diselenggarakan IYORA telah mendapatkan kurasi (akreditas
 
 ## Hubungan dengan IYSA
 
-IYORA lahir dari **IYSA (Indonesian Youth Science Association)**, organisasi yang selama lebih dari satu dekade menjadi garda terdepan pengembangan ilmiah pemuda Indonesia. IYSA kini fokus pada invensi dan inovasi (IYSA Invention), sementara IYORA mengambil alih seluruh cabang olimpiade sains yang sebelumnya dikelola IYSA Olympiad (iysaolympiad.or.id).
+IYORA lahir dari **IYSA (Indonesian Youth Science Association)**, organisasi yang sejak November 2018 menjadi garda terdepan pengembangan ilmiah pemuda Indonesia. IYSA kini fokus pada invensi dan inovasi (IYSA Invention), sementara IYORA mengambil alih seluruh cabang olimpiade sains yang sebelumnya dikelola IYSA Olympiad (iysaolympiad.or.id).
 
 ## Fakta Kunci
 
-- Lebih dari 50.000 peserta dari 20+ negara
-- 14 cabang olimpiade aktif
+- Olimpiade IYORA: 708 peserta dari 8 negara, 138 medali (per 27 September 2026)
+- 14 cabang olimpiade sudah diselenggarakan, 24 cabang dalam program
+- Ekosistem IYSA di luar olimpiade (invensi dan inovasi, 2021-2026): 19.727 peserta dari 55 negara
 - Seluruh olimpiade terkurasi Puspresnas Kemendikbud RI
 - Sertifikat diakui untuk PPDB dan SNBT (seleksi masuk perguruan tinggi negeri Indonesia)
 - Subdomain format: [nama-event].iyora.or.id
