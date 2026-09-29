@@ -1,6 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
 import { STATISTIK_CADANGAN, type StatistikSitus } from "@/data/statistik";
-import { DUMMY_NEWS, getDummyNewsBySlug } from "@/data/dummyNews";
 import {
   WinnerItem,
   WinnerMedal,
@@ -11,6 +10,7 @@ import {
   WINNER_STATS,
 } from "@/data/dummyWinners";
 import {
+  DUMMY_NEWS,
   getDummyNews,
   getDummyNewsByCategory,
   getDummyNewsBySlug,
@@ -530,6 +530,8 @@ export async function fetchNewsByCategory(
   const dashboardUrl =
     process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.iyora.or.id";
 
+  const dummyCategoryItems = getDummyNewsByCategory(category as any, locale) as NewsArticle[];
+
   // 1. Coba ambil dari Dashboard API
   try {
     const res = await fetch(`${dashboardUrl}/api/public/news?category=${category}`, {
@@ -538,7 +540,13 @@ export async function fetchNewsByCategory(
     if (res.ok) {
       const json = await res.json();
       if (Array.isArray(json.data) && json.data.length > 0) {
-        return json.data.map((row: any) => mapRawToNewsArticle(row, isEn));
+        const items = json.data.map((row: any) => mapRawToNewsArticle(row, isEn));
+        if (category === "gallery") {
+          const existing = new Set(items.map((i: NewsArticle) => (i.slug ? i.slug.toLowerCase() : String(i.id))));
+          const extra = dummyCategoryItems.filter((d) => !existing.has(d.slug?.toLowerCase() || "") && !existing.has(String(d.id)));
+          return [...items, ...extra];
+        }
+        return items;
       }
     }
   } catch {
@@ -556,14 +564,20 @@ export async function fetchNewsByCategory(
       .order("published_at", { ascending: false });
 
     if (!error && data && data.length > 0) {
-      return data.map((row: any) => mapRawToNewsArticle(row, isEn));
+      const items = data.map((row: any) => mapRawToNewsArticle(row, isEn));
+      if (category === "gallery") {
+        const existing = new Set(items.map((i: NewsArticle) => (i.slug ? i.slug.toLowerCase() : String(i.id))));
+        const extra = dummyCategoryItems.filter((d) => !existing.has(d.slug?.toLowerCase() || "") && !existing.has(String(d.id)));
+        return [...items, ...extra];
+      }
+      return items;
     }
   } catch {
     // Fallback ke dummy
   }
 
   // 3. Fallback ke Dummy News
-  return getDummyNewsByCategory(category as any, locale) as NewsArticle[];
+  return dummyCategoryItems;
 }
 
 export async function fetchNewsBySlug(
@@ -623,6 +637,20 @@ export async function fetchNewsBySlug(
   }
 
   return null;
+}
+
+function mergeGalleryWithDummy(primary: GalleryItem[], dummy: GalleryItem[]): GalleryItem[] {
+  const existingSlugsAndIds = new Set<string>();
+  for (const item of primary) {
+    if (item.slug) existingSlugsAndIds.add(item.slug.toLowerCase().trim());
+    if (item.id) existingSlugsAndIds.add(String(item.id).toLowerCase().trim());
+  }
+  const additional = dummy.filter((item) => {
+    const slugKey = item.slug ? item.slug.toLowerCase().trim() : "";
+    const idKey = String(item.id).toLowerCase().trim();
+    return (!slugKey || !existingSlugsAndIds.has(slugKey)) && !existingSlugsAndIds.has(idKey);
+  });
+  return [...primary, ...additional];
 }
 
 export async function fetchAllNews(locale?: string): Promise<{
@@ -706,7 +734,7 @@ export async function fetchAllNews(locale?: string): Promise<{
           announcements: apiAnnounce.length > 0 ? apiAnnounce : dummyAnnouncements,
           pressRelease: apiPress.length > 0 ? apiPress : dummyPressRelease,
           documentation: allArticles.filter((a: NewsArticle) => a.category === "documentation"),
-          gallery: apiGallery.length > 0 ? apiGallery : dummyGallery,
+          gallery: mergeGalleryWithDummy(apiGallery, dummyGallery),
         };
       }
     }
@@ -762,7 +790,7 @@ export async function fetchAllNews(locale?: string): Promise<{
       announcements: dbAnnounce.length > 0 ? dbAnnounce : dummyAnnouncements,
       pressRelease: dbPress.length > 0 ? dbPress : dummyPressRelease,
       documentation: articles.filter((a: NewsArticle) => a.category === "documentation"),
-      gallery: dbGallery.length > 0 ? dbGallery : dummyGallery,
+      gallery: mergeGalleryWithDummy(dbGallery, dummyGallery),
     };
   } catch {
     return {
