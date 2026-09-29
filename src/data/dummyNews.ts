@@ -30,7 +30,7 @@ export interface DummyNewsItem {
 }
 
 export const DUMMY_NEWS: DummyNewsItem[] = [
-  // ── PRESS RELEASE ──
+  // ── 1. PRESS RELEASE ──
   {
     id: "press-release-opening-ceremony-2026",
     slug: "siaran-pers-opening-ceremony-nygo-iygo-nyeo-iyeo-2026",
@@ -38,7 +38,6 @@ export const DUMMY_NEWS: DummyNewsItem[] = [
     title_en: "Press Release: Official Opening Ceremony of NYGO, IYGO, NYEO & IYEO 2026 Successfully Held Online",
     category: "press_release",
     photo: "/images/galeri/open.png",
-    /* 📸 DOKUMENTASI FOTO (Bisa Diubah / Ditambah Foto Baru di Sini) */
     photos: [
       "/images/OPENING/dokum1.png",
       "/images/OPENING/dokum2.png",
@@ -46,7 +45,6 @@ export const DUMMY_NEWS: DummyNewsItem[] = [
       "/images/OPENING/dokum5.jpeg",
       "/images/OPENING/dokum3.jpeg",
       "/images/OPENING/dokum4.jpeg",
-
     ],
     caption: "Resmi Dibuka! Opening Ceremony NYGO & IYGO serta NYEO & IYEO 2026 Sukses Digelar Secara Daring pada 20 Agustus 2026.",
     caption_en: "Officially Opened! Online Opening Ceremony for NYGO, IYGO, NYEO & IYEO 2026 Successfully Held on August 20th, 2026.",
@@ -78,7 +76,6 @@ The online examination phase will proceed according to the technical schedule es
     title_en: "NYGO, IYGO, NYEO & IYEO 2026 Successfully Held on August 20th, 2026.",
     category: "press_release",
     photo: "/images/galeri/press.jpeg",
-    /* 📸 DOKUMENTASI FOTO (Bisa Diubah / Ditambah Foto Baru di Sini) */
     photos: [
       "/images/press/iyora.png",
       "/images/press/open.jpg",
@@ -132,123 +129,8 @@ We look forward to welcoming you again at the IYSA Olympiads next year, with gre
     publishedAt: "2026-08-28",
     author: "IyoraOlympiad",
   },
-  // ── NEWS / ANNOUNCEMENT ──
-  /*{
-    id: "announcement-1",
-    slug: "penutupan-registrasi-nygo-iygo-nyeo-iyeo",
-    title: "Penutupan Registrasi NYGO, IYGO, NYEO, IYEO tinggal 3 hari lagi",
-    title_en: "NYGO, IYGO, NYEO & IYEO 2026 Registration Closing in 3 Days",
-    category: "announcement",
-    photo: "/images/pengumuman/feedolym.png",
-    caption: "H-3 PENDAFTARAN DITUTUP, YUK BURUAN DAFTAR!",
-    caption_en: "3 DAYS LEFT BEFORE REGISTRATION CLOSES, REGISTER NOW!",
-    content: "Jangan tunggu hingga menit terakhir! Tantang diri sendiri, tunjukkan pengetahuan Anda, dan jadilah bagian dari IYORA Olympiad 2026.",
-    content_en: "Don't wait until the last minute! Challenge yourself, showcase your knowledge, and be part of IYORA Olympiad 2026.",
-    link: "https://www.instagram.com/reel/Db92P8dJVmA/?igsh=aXExdW1nNjUzenNv&igsi=aXExdW1nNjUzenNv",
-    linkLabel: "Kunjungi Instagram IyoraOfficial",
-    linkLabel_en: "Visit Instagram IyoraOfficial",
-    link2: "https://nygo.iyora.or.id",
-    link2Label: "Website Pendaftaran NYGO",
-    link2Label_en: "NYGO Registration Website",
-    link3: "https://iygo.iyora.or.id",
-    link3Label: "Website Pendaftaran IYGO",
-    link3Label_en: "IYGO Registration Website",
-    link4: "https://nyeo.iyora.or.id",
-    link4Label: "Website Pendaftaran NYEO",
-    link4Label_en: "NYEO Registration Website",
-    link5: "https://iyeo.iyora.or.id",
-    link5Label: "Website Pendaftaran IYEO",
-    link5Label_en: "IYEO Registration Website",
-    publishedAt: "2026-08-13",
-    author: "IyoraOlympiade",
-  },
-  {
-    id: "announcement-2",
-    slug: "penutupan-registrasi-nygo-iygo-nyeo-iyeo",
-    title: "Penutupan Registrasi NYGO, IYGO, NYEO, IYEO tinggal 2 hari lagi",
-    title_en: "NYGO, IYGO, NYEO & IYEO 2026 Registration Closing in 3 Days",
-    category: "announcement",
-    photo: "/images/pengumuman/2.png",
-    caption: "H-2 PENDAFTARAN DITUTUP, YUK BURUAN DAFTAR!",
-    caption_en: "2 DAYS LEFT BEFORE REGISTRATION CLOSES, REGISTER NOW!",
-    content: "Jangan tunggu hingga menit terakhir! Tantang diri sendiri, tunjukkan pengetahuan Anda, dan jadilah bagian dari IYORA Olympiad 2026.",
-    content_en: "Don't wait until the last minute! Challenge yourself, showcase your knowledge, and be part of IYORA Olympiad 2026.",
-    link: "https://www.instagram.com/p/DcALqc9prQD/?igsh=ejd2YXU4NW9qcDd4&igsi=ejd2YXU4NW9qcDd4",
-    linkLabel: "Kunjungi Instagram IyoraOfficial",
-    linkLabel_en: "Visit Instagram IyoraOfficial",
-    link2: "https://nygo.iyora.or.id",
-    link2Label: "Website Pendaftaran NYGO",
-    link2Label_en: "NYGO Registration Website",
-    link3: "https://iygo.iyora.or.id",
-    link3Label: "Website Pendaftaran IYGO",
-    link3Label_en: "IYGO Registration Website",
-    link4: "https://nyeo.iyora.or.id",
-    link4Label: "Website Pendaftaran NYEO",
-    link4Label_en: "NYEO Registration Website",
-    link5: "https://iyeo.iyora.or.id",
-    link5Label: "Website Pendaftaran IYEO",
-    link5Label_en: "IYEO Registration Website",
-    publishedAt: "2026-08-14",
-    author: "IyoraOlympiade",
-  },
-  {
-    id: "announcement-3",
-    slug: "penutupan-registrasi-nygo-iygo-nyeo-iyeo",
-    title: "Penutupan Registrasi NYGO, IYGO, NYEO, IYEO tinggal 1 hari lagi",
-    title_en: "NYGO, IYGO, NYEO & IYEO 2026 Registration Closing in 1 Days",
-    category: "announcement",
-    photo: "/images/pengumuman/h-1.jpg",
-    caption: "H-1 PENDAFTARAN DITUTUP, YUK BURUAN DAFTAR!",
-    caption_en: "1 DAYS LEFT BEFORE REGISTRATION CLOSES, REGISTER NOW!",
-    content: "Jangan tunggu hingga menit terakhir! Tantang diri sendiri, tunjukkan pengetahuan Anda, dan jadilah bagian dari IYORA Olympiad 2026.",
-    content_en: "Don't wait until the last minute! Challenge yourself, showcase your knowledge, and be part of IYORA Olympiad 2026.",
-    link: "https://www.instagram.com/p/DcALqc9prQD/?igsh=ejd2YXU4NW9qcDd4&igsi=ejd2YXU4NW9qcDd4",
-    linkLabel: "Kunjungi Instagram IyoraOfficial",
-    linkLabel_en: "Visit Instagram IyoraOfficial",
-    link2: "https://nygo.iyora.or.id",
-    link2Label: "Website Pendaftaran NYGO",
-    link2Label_en: "NYGO Registration Website",
-    link3: "https://iygo.iyora.or.id",
-    link3Label: "Website Pendaftaran IYGO",
-    link3Label_en: "IYGO Registration Website",
-    link4: "https://nyeo.iyora.or.id",
-    link4Label: "Website Pendaftaran NYEO",
-    link4Label_en: "NYEO Registration Website",
-    link5: "https://iyeo.iyora.or.id",
-    link5Label: "Website Pendaftaran IYEO",
-    link5Label_en: "IYEO Registration Website",
-    publishedAt: "2026-08-15",
-    author: "IyoraOlympiade",
-  },
-  {
-    id: "announcement-4",
-    slug: "penutupan-registrasi-nygo-iygo-nyeo-iyeo",
-    title: "Penutupan Registrasi NYGO, IYGO, NYEO, IYEO tinggal",
-    title_en: "NYGO, IYGO, NYEO & IYEO 2026 Registration Closing",
-    category: "announcement",
-    photo: "/images/pengumuman/lastday.jpg",
-    caption: "Last Day!! PENDAFTARAN DITUTUP, YUK BURUAN DAFTAR!",
-    caption_en: "Last Day!! LEFT BEFORE REGISTRATION CLOSES, REGISTER NOW!",
-    content: "Jangan tunggu hingga menit terakhir! Tantang diri sendiri, tunjukkan pengetahuan Anda, dan jadilah bagian dari IYORA Olympiad 2026.",
-    content_en: "Don't wait until the last minute! Challenge yourself, showcase your knowledge, and be part of IYORA Olympiad 2026.",
-    link: "https://www.instagram.com/p/DcALqc9prQD/?igsh=ejd2YXU4NW9qcDd4&igsi=ejd2YXU4NW9qcDd4",
-    linkLabel: "Kunjungi Instagram IyoraOfficial",
-    linkLabel_en: "Visit Instagram IyoraOfficial",
-    link2: "https://nygo.iyora.or.id",
-    link2Label: "Website Pendaftaran NYGO",
-    link2Label_en: "NYGO Registration Website",
-    link3: "https://iygo.iyora.or.id",
-    link3Label: "Website Pendaftaran IYGO",
-    link3Label_en: "IYGO Registration Website",
-    link4: "https://nyeo.iyora.or.id",
-    link4Label: "Website Pendaftaran NYEO",
-    link4Label_en: "NYEO Registration Website",
-    link5: "https://iyeo.iyora.or.id",
-    link5Label: "Website Pendaftaran IYEO",
-    link5Label_en: "IYEO Registration Website",
-    publishedAt: "2026-08-16",
-    author: "IyoraOlympiade",
-  },*/
+
+  // ── 2. NEWS / BERITA ──
   {
     id: "news-1",
     slug: "pendaftaran-nybo-iybo-2026-resmi-dibuka",
@@ -289,7 +171,126 @@ We look forward to welcoming you again at the IYSA Olympiads next year, with gre
     publishedAt: "2026-08-13",
     author: "IyoraOlympiade",
   },
-  // ── GALLERY (Galeri) ──
+
+  // ── 3. ANNOUNCEMENTS / PENGUMUMAN ──
+  {
+    id: "announcement-1",
+    slug: "penutupan-registrasi-nygo-iygo-nyeo-iyeo-h-3",
+    title: "Penutupan Registrasi NYGO, IYGO, NYEO, IYEO tinggal 3 hari lagi",
+    title_en: "NYGO, IYGO, NYEO & IYEO 2026 Registration Closing in 3 Days",
+    category: "announcement",
+    photo: "/images/pengumuman/feedolym.png",
+    caption: "H-3 PENDAFTARAN DITUTUP, YUK BURUAN DAFTAR!",
+    caption_en: "3 DAYS LEFT BEFORE REGISTRATION CLOSES, REGISTER NOW!",
+    content: "Jangan tunggu hingga menit terakhir! Tantang diri sendiri, tunjukkan pengetahuan Anda, dan jadilah bagian dari IYORA Olympiad 2026. Raih medali dan sertifikat resmi terkurasi SIMT Puspresnas.",
+    content_en: "Don't wait until the last minute! Challenge yourself, showcase your knowledge, and be part of IYORA Olympiad 2026. Earn medals and official SIMT Puspresnas accredited certificates.",
+    link: "https://www.instagram.com/reel/Db92P8dJVmA/?igsh=aXExdW1nNjUzenNv&igsi=aXExdW1nNjUzenNv",
+    linkLabel: "Kunjungi Instagram IyoraOfficial",
+    linkLabel_en: "Visit Instagram IyoraOfficial",
+    link2: "https://nygo.iyora.or.id",
+    link2Label: "Website Pendaftaran NYGO",
+    link2Label_en: "NYGO Registration Website",
+    link3: "https://iygo.iyora.or.id",
+    link3Label: "Website Pendaftaran IYGO",
+    link3Label_en: "IYGO Registration Website",
+    link4: "https://nyeo.iyora.or.id",
+    link4Label: "Website Pendaftaran NYEO",
+    link4Label_en: "NYEO Registration Website",
+    link5: "https://iyeo.iyora.or.id",
+    link5Label: "Website Pendaftaran IYEO",
+    link5Label_en: "IYEO Registration Website",
+    publishedAt: "2026-08-13",
+    author: "IyoraOlympiade",
+  },
+  {
+    id: "announcement-2",
+    slug: "penutupan-registrasi-nygo-iygo-nyeo-iyeo-h-2",
+    title: "Penutupan Registrasi NYGO, IYGO, NYEO, IYEO tinggal 2 hari lagi",
+    title_en: "NYGO, IYGO, NYEO & IYEO 2026 Registration Closing in 2 Days",
+    category: "announcement",
+    photo: "/images/pengumuman/2.png",
+    caption: "H-2 PENDAFTARAN DITUTUP, YUK BURUAN DAFTAR!",
+    caption_en: "2 DAYS LEFT BEFORE REGISTRATION CLOSES, REGISTER NOW!",
+    content: "Jangan tunggu hingga menit terakhir! Persiapkan tim dan diri Anda sebaik mungkin untuk kompetisi olimpiade sains berskala nasional dan internasional.",
+    content_en: "Don't wait until the last minute! Prepare your team and yourself for national and international science olympiad competitions.",
+    link: "https://www.instagram.com/p/DcALqc9prQD/?igsh=ejd2YXU4NW9qcDd4&igsi=ejd2YXU4NW9qcDd4",
+    linkLabel: "Kunjungi Instagram IyoraOfficial",
+    linkLabel_en: "Visit Instagram IyoraOfficial",
+    link2: "https://nygo.iyora.or.id",
+    link2Label: "Website Pendaftaran NYGO",
+    link2Label_en: "NYGO Registration Website",
+    link3: "https://iygo.iyora.or.id",
+    link3Label: "Website Pendaftaran IYGO",
+    link3Label_en: "IYGO Registration Website",
+    link4: "https://nyeo.iyora.or.id",
+    link4Label: "Website Pendaftaran NYEO",
+    link4Label_en: "NYEO Registration Website",
+    link5: "https://iyeo.iyora.or.id",
+    link5Label: "Website Pendaftaran IYEO",
+    link5Label_en: "IYEO Registration Website",
+    publishedAt: "2026-08-14",
+    author: "IyoraOlympiade",
+  },
+  {
+    id: "announcement-3",
+    slug: "penutupan-registrasi-nygo-iygo-nyeo-iyeo-h-1",
+    title: "Penutupan Registrasi NYGO, IYGO, NYEO, IYEO tinggal 1 hari lagi",
+    title_en: "NYGO, IYGO, NYEO & IYEO 2026 Registration Closing in 1 Day",
+    category: "announcement",
+    photo: "/images/pengumuman/h-1.jpg",
+    caption: "H-1 PENDAFTARAN DITUTUP, YUK BURUAN DAFTAR!",
+    caption_en: "1 DAY LEFT BEFORE REGISTRATION CLOSES, REGISTER NOW!",
+    content: "Kesempatan terakhir untuk mendaftarkan diri Anda pada gelaran kompetisi olimpiade Geografi & Ekonomi 2026. Segera lengkapi berkas pendaftaran!",
+    content_en: "Last chance to register for the 2026 Geography & Economics Olympiad. Complete your registration documents now!",
+    link: "https://www.instagram.com/p/DcALqc9prQD/?igsh=ejd2YXU4NW9qcDd4&igsi=ejd2YXU4NW9qcDd4",
+    linkLabel: "Kunjungi Instagram IyoraOfficial",
+    linkLabel_en: "Visit Instagram IyoraOfficial",
+    link2: "https://nygo.iyora.or.id",
+    link2Label: "Website Pendaftaran NYGO",
+    link2Label_en: "NYGO Registration Website",
+    link3: "https://iygo.iyora.or.id",
+    link3Label: "Website Pendaftaran IYGO",
+    link3Label_en: "IYGO Registration Website",
+    link4: "https://nyeo.iyora.or.id",
+    link4Label: "Website Pendaftaran NYEO",
+    link4Label_en: "NYEO Registration Website",
+    link5: "https://iyeo.iyora.or.id",
+    link5Label: "Website Pendaftaran IYEO",
+    link5Label_en: "IYEO Registration Website",
+    publishedAt: "2026-08-15",
+    author: "IyoraOlympiade",
+  },
+  {
+    id: "announcement-4",
+    slug: "penutupan-registrasi-nygo-iygo-nyeo-iyeo-last-day",
+    title: "Penutupan Registrasi NYGO, IYGO, NYEO, IYEO Hari Ini",
+    title_en: "NYGO, IYGO, NYEO & IYEO 2026 Registration Closing Today",
+    category: "announcement",
+    photo: "/images/pengumuman/lastday.jpg",
+    caption: "Last Day!! PENDAFTARAN DITUTUP, YUK BURUAN DAFTAR!",
+    caption_en: "Last Day!! REGISTRATION CLOSING TODAY, REGISTER NOW!",
+    content: "Hari ini adalah hari terakhir pendaftaran! Jangan lewatkan kesempatan emas untuk berprestasi di tingkat nasional dan internasional bersama IYORA.",
+    content_en: "Today is the final day for registration! Don't miss this opportunity to achieve excellence at national and international levels with IYORA.",
+    link: "https://www.instagram.com/p/DcALqc9prQD/?igsh=ejd2YXU4NW9qcDd4&igsi=ejd2YXU4NW9qcDd4",
+    linkLabel: "Kunjungi Instagram IyoraOfficial",
+    linkLabel_en: "Visit Instagram IyoraOfficial",
+    link2: "https://nygo.iyora.or.id",
+    link2Label: "Website Pendaftaran NYGO",
+    link2Label_en: "NYGO Registration Website",
+    link3: "https://iygo.iyora.or.id",
+    link3Label: "Website Pendaftaran IYGO",
+    link3Label_en: "IYGO Registration Website",
+    link4: "https://nyeo.iyora.or.id",
+    link4Label: "Website Pendaftaran NYEO",
+    link4Label_en: "NYEO Registration Website",
+    link5: "https://iyeo.iyora.or.id",
+    link5Label: "Website Pendaftaran IYEO",
+    link5Label_en: "IYEO Registration Website",
+    publishedAt: "2026-08-16",
+    author: "IyoraOlympiade",
+  },
+
+  // ── 4. GALLERY (Galeri) ──
   {
     id: "gallery-round2-2026",
     slug: "dokumentasi-round2-nygo-iygo-nyeo-iyeo-2026",
@@ -305,10 +306,8 @@ We look forward to welcoming you again at the IYSA Olympiads next year, with gre
       "/images/rond2/ron5.jpeg",
       "/images/rond2/ron6.jpeg",
       "/images/rond2/ron7.jpeg",
-
-
     ],
-    caption: "Kumpulan foto dokumentasi Round 2 NYGO & IYGO serta NYEO & IYEO 2026 yang digelar secara daring pada 24 Agustus 2026..",
+    caption: "Kumpulan foto dokumentasi Round 2 NYGO & IYGO serta NYEO & IYEO 2026 yang digelar secara daring pada 24 Agustus 2026.",
     caption_en: "Photo documentation collection of Round 2 of NYGO, IYGO, NYEO & IYEO 2026 held online on August 24th, 2026.",
     content: "Berikut adalah dokumentasi foto lengkap dari pelaksanaan Round 2 kompetisi olimpiade tingkat nasional dan internasional NYGO, IYGO, NYEO, dan IYEO 2026. Kegiatan diselenggarakan secara daring bekerja sama dengan IYSA & MIICA serta terintegrasi resmi dengan SIMT Puspresnas Kemendikbudristek RI.",
     content_en: "Here is the complete photo documentation gallery of Round 2 of the NYGO, IYGO, NYEO, and IYEO 2026 national and international olympiads, held online in collaboration with IYSA & MIICA and officially integrated with SIMT Puspresnas, Ministry of Education, Culture, Research, and Technology of the Republic of Indonesia.",
@@ -332,9 +331,6 @@ We look forward to welcoming you again at the IYSA Olympiads next year, with gre
       "/images/OPENING/dokum1.png",
       "/images/OPENING/dokum3.jpeg",
       "/images/OPENING/dokum4.jpeg",
-
-
-
     ],
     caption: "Kumpulan foto dokumentasi Pembukaan Resmi (Opening Ceremony) NYGO & IYGO serta NYEO & IYEO 2026 yang digelar secara daring pada 20 Agustus 2026.",
     caption_en: "Photo documentation collection of the Online Opening Ceremony for NYGO, IYGO, NYEO & IYEO 2026 held on August 20th, 2026.",
@@ -346,23 +342,23 @@ We look forward to welcoming you again at the IYSA Olympiads next year, with gre
     linkLabel: "FULL DOKUMENTASI ROUND 1",
     linkLabel_en: "Full Documentation of Round 1",
   },
-  /* {
-     id: "gallery-1",
-     slug: "after-event-biology-physics-olympiad-2026",
-     title: "After Event Biology & Physics Olympiad 2026",
-     title_en: "After Event Biology & Physics Olympiad 2026",
-     category: "gallery",
-     photo: "/images/galeri/afterevent.png",
-     caption: "Momen berkesan dan rangkuman keseruan kompetisi sains nasional Biology & Physics Olympiad 2026.",
-     caption_en: "Memorable moments and highlight summary of the national science competition Biology & Physics Olympiad 2026.",
-     content: "Kami bangga mempersembahkan video rangkuman dari acara yang tak terlupakan ini, sebagai bukti semangat, dedikasi, dan kecemerlangan yang telah ditunjukkan oleh setiap peserta. Melalui video pasca-acara ini, Anda akan disuguhi berbagai momen berkesan yang telah kita lalui bersama.",
-     content_en: "We are proud to present a summary video of this unforgettable event, as a testament to the passion, dedication, and brilliance demonstrated by every participant. Through this post-event video, you will be treated to various memorable moments we shared together.",
-     publishedAt: "2026-08-13",
-     author: "IyoraOlympiade",
-     link: "https://www.youtube.com/embed/05RdQgvQiVY?si=KSSadgHGYFNm9do1",
-     linkLabel: "Tonton Video Dokumentasi YouTube",
-     linkLabel_en: "Watch Video Documentation on YouTube",
-   },*/
+  {
+    id: "gallery-1",
+    slug: "after-event-biology-physics-olympiad-2026",
+    title: "After Event Biology & Physics Olympiad 2026",
+    title_en: "After Event Biology & Physics Olympiad 2026",
+    category: "gallery",
+    photo: "/images/galeri/afterevent.png",
+    caption: "Momen berkesan dan rangkuman keseruan kompetisi sains nasional Biology & Physics Olympiad 2026.",
+    caption_en: "Memorable moments and highlight summary of the national science competition Biology & Physics Olympiad 2026.",
+    content: "Kami bangga mempersembahkan video rangkuman dari acara yang tak terlupakan ini, sebagai bukti semangat, dedikasi, dan kecemerlangan yang telah ditunjukkan oleh setiap peserta. Melalui video pasca-acara ini, Anda akan disuguhi berbagai momen berkesan yang telah kita lalui bersama.",
+    content_en: "We are proud to present a summary video of this unforgettable event, as a testament to the passion, dedication, and brilliance demonstrated by every participant. Through this post-event video, you will be treated to various memorable moments we shared together.",
+    publishedAt: "2026-08-13",
+    author: "IyoraOlympiade",
+    link: "https://www.youtube.com/embed/05RdQgvQiVY?si=KSSadgHGYFNm9do1",
+    linkLabel: "Tonton Video Dokumentasi YouTube",
+    linkLabel_en: "Watch Video Documentation on YouTube",
+  },
   {
     id: "gallery-2",
     slug: "after-event-nygo-iygo-nyeo-iyeo-2026",
@@ -382,16 +378,45 @@ We look forward to welcoming you again at the IYSA Olympiads next year, with gre
   },
 ];
 
-export function getDummyNewsByCategory(category: "news" | "announcement" | "press_release" | "gallery") {
-  return DUMMY_NEWS.filter((item) => item.category === category).sort((a, b) => {
-    return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
-  });
+export function getDummyNews(locale?: string) {
+  const isEn = locale === "en";
+  return [...DUMMY_NEWS]
+    .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+    .map((item) => ({
+      id: item.id,
+      title: isEn && item.title_en ? item.title_en : item.title,
+      slug: item.slug,
+      excerpt: isEn && item.caption_en ? item.caption_en : item.caption,
+      content: isEn && item.content_en ? item.content_en : item.content,
+      cover_image: item.photo,
+      image_url: item.photo,
+      photos: item.photos || null,
+      category: item.category,
+      created_at: item.publishedAt ? `${item.publishedAt}T00:00:00Z` : new Date().toISOString(),
+      published_at: item.publishedAt ? `${item.publishedAt}T00:00:00Z` : null,
+      external_link: item.link || null,
+      external_link_label: isEn && item.linkLabel_en ? item.linkLabel_en : (item.linkLabel || null),
+      external_link2: item.link2 || null,
+      external_link2_label: isEn && item.link2Label_en ? item.link2Label_en : (item.link2Label || null),
+      external_link3: item.link3 || null,
+      external_link3_label: isEn && item.link3Label_en ? item.link3Label_en : (item.link3Label || null),
+      external_link4: item.link4 || null,
+      external_link4_label: isEn && item.link4Label_en ? item.link4Label_en : (item.link4Label || null),
+      external_link5: item.link5 || null,
+      external_link5_label: isEn && item.link5Label_en ? item.link5Label_en : (item.link5Label || null),
+      author: item.author || "IyoraOlympiad",
+    }));
 }
 
-export function getDummyNewsBySlug(slug: string) {
+export function getDummyNewsByCategory(category: "news" | "announcement" | "press_release" | "gallery", locale?: string) {
+  return getDummyNews(locale).filter((item) => item.category === category);
+}
+
+export function getDummyNewsBySlug(slug: string, locale?: string) {
   const decoded = decodeURIComponent(slug).toLowerCase().trim();
   const normalized = decoded.replace(/[^a-z0-9]+/g, "-");
-  return DUMMY_NEWS.find((item) => {
+  const items = getDummyNews(locale);
+  return items.find((item) => {
     const itemSlugDecoded = item.slug.toLowerCase().trim();
     const itemSlugNormalized = itemSlugDecoded.replace(/[^a-z0-9]+/g, "-");
     return (
@@ -400,5 +425,5 @@ export function getDummyNewsBySlug(slug: string) {
       itemSlugNormalized === normalized ||
       item.id === slug
     );
-  });
+  }) || null;
 }

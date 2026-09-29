@@ -10,6 +10,11 @@ import {
   DUMMY_WINNER_ANNOUNCEMENTS,
   WINNER_STATS,
 } from "@/data/dummyWinners";
+import {
+  getDummyNews,
+  getDummyNewsByCategory,
+  getDummyNewsBySlug,
+} from "@/data/dummyNews";
 
 export type RegistrationStatus = "open" | "coming_soon" | "closed";
 
@@ -550,11 +555,15 @@ export async function fetchNewsByCategory(
       .eq("is_published", true)
       .order("published_at", { ascending: false });
 
-    if (error || !data) return [];
-    return data.map((row: any) => mapRawToNewsArticle(row, isEn));
+    if (!error && data && data.length > 0) {
+      return data.map((row: any) => mapRawToNewsArticle(row, isEn));
+    }
   } catch {
-    return [];
+    // Fallback ke dummy
   }
+
+  // 3. Fallback ke Dummy News
+  return getDummyNewsByCategory(category as any, locale) as NewsArticle[];
 }
 
 export async function fetchNewsBySlug(
@@ -590,23 +599,30 @@ export async function fetchNewsBySlug(
       .eq("is_published", true)
       .maybeSingle();
 
-    if (error || !data) {
-      // Coba cari berdasarkan ID jika slug berupa UUID/ID
-      const { data: idData } = await supabase
-        .from("news")
-        .select("*")
-        .eq("id", slug)
-        .eq("is_published", true)
-        .maybeSingle();
-
-      if (idData) return mapRawToNewsArticle(idData, isEn);
-      return null;
+    if (data) {
+      return mapRawToNewsArticle(data, isEn);
     }
 
-    return mapRawToNewsArticle(data, isEn);
+    // Coba cari berdasarkan ID jika slug berupa UUID/ID
+    const { data: idData } = await supabase
+      .from("news")
+      .select("*")
+      .eq("id", slug)
+      .eq("is_published", true)
+      .maybeSingle();
+
+    if (idData) return mapRawToNewsArticle(idData, isEn);
   } catch {
-    return null;
+    // Fallback ke dummy
   }
+
+  // 3. Fallback ke Dummy News
+  const dummyItem = getDummyNewsBySlug(slug, locale);
+  if (dummyItem) {
+    return dummyItem as NewsArticle;
+  }
+
+  return null;
 }
 
 export async function fetchAllNews(locale?: string): Promise<{
@@ -619,6 +635,30 @@ export async function fetchAllNews(locale?: string): Promise<{
   const isEn = locale === "en";
   const dashboardUrl =
     process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.iyora.or.id";
+
+  const dummyAll = getDummyNews(locale);
+  const dummyNews = dummyAll.filter((a) => a.category === "news") as NewsArticle[];
+  const dummyAnnouncements = dummyAll.filter((a) => a.category === "announcement") as NewsArticle[];
+  const dummyPressRelease = dummyAll.filter((a) => a.category === "press_release") as NewsArticle[];
+  const dummyGallery: GalleryItem[] = dummyAll
+    .filter((a) => a.category === "gallery")
+    .map((a) => ({
+      id: a.id,
+      title: a.title,
+      description: a.excerpt,
+      image_url: a.cover_image || "",
+      photos: a.photos,
+      category: "gallery",
+      created_at: a.created_at,
+      slug: a.slug,
+      excerpt: a.excerpt,
+      content: a.content,
+      cover_image: a.cover_image,
+      published_at: a.published_at,
+      external_link: a.external_link,
+      external_link_label: a.external_link_label,
+      author: a.author,
+    }));
 
   // 1. Coba ambil dari Dashboard Public API
   try {
@@ -635,33 +675,38 @@ export async function fetchAllNews(locale?: string): Promise<{
 
         if (galleryRes.ok) {
           const galleryJson = await galleryRes.json();
-          if (Array.isArray(galleryJson.data)) {
+          if (Array.isArray(galleryJson.data) && galleryJson.data.length > 0) {
             galleryItems = galleryJson.data.map((row: any) => mapRawToGalleryItem(row, isEn));
           }
         }
 
+        const apiNews = allArticles.filter((a: NewsArticle) => a.category === "news");
+        const apiAnnounce = allArticles.filter((a: NewsArticle) => a.category === "announcement");
+        const apiPress = allArticles.filter((a: NewsArticle) => a.category === "press_release");
+        const apiGallery = galleryItems.length > 0 ? galleryItems : allArticles.filter((a: NewsArticle) => a.category === "gallery").map((a: NewsArticle) => ({
+          id: a.id,
+          title: a.title,
+          description: a.excerpt,
+          image_url: a.cover_image || "",
+          photos: a.photos,
+          category: "gallery",
+          created_at: a.created_at,
+          slug: a.slug,
+          excerpt: a.excerpt,
+          content: a.content,
+          cover_image: a.cover_image,
+          published_at: a.published_at,
+          external_link: a.external_link,
+          external_link_label: a.external_link_label,
+          author: a.author,
+        }));
+
         return {
-          news: allArticles.filter((a: NewsArticle) => a.category === "news"),
-          announcements: allArticles.filter((a: NewsArticle) => a.category === "announcement"),
-          pressRelease: allArticles.filter((a: NewsArticle) => a.category === "press_release"),
+          news: apiNews.length > 0 ? apiNews : dummyNews,
+          announcements: apiAnnounce.length > 0 ? apiAnnounce : dummyAnnouncements,
+          pressRelease: apiPress.length > 0 ? apiPress : dummyPressRelease,
           documentation: allArticles.filter((a: NewsArticle) => a.category === "documentation"),
-          gallery: galleryItems.length > 0 ? galleryItems : allArticles.filter((a: NewsArticle) => a.category === "gallery").map((a: NewsArticle) => ({
-            id: a.id,
-            title: a.title,
-            description: a.excerpt,
-            image_url: a.cover_image || "",
-            photos: a.photos,
-            category: "gallery",
-            created_at: a.created_at,
-            slug: a.slug,
-            excerpt: a.excerpt,
-            content: a.content,
-            cover_image: a.cover_image,
-            published_at: a.published_at,
-            external_link: a.external_link,
-            external_link_label: a.external_link_label,
-            author: a.author,
-          })),
+          gallery: apiGallery.length > 0 ? apiGallery : dummyGallery,
         };
       }
     }
@@ -692,35 +737,40 @@ export async function fetchAllNews(locale?: string): Promise<{
     const articles: NewsArticle[] = rawNews.map((r: any) => mapRawToNewsArticle(r, isEn));
     const galleryItems: GalleryItem[] = rawGallery.map((g: any) => mapRawToGalleryItem(g, isEn));
 
+    const dbNews = articles.filter((a: NewsArticle) => a.category === "news");
+    const dbAnnounce = articles.filter((a: NewsArticle) => a.category === "announcement");
+    const dbPress = articles.filter((a: NewsArticle) => a.category === "press_release");
+    const dbGallery = galleryItems.length > 0 ? galleryItems : articles.filter((a: NewsArticle) => a.category === "gallery").map((a: NewsArticle) => ({
+      id: a.id,
+      title: a.title,
+      description: a.excerpt,
+      image_url: a.cover_image || "",
+      photos: a.photos,
+      category: "gallery",
+      created_at: a.created_at,
+      slug: a.slug,
+      excerpt: a.excerpt,
+      content: a.content,
+      cover_image: a.cover_image,
+      published_at: a.published_at,
+      external_link: a.external_link,
+      author: a.author,
+    }));
+
     return {
-      news: articles.filter((a: NewsArticle) => a.category === "news"),
-      announcements: articles.filter((a: NewsArticle) => a.category === "announcement"),
-      pressRelease: articles.filter((a: NewsArticle) => a.category === "press_release"),
+      news: dbNews.length > 0 ? dbNews : dummyNews,
+      announcements: dbAnnounce.length > 0 ? dbAnnounce : dummyAnnouncements,
+      pressRelease: dbPress.length > 0 ? dbPress : dummyPressRelease,
       documentation: articles.filter((a: NewsArticle) => a.category === "documentation"),
-      gallery: galleryItems.length > 0 ? galleryItems : articles.filter((a: NewsArticle) => a.category === "gallery").map((a: NewsArticle) => ({
-        id: a.id,
-        title: a.title,
-        description: a.excerpt,
-        image_url: a.cover_image || "",
-        photos: a.photos,
-        category: "gallery",
-        created_at: a.created_at,
-        slug: a.slug,
-        excerpt: a.excerpt,
-        content: a.content,
-        cover_image: a.cover_image,
-        published_at: a.published_at,
-        external_link: a.external_link,
-        author: a.author,
-      })),
+      gallery: dbGallery.length > 0 ? dbGallery : dummyGallery,
     };
   } catch {
     return {
-      news: [],
-      announcements: [],
-      pressRelease: [],
+      news: dummyNews,
+      announcements: dummyAnnouncements,
+      pressRelease: dummyPressRelease,
       documentation: [],
-      gallery: [],
+      gallery: dummyGallery,
     };
   }
 }
@@ -754,7 +804,6 @@ export interface NewsPreviewData {
 }
 
 export async function fetchNewsPreview(locale?: string): Promise<NewsPreviewData> {
-  const isEn = locale === "en";
   try {
     const all = await fetchAllNews(locale);
 
