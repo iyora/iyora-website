@@ -82,15 +82,28 @@ export default function NewsletterDetailView({ newsletter }: NewsletterDetailVie
             {/* Cover & Quick Info (Left - 4 Cols) */}
             <div className="lg:col-span-4 flex flex-col justify-between h-full space-y-6">
               <div className="relative group">
-                <div className="relative aspect-[3/4] max-w-[280px] lg:max-w-full mx-auto rounded-2xl overflow-hidden shadow-2xl shadow-primary/15 border-4 border-white transform lg:-rotate-1 group-hover:rotate-0 transition-transform duration-500 bg-gradient-to-br from-gray-900 to-primary/80 flex items-center justify-center">
+                <div className="relative aspect-[16/11] max-w-[320px] lg:max-w-full mx-auto rounded-2xl overflow-hidden shadow-2xl shadow-primary/15 border-4 border-white transform lg:-rotate-1 group-hover:rotate-0 transition-transform duration-500 bg-slate-900 flex items-center justify-center">
                   {newsletter.cover_image && !newsletter.cover_image.includes("placeholder") ? (
-                    <Image
-                      src={newsletter.cover_image}
-                      alt={newsletter.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-700"
-                      priority
-                    />
+                    <>
+                      {/* Ambient background blur */}
+                      <Image
+                        src={newsletter.cover_image}
+                        alt=""
+                        fill
+                        aria-hidden="true"
+                        className="object-cover blur-lg scale-125 opacity-40"
+                      />
+                      {/* Main cover image 100% visible */}
+                      <div className="relative w-full h-full p-2 z-10">
+                        <Image
+                          src={newsletter.cover_image}
+                          alt={newsletter.title}
+                          fill
+                          className="object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-500"
+                          priority
+                        />
+                      </div>
+                    </>
                   ) : (
                     <div className="p-6 text-center text-white flex flex-col items-center justify-center space-y-3">
                       <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
@@ -100,7 +113,7 @@ export default function NewsletterDetailView({ newsletter }: NewsletterDetailVie
                       <h4 className="text-sm font-extrabold line-clamp-3 leading-snug text-white">{newsletter.title}</h4>
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4 z-20">
                     <button
                       onClick={() => setActivePdfModal(newsletter)}
                       className="w-full py-2 px-3 bg-white/95 text-gray-900 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg hover:bg-white transition-colors cursor-pointer"

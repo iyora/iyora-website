@@ -15,6 +15,10 @@ import {
   getDummyNewsByCategory,
   getDummyNewsBySlug,
 } from "@/data/dummyNews";
+import {
+  getDummyNewsletters,
+  getDummyNewsletterBySlug,
+} from "@/data/dummyNewsletter";
 
 export type RegistrationStatus = "open" | "coming_soon" | "closed";
 
@@ -1287,9 +1291,43 @@ export async function fetchNewslettersData(locale?: string): Promise<NewsletterI
       // Abaikan jika tidak ada category newsletter di tabel news
     }
 
-    return [];
+    const dummyItems = getDummyNewsletters().map((item) => ({
+      id: item.id,
+      title: isEn && item.title_en ? item.title_en : item.title,
+      slug: item.slug,
+      edition: isEn && item.edition_en ? item.edition_en : item.edition,
+      description: isEn && item.description_en ? item.description_en : item.description,
+      cover_image: item.coverImage,
+      file_url: item.fileUrl,
+      published_at: item.publishedAt,
+      created_at: item.publishedAt,
+      author: item.author || "Redaksi IYORA Bulletin",
+      pages: item.pages || null,
+      featured: item.featured || false,
+      tags: item.tags || [],
+      read_time: item.readTime || "5 min read",
+      views: item.views || 1200,
+    }));
+
+    return dummyItems;
   } catch {
-    return [];
+    return getDummyNewsletters().map((item) => ({
+      id: item.id,
+      title: isEn && item.title_en ? item.title_en : item.title,
+      slug: item.slug,
+      edition: isEn && item.edition_en ? item.edition_en : item.edition,
+      description: isEn && item.description_en ? item.description_en : item.description,
+      cover_image: item.coverImage,
+      file_url: item.fileUrl,
+      published_at: item.publishedAt,
+      created_at: item.publishedAt,
+      author: item.author || "Redaksi IYORA Bulletin",
+      pages: item.pages || null,
+      featured: item.featured || false,
+      tags: item.tags || [],
+      read_time: item.readTime || "5 min read",
+      views: item.views || 1200,
+    }));
   }
 }
 
@@ -1330,6 +1368,28 @@ export async function fetchNewsletterBySlug(slug: string, locale?: string): Prom
   const all = await fetchNewslettersData(locale);
   const found = all.find((n) => n.slug === slug || n.id === slug);
   if (found) return found;
+
+  // 3. Fallback dummy
+  const dummy = getDummyNewsletterBySlug(slug);
+  if (dummy) {
+    return {
+      id: dummy.id,
+      title: isEn && dummy.title_en ? dummy.title_en : dummy.title,
+      slug: dummy.slug,
+      edition: isEn && dummy.edition_en ? dummy.edition_en : dummy.edition,
+      description: isEn && dummy.description_en ? dummy.description_en : dummy.description,
+      cover_image: dummy.coverImage,
+      file_url: dummy.fileUrl,
+      published_at: dummy.publishedAt,
+      created_at: dummy.publishedAt,
+      author: dummy.author || "Redaksi IYORA Bulletin",
+      pages: dummy.pages || null,
+      featured: dummy.featured || false,
+      tags: dummy.tags || [],
+      read_time: dummy.readTime || "5 min read",
+      views: dummy.views || 1200,
+    };
+  }
 
   return null;
 }
