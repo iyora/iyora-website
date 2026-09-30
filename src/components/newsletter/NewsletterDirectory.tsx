@@ -52,7 +52,7 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
               </div>
             </div>
 
-            {/* Grid of Newsletter Cards - Compact & Full Cover Visible */}
+            {/* Grid of Newsletter Cards - Clean Portrait Cover Only (No Text) */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
               {newsletters.map((item) => {
                 const detailUrl = `/${locale}/newsletter/${encodeURIComponent(item.slug || item.id)}`;
@@ -61,59 +61,23 @@ export default function NewsletterDirectory({ newsletters }: NewsletterDirectory
                   <Link
                     key={item.id}
                     href={detailUrl}
-                    className="group relative flex flex-col w-full rounded-2xl overflow-hidden border border-gray-200/80 bg-white shadow-sm hover:shadow-xl hover:shadow-primary/15 transition-all duration-300 hover:-translate-y-1.5 cursor-pointer"
+                    className="group relative block aspect-[1/1.414] w-full rounded-2xl overflow-hidden border border-gray-200/90 bg-white shadow-md hover:shadow-2xl hover:shadow-primary/20 transition-all duration-300 hover:-translate-y-2 cursor-pointer"
                   >
-                    {/* Cover Container - Aspect ratio + Ambient blur + Object Contain to show 100% of cover */}
-                    <div className="relative aspect-[16/11] w-full bg-slate-900 overflow-hidden flex items-center justify-center">
-                      {item.cover_image && !item.cover_image.includes("placeholder") ? (
-                        <>
-                          {/* Ambient background blur */}
-                          <Image
-                            src={item.cover_image}
-                            alt=""
-                            fill
-                            aria-hidden="true"
-                            className="object-cover blur-lg scale-125 opacity-40"
-                          />
-                          {/* Main Image Fitted Completely (No Cropping) */}
-                          <div className="relative w-full h-full p-2 z-10">
-                            <Image
-                              src={item.cover_image}
-                              alt={item.title || "Newsletter"}
-                              fill
-                              className="object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-500"
-                              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                            />
-                          </div>
-                        </>
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center p-4 text-center text-white">
-                          <div className="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-inner group-hover:scale-110 transition-transform">
-                            <BookOpen size={24} className="text-amber-300" />
-                          </div>
+                    {item.cover_image && !item.cover_image.includes("placeholder") ? (
+                      <Image
+                        src={item.cover_image}
+                        alt={item.title || "Newsletter"}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center p-4 text-center text-white bg-gradient-to-br from-gray-900 via-primary/80 to-teal/70">
+                        <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-inner group-hover:scale-110 transition-transform">
+                          <BookOpen size={28} className="text-amber-300" />
                         </div>
-                      )}
-
-                      {/* Edition Badge */}
-                      {item.edition && (
-                        <div className="absolute top-2.5 left-2.5 z-20">
-                          <span className="bg-white/95 backdrop-blur-md px-2.5 py-0.5 rounded-full text-[10px] font-extrabold text-primary shadow-xs uppercase tracking-wider">
-                            {item.edition.split("—")[0].trim()}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Compact Card Footer Info */}
-                    <div className="p-3.5 flex flex-col justify-between flex-1 bg-white">
-                      <h3 className="text-xs md:text-sm font-bold text-gray-900 line-clamp-2 leading-snug group-hover:text-primary transition-colors">
-                        {item.title}
-                      </h3>
-                      <div className="mt-2.5 pt-2 border-t border-gray-100 flex items-center justify-between text-[11px] font-semibold text-primary">
-                        <span>{locale === "en" ? "Read Issue" : "Baca Edisi"}</span>
-                        <span className="group-hover:translate-x-1 transition-transform">→</span>
                       </div>
-                    </div>
+                    )}
                   </Link>
                 );
               })}

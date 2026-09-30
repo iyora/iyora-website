@@ -76,53 +76,41 @@ export default function NewsletterDetailView({ newsletter }: NewsletterDetailVie
           </div>
         </div>
 
-        {/* ── Main Detail Card (Exact design requested in screenshot) ── */}
+        {/* ── Main Detail Card ── */}
         <div className="bg-white rounded-3xl shadow-xl shadow-black/5 border border-gray-100 overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 p-6 md:p-8 items-start">
-            {/* Cover & Quick Info (Left - 4 Cols) */}
-            <div className="lg:col-span-4 flex flex-col justify-between h-full space-y-6">
-              <div className="relative group">
-                <div className="relative aspect-[16/11] max-w-[320px] lg:max-w-full mx-auto rounded-2xl overflow-hidden shadow-2xl shadow-primary/15 border-4 border-white transform lg:-rotate-1 group-hover:rotate-0 transition-transform duration-500 bg-slate-900 flex items-center justify-center">
+            {/* Cover & Quick Action (Left - 4 Cols) */}
+            <div className="lg:col-span-4 flex flex-col items-center justify-start space-y-4">
+              <div className="w-full max-w-[280px] sm:max-w-[320px]">
+                {/* Clean Portrait Cover Card - No Text Overlays */}
+                <div className="group relative aspect-[1/1.414] w-full rounded-2xl overflow-hidden border border-gray-200/90 shadow-xl bg-white">
                   {newsletter.cover_image && !newsletter.cover_image.includes("placeholder") ? (
-                    <>
-                      {/* Ambient background blur */}
-                      <Image
-                        src={newsletter.cover_image}
-                        alt=""
-                        fill
-                        aria-hidden="true"
-                        className="object-cover blur-lg scale-125 opacity-40"
-                      />
-                      {/* Main cover image 100% visible */}
-                      <div className="relative w-full h-full p-2 z-10">
-                        <Image
-                          src={newsletter.cover_image}
-                          alt={newsletter.title}
-                          fill
-                          className="object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-500"
-                          priority
-                        />
-                      </div>
-                    </>
+                    <Image
+                      src={newsletter.cover_image}
+                      alt={newsletter.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      priority
+                      sizes="(max-width: 640px) 100vw, 320px"
+                    />
                   ) : (
-                    <div className="p-6 text-center text-white flex flex-col items-center justify-center space-y-3">
-                      <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
-                        <BookOpen size={32} className="text-amber-300" />
-                      </div>
+                    <div className="p-6 text-center text-white flex flex-col items-center justify-center h-full bg-gradient-to-br from-gray-900 via-primary/80 to-teal/70">
+                      <BookOpen size={40} className="text-amber-300 mb-3" />
                       <span className="text-xs font-bold uppercase tracking-wider text-white/80">{newsletter.edition}</span>
-                      <h4 className="text-sm font-extrabold line-clamp-3 leading-snug text-white">{newsletter.title}</h4>
+                      <h4 className="text-sm font-extrabold line-clamp-3 leading-snug text-white mt-2">{newsletter.title}</h4>
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4 z-20">
-                    <button
-                      onClick={() => setActivePdfModal(newsletter)}
-                      className="w-full py-2 px-3 bg-white/95 text-gray-900 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg hover:bg-white transition-colors cursor-pointer"
-                    >
-                      <Eye size={14} className="text-primary" />
-                      <span>{t("expand_fullscreen")}</span>
-                    </button>
-                  </div>
                 </div>
+
+                {/* Perbesar Layar Penuh Button directly under cover */}
+                <button
+                  type="button"
+                  onClick={() => setActivePdfModal(newsletter)}
+                  className="mt-3.5 w-full py-2.5 px-4 bg-primary hover:bg-primary-dark text-white rounded-xl font-bold text-xs md:text-sm flex items-center justify-center gap-2 shadow-md shadow-primary/20 hover:shadow-lg transition-all cursor-pointer"
+                >
+                  <Eye size={16} />
+                  <span>{t("expand_fullscreen")}</span>
+                </button>
               </div>
             </div>
 
@@ -149,6 +137,7 @@ export default function NewsletterDetailView({ newsletter }: NewsletterDetailVie
                 <div className="flex items-center gap-2 flex-shrink-0 self-start sm:self-center">
                   <div className="flex items-center gap-1 p-1 bg-gray-100 rounded-xl">
                     <button
+                      type="button"
                       onClick={() => setViewMode("overview")}
                       className={clsx(
                         "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
@@ -161,6 +150,7 @@ export default function NewsletterDetailView({ newsletter }: NewsletterDetailVie
                       <span>{t("tab_overview")}</span>
                     </button>
                     <button
+                      type="button"
                       onClick={() => setViewMode("preview")}
                       className={clsx(
                         "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
@@ -175,6 +165,7 @@ export default function NewsletterDetailView({ newsletter }: NewsletterDetailVie
                   </div>
 
                   <button
+                    type="button"
                     onClick={handleShare}
                     className="p-2 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-100 hover:text-primary transition-colors cursor-pointer relative"
                     title="Bagikan"
@@ -200,9 +191,23 @@ export default function NewsletterDetailView({ newsletter }: NewsletterDetailVie
                     </div>
 
                     <div className="flex items-center gap-2">
+                      {newsletter.file_url && newsletter.file_url !== "#" && (
+                        <a
+                          href={newsletter.file_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          download
+                          className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition-colors text-xs"
+                          title="Unduh PDF"
+                        >
+                          <Download size={13} />
+                          <span>{locale === "en" ? "Download PDF" : "Unduh PDF"}</span>
+                        </a>
+                      )}
                       <button
+                        type="button"
                         onClick={() => setActivePdfModal(newsletter)}
-                        className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition-colors cursor-pointer text-xs"
+                        className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-primary hover:bg-primary-dark text-white font-semibold transition-colors cursor-pointer text-xs"
                         title="Layar Penuh"
                       >
                         <Eye size={13} />
@@ -259,6 +264,7 @@ export default function NewsletterDetailView({ newsletter }: NewsletterDetailVie
 
                   <div className="pt-4 border-t border-gray-200 flex flex-wrap gap-3">
                     <button
+                      type="button"
                       onClick={() => setViewMode("preview")}
                       className="flex items-center gap-2 px-5 py-3 rounded-xl bg-primary text-white font-bold text-xs shadow-md hover:bg-primary-dark transition-all cursor-pointer"
                     >
@@ -266,6 +272,7 @@ export default function NewsletterDetailView({ newsletter }: NewsletterDetailVie
                       <span>Buka Preview Dokumen</span>
                     </button>
                     <button
+                      type="button"
                       onClick={() => setActivePdfModal(newsletter)}
                       className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white border border-gray-200 text-gray-800 font-bold text-xs hover:bg-gray-50 transition-all cursor-pointer"
                     >
@@ -312,7 +319,20 @@ export default function NewsletterDetailView({ newsletter }: NewsletterDetailVie
               </div>
 
               <div className="flex items-center gap-2 flex-shrink-0">
+                {activePdfModal.file_url && activePdfModal.file_url !== "#" && (
+                  <a
+                    href={activePdfModal.file_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    download
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-primary text-white text-xs font-bold shadow-xs hover:bg-primary-dark transition-colors"
+                  >
+                    <Download size={14} />
+                    <span>{locale === "en" ? "Download PDF" : "Unduh PDF"}</span>
+                  </a>
+                )}
                 <button
+                  type="button"
                   onClick={() => setActivePdfModal(null)}
                   className="p-2 rounded-xl text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors ml-1 cursor-pointer"
                   aria-label="Close"
