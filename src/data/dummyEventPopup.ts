@@ -239,6 +239,49 @@ export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
       },
     ],
   },
+  {
+    id: "popup-upcoming-tiso-2027",
+    isActive: true,
+    badge: "🔥 PENDAFTARAN DIBUKA: TISO 2027",
+    badge_en: "🔥 REGISTRATION OPEN: TISO 2027",
+    title: "TISO 2027 — Thailand International Science Olympiad",
+    title_en: "TISO 2027 — Thailand International Science Olympiad",
+    subtitle: "Pendaftaran Resmi Dibuka! Kompetisi Sains Terpadu Nasional untuk Jenjang SD, SMP, SMA & Mahasiswa Internasional",
+    subtitle_en: "Registration Now Open! Prestigious National Science Competition for Elementary, Junior High International.",
+    image: "/images/pop up/nso.jpeg",
+    content:
+      "Pendaftaran TISO (Thailand International Science Olympiad) 2027 resmi dibuka! Menguji penguasaan sains mendalam (Matematik, Fisika, Kimia, Biologi) melalui ujian berbasis CBT daring dengan standarisasi nasional. Dapatkan medali penghargaan eksklusif, e-sertifikat resmi SIMT Puspresnas, serta piagam pembina berprestasi untuk mendukung portofolio PPDB & SNBT.",
+    content_en:
+      "Registration for TISO (Thailand International Science Olympiad) 2027 is officially open! Evaluates comprehensive scientific mastery (Mathematics, Physics, Chemistry, Biology) via standardized online CBT. Win exclusive medals, SIMT Puspresnas verified certificates, and mentor honors to bolster your academic portfolio.",
+    author: "IyoraOlympiad",
+    publishedAt: "2026-10-07",
+    links: [
+      {
+        label: "Daftar Sekarang",
+        label_en: "Register Now",
+        url: "https://tiso.iyora.or.id/register",
+        variant: "primary",
+      },
+      {
+        label: "Website Resmi TISO",
+        label_en: "Official TISO Website",
+        url: "https://tiso.iyora.or.id",
+        variant: "teal",
+      },
+      {
+        label: "Buku Panduan TISO",
+        label_en: "TISO Guidebook",
+        url: "https://api.iyora.or.id/storage/v1/object/public/event-media/cf86f6fb-83e8-4fd4-8356-e3ac76936b50/guidebooks/1788455563288-BUKU-PANDUAN-NSO-2026.pdf",
+        variant: "indigo",
+      },
+      {
+        label: "Instagram IYORA",
+        label_en: "Official Instagram",
+        url: "https://www.instagram.com/iyoraofficial",
+        variant: "instagram",
+      },
+    ],
+  },
 ];
 
 export const DUMMY_EVENT_POPUP: EventPopupData = DUMMY_EVENT_POPUPS[0];
