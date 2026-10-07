@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import { BookOpen } from "lucide-react";
 import type { CompetitionData } from "@/lib/supabase";
@@ -56,8 +57,21 @@ interface Props {
 export default function CompetitionsGrid({ competitions }: Props) {
   const t = useTranslations("competitions_page");
   const locale = useLocale();
-  const [activeLevel, setActiveLevel] = useState<LevelFilterKey>("all");
+  const searchParams = useSearchParams();
+  const levelParam = searchParams.get("level") as LevelFilterKey | null;
+
+  const validLevels: LevelFilterKey[] = ["all", "national", "international"];
+  const initialLevel = levelParam && validLevels.includes(levelParam) ? levelParam : "all";
+  const [activeLevel, setActiveLevel] = useState<LevelFilterKey>(initialLevel);
   const [activeStatus, setActiveStatus] = useState<StatusFilterKey>("all");
+
+  useEffect(() => {
+    if (levelParam && validLevels.includes(levelParam)) {
+      setActiveLevel(levelParam);
+    } else if (!levelParam) {
+      setActiveLevel("all");
+    }
+  }, [levelParam]);
 
   const levelFilters: { key: LevelFilterKey; label: string }[] = [
     { key: "all", label: t("filter_all") },
@@ -84,7 +98,11 @@ export default function CompetitionsGrid({ competitions }: Props) {
 
   const filtered = useMemo(() => {
     return competitions.filter((c) => {
-      const matchLevel = activeLevel === "all" || c.level === activeLevel;
+      const matchLevel =
+        activeLevel === "all" ||
+        (activeLevel === "international"
+          ? c.level === "international" || c.level === "world"
+          : c.level === activeLevel);
       const matchStatus = activeStatus === "all" || c.registrationStatus === activeStatus;
       return matchLevel && matchStatus;
     });

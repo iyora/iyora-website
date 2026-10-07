@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { fetchCompetitionsData } from "@/lib/supabase";
 import CompetitionsGrid from "./CompetitionsGrid";
@@ -18,7 +19,9 @@ export default async function CompetitionsPage() {
       </section>
 
       <section className="py-12 px-6 max-w-6xl mx-auto">
-        <CompetitionsGrid competitions={competitions} />
+        <Suspense fallback={<div className="py-20 text-center text-gray-400">Loading...</div>}>
+          <CompetitionsGrid competitions={competitions} />
+        </Suspense>
       </section>
     </>
   );

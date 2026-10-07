@@ -9,7 +9,15 @@
     "news": "News",
     "newsletter": "Newsletter",
     "partners": "Partners",
-    "contact": "Contact"
+    "contact": "Contact",
+    "about_desc": "Organization profile, vision & mission",
+    "team_desc": "Board of directors & leadership",
+    "contact_desc": "Get in touch & headquarters info",
+    "competitions_national": "National",
+    "competitions_international": "International",
+    "competitions_national_desc": "National-level science olympiads in Indonesia",
+    "competitions_international_desc": "International and global stage science olympiads",
+    "all_competitions": "View All Competitions"
   },
   "hero": {
     "headline": "Indonesian Youth\nOutstanding Recognition Association",

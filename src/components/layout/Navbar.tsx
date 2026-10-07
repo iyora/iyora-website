@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
-import { Menu, X, ChevronDown, Newspaper, Megaphone, FileText, Images, Calendar, ArrowRight } from "lucide-react";
+import { Menu, X, ChevronDown, Newspaper, Megaphone, FileText, Images, Calendar, ArrowRight, Info, Users, Mail, Globe, Award } from "lucide-react";
 import clsx from "clsx";
 import type { NewsPreviewData, CompetitionData } from "@/lib/supabase";
 import { getValidEventRegistrationUrl } from "@/lib/supabase";
@@ -121,6 +121,12 @@ const NEWS_MENU = [
 
 type NewsMenuKey = typeof NEWS_MENU[number]["key"];
 
+const ABOUT_MENU = [
+  { key: "about", href: "/about", icon: Info, labelKey: "about", descKey: "about_desc" },
+  { key: "team", href: "/team", icon: Users, labelKey: "team", descKey: "team_desc" },
+  { key: "contact", href: "/contact", icon: Mail, labelKey: "contact", descKey: "contact_desc" },
+] as const;
+
 function formatPreviewDate(dateStr: string | null, locale: string = "id"): string {
   if (!dateStr) return "";
   const d = new Date(dateStr);
@@ -141,6 +147,9 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [newsDropdownOpen, setNewsDropdownOpen] = useState(false);
   const [mobileNewsOpen, setMobileNewsOpen] = useState(false);
+  const [mobileCompetitionsOpen, setMobileCompetitionsOpen] = useState(false);
+  const [aboutDropdownOpen, setAboutDropdownOpen] = useState(false);
+  const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
   const [hoveredNewsKey, setHoveredNewsKey] = useState<NewsMenuKey>("news");
 
   // Dynamic competitions list from Supabase or fallback
@@ -162,12 +171,8 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
       }).sort((a, b) => STATUS_PRIORITY[a.status] - STATUS_PRIORITY[b.status])
     : OLYMPIADS;
 
-  const [hoveredOlympiadName, setHoveredOlympiadName] = useState<string>("");
-  const [hoveredSide, setHoveredSide] = useState<"left" | "right">("left");
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const newsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const activeOlympiad = olympiadsList.find((o) => o.name === (hoveredOlympiadName || olympiadsList[0]?.name)) || olympiadsList[0];
 
   function openDropdown() {
     if (closeTimer.current) clearTimeout(closeTimer.current);
@@ -185,6 +190,17 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
 
   function scheduleNewsClose() {
     newsCloseTimer.current = setTimeout(() => setNewsDropdownOpen(false), 150);
+  }
+
+  const aboutCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function openAboutDropdown() {
+    if (aboutCloseTimer.current) clearTimeout(aboutCloseTimer.current);
+    setAboutDropdownOpen(true);
+  }
+
+  function scheduleAboutClose() {
+    aboutCloseTimer.current = setTimeout(() => setAboutDropdownOpen(false), 150);
   }
 
   const otherLocale = locale === "id" ? "en" : "id";
@@ -257,195 +273,58 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
             <div
               className={clsx(
                 "absolute top-full left-1/2 -translate-x-1/2 pt-2 transition-all duration-200",
-                dropdownOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-1 pointer-events-none"
+                dropdownOpen
+                  ? "opacity-100 translate-y-0 pointer-events-auto"
+                  : "opacity-0 -translate-y-1 pointer-events-none"
               )}
             >
-              <div className="relative bg-white rounded-2xl shadow-xl shadow-black/10 border border-gray-100 p-3 w-[350px]">
-                <div className="grid grid-cols-2 gap-1 max-h-[340px] overflow-y-auto pr-0.5">
-                  {olympiadsList.map((o, index) => {
-                    const isHovered = hoveredOlympiadName === o.name;
-                    const isOpen = o.status === "open";
-                    const itemSide: "left" | "right" = index % 2 === 0 ? "left" : "right";
-                    return (
-                      <Link
-                        key={`${o.name}-${o.full}`}
-                        href={href("/competitions")}
-                        onClick={() => setDropdownOpen(false)}
-                        onMouseEnter={() => {
-                          setHoveredOlympiadName(o.name);
-                          setHoveredSide(itemSide);
-                        }}
-                        className={clsx(
-                          "flex items-center justify-between px-2.5 py-2 rounded-xl transition-all duration-150 group relative overflow-hidden",
-                          isHovered
-                            ? isOpen
-                              ? "bg-teal-500/10 text-teal-900 font-bold"
-                              : "bg-primary/10"
-                            : "hover:bg-gray-50"
-                        )}
-                      >
-                        <div className="flex items-center gap-2 min-w-0">
-                          <span className="text-base leading-none flex-shrink-0">{o.emoji}</span>
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-1">
-                              <p className={clsx(
-                                "text-xs font-bold transition-colors",
-                                isHovered ? "text-primary" : "text-gray-800 group-hover:text-primary"
-                              )}>
-                                {o.name}
-                              </p>
-                              {isOpen && (
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
-                              )}
-                            </div>
-                            <p className="text-[10px] text-gray-400 truncate leading-tight">{o.level}</p>
-                          </div>
-                        </div>
-                        {isOpen && (
-                          <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200 flex-shrink-0 ml-1">
-                            Open
-                          </span>
-                        )}
-                      </Link>
-                    );
-                  })}
-                </div>
-                <div className="pt-2 mt-2 border-t border-gray-100">
+              <div className="bg-white rounded-2xl shadow-xl shadow-black/10 border border-gray-100 p-2 w-72 flex flex-col gap-1">
+                <Link
+                  href={href("/competitions?level=national")}
+                  onClick={() => setDropdownOpen(false)}
+                  className="flex items-start gap-3 p-2.5 rounded-xl transition-all duration-150 hover:bg-gray-50 group"
+                >
+                  <div className="w-8 h-8 rounded-lg bg-teal-50 text-teal flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-teal group-hover:text-white transition-colors">
+                    <Award size={16} />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-sm font-semibold text-gray-800 group-hover:text-primary transition-colors">
+                      {t("competitions_national")}
+                    </div>
+                    <p className="text-[11px] text-gray-400 leading-tight mt-0.5">
+                      {t("competitions_national_desc")}
+                    </p>
+                  </div>
+                </Link>
+
+                <Link
+                  href={href("/competitions?level=international")}
+                  onClick={() => setDropdownOpen(false)}
+                  className="flex items-start gap-3 p-2.5 rounded-xl transition-all duration-150 hover:bg-gray-50 group"
+                >
+                  <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-primary group-hover:text-white transition-colors">
+                    <Globe size={16} />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-sm font-semibold text-gray-800 group-hover:text-primary transition-colors">
+                      {t("competitions_international")}
+                    </div>
+                    <p className="text-[11px] text-gray-400 leading-tight mt-0.5">
+                      {t("competitions_international_desc")}
+                    </p>
+                  </div>
+                </Link>
+
+                <div className="pt-2 mt-1 border-t border-gray-100">
                   <Link
                     href={href("/competitions")}
                     onClick={() => setDropdownOpen(false)}
-                    className="flex items-center justify-center w-full py-1.5 text-xs font-semibold text-primary hover:underline"
+                    className="flex items-center justify-center w-full py-1.5 text-xs font-semibold text-primary hover:underline gap-1"
                   >
-                    {locale === "id" ? "Lihat Semua Kompetisi" : "View All Competitions"} →
+                    <span>{t("all_competitions")}</span>
+                    <ArrowRight size={12} />
                   </Link>
                 </div>
-
-                {activeOlympiad && (
-                  <div
-                    className={clsx(
-                      "absolute top-0 w-[270px] min-h-full p-4 rounded-2xl shadow-xl transition-all duration-200 animate-fadeIn overflow-hidden flex flex-col justify-between",
-                      hoveredSide === "left" ? "right-full mr-3" : "left-full ml-3",
-                      activeOlympiad.status === "open"
-                        ? "bg-gradient-to-br from-[#3B79A7] via-[#358EAA] to-[#2EA3AD] text-white border border-teal-300/30 shadow-teal-900/20"
-                        : activeOlympiad.status === "coming_soon"
-                          ? "bg-gradient-to-br from-[#66449b] via-[#523380] to-[#3f2366] text-white border border-purple-300/30 shadow-purple-950/20"
-                          : "bg-white text-gray-900 border border-gray-100 shadow-black/10"
-                    )}
-                  >
-                    {/* Decorative watermark circles */}
-                    <div className={clsx(
-                      "absolute -top-10 -right-10 w-36 h-36 rounded-full pointer-events-none",
-                      (activeOlympiad.status === "open" || activeOlympiad.status === "coming_soon") ? "bg-white/10" : "bg-gray-200/50"
-                    )} />
-                    <div className={clsx(
-                      "absolute -bottom-10 -right-4 w-28 h-28 rounded-full pointer-events-none",
-                      (activeOlympiad.status === "open" || activeOlympiad.status === "coming_soon") ? "bg-white/10" : "bg-gray-200/50"
-                    )} />
-
-                    <div className="flex flex-col h-full justify-between relative z-10">
-                      <div>
-                        <div className="flex items-center justify-between gap-2 mb-2">
-                          <span className="text-3xl">{activeOlympiad.emoji}</span>
-                          <span className={clsx(
-                            "text-[10px] font-bold px-2.5 py-0.5 rounded-full border",
-                            (activeOlympiad.status === "open" || activeOlympiad.status === "coming_soon")
-                              ? "bg-white/20 text-white border-white/30 backdrop-blur-xs"
-                              : activeOlympiad.badgeStyle
-                          )}>
-                            {activeOlympiad.level}
-                          </span>
-                        </div>
-                        <h4 className={clsx(
-                          "text-sm font-extrabold mb-1 leading-snug",
-                          (activeOlympiad.status === "open" || activeOlympiad.status === "coming_soon") ? "text-white" : "text-gray-900"
-                        )}>
-                          {activeOlympiad.name}
-                        </h4>
-                        <p className={clsx(
-                          "text-xs font-semibold mb-3 leading-snug",
-                          (activeOlympiad.status === "open" || activeOlympiad.status === "coming_soon") ? "text-white/90" : "text-primary"
-                        )}>
-                          {activeOlympiad.full}
-                        </p>
-
-                        <div className="mb-2">
-                          <span className={clsx(
-                            "inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-0.5 rounded-full",
-                            activeOlympiad.status === "open"
-                              ? "bg-emerald-400/20 text-emerald-200 border border-emerald-300/40 backdrop-blur-xs"
-                              : activeOlympiad.status === "coming_soon"
-                                ? "bg-amber-400/20 text-amber-200 border border-amber-300/40 backdrop-blur-xs"
-                                : "bg-gray-100 text-gray-500 border border-gray-200"
-                          )}>
-                            <span className={clsx(
-                              "w-1.5 h-1.5 rounded-full flex-shrink-0",
-                              activeOlympiad.status === "open"
-                                ? "bg-emerald-300 animate-pulse"
-                                : activeOlympiad.status === "coming_soon"
-                                  ? "bg-amber-300"
-                                  : "bg-gray-400"
-                            )} />
-                            {activeOlympiad.status === "open"
-                              ? (locale === "id" ? "Pendaftaran Dibuka" : "Registration Open")
-                              : activeOlympiad.status === "coming_soon"
-                                ? (locale === "id" ? "Segera Dibuka" : "Coming Soon")
-                                : (locale === "id" ? "Ditutup" : "Closed")}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className={clsx(
-                        "flex flex-col gap-1.5 pt-3 border-t",
-                        (activeOlympiad.status === "open" || activeOlympiad.status === "coming_soon") ? "border-white/20" : "border-gray-100"
-                      )}>
-                        {activeOlympiad.status === "open" && activeOlympiad.url && (
-                          <a
-                            href={getValidEventRegistrationUrl(activeOlympiad.slug || activeOlympiad.name.toLowerCase(), activeOlympiad.registrationUrl, activeOlympiad.url)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={() => setDropdownOpen(false)}
-                            className="flex items-center justify-center gap-1.5 w-full py-2 rounded-xl text-xs font-bold transition-all shadow-sm group bg-white text-[#2b608a] hover:bg-white/95 hover:text-[#1d4669]"
-                          >
-                            <span>
-                              {locale === "id" ? "Daftar Sekarang" : "Register Now"}
-                            </span>
-                            <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
-                          </a>
-                        )}
-
-                        {activeOlympiad.guidebookUrl && (
-                          <a
-                            href={activeOlympiad.guidebookUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={() => setDropdownOpen(false)}
-                            className={clsx(
-                              "flex items-center justify-center gap-1 w-full py-1.5 rounded-xl text-xs font-semibold transition-all shadow-xs",
-                              (activeOlympiad.status === "open" || activeOlympiad.status === "coming_soon")
-                                ? "bg-white/15 text-white hover:bg-white/25 border border-white/30"
-                                : "border border-gray-200 text-gray-700 hover:bg-gray-50"
-                            )}
-                          >
-                            <span>{locale === "id" ? "📖 Buku Panduan" : "📖 Guidebook"}</span>
-                          </a>
-                        )}
-
-                        <Link
-                          href={href("/competitions")}
-                          onClick={() => setDropdownOpen(false)}
-                          className={clsx(
-                            "flex items-center justify-center gap-1 w-full py-1 text-xs font-semibold transition-colors",
-                            (activeOlympiad.status === "open" || activeOlympiad.status === "coming_soon")
-                              ? "text-white/80 hover:text-white"
-                              : "text-gray-500 hover:text-primary"
-                          )}
-                        >
-                          <span>{locale === "id" ? "Detail Kompetisi" : "Competition Details"}</span>
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -698,15 +577,64 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
           <Link href={href("/partners")} className={navLinkClass}>
             {t("partners")}
           </Link>
-          <Link href={href("/team")} className={navLinkClass}>
-            {t("team")}
-          </Link>
-          <Link href={href("/about")} className={navLinkClass}>
-            {t("about")}
-          </Link>
-          <Link href={href("/contact")} className={navLinkClass}>
-            {t("contact")}
-          </Link>
+          <div
+            className="relative"
+            onMouseEnter={openAboutDropdown}
+            onMouseLeave={scheduleAboutClose}
+          >
+            <Link
+              href={href("/about")}
+              onClick={() => setAboutDropdownOpen(false)}
+              className={clsx(
+                navLinkClass,
+                "flex items-center gap-1 cursor-pointer"
+              )}
+            >
+              {t("about")}
+              <ChevronDown
+                size={14}
+                className={clsx(
+                  "transition-transform duration-200",
+                  aboutDropdownOpen && "rotate-180"
+                )}
+              />
+            </Link>
+
+            <div
+              className={clsx(
+                "absolute top-full right-0 w-72 pt-2 transition-all duration-200",
+                aboutDropdownOpen
+                  ? "opacity-100 translate-y-0 pointer-events-auto"
+                  : "opacity-0 -translate-y-1 pointer-events-none"
+              )}
+            >
+              <div className="bg-white rounded-2xl shadow-xl shadow-black/10 border border-gray-100 p-2 flex flex-col gap-1">
+                {ABOUT_MENU.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.key}
+                      href={href(item.href)}
+                      onClick={() => setAboutDropdownOpen(false)}
+                      className="flex items-start gap-3 p-2.5 rounded-xl transition-all duration-150 hover:bg-gray-50 group"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-primary group-hover:text-white transition-colors">
+                        <Icon size={16} />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-sm font-semibold text-gray-800 group-hover:text-primary transition-colors">
+                          {t(item.labelKey)}
+                        </div>
+                        <p className="text-[11px] text-gray-400 leading-tight mt-0.5">
+                          {t(item.descKey)}
+                        </p>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
 
           {/* Language switcher */}
           <Link
@@ -743,13 +671,57 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
             >
               {t("home")}
             </Link>
-            <Link
-              href={href("/competitions")}
-              className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors"
-              onClick={() => setMobileOpen(false)}
+            {/* Mobile Competitions accordion */}
+            <button
+              className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors flex items-center justify-between w-full cursor-pointer"
+              onClick={() => setMobileCompetitionsOpen((v) => !v)}
             >
-              {t("competitions")}
-            </Link>
+              <span>{t("competitions")}</span>
+              <ChevronDown
+                size={16}
+                className={clsx(
+                  "transition-transform duration-200",
+                  mobileCompetitionsOpen && "rotate-180"
+                )}
+              />
+            </button>
+            {mobileCompetitionsOpen && (
+              <div className="pl-4 pb-2 flex flex-col gap-0.5">
+                <Link
+                  href={href("/competitions?level=national")}
+                  className="py-2.5 text-sm text-gray-600 hover:text-primary transition-colors flex items-center gap-2.5"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  <div className="w-7 h-7 rounded-lg bg-teal-50 text-teal flex items-center justify-center flex-shrink-0">
+                    <Award size={14} />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-medium text-gray-800">{t("competitions_national")}</span>
+                    <span className="text-[11px] text-gray-400">{t("competitions_national_desc")}</span>
+                  </div>
+                </Link>
+                <Link
+                  href={href("/competitions?level=international")}
+                  className="py-2.5 text-sm text-gray-600 hover:text-primary transition-colors flex items-center gap-2.5"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  <div className="w-7 h-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+                    <Globe size={14} />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-medium text-gray-800">{t("competitions_international")}</span>
+                    <span className="text-[11px] text-gray-400">{t("competitions_international_desc")}</span>
+                  </div>
+                </Link>
+                <Link
+                  href={href("/competitions")}
+                  className="py-2 text-xs text-primary font-semibold hover:underline"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {t("all_competitions")} →
+                </Link>
+              </div>
+            )}
             <Link
               href={href("/winners")}
               className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors flex items-center justify-between"
@@ -811,27 +783,43 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
             >
               {t("partners")}
             </Link>
-            <Link
-              href={href("/team")}
-              className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors"
-              onClick={() => setMobileOpen(false)}
+            {/* Mobile About Us accordion */}
+            <button
+              className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors flex items-center justify-between w-full cursor-pointer"
+              onClick={() => setMobileAboutOpen((v) => !v)}
             >
-              {t("team")}
-            </Link>
-            <Link
-              href={href("/about")}
-              className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors"
-              onClick={() => setMobileOpen(false)}
-            >
-              {t("about")}
-            </Link>
-            <Link
-              href={href("/contact")}
-              className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors"
-              onClick={() => setMobileOpen(false)}
-            >
-              {t("contact")}
-            </Link>
+              <span>{t("about")}</span>
+              <ChevronDown
+                size={16}
+                className={clsx(
+                  "transition-transform duration-200",
+                  mobileAboutOpen && "rotate-180"
+                )}
+              />
+            </button>
+            {mobileAboutOpen && (
+              <div className="pl-4 pb-2 flex flex-col gap-0.5">
+                {ABOUT_MENU.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.key}
+                      href={href(item.href)}
+                      className="py-2.5 text-sm text-gray-600 hover:text-primary transition-colors flex items-center gap-2.5"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      <div className="w-7 h-7 rounded-lg bg-primary/5 text-primary flex items-center justify-center flex-shrink-0">
+                        <Icon size={14} />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="font-medium text-gray-800">{t(item.labelKey)}</span>
+                        <span className="text-[11px] text-gray-400">{t(item.descKey)}</span>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
             <div className="pt-3">
               <Link
                 href={`/${otherLocale}`}

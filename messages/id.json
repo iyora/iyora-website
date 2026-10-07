@@ -9,7 +9,15 @@
     "news": "Berita",
     "newsletter": "Newsletter",
     "partners": "Mitra",
-    "contact": "Kontak"
+    "contact": "Kontak",
+    "about_desc": "Profil lembaga, visi, dan misi IYORA",
+    "team_desc": "Struktur kepengurusan & tim kerja",
+    "contact_desc": "Hubungi kami & lokasi sekretariat",
+    "competitions_national": "Nasional",
+    "competitions_international": "Internasional",
+    "competitions_national_desc": "Olimpiade sains tingkat nasional di Indonesia",
+    "competitions_international_desc": "Olimpiade sains tingkat internasional & dunia",
+    "all_competitions": "Lihat Semua Kompetisi"
   },
   "hero": {
     "headline": "Indonesian Youth\nOutstanding Recognition Association",
