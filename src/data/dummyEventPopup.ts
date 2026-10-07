@@ -246,13 +246,13 @@ export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
     badge_en: "🔥 REGISTRATION OPEN: TISO 2027",
     title: "TISO 2027 — Thailand International Science Olympiad",
     title_en: "TISO 2027 — Thailand International Science Olympiad",
-    subtitle: "Pendaftaran Resmi Dibuka! Kompetisi Sains Terpadu Nasional untuk Jenjang SD, SMP, SMA & Mahasiswa Internasional",
-    subtitle_en: "Registration Now Open! Prestigious National Science Competition for Elementary, Junior High International.",
-    image: "/images/pop up/nso.jpeg",
+    subtitle: "Pendaftaran Resmi Dibuka! Olimpiade Sains Internasional untuk Jenjang SD, SMP, SMA & Mahasiswa",
+    subtitle_en: "Registration Now Open! International Science Olympiad for Elementary, Junior High, Senior High & University Students",
+    image: "/images/pop up/tiso.png",
     content:
-      "Pendaftaran TISO (Thailand International Science Olympiad) 2027 resmi dibuka! Menguji penguasaan sains mendalam (Matematik, Fisika, Kimia, Biologi) melalui ujian berbasis CBT daring dengan standarisasi nasional. Dapatkan medali penghargaan eksklusif, e-sertifikat resmi SIMT Puspresnas, serta piagam pembina berprestasi untuk mendukung portofolio PPDB & SNBT.",
+      "Pendaftaran TISO (Thailand International Science Olympiad) 2027 resmi dibuka! Uji penguasaan sains (Matematika, Fisika, Kimia, Biologi) dan bersaing dengan pelajar dari berbagai negara di panggung internasional. Raih medali, sertifikat internasional, serta piagam pembina berprestasi untuk memperkuat portofolio akademik. Pendaftaran dibuka 2 Oktober – 5 Desember 2026.",
     content_en:
-      "Registration for TISO (Thailand International Science Olympiad) 2027 is officially open! Evaluates comprehensive scientific mastery (Mathematics, Physics, Chemistry, Biology) via standardized online CBT. Win exclusive medals, SIMT Puspresnas verified certificates, and mentor honors to bolster your academic portfolio.",
+      "Registration for TISO (Thailand International Science Olympiad) 2027 is officially open! Test your mastery of science (Mathematics, Physics, Chemistry, Biology) and compete with students from many countries on an international stage. Earn medals, international certificates, and mentor awards to strengthen your academic portfolio. Registration runs from October 2 to December 5, 2026.",
     author: "IyoraOlympiad",
     publishedAt: "2026-10-07",
     links: [
@@ -271,7 +271,7 @@ export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
       {
         label: "Buku Panduan TISO",
         label_en: "TISO Guidebook",
-        url: "https://api.iyora.or.id/storage/v1/object/public/event-media/cf86f6fb-83e8-4fd4-8356-e3ac76936b50/guidebooks/1788455563288-BUKU-PANDUAN-NSO-2026.pdf",
+        url: "https://api.iyora.or.id/storage/v1/object/public/event-media/f46a573a-fede-45e0-a3c0-c8635ee1f14f/guidebooks/1791183416609-Guidebook-TISO-2027.pdf",
         variant: "indigo",
       },
       {

@@ -133,6 +133,7 @@ const RAW_DEFAULT_COMPETITIONS: RawDefaultCompetition[] = [
   // 1. Open Registration
   { slug: "nso", shortName: "NSO", name: "National Science Olympiad", level: "national", category: "Science", websiteUrl: "https://nso.iyora.or.id", registrationUrl: "https://nso.iyora.or.id/register", guidebookUrl: "https://api.iyora.or.id/storage/v1/object/public/event-media/cf86f6fb-83e8-4fd4-8356-e3ac76936b50/guidebooks/1788455563288-BUKU-PANDUAN-NSO-2026.pdf", openAt: "2026-09-03", closeAt: "2026-10-16" },
   { slug: "nsmo", shortName: "NSMO", name: "National Science Math Olympiad", level: "national", category: "Mathematics", websiteUrl: "https://nsmo.iyora.or.id", registrationUrl: "https://nsmo.iyora.or.id/register", guidebookUrl: "https://api.iyora.or.id/storage/v1/object/public/event-media/58a9dcaa-e853-4c64-bd16-906d362c9585/guidebooks/1790154027781-Guidebook-DMO-2026.pdf", openAt: "2026-09-08", closeAt: "2026-10-27" },
+  { slug: "tiso", shortName: "TISO", name: "THAILAND INTERNATIONAL SCIENCE OLYMPIAD", level: "international", category: "Physics", websiteUrl: "https://tiso.iyora.or.id", registrationUrl: "https://tiso.iyora.or.id/register", guidebookUrl: "https://api.iyora.or.id/storage/v1/object/public/event-media/f46a573a-fede-45e0-a3c0-c8635ee1f14f/guidebooks/1791183416609-Guidebook-TISO-2027.pdf", openAt: "2026-10-02", closeAt: "2026-12-05" },
 
   // 2. Coming Soon
   { slug: "nymo", shortName: "NYMO", name: "National Youth Mathematics Olympiad", level: "national", category: "Mathematics", websiteUrl: "https://nymo.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: "2026-06-01", closeAt: "2026-08-01" },
@@ -146,7 +147,6 @@ const RAW_DEFAULT_COMPETITIONS: RawDefaultCompetition[] = [
   { slug: "os2mn", shortName: "OS2MN", name: "Olimpiade Sains Siswa Madrasah Nasional", level: "madrasah", category: "Madrasah", websiteUrl: "https://os2mn.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: "2026-06-01", closeAt: "2026-08-01" },
   { slug: "wso", shortName: "WSO", name: "World Science Olympiad", level: "world", category: "Science", websiteUrl: "https://wso.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: "2026-09-20", closeAt: "2026-09-30" },
   { slug: "kiso", shortName: "KISO", name: "KOREA INTERNATIONAL SCIENCE OLYMPIAD", level: "international", category: "Science", websiteUrl: "https://kiso.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: null, closeAt: null },
-  { slug: "tiso", shortName: "TISO", name: "THAILAND INTERNATIONAL SCIENCE OLYMPIAD", level: "international", category: "Science", websiteUrl: "https://tiso.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: null, closeAt: null },
   { slug: "hiso", shortName: "HISO", name: "HANOI INTERNATIONAL SCIENCE OLYMPIAD", level: "international", category: "Science", websiteUrl: "https://hiso.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: null, closeAt: null },
   { slug: "miso", shortName: "MISO", name: "MANILA INTERNATIONAL SCIENCE OLYMPIAD", level: "international", category: "Science", websiteUrl: "https://miso.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: null, closeAt: null },
   { slug: "meiso", shortName: "MEISO", name: "MEXICO INTERNATIONAL SCIENCE OLYMPIAD", level: "international", category: "Science", websiteUrl: "https://meiso.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: null, closeAt: null },
@@ -168,6 +168,10 @@ export const KNOWN_EVENT_MEDIA: Record<string, { banner?: string; logo?: string 
   nso: {
     banner: "https://api.iyora.or.id/storage/v1/object/public/event-media/cf86f6fb-83e8-4fd4-8356-e3ac76936b50/banner.png",
     logo: "https://api.iyora.or.id/storage/v1/object/public/event-media/cf86f6fb-83e8-4fd4-8356-e3ac76936b50/logo.png",
+  },
+  tiso: {
+    banner: "https://api.iyora.or.id/storage/v1/object/public/event-media/f46a573a-fede-45e0-a3c0-c8635ee1f14f/banner-1791182905339.png",
+    logo: "https://api.iyora.or.id/storage/v1/object/public/event-media/f46a573a-fede-45e0-a3c0-c8635ee1f14f/logo-1790850309781.png",
   },
 };
 

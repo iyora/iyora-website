@@ -43,6 +43,7 @@ function getSlideShortLabel(id: string, isEn: boolean): string {
   if (id.includes("nso-2026")) return "NSO 2026";
   if (id.includes("nsmo-2026")) return "NSMO 2026";
   if (id.includes("wso-2026")) return "WSO 2026";
+  if (id.includes("tiso")) return "TISO 2027";
   if (id.includes("awarding")) return "Awarding";
   if (id.includes("opening")) return isEn ? "Opening" : "Pembukaan";
   return isEn ? "Event" : "Kegiatan";
