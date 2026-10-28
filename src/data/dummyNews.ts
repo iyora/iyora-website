@@ -293,7 +293,7 @@ We look forward to welcoming you again at the IYSA Olympiads next year, with gre
   // ── 4. GALLERY (Galeri) ──
   {
     id: "gallery-round1-2026",
-    slug: "dokumentasi-round-nso-2026",
+    slug: "dokumentasi-round1-nso-2026",
     title: "Dokumentasi Acara Round 1: NSO 2026",
     title_en: "Event Documentation Round 1: NSO 2026",
     category: "gallery",
@@ -316,6 +316,32 @@ We look forward to welcoming you again at the IYSA Olympiads next year, with gre
     link: "https://drive.google.com/drive/folders/1pMMN3ExnMhfi69XyXBoT9DYlQ22ASF-p?usp=sharing",
     linkLabel: "FULL DOKUMENTASI ROUND 1",
     linkLabel_en: "Full Documentation of Round 1",
+  },
+  {
+    id: "gallery-round2-nso-2026",
+    slug: "dokumentasi-round2-nso-2026",
+    title: "Dokumentasi Acara Round 2: NSO 2026",
+    title_en: "Event Documentation Round 2: NSO 2026",
+    category: "gallery",
+    photo: "/images/NSO/round 2/round 2.png",
+    photos: [
+      "/images/NSO/round 2/r1.png",
+      "/images/NSO/round 2/r2.png",
+      "/images/NSO/round 2/r3.png",
+      "/images/NSO/round 2/r4.png",
+      "/images/NSO/round 2/r5.png",
+      "/images/NSO/round 2/r6.png",
+      "/images/NSO/round 2/r7.png",
+    ],
+    caption: "Kumpulan foto dokumentasi Round 2 NSO 2026 yang digelar secara daring pada 26 Oktober 2026.",
+    caption_en: "Photo documentation collection of Round 2 of NSO 2026 held online on October 26th, 2026.",
+    content: "Berikut adalah dokumentasi foto lengkap dari pelaksanaan Round 2 kompetisi olimpiade tingkat nasional dan internasional NSO 2026. Kegiatan diselenggarakan secara daring bekerja sama dengan IYSA & MIICA serta terintegrasi resmi dengan SIMT Puspresnas Kemendikbudristek RI.",
+    content_en: "Here is the complete photo documentation gallery of Round 2 of NSO 2026 national and international olympiads, held online in collaboration with IYSA & MIICA and officially integrated with SIMT Puspresnas, Ministry of Education, Culture, Research, and Technology of the Republic of Indonesia.",
+    publishedAt: "2026-10-28",
+    author: "IyoraOlympiad",
+    link: "https://drive.google.com/drive/folders/1pRn-Qh6aQIqVQvA-a7fGqR_yGnWFbOex?usp=sharing",
+    linkLabel: "FULL DOKUMENTASI ROUND 2",
+    linkLabel_en: "Full Documentation of Round 2",
   },
   {
     id: "gallery-round2-2026",
@@ -449,7 +475,8 @@ export function getDummyNewsBySlug(slug: string, locale?: string) {
       item.slug === slug ||
       itemSlugDecoded === decoded ||
       itemSlugNormalized === normalized ||
-      item.id === slug
+      item.id === slug ||
+      (item.id === "gallery-round1-2026" && (decoded === "dokumentasi-round-nso-2026" || normalized === "dokumentasi-round-nso-2026"))
     );
   }) || null;
 }
