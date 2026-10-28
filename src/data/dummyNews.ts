@@ -292,6 +292,32 @@ We look forward to welcoming you again at the IYSA Olympiads next year, with gre
 
   // ── 4. GALLERY (Galeri) ──
   {
+    id: "gallery-round1-2026",
+    slug: "dokumentasi-round-nso-2026",
+    title: "Dokumentasi Acara Round 1: NSO 2026",
+    title_en: "Event Documentation Round 1: NSO 2026",
+    category: "gallery",
+    photo: "/images/NSO/round 1/round1.png",
+    photos: [
+      "/images/NSO/round 1/1.jpeg",
+      "/images/NSO/round 1/2.jpeg",
+      "/images/NSO/round 1/3.jpeg",
+      "/images/NSO/round 1/4.png",
+      "/images/NSO/round 1/5.png",
+      "/images/NSO/round 1/6.png",
+      "/images/NSO/round 1/7.png",
+    ],
+    caption: "Kumpulan foto dokumentasi Round 1 NSO 2026 yang digelar secara daring pada 26 Oktober 2026.",
+    caption_en: "Photo documentation collection of Round 1 of NSO 2026 held online on October 26th, 2026.",
+    content: "Berikut adalah dokumentasi foto lengkap dari pelaksanaan Round 1 kompetisi olimpiade tingkat nasional dan internasional NSO 2026. Kegiatan diselenggarakan secara daring bekerja sama dengan IYSA & MIICA serta terintegrasi resmi dengan SIMT Puspresnas Kemendikbudristek RI.",
+    content_en: "Here is the complete photo documentation gallery of Round 1 of NSO 2026 national and international olympiads, held online in collaboration with IYSA & MIICA and officially integrated with SIMT Puspresnas, Ministry of Education, Culture, Research, and Technology of the Republic of Indonesia.",
+    publishedAt: "2026-10-26",
+    author: "IyoraOlympiad",
+    link: "https://drive.google.com/drive/folders/1pMMN3ExnMhfi69XyXBoT9DYlQ22ASF-p?usp=sharing",
+    linkLabel: "FULL DOKUMENTASI ROUND 1",
+    linkLabel_en: "Full Documentation of Round 1",
+  },
+  {
     id: "gallery-round2-2026",
     slug: "dokumentasi-round2-nygo-iygo-nyeo-iyeo-2026",
     title: "Dokumentasi Acara Round 2: NYGO, IYGO, NYEO & IYEO 2026",
