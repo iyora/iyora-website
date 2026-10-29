@@ -229,9 +229,9 @@ export async function GET(req: Request) {
         cleanPath = cleanPath.slice("public/".length);
       }
       const localFileCandidates = [
-        path.join(process.cwd(), "public", cleanPath),
-        path.join(process.cwd(), "public", "sk", cleanPath),
-        path.join(process.cwd(), "public", "sk", path.basename(cleanPath)),
+        path.join(/*turbopackIgnore: true*/ process.cwd(), "public", cleanPath),
+        path.join(/*turbopackIgnore: true*/ process.cwd(), "public", "sk", cleanPath),
+        path.join(/*turbopackIgnore: true*/ process.cwd(), "public", "sk", path.basename(cleanPath)),
       ];
 
       for (const candidate of localFileCandidates) {
@@ -253,10 +253,10 @@ export async function GET(req: Request) {
     // 3. Auto-detect if a local PDF file exists in public/sk/ matching the competition name
     const compCode = comp.toLowerCase();
     const autoLocalCandidates = [
-      path.join(process.cwd(), "public", "sk", `sk-${compCode}.pdf`),
-      path.join(process.cwd(), "public", "sk", `${compCode}.pdf`),
-      path.join(process.cwd(), "public", "sk", `sk-${comp.toUpperCase()}.pdf`),
-      path.join(process.cwd(), "public", "sk", `${comp.toUpperCase()}.pdf`),
+      path.join(/*turbopackIgnore: true*/ process.cwd(), "public", "sk", `sk-${compCode}.pdf`),
+      path.join(/*turbopackIgnore: true*/ process.cwd(), "public", "sk", `${compCode}.pdf`),
+      path.join(/*turbopackIgnore: true*/ process.cwd(), "public", "sk", `sk-${comp.toUpperCase()}.pdf`),
+      path.join(/*turbopackIgnore: true*/ process.cwd(), "public", "sk", `${comp.toUpperCase()}.pdf`),
     ];
 
     for (const candidate of autoLocalCandidates) {

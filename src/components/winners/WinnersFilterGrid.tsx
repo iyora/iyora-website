@@ -208,7 +208,7 @@ export default function WinnersFilterGrid({
         }
       }
       counts.all++;
-      const m = w.medal;
+      const m = w.medal as string;
       if (m === "Gold Medal" || m === "Grand Champion") counts["Gold Medal"]++;
       else if (m === "Silver Medal") counts["Silver Medal"]++;
       else if (m === "Bronze Medal") counts["Bronze Medal"]++;
