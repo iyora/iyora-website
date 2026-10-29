@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
-import { Menu, X, ChevronDown, Newspaper, Megaphone, FileText, Images, ArrowRight, Info, Users, Mail, Globe, Award } from "lucide-react";
+import { Menu, X, ChevronDown, Newspaper, Megaphone, FileText, Camera, Video, ArrowRight, Info, Users, Mail, Globe, Award } from "lucide-react";
 import clsx from "clsx";
 import type { NewsPreviewData, CompetitionData } from "@/lib/supabase";
 import { getValidEventRegistrationUrl } from "@/lib/supabase";
@@ -112,11 +112,15 @@ export const OLYMPIADS = [...RAW_OLYMPIADS].sort(
 );
 
 
+const GALLERY_MENU = [
+  { key: "photos", icon: Camera, labelKey: "gallery_photos", hash: "gallery&type=photo" },
+  { key: "videos", icon: Video, labelKey: "gallery_videos", hash: "gallery&type=video" },
+] as const;
+
 const NEWS_MENU = [
   { key: "news", icon: Newspaper, labelId: "tab_news", hash: "news", descId: "preview_news" },
   { key: "announcements", icon: Megaphone, labelId: "tab_announcements", hash: "announcements", descId: "preview_announcements" },
   { key: "press_release", icon: FileText, labelId: "tab_press_release", hash: "press_release", descId: "preview_press_release" },
-  { key: "gallery", icon: Images, labelId: "tab_gallery", hash: "gallery", descId: "preview_gallery" },
 ] as const;
 
 
@@ -142,6 +146,8 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
   const [newsDropdownOpen, setNewsDropdownOpen] = useState(false);
   const [mobileNewsOpen, setMobileNewsOpen] = useState(false);
   const [mobileCompetitionsOpen, setMobileCompetitionsOpen] = useState(false);
+  const [galleryDropdownOpen, setGalleryDropdownOpen] = useState(false);
+  const [mobileGalleryOpen, setMobileGalleryOpen] = useState(false);
   const [aboutDropdownOpen, setAboutDropdownOpen] = useState(false);
   const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
 
@@ -183,6 +189,17 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
 
   function scheduleNewsClose() {
     newsCloseTimer.current = setTimeout(() => setNewsDropdownOpen(false), 150);
+  }
+
+  const galleryCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function openGalleryDropdown() {
+    if (galleryCloseTimer.current) clearTimeout(galleryCloseTimer.current);
+    setGalleryDropdownOpen(true);
+  }
+
+  function scheduleGalleryClose() {
+    galleryCloseTimer.current = setTimeout(() => setGalleryDropdownOpen(false), 150);
   }
 
   const aboutCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -325,6 +342,67 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
           <Link href={href("/winners")} className={navLinkClass}>
             {t("winners")}
           </Link>
+
+          <div
+            className="relative"
+            onMouseEnter={openGalleryDropdown}
+            onMouseLeave={scheduleGalleryClose}
+          >
+            <Link
+              href={`${href("/news")}?tab=gallery`}
+              className={clsx(
+                navLinkClass,
+                "flex items-center gap-1 cursor-pointer"
+              )}
+            >
+              {t("gallery")}
+              <ChevronDown
+                size={14}
+                className={clsx(
+                  "transition-transform duration-200",
+                  galleryDropdownOpen && "rotate-180"
+                )}
+              />
+            </Link>
+
+            <div
+              className={clsx(
+                "absolute top-full left-1/2 -translate-x-1/2 w-48 pt-2 transition-all duration-200",
+                galleryDropdownOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-1 pointer-events-none"
+              )}
+            >
+              <div className="bg-white rounded-2xl shadow-xl shadow-black/10 border border-gray-100 p-2 flex flex-col gap-1">
+                {GALLERY_MENU.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.key}
+                      href={`${href("/news")}?tab=${item.hash}`}
+                      onClick={() => setGalleryDropdownOpen(false)}
+                      className="flex items-center gap-3 p-2.5 rounded-xl transition-all duration-150 hover:bg-gray-50 group"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center transition-colors group-hover:bg-primary/10">
+                        <Icon size={16} className="text-gray-400 group-hover:text-primary transition-colors" />
+                      </div>
+                      <span className="text-sm font-medium text-gray-700 group-hover:text-primary transition-colors">
+                        {t(item.labelKey)}
+                      </span>
+                    </Link>
+                  );
+                })}
+                <div className="pt-2 mt-1 border-t border-gray-100">
+                  <Link
+                    href={`${href("/news")}?tab=gallery`}
+                    onClick={() => setGalleryDropdownOpen(false)}
+                    className="flex items-center justify-center w-full py-1.5 text-xs font-semibold text-primary hover:underline gap-1"
+                  >
+                    <span>{t("all_gallery")}</span>
+                    <ArrowRight size={12} />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <Link href={href("/newsletter")} className={navLinkClass}>
             {t("newsletter")}
@@ -546,7 +624,47 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
             >
               <span>{t("winners")}</span>
               <span className="text-[11px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full">🏆 New</span>
-            </Link><Link
+            </Link>
+            {/* Mobile Gallery accordion */}
+            <button
+              className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors flex items-center justify-between w-full cursor-pointer"
+              onClick={() => setMobileGalleryOpen((v) => !v)}
+            >
+              <span>{t("gallery")}</span>
+              <ChevronDown
+                size={16}
+                className={clsx(
+                  "transition-transform duration-200",
+                  mobileGalleryOpen && "rotate-180"
+                )}
+              />
+            </button>
+            {mobileGalleryOpen && (
+              <div className="pl-4 pb-2 flex flex-col gap-0.5">
+                <Link
+                  href={`${href("/news")}?tab=gallery`}
+                  className="py-2 text-sm text-gray-600 hover:text-primary transition-colors"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {t("all_gallery")}
+                </Link>
+                {GALLERY_MENU.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.key}
+                      href={`${href("/news")}?tab=${item.hash}`}
+                      className="py-2 text-sm text-gray-600 hover:text-primary transition-colors flex items-center gap-2"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      <Icon size={14} />
+                      <span>{t(item.labelKey)}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+            <Link
               href={href("/newsletter")}
               className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors"
               onClick={() => setMobileOpen(false)}

@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
-import { LayoutGrid, Newspaper, Megaphone, FileText, Images, Calendar, ArrowRight, ImageOff, ExternalLink, X } from "lucide-react";
+import { LayoutGrid, Newspaper, Megaphone, FileText, Images, Camera, Video, Calendar, ArrowRight, ImageOff, ExternalLink, X } from "lucide-react";
 import clsx from "clsx";
 import type { NewsArticle, GalleryItem } from "@/lib/supabase";
 
@@ -155,13 +155,46 @@ export default function NewsTabs({ news, announcements, pressRelease = [], galle
   const initialTab = tabParam && validTabs.includes(tabParam) ? tabParam : "all";
   const [activeTab, setActiveTab] = useState<TabKey>(initialTab);
 
-  // Sync tab when URL changes (e.g. navigating from navbar dropdown)
+  const typeParam = searchParams.get("type");
+  const [galleryFilter, setGalleryFilter] = useState<"all" | "photo" | "video">(
+    typeParam === "photo" ? "photo" : typeParam === "video" ? "video" : "all"
+  );
+
+  // Sync tab and type when URL changes (e.g. navigating from navbar dropdown)
   useEffect(() => {
     if (tabParam && validTabs.includes(tabParam)) {
       setActiveTab(tabParam);
     }
+    if (typeParam === "photo" || typeParam === "video") {
+      setGalleryFilter(typeParam);
+    } else if (tabParam === "gallery" && !typeParam) {
+      setGalleryFilter("all");
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tabParam]);
+  }, [tabParam, typeParam]);
+
+
+  const isVideoItem = (item: GalleryItem) => {
+    const link = (item.external_link || ("link" in item ? (item as any).link : "") || "").toLowerCase();
+    const label = (item.external_link_label || ("linkLabel" in item ? (item as any).linkLabel : "") || "").toLowerCase();
+    const title = (item.title || "").toLowerCase();
+    const content = (item.content || "").toLowerCase();
+    return (
+      link.includes("youtube.com") ||
+      link.includes("youtu.be") ||
+      label.includes("video") ||
+      label.includes("youtube") ||
+      title.includes("video") ||
+      title.includes("after event") ||
+      content.includes("video")
+    );
+  };
+
+  const filteredGallery = gallery.filter((item) => {
+    if (galleryFilter === "video") return isVideoItem(item);
+    if (galleryFilter === "photo") return !isVideoItem(item) || (item.photos && item.photos.length > 0);
+    return true;
+  });
 
   const totalCount = news.length + announcements.length + pressRelease.length + gallery.length;
 
@@ -390,19 +423,68 @@ export default function NewsTabs({ news, announcements, pressRelease = [], galle
 
           {/* Gallery Tab */}
           {activeTab === "gallery" && (
-            gallery.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {gallery.map((item) => (
-                  <ArticleCard
-                    key={item.id}
-                    article={item}
-                    badge="Galeri"
-                  />
-                ))}
+            <div>
+              {/* Gallery Sub-filter Pills: Semua, Foto, Video */}
+              <div className="flex items-center justify-center gap-2 mb-8">
+                <button
+                  onClick={() => setGalleryFilter("all")}
+                  className={clsx(
+                    "flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer",
+                    galleryFilter === "all"
+                      ? "bg-primary text-white shadow-sm"
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  )}
+                >
+                  <Images size={13} />
+                  <span>{locale === "en" ? "All" : "Semua"}</span>
+                  <span className="text-[11px] opacity-80">({gallery.length})</span>
+                </button>
+                <button
+                  onClick={() => setGalleryFilter("photo")}
+                  className={clsx(
+                    "flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer",
+                    galleryFilter === "photo"
+                      ? "bg-primary text-white shadow-sm"
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  )}
+                >
+                  <Camera size={13} />
+                  <span>{locale === "en" ? "Photos" : "Foto"}</span>
+                  <span className="text-[11px] opacity-80">
+                    ({gallery.filter((i) => !isVideoItem(i) || (i.photos && i.photos.length > 0)).length})
+                  </span>
+                </button>
+                <button
+                  onClick={() => setGalleryFilter("video")}
+                  className={clsx(
+                    "flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer",
+                    galleryFilter === "video"
+                      ? "bg-primary text-white shadow-sm"
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  )}
+                >
+                  <Video size={13} />
+                  <span>{locale === "en" ? "Videos" : "Video"}</span>
+                  <span className="text-[11px] opacity-80">
+                    ({gallery.filter((i) => isVideoItem(i)).length})
+                  </span>
+                </button>
               </div>
-            ) : (
-              <EmptyState tab="gallery" t={t} />
-            )
+
+              {filteredGallery.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredGallery.map((item) => (
+                    <ArticleCard
+                      key={item.id}
+                      article={item}
+                      badge="Galeri"
+                    />
+                  ))}
+                </div>
+              ) : (
+                <EmptyState tab="gallery" t={t} />
+              )}
+            </div>
           )}
         </div>
 
