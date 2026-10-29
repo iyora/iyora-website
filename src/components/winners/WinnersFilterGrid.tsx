@@ -113,9 +113,67 @@ export default function WinnersFilterGrid({
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCompetition, setSelectedCompetition] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedMedal, setSelectedMedal] = useState<string>("all");
   const [selectedLevel, setSelectedLevel] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
+
+  // Hitung jumlah pemenang per kategori/bidang
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    initialWinners.forEach((w) => {
+      const cat = (w.category || "").trim();
+      if (cat) counts[cat] = (counts[cat] || 0) + 1;
+    });
+    return counts;
+  }, [initialWinners]);
+
+  // Daftar opsi kategori/bidang yang tersedia
+  const availableCategories = useMemo(() => {
+    const foundCategories = new Set<string>();
+    initialWinners.forEach((w) => {
+      const c = (w.category || "").trim();
+      if (c && c !== "General") foundCategories.add(c);
+    });
+
+    const categoryMeta: Record<string, { icon: string; nameId: string; nameEn: string }> = {
+      Geography: { icon: "🌍", nameId: "Geografi", nameEn: "Geography" },
+      Economics: { icon: "📊", nameId: "Ekonomi", nameEn: "Economics" },
+      Biology: { icon: "🧬", nameId: "Biologi", nameEn: "Biology" },
+      Physics: { icon: "⚛️", nameId: "Fisika", nameEn: "Physics" },
+      Chemistry: { icon: "🧪", nameId: "Kimia", nameEn: "Chemistry" },
+      Mathematics: { icon: "➗", nameId: "Matematika", nameEn: "Mathematics" },
+      Science: { icon: "🔬", nameId: "Sains", nameEn: "Science" },
+      Madrasah: { icon: "🕌", nameId: "Madrasah", nameEn: "Madrasah" },
+    };
+
+    const list: { key: string; label: string; icon: string; count: number }[] = [];
+
+    // Prioritaskan kategori yang memiliki pemenang di data
+    Array.from(foundCategories).forEach((key) => {
+      const meta = categoryMeta[key] || { icon: "📚", nameId: key, nameEn: key };
+      list.push({
+        key,
+        label: locale === "en" ? meta.nameEn : meta.nameId,
+        icon: meta.icon,
+        count: categoryCounts[key] || 0,
+      });
+    });
+
+    // Tambahkan kategori standar lainnya jika belum ada
+    Object.entries(categoryMeta).forEach(([key, meta]) => {
+      if (!foundCategories.has(key)) {
+        list.push({
+          key,
+          label: locale === "en" ? meta.nameEn : meta.nameId,
+          icon: meta.icon,
+          count: 0,
+        });
+      }
+    });
+
+    return list;
+  }, [initialWinners, categoryCounts, locale]);
 
   // Hitung jumlah pemenang per cabang kompetisi
   const compCounts = useMemo(() => {
@@ -179,6 +237,15 @@ export default function WinnersFilterGrid({
         }
       }
 
+      // Category / Bidang match
+      if (selectedCategory !== "all") {
+        const winnerCat = (winner.category || "").toLowerCase().trim();
+        const targetCat = selectedCategory.toLowerCase().trim();
+        if (winnerCat !== targetCat && !winnerCat.includes(targetCat) && !targetCat.includes(winnerCat)) {
+          return false;
+        }
+      }
+
       // Medal match (Grand Champion dialihkan ke Gold Medal)
       if (selectedMedal !== "all") {
         const effectiveMedal = (winner.medal as string) === "Grand Champion" ? "Gold Medal" : winner.medal;
@@ -231,17 +298,19 @@ export default function WinnersFilterGrid({
 
       return (a.name || "").localeCompare(b.name || "");
     });
-  }, [initialWinners, searchQuery, selectedCompetition, selectedMedal, selectedLevel]);
+  }, [initialWinners, searchQuery, selectedCompetition, selectedCategory, selectedMedal, selectedLevel]);
 
   const hasActiveFilters =
     searchQuery !== "" ||
     selectedCompetition !== "all" ||
+    selectedCategory !== "all" ||
     selectedMedal !== "all" ||
     selectedLevel !== "all";
 
   function resetFilters() {
     setSearchQuery("");
     setSelectedCompetition("all");
+    setSelectedCategory("all");
     setSelectedMedal("all");
     setSelectedLevel("all");
   }
@@ -357,11 +426,11 @@ export default function WinnersFilterGrid({
 
             {/* Filter Dropdowns (Kompetisi Terpisah + Jenjang) & View Mode Switcher & Download SK Button */}
             <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap justify-between lg:justify-end">
-              {/* Dropdown 1 Menu: Cabang / Nama Olimpiade (Terpisah NYGO, IYGO, NYEO, IYEO, dll.) */}
+              {/* Dropdown 1 Menu: Cabang / Nama Olimpiade */}
               <select
                 value={selectedCompetition}
                 onChange={(e) => setSelectedCompetition(e.target.value)}
-                className="w-full sm:w-auto px-3.5 py-2.5 rounded-2xl bg-gray-50 border border-gray-200 text-xs font-bold text-gray-700 focus:outline-none focus:border-primary cursor-pointer hover:bg-gray-100 transition-colors shadow-sm max-w-[240px]"
+                className="w-full sm:w-auto px-3.5 py-2.5 rounded-2xl bg-gray-50 border border-gray-200 text-xs font-bold text-gray-700 focus:outline-none focus:border-primary cursor-pointer hover:bg-gray-100 transition-colors shadow-sm max-w-[220px]"
               >
                 <option value="all">🏆 {locale === "en" ? "All Competitions" : "Semua Kompetisi"}</option>
                 {availableCompetitions.map((c) => {
@@ -372,6 +441,20 @@ export default function WinnersFilterGrid({
                     </option>
                   );
                 })}
+              </select>
+
+              {/* Dropdown 2 Menu: Bidang / Kategori */}
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full sm:w-auto px-3.5 py-2.5 rounded-2xl bg-gray-50 border border-gray-200 text-xs font-bold text-gray-700 focus:outline-none focus:border-primary cursor-pointer hover:bg-gray-100 transition-colors shadow-sm"
+              >
+                <option value="all">📚 {locale === "en" ? "All Fields" : "Semua Bidang"}</option>
+                {availableCategories.map((cat) => (
+                  <option key={cat.key} value={cat.key}>
+                    {cat.icon} {cat.label} {cat.count ? `(${cat.count})` : ""}
+                  </option>
+                ))}
               </select>
 
               {/* Dropdown Jenjang */}
@@ -430,8 +513,50 @@ export default function WinnersFilterGrid({
             </div>
           </div>
 
+          {/* Filter Bidang Row (Pill Buttons) */}
+          <div className="pt-3 border-t border-gray-100">
+            <div className="flex items-center gap-3 flex-wrap">
+              <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider shrink-0">
+                {locale === "en" ? "Filter Field:" : "Filter Bidang:"}
+              </span>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setSelectedCategory("all")}
+                  className={clsx(
+                    "flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer border",
+                    selectedCategory === "all"
+                      ? "bg-primary text-white border-primary shadow-md shadow-primary/25 scale-105"
+                      : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:text-gray-900"
+                  )}
+                >
+                  <span>📚</span>
+                  <span>{locale === "en" ? "All Fields" : "Semua Bidang"}</span>
+                </button>
+                {availableCategories.filter((c) => c.count > 0).map((cat) => {
+                  const isActive = selectedCategory === cat.key;
+                  return (
+                    <button
+                      key={cat.key}
+                      onClick={() => setSelectedCategory(cat.key)}
+                      className={clsx(
+                        "flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer border",
+                        isActive
+                          ? "bg-primary text-white border-primary shadow-md shadow-primary/25 scale-105"
+                          : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:text-gray-900"
+                      )}
+                    >
+                      <span>{cat.icon}</span>
+                      <span>{cat.label}</span>
+                      <span className="text-[10px] opacity-75 font-mono">({cat.count})</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
           {/* Filter Medali Row */}
-          <div className="pt-2 border-t border-gray-100">
+          <div className="pt-3 border-t border-gray-100">
             <div className="flex items-center gap-3 flex-wrap">
               <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider shrink-0">
                 Filter Medali:
@@ -542,8 +667,8 @@ export default function WinnersFilterGrid({
                         </div>
                       </div>
 
-                      {/* Bottom Medal Label & Score */}
-                      <div className="mt-3 pt-2.5 border-t border-white/15 flex items-center justify-between gap-2">
+                      {/* Bottom Medal Label */}
+                      <div className="mt-3 pt-2.5 border-t border-white/15 flex items-center justify-between">
                         <div
                           className={clsx(
                             "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold backdrop-blur-md border shadow-xs transition-transform group-hover:scale-105",
@@ -555,13 +680,6 @@ export default function WinnersFilterGrid({
                             {badge.displayLabel}
                           </span>
                         </div>
-
-                        {winner.score && (
-                          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/20 text-white border border-white/30 backdrop-blur-md text-xs font-bold shadow-xs">
-                            <span className="text-[10px] uppercase font-semibold text-white/80">{locale === "en" ? "Score" : "Nilai"}:</span>
-                            <span className="font-mono font-extrabold text-amber-300 drop-shadow-xs">{winner.score}</span>
-                          </div>
-                        )}
                       </div>
                     </div>
                   </div>
@@ -579,7 +697,6 @@ export default function WinnersFilterGrid({
                       <th className="px-5 py-3.5">{locale === "en" ? "School / Origin" : "Sekolah / Asal"}</th>
                       <th className="px-5 py-3.5">{locale === "en" ? "Competition" : "Cabang"}</th>
                       <th className="px-5 py-3.5">{locale === "en" ? "Level" : "Jenjang"}</th>
-                      <th className="px-5 py-3.5 text-center">{locale === "en" ? "Score" : "Nilai"}</th>
                       <th className="px-5 py-3.5">{locale === "en" ? "Award" : "Penghargaan"}</th>
                       <th className="px-5 py-3.5 text-right">SIMT</th>
                     </tr>
@@ -602,17 +719,15 @@ export default function WinnersFilterGrid({
                             <span className="font-bold text-primary bg-primary/5 px-2 py-0.5 rounded-md border border-primary/10">
                               {winner.competition}
                             </span>
-                          </td>
-                          <td className="px-5 py-3.5 text-gray-600">{winner.level}</td>
-                          <td className="px-5 py-3.5 text-center">
-                            {winner.score ? (
-                              <span className="inline-block px-2.5 py-1 rounded-lg bg-amber-50 text-amber-900 border border-amber-200/80 font-mono text-xs font-black shadow-2xs">
-                                {winner.score}
-                              </span>
-                            ) : (
-                              <span className="text-gray-300 font-mono text-xs">-</span>
+                            {winner.category && (
+                              <div className="mt-1">
+                                <span className="inline-block text-[10px] font-semibold text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">
+                                  {winner.category}
+                                </span>
+                              </div>
                             )}
                           </td>
+                          <td className="px-5 py-3.5 text-gray-600">{winner.level}</td>
                           <td className="px-5 py-3.5">
                             <span
                               className={clsx(
