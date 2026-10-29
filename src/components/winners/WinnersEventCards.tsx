@@ -180,36 +180,10 @@ export default function WinnersEventCards({
                     {/* Competition Name */}
                     <h3
                       onClick={() => onSelectEvent(e.code)}
-                      className="text-lg sm:text-xl font-extrabold text-gray-900 group-hover:text-primary transition-colors cursor-pointer mb-2.5 leading-snug"
+                      className="text-lg sm:text-xl font-extrabold text-gray-900 group-hover:text-primary transition-colors cursor-pointer mb-4 leading-snug"
                     >
                       {e.fullName.replace(`${e.code} - `, "").replace(`${e.code} — `, "")}
                     </h3>
-
-                    {/* Total Medalists Badge */}
-                    <div className="flex items-baseline gap-2 mb-4 bg-primary/5 border border-primary/15 rounded-2xl p-3">
-                      <span className="text-2xl font-black text-primary tabular-nums">
-                        {e.total}
-                      </span>
-                      <span className="text-xs font-extrabold text-gray-700 uppercase tracking-wider">
-                        {isEn ? "Medalists Announced" : "Peserta Peraih Medali"}
-                      </span>
-                    </div>
-
-                    {/* Medals Breakdown */}
-                    <div className="grid grid-cols-3 gap-2 mb-5 text-center">
-                      <div className="bg-amber-50/80 border border-amber-200 rounded-xl p-2">
-                        <span className="text-base font-black text-amber-800 block">{e.gold}</span>
-                        <span className="text-[10px] font-bold text-amber-700">🥇 {isEn ? "Gold" : "Emas"}</span>
-                      </div>
-                      <div className="bg-slate-100/80 border border-slate-300 rounded-xl p-2">
-                        <span className="text-base font-black text-slate-800 block">{e.silver}</span>
-                        <span className="text-[10px] font-bold text-slate-600">🥈 {isEn ? "Silver" : "Perak"}</span>
-                      </div>
-                      <div className="bg-orange-50/80 border border-orange-200 rounded-xl p-2">
-                        <span className="text-base font-black text-orange-900 block">{e.bronze}</span>
-                        <span className="text-[10px] font-bold text-orange-800">🥉 {isEn ? "Bronze" : "Perunggu"}</span>
-                      </div>
-                    </div>
 
                     {/* Bidang / Field Badges */}
                     {catList.length > 0 && (

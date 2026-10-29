@@ -247,31 +247,6 @@ export default function WinnersFilterGrid({
     return list;
   }, [winnersForSelectedComp, categoryCounts, locale, selectedCompetition]);
 
-  // Hitung jumlah medali dinamis berdasarkan kompetisi dan bidang yang sedang dipilih
-  const medalCounts = useMemo(() => {
-    const counts: Record<string, number> = {
-      all: 0,
-      "Gold Medal": 0,
-      "Silver Medal": 0,
-      "Bronze Medal": 0,
-    };
-    winnersForSelectedComp.forEach((w) => {
-      if (selectedCategory !== "all") {
-        const winnerCat = (w.category || "").toLowerCase().trim();
-        const targetCat = selectedCategory.toLowerCase().trim();
-        if (winnerCat !== targetCat && !winnerCat.includes(targetCat) && !targetCat.includes(winnerCat)) {
-          return;
-        }
-      }
-      counts.all++;
-      const m = w.medal as string;
-      if (m === "Gold Medal" || m === "Grand Champion") counts["Gold Medal"]++;
-      else if (m === "Silver Medal") counts["Silver Medal"]++;
-      else if (m === "Bronze Medal") counts["Bronze Medal"]++;
-    });
-    return counts;
-  }, [winnersForSelectedComp, selectedCategory]);
-
   // Handler pergantian kompetisi agar reset kategori dan medali secara tepat
   const handleCompetitionChange = (code: string) => {
     setSelectedCompetition(code);
@@ -315,8 +290,8 @@ export default function WinnersFilterGrid({
     });
   }, [initialWinners, compCounts]);
 
-  // Filtering Logic
-  const filteredWinners = useMemo(() => {
+  // Filter kandidat pemenang berdasarkan pencarian, kompetisi, kategori/bidang, dan jenjang (sebelum medali)
+  const candidateWinnersForMedal = useMemo(() => {
     return initialWinners.filter((winner) => {
       // Search query match
       if (searchQuery.trim() !== "") {
@@ -325,7 +300,9 @@ export default function WinnersFilterGrid({
         const matchSchool = winner.school.toLowerCase().includes(q);
         const matchCity = winner.city.toLowerCase().includes(q);
         const matchProvince = winner.province.toLowerCase().includes(q);
-        const matchComp = (winner.competition || "").toLowerCase().includes(q) || (winner.competitionFullName || "").toLowerCase().includes(q);
+        const matchComp =
+          (winner.competition || "").toLowerCase().includes(q) ||
+          (winner.competitionFullName || "").toLowerCase().includes(q);
         const matchCert = (winner.certificateNumber || "").toLowerCase().includes(q);
         if (!matchName && !matchSchool && !matchCity && !matchProvince && !matchComp && !matchCert) {
           return false;
@@ -350,21 +327,52 @@ export default function WinnersFilterGrid({
         }
       }
 
-      // Medal match (Grand Champion dialihkan ke Gold Medal)
-      if (selectedMedal !== "all") {
-        const effectiveMedal = (winner.medal as string) === "Grand Champion" ? "Gold Medal" : winner.medal;
-        if (effectiveMedal !== selectedMedal) {
-          return false;
-        }
-      }
-
       // Level match
       if (selectedLevel !== "all" && winner.level !== selectedLevel) {
         return false;
       }
 
       return true;
-    }).sort((a, b) => {
+    });
+  }, [initialWinners, searchQuery, selectedCompetition, selectedCategory, selectedLevel]);
+
+  // Hitung jumlah medali dinamis berdasarkan kandidat peserta yang cocok (ikut 0/kosong jika peserta kosong)
+  const medalCounts = useMemo(() => {
+    const counts: Record<string, number> = {
+      all: 0,
+      "Gold Medal": 0,
+      "Silver Medal": 0,
+      "Bronze Medal": 0,
+    };
+    candidateWinnersForMedal.forEach((w) => {
+      counts.all++;
+      const m = w.medal as string;
+      if (m === "Gold Medal" || m === "Grand Champion") counts["Gold Medal"]++;
+      else if (m === "Silver Medal") counts["Silver Medal"]++;
+      else if (m === "Bronze Medal") counts["Bronze Medal"]++;
+    });
+    return counts;
+  }, [candidateWinnersForMedal]);
+
+  // Reset filter medali ke "all" jika tidak ada data peserta yang cocok
+  useEffect(() => {
+    if (medalCounts.all === 0 && selectedMedal !== "all") {
+      setSelectedMedal("all");
+    }
+  }, [medalCounts.all, selectedMedal]);
+
+  // Filtering Logic Akhir (Menerapkan filter medali pada kandidat)
+  const filteredWinners = useMemo(() => {
+    const list =
+      selectedMedal === "all"
+        ? candidateWinnersForMedal
+        : candidateWinnersForMedal.filter((winner) => {
+            const effectiveMedal =
+              (winner.medal as string) === "Grand Champion" ? "Gold Medal" : winner.medal;
+            return effectiveMedal === selectedMedal;
+          });
+
+    return [...list].sort((a, b) => {
       // Urutan prioritas medali: Gold (1) -> Silver (2) -> Bronze (3) -> Honorable Mention (4) -> Lainnya
       const getMedalPriority = (medal: WinnerMedal | string): number => {
         const m = String(medal || "").toLowerCase().trim();
@@ -621,7 +629,7 @@ export default function WinnersFilterGrid({
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="w-full sm:w-auto px-3.5 py-2.5 rounded-2xl bg-gray-50 border border-gray-200 text-xs font-bold text-gray-700 focus:outline-none focus:border-primary cursor-pointer hover:bg-gray-100 transition-colors shadow-sm"
               >
-                <option value="all">📚 {locale === "en" ? "All Fields" : "Semua Bidang"} ({winnersForSelectedComp.length})</option>
+                <option value="all">📚 {locale === "en" ? "Fields" : "Bidang"} ({winnersForSelectedComp.length})</option>
                 {availableCategories.map((cat) => (
                   <option key={cat.key} value={cat.key}>
                     {cat.icon} {cat.label} ({cat.count})
@@ -685,79 +693,40 @@ export default function WinnersFilterGrid({
             </div>
           </div>
 
-          {/* Filter Bidang Row (Pill Buttons) */}
-          <div className="pt-3 border-t border-gray-100">
-            <div className="flex items-center gap-3 flex-wrap">
-              <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider shrink-0">
-                {locale === "en" ? "Filter Field:" : "Filter Bidang:"}
-              </span>
-              <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={() => setSelectedCategory("all")}
-                  className={clsx(
-                    "flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer border",
-                    selectedCategory === "all"
-                      ? "bg-primary text-white border-primary shadow-md shadow-primary/25 scale-105"
-                      : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:text-gray-900"
-                  )}
-                >
-                  <span>📚</span>
-                  <span>{locale === "en" ? "All Fields" : "Semua Bidang"}</span>
-                  <span className="text-[10px] opacity-75 font-mono">({winnersForSelectedComp.length})</span>
-                </button>
-                {availableCategories.map((cat) => {
-                  const isActive = selectedCategory === cat.key;
-                  return (
-                    <button
-                      key={cat.key}
-                      onClick={() => setSelectedCategory(cat.key)}
-                      className={clsx(
-                        "flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer border",
-                        isActive
-                          ? "bg-primary text-white border-primary shadow-md shadow-primary/25 scale-105"
-                          : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:text-gray-900"
-                      )}
-                    >
-                      <span>{cat.icon}</span>
-                      <span>{cat.label}</span>
-                      <span className="text-[10px] opacity-75 font-mono">({cat.count})</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
 
-          {/* Filter Medali Row */}
-          <div className="pt-3 border-t border-gray-100">
-            <div className="flex items-center gap-3 flex-wrap">
-              <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider shrink-0">
-                Filter Medali:
-              </span>
-              <div className="flex flex-wrap gap-2">
-                {MEDAL_TABS.map((tab) => {
-                  const isActive = selectedMedal === tab.key;
-                  const count = medalCounts[tab.key] ?? 0;
-                  return (
-                    <button
-                      key={tab.key}
-                      onClick={() => setSelectedMedal(tab.key)}
-                      className={clsx(
-                        "flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer border",
-                        isActive
-                          ? "bg-primary text-white border-primary shadow-md shadow-primary/25 scale-105"
-                          : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:text-gray-900"
-                      )}
-                    >
-                      <span>{tab.icon}</span>
-                      <span>{t(tab.labelId)}</span>
-                      <span className="text-[10px] opacity-75 font-mono">({count})</span>
-                    </button>
-                  );
-                })}
+          {/* Filter Medali Row (Hanya tampil jika ada data peserta yang cocok) */}
+          {medalCounts.all > 0 && (
+            <div className="pt-3 border-t border-gray-100">
+              <div className="flex items-center gap-3 flex-wrap">
+                <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider shrink-0">
+                  {locale === "en" ? "Filter Medal:" : "Filter Medali:"}
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {MEDAL_TABS.map((tab) => {
+                    const isActive = selectedMedal === tab.key;
+                    const count = medalCounts[tab.key] ?? 0;
+                    if (tab.key !== "all" && count === 0) return null;
+                    return (
+                      <button
+                        key={tab.key}
+                        onClick={() => setSelectedMedal(tab.key)}
+                        className={clsx(
+                          "flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer border",
+                          isActive
+                            ? "bg-primary text-white border-primary shadow-md shadow-primary/25 scale-105"
+                            : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:text-gray-900"
+                        )}
+                      >
+                        <span>{tab.icon}</span>
+                        <span>{t(tab.labelId)}</span>
+                        <span className="text-[10px] opacity-75 font-mono">({count})</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
 
 

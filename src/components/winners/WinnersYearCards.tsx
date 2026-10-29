@@ -161,29 +161,6 @@ export default function WinnersYearCards({
                         : `Daftar resmi penetapan medalis dan pengumuman pemenang edisi olimpiade tahun ${y.year}.`}
                     </p>
 
-                    {/* Medal Breakdown Badges */}
-                    <div
-                      className={clsx(
-                        "rounded-2xl p-3.5 mb-5 border",
-                        isCurrent ? "bg-white/10 border-white/20 backdrop-blur-sm" : "bg-gray-50 border-gray-200"
-                      )}
-                    >
-                      <div className="text-[11px] font-bold uppercase tracking-wider mb-2 opacity-80">
-                        {isEn ? "Total Medalists" : "Total Peraih Medali"} · <span className="font-extrabold">{y.total}</span>
-                      </div>
-                      <div className="flex items-center gap-2 flex-wrap text-xs font-bold">
-                        <span className={clsx("px-2.5 py-1 rounded-lg border", isCurrent ? "bg-amber-400/25 border-amber-300/40 text-amber-200" : "bg-amber-50 text-amber-800 border-amber-200")}>
-                          🥇 {y.gold} {isEn ? "Gold" : "Emas"}
-                        </span>
-                        <span className={clsx("px-2.5 py-1 rounded-lg border", isCurrent ? "bg-slate-300/25 border-slate-200/40 text-slate-100" : "bg-slate-100 text-slate-700 border-slate-300")}>
-                          🥈 {y.silver} {isEn ? "Silver" : "Perak"}
-                        </span>
-                        <span className={clsx("px-2.5 py-1 rounded-lg border", isCurrent ? "bg-amber-700/25 border-amber-600/40 text-amber-300" : "bg-orange-50 text-orange-800 border-orange-200")}>
-                          🥉 {y.bronze} {isEn ? "Bronze" : "Perunggu"}
-                        </span>
-                      </div>
-                    </div>
-
                     {/* Competitions in this Year */}
                     <div className="space-y-1.5 mb-6">
                       <span className={clsx("text-[11px] font-bold uppercase tracking-wider block", isCurrent ? "text-white/75" : "text-gray-400")}>
