@@ -104,6 +104,51 @@ function isInternationalWinner(winner: WinnerItem): boolean {
   return Boolean(isIntlComp || isIntlCountry || isIntlLevel);
 }
 
+// Pemetaan bidang / mata pelajaran resmi yang disertakan dalam masing-masing event kompetisi
+const COMPETITION_INCLUDED_FIELDS: Record<string, string[]> = {
+  NSO: ["Geography", "Biology", "Physics", "Chemistry", "Mathematics", "Science", "Economics"],
+  WSO: ["Science", "Mathematics", "Physics", "Chemistry", "Biology", "Economics", "Geography"],
+  NSMO: ["Mathematics", "Science", "Physics", "Biology"],
+  OS2MN: ["Madrasah", "Mathematics", "Science"],
+  NYGO: ["Geography"],
+  IYGO: ["Geography"],
+  NYEO: ["Economics"],
+  IYEO: ["Economics"],
+  NYBO: ["Biology"],
+  IYBO: ["Biology"],
+  NYPO: ["Physics"],
+  IYPO: ["Physics"],
+  NYCO: ["Chemistry"],
+  IYCO: ["Chemistry"],
+  NYMO: ["Mathematics"],
+  IYMO: ["Mathematics"],
+  NYEnO: ["Environment", "Science"],
+  IYEnO: ["Environment", "Science"],
+  NYAO: ["Astronomy", "Physics"],
+  IYAO: ["Astronomy", "Physics"],
+  TISO: ["Physics", "Science"],
+  HISO: ["Physics", "Science"],
+  KISO: ["Physics", "Science"],
+  MISO: ["Biology", "Science"],
+  MEISO: ["Biology", "Science"],
+  NMISO: ["Biology", "Science"],
+  GYSO: ["Biology", "Science"],
+  DMO: ["Mathematics"],
+};
+
+const CATEGORY_META: Record<string, { icon: string; nameId: string; nameEn: string }> = {
+  Geography: { icon: "🌍", nameId: "Geografi", nameEn: "Geography" },
+  Economics: { icon: "📊", nameId: "Ekonomi", nameEn: "Economics" },
+  Biology: { icon: "🧬", nameId: "Biologi", nameEn: "Biology" },
+  Physics: { icon: "⚛️", nameId: "Fisika", nameEn: "Physics" },
+  Chemistry: { icon: "🧪", nameId: "Kimia", nameEn: "Chemistry" },
+  Mathematics: { icon: "➗", nameId: "Matematika", nameEn: "Mathematics" },
+  Science: { icon: "🔬", nameId: "Sains / IPA", nameEn: "Science" },
+  Madrasah: { icon: "🕌", nameId: "Madrasah", nameEn: "Madrasah" },
+  Astronomy: { icon: "🔭", nameId: "Astronomi", nameEn: "Astronomy" },
+  Environment: { icon: "🌱", nameId: "Lingkungan", nameEn: "Environment" },
+};
+
 export default function WinnersFilterGrid({
   initialWinners,
   announcements = [],
@@ -142,30 +187,38 @@ export default function WinnersFilterGrid({
     return counts;
   }, [winnersForSelectedComp]);
 
-  // Daftar opsi kategori/bidang yang tersedia sesuai kompetisi yang sedang aktif
+  // Daftar opsi kategori/bidang yang disertakan dalam kompetisi terpilih
   const availableCategories = useMemo(() => {
+    // 1. Kategori yang sudah memiliki data riil pemenang
     const foundCategories = new Set<string>();
     winnersForSelectedComp.forEach((w) => {
       const c = (w.category || "").trim();
       if (c && c !== "General") foundCategories.add(c);
     });
 
-    const categoryMeta: Record<string, { icon: string; nameId: string; nameEn: string }> = {
-      Geography: { icon: "🌍", nameId: "Geografi", nameEn: "Geography" },
-      Economics: { icon: "📊", nameId: "Ekonomi", nameEn: "Economics" },
-      Biology: { icon: "🧬", nameId: "Biologi", nameEn: "Biology" },
-      Physics: { icon: "⚛️", nameId: "Fisika", nameEn: "Physics" },
-      Chemistry: { icon: "🧪", nameId: "Kimia", nameEn: "Chemistry" },
-      Mathematics: { icon: "➗", nameId: "Matematika", nameEn: "Mathematics" },
-      Science: { icon: "🔬", nameId: "Sains", nameEn: "Science" },
-      Madrasah: { icon: "🕌", nameId: "Madrasah", nameEn: "Madrasah" },
-    };
+    // 2. Kategori / bidang resmi yang disertakan dalam kompetisi yang dipilih
+    const compCode = selectedCompetition.trim().toUpperCase();
+    const eventIncludedFields =
+      selectedCompetition !== "all"
+        ? (COMPETITION_INCLUDED_FIELDS[compCode] || Array.from(foundCategories))
+        : Object.keys(CATEGORY_META);
+
+    // Gabungkan bidang resmi event + bidang yang ada di data
+    const targetFields = new Set<string>([...eventIncludedFields, ...Array.from(foundCategories)]);
+
+    // Urutkan: bidang yang sudah ada pemenangnya ditampilkan di depan
+    const sortedFields = Array.from(targetFields).sort((a, b) => {
+      const countA = categoryCounts[a] || 0;
+      const countB = categoryCounts[b] || 0;
+      if (countA > 0 && countB === 0) return -1;
+      if (countA === 0 && countB > 0) return 1;
+      if (countA !== countB) return countB - countA;
+      return a.localeCompare(b);
+    });
 
     const list: { key: string; label: string; icon: string; count: number }[] = [];
-
-    // Prioritaskan kategori yang memiliki pemenang di data kompetisi ini
-    Array.from(foundCategories).forEach((key) => {
-      const meta = categoryMeta[key] || { icon: "📚", nameId: key, nameEn: key };
+    sortedFields.forEach((key) => {
+      const meta = CATEGORY_META[key] || { icon: "📚", nameId: key, nameEn: key };
       list.push({
         key,
         label: locale === "en" ? meta.nameEn : meta.nameId,
@@ -173,20 +226,6 @@ export default function WinnersFilterGrid({
         count: categoryCounts[key] || 0,
       });
     });
-
-    // Jika 'all' kompetisi dipilih, sertakan kategori standar lainnya untuk kelengkapan
-    if (selectedCompetition === "all") {
-      Object.entries(categoryMeta).forEach(([key, meta]) => {
-        if (!foundCategories.has(key)) {
-          list.push({
-            key,
-            label: locale === "en" ? meta.nameEn : meta.nameId,
-            icon: meta.icon,
-            count: 0,
-          });
-        }
-      });
-    }
 
     return list;
   }, [winnersForSelectedComp, categoryCounts, locale, selectedCompetition]);
@@ -498,7 +537,7 @@ export default function WinnersFilterGrid({
                 className="w-full sm:w-auto px-3.5 py-2.5 rounded-2xl bg-gray-50 border border-gray-200 text-xs font-bold text-gray-700 focus:outline-none focus:border-primary cursor-pointer hover:bg-gray-100 transition-colors shadow-sm"
               >
                 <option value="all">📚 {locale === "en" ? "All Fields" : "Semua Bidang"} ({winnersForSelectedComp.length})</option>
-                {availableCategories.filter((cat) => cat.count > 0).map((cat) => (
+                {availableCategories.map((cat) => (
                   <option key={cat.key} value={cat.key}>
                     {cat.icon} {cat.label} ({cat.count})
                   </option>
@@ -581,7 +620,7 @@ export default function WinnersFilterGrid({
                   <span>{locale === "en" ? "All Fields" : "Semua Bidang"}</span>
                   <span className="text-[10px] opacity-75 font-mono">({winnersForSelectedComp.length})</span>
                 </button>
-                {availableCategories.filter((c) => c.count > 0).map((cat) => {
+                {availableCategories.map((cat) => {
                   const isActive = selectedCategory === cat.key;
                   return (
                     <button
