@@ -124,3 +124,52 @@ export async function POST(req: Request) {
     );
   }
 }
+
+export async function GET() {
+  try {
+    const dashboardUrl = process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.iyora.or.id";
+    const res = await fetch(`${dashboardUrl}/api/public/winners`, {
+      cache: "no-store",
+      signal: AbortSignal.timeout(8000),
+    });
+
+    if (!res.ok) {
+      return NextResponse.json(
+        { ok: false, error: `Dashboard API responded with status ${res.status}` },
+        { status: 502 }
+      );
+    }
+
+    const json = await res.json();
+    const count = json.count || (Array.isArray(json.data) ? json.data.length : 0);
+
+    const compBreakdown: Record<string, number> = {};
+    if (Array.isArray(json.data)) {
+      json.data.forEach((w: any) => {
+        const c = (w.competition || w.kompetisi || "OTHER").toUpperCase();
+        compBreakdown[c] = (compBreakdown[c] || 0) + 1;
+      });
+    }
+
+    return NextResponse.json({
+      ok: true,
+      message: "Daftar pemenang dan nilai tersinkronisasi langsung dari Dashboard",
+      source: dashboardUrl,
+      totalWinners: count,
+      competitions: compBreakdown,
+      sampleWinnersWithScore: Array.isArray(json.data)
+        ? json.data.slice(0, 3).map((w: any) => ({
+            name: w.name,
+            competition: w.competition,
+            score: w.score,
+            medal: w.medal,
+          }))
+        : [],
+    });
+  } catch (error: any) {
+    return NextResponse.json(
+      { ok: false, error: error?.message || "Sync check error" },
+      { status: 500 }
+    );
+  }
+}

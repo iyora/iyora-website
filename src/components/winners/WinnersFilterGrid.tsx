@@ -117,6 +117,16 @@ export default function WinnersFilterGrid({
   const [selectedLevel, setSelectedLevel] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
 
+  // Hitung jumlah pemenang per cabang kompetisi
+  const compCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    initialWinners.forEach((w) => {
+      const code = (w.competition || "").trim().toUpperCase();
+      if (code) counts[code] = (counts[code] || 0) + 1;
+    });
+    return counts;
+  }, [initialWinners]);
+
   // Get available competition options including any dynamic competition codes from initialWinners
   const availableCompetitions = useMemo(() => {
     const predefinedCodes = new Set(ALL_COMPETITIONS.map((c) => c.code.toUpperCase()));
@@ -131,8 +141,17 @@ export default function WinnersFilterGrid({
         });
       }
     });
-    return [...ALL_COMPETITIONS, ...extraFromData];
-  }, [initialWinners]);
+    const all = [...ALL_COMPETITIONS, ...extraFromData];
+    // Prioritaskan kompetisi yang sudah memiliki data pemenang di bagian atas
+    return all.sort((a, b) => {
+      const countA = compCounts[a.code] || 0;
+      const countB = compCounts[b.code] || 0;
+      if (countA > 0 && countB === 0) return -1;
+      if (countA === 0 && countB > 0) return 1;
+      if (countA !== countB) return countB - countA;
+      return a.code.localeCompare(b.code);
+    });
+  }, [initialWinners, compCounts]);
 
   // Filtering Logic
   const filteredWinners = useMemo(() => {
@@ -345,11 +364,14 @@ export default function WinnersFilterGrid({
                 className="w-full sm:w-auto px-3.5 py-2.5 rounded-2xl bg-gray-50 border border-gray-200 text-xs font-bold text-gray-700 focus:outline-none focus:border-primary cursor-pointer hover:bg-gray-100 transition-colors shadow-sm max-w-[240px]"
               >
                 <option value="all">🏆 {locale === "en" ? "All Competitions" : "Semua Kompetisi"}</option>
-                {availableCompetitions.map((c) => (
-                  <option key={c.code} value={c.code}>
-                    {c.code} — {c.name.replace(`${c.code} - `, "").replace(`${c.code} — `, "")}
-                  </option>
-                ))}
+                {availableCompetitions.map((c) => {
+                  const count = compCounts[c.code];
+                  return (
+                    <option key={c.code} value={c.code}>
+                      {c.code} — {c.name.replace(`${c.code} - `, "").replace(`${c.code} — `, "")} {count ? `(${count})` : ""}
+                    </option>
+                  );
+                })}
               </select>
 
               {/* Dropdown Jenjang */}
@@ -520,8 +542,8 @@ export default function WinnersFilterGrid({
                         </div>
                       </div>
 
-                      {/* Bottom Medal Label: Label kecil yang menyesuaikan tema card */}
-                      <div className="mt-3 pt-2.5 border-t border-white/15 flex items-center justify-between">
+                      {/* Bottom Medal Label & Score */}
+                      <div className="mt-3 pt-2.5 border-t border-white/15 flex items-center justify-between gap-2">
                         <div
                           className={clsx(
                             "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold backdrop-blur-md border shadow-xs transition-transform group-hover:scale-105",
@@ -533,6 +555,13 @@ export default function WinnersFilterGrid({
                             {badge.displayLabel}
                           </span>
                         </div>
+
+                        {winner.score && (
+                          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/20 text-white border border-white/30 backdrop-blur-md text-xs font-bold shadow-xs">
+                            <span className="text-[10px] uppercase font-semibold text-white/80">{locale === "en" ? "Score" : "Nilai"}:</span>
+                            <span className="font-mono font-extrabold text-amber-300 drop-shadow-xs">{winner.score}</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -550,6 +579,7 @@ export default function WinnersFilterGrid({
                       <th className="px-5 py-3.5">{locale === "en" ? "School / Origin" : "Sekolah / Asal"}</th>
                       <th className="px-5 py-3.5">{locale === "en" ? "Competition" : "Cabang"}</th>
                       <th className="px-5 py-3.5">{locale === "en" ? "Level" : "Jenjang"}</th>
+                      <th className="px-5 py-3.5 text-center">{locale === "en" ? "Score" : "Nilai"}</th>
                       <th className="px-5 py-3.5">{locale === "en" ? "Award" : "Penghargaan"}</th>
                       <th className="px-5 py-3.5 text-right">SIMT</th>
                     </tr>
@@ -574,6 +604,15 @@ export default function WinnersFilterGrid({
                             </span>
                           </td>
                           <td className="px-5 py-3.5 text-gray-600">{winner.level}</td>
+                          <td className="px-5 py-3.5 text-center">
+                            {winner.score ? (
+                              <span className="inline-block px-2.5 py-1 rounded-lg bg-amber-50 text-amber-900 border border-amber-200/80 font-mono text-xs font-black shadow-2xs">
+                                {winner.score}
+                              </span>
+                            ) : (
+                              <span className="text-gray-300 font-mono text-xs">-</span>
+                            )}
+                          </td>
                           <td className="px-5 py-3.5">
                             <span
                               className={clsx(

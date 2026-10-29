@@ -978,8 +978,9 @@ export async function fetchWinnersData(): Promise<WinnerItem[]> {
     const dashboardUrl =
       process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.iyora.or.id";
     const res = await fetch(`${dashboardUrl}/api/public/winners`, {
-      next: { revalidate: 60 },
-      signal: AbortSignal.timeout(4000),
+      cache: "no-store",
+      next: { revalidate: 0 },
+      signal: AbortSignal.timeout(8000),
     });
     if (res.ok) {
       const json = await res.json();
@@ -1033,8 +1034,9 @@ export async function fetchWinnerAnnouncements(): Promise<WinnerAnnouncementDoc[
     const dashboardUrl =
       process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.iyora.or.id";
     const res = await fetch(`${dashboardUrl}/api/public/announcements`, {
-      next: { revalidate: 60 },
-      signal: AbortSignal.timeout(4000),
+      cache: "no-store",
+      next: { revalidate: 0 },
+      signal: AbortSignal.timeout(8000),
     });
     if (res.ok) {
       const json = await res.json();
@@ -1103,7 +1105,25 @@ export async function fetchWinnerStats(winnersList?: WinnerItem[]) {
     const totalWinners = winners.length;
     const distinctComps = new Set(winners.map((w) => w.competition).filter(Boolean)).size;
     const distinctSchools = new Set(winners.map((w) => w.school).filter(Boolean)).size;
-    const distinctCountries = new Set(winners.map((w) => w.countryCode || w.country).filter(Boolean)).size;
+    let distinctCountries = new Set(winners.map((w) => w.countryCode || w.country).filter(Boolean)).size;
+
+    // Perkaya data statistik agregat langsung dari dashboard jika ada
+    try {
+      const dashboardUrl = process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.iyora.or.id";
+      const statsRes = await fetch(`${dashboardUrl}/api/public/stats`, {
+        cache: "no-store",
+        next: { revalidate: 0 },
+        signal: AbortSignal.timeout(3000),
+      });
+      if (statsRes.ok) {
+        const statsJson = await statsRes.json();
+        if (statsJson.ok && statsJson.data && statsJson.data.countries) {
+          distinctCountries = Math.max(distinctCountries, Number(statsJson.data.countries));
+        }
+      }
+    } catch {
+      // Abaikan fallback jika dashboard stats lambat
+    }
 
     return {
       totalWinners,
