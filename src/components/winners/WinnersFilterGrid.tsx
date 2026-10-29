@@ -118,20 +118,34 @@ export default function WinnersFilterGrid({
   const [selectedLevel, setSelectedLevel] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
 
-  // Hitung jumlah pemenang per kategori/bidang
+  // Data pemenang berdasarkan cabang kompetisi yang dipilih (sebelum filter bidang & medali)
+  const winnersForSelectedComp = useMemo(() => {
+    if (selectedCompetition === "all") return initialWinners;
+    const targetComp = selectedCompetition.trim().toUpperCase();
+    return initialWinners.filter((w) => {
+      const winnerComp = (w.competition || "").trim().toUpperCase();
+      return (
+        winnerComp === targetComp ||
+        winnerComp.startsWith(targetComp) ||
+        targetComp.startsWith(winnerComp)
+      );
+    });
+  }, [initialWinners, selectedCompetition]);
+
+  // Hitung jumlah pemenang per kategori/bidang (disesuaikan dinamis dengan kompetisi yang dipilih)
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = {};
-    initialWinners.forEach((w) => {
+    winnersForSelectedComp.forEach((w) => {
       const cat = (w.category || "").trim();
       if (cat) counts[cat] = (counts[cat] || 0) + 1;
     });
     return counts;
-  }, [initialWinners]);
+  }, [winnersForSelectedComp]);
 
-  // Daftar opsi kategori/bidang yang tersedia
+  // Daftar opsi kategori/bidang yang tersedia sesuai kompetisi yang sedang aktif
   const availableCategories = useMemo(() => {
     const foundCategories = new Set<string>();
-    initialWinners.forEach((w) => {
+    winnersForSelectedComp.forEach((w) => {
       const c = (w.category || "").trim();
       if (c && c !== "General") foundCategories.add(c);
     });
@@ -149,7 +163,7 @@ export default function WinnersFilterGrid({
 
     const list: { key: string; label: string; icon: string; count: number }[] = [];
 
-    // Prioritaskan kategori yang memiliki pemenang di data
+    // Prioritaskan kategori yang memiliki pemenang di data kompetisi ini
     Array.from(foundCategories).forEach((key) => {
       const meta = categoryMeta[key] || { icon: "📚", nameId: key, nameEn: key };
       list.push({
@@ -160,20 +174,54 @@ export default function WinnersFilterGrid({
       });
     });
 
-    // Tambahkan kategori standar lainnya jika belum ada
-    Object.entries(categoryMeta).forEach(([key, meta]) => {
-      if (!foundCategories.has(key)) {
-        list.push({
-          key,
-          label: locale === "en" ? meta.nameEn : meta.nameId,
-          icon: meta.icon,
-          count: 0,
-        });
-      }
-    });
+    // Jika 'all' kompetisi dipilih, sertakan kategori standar lainnya untuk kelengkapan
+    if (selectedCompetition === "all") {
+      Object.entries(categoryMeta).forEach(([key, meta]) => {
+        if (!foundCategories.has(key)) {
+          list.push({
+            key,
+            label: locale === "en" ? meta.nameEn : meta.nameId,
+            icon: meta.icon,
+            count: 0,
+          });
+        }
+      });
+    }
 
     return list;
-  }, [initialWinners, categoryCounts, locale]);
+  }, [winnersForSelectedComp, categoryCounts, locale, selectedCompetition]);
+
+  // Hitung jumlah medali dinamis berdasarkan kompetisi dan bidang yang sedang dipilih
+  const medalCounts = useMemo(() => {
+    const counts: Record<string, number> = {
+      all: 0,
+      "Gold Medal": 0,
+      "Silver Medal": 0,
+      "Bronze Medal": 0,
+    };
+    winnersForSelectedComp.forEach((w) => {
+      if (selectedCategory !== "all") {
+        const winnerCat = (w.category || "").toLowerCase().trim();
+        const targetCat = selectedCategory.toLowerCase().trim();
+        if (winnerCat !== targetCat && !winnerCat.includes(targetCat) && !targetCat.includes(winnerCat)) {
+          return;
+        }
+      }
+      counts.all++;
+      const m = w.medal;
+      if (m === "Gold Medal" || m === "Grand Champion") counts["Gold Medal"]++;
+      else if (m === "Silver Medal") counts["Silver Medal"]++;
+      else if (m === "Bronze Medal") counts["Bronze Medal"]++;
+    });
+    return counts;
+  }, [winnersForSelectedComp, selectedCategory]);
+
+  // Handler pergantian kompetisi agar reset kategori dan medali secara tepat
+  const handleCompetitionChange = (code: string) => {
+    setSelectedCompetition(code);
+    setSelectedCategory("all");
+    setSelectedMedal("all");
+  };
 
   // Hitung jumlah pemenang per cabang kompetisi
   const compCounts = useMemo(() => {
@@ -429,7 +477,7 @@ export default function WinnersFilterGrid({
               {/* Dropdown 1 Menu: Cabang / Nama Olimpiade */}
               <select
                 value={selectedCompetition}
-                onChange={(e) => setSelectedCompetition(e.target.value)}
+                onChange={(e) => handleCompetitionChange(e.target.value)}
                 className="w-full sm:w-auto px-3.5 py-2.5 rounded-2xl bg-gray-50 border border-gray-200 text-xs font-bold text-gray-700 focus:outline-none focus:border-primary cursor-pointer hover:bg-gray-100 transition-colors shadow-sm max-w-[220px]"
               >
                 <option value="all">🏆 {locale === "en" ? "All Competitions" : "Semua Kompetisi"}</option>
@@ -449,10 +497,10 @@ export default function WinnersFilterGrid({
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="w-full sm:w-auto px-3.5 py-2.5 rounded-2xl bg-gray-50 border border-gray-200 text-xs font-bold text-gray-700 focus:outline-none focus:border-primary cursor-pointer hover:bg-gray-100 transition-colors shadow-sm"
               >
-                <option value="all">📚 {locale === "en" ? "All Fields" : "Semua Bidang"}</option>
-                {availableCategories.map((cat) => (
+                <option value="all">📚 {locale === "en" ? "All Fields" : "Semua Bidang"} ({winnersForSelectedComp.length})</option>
+                {availableCategories.filter((cat) => cat.count > 0).map((cat) => (
                   <option key={cat.key} value={cat.key}>
-                    {cat.icon} {cat.label} {cat.count ? `(${cat.count})` : ""}
+                    {cat.icon} {cat.label} ({cat.count})
                   </option>
                 ))}
               </select>
@@ -531,6 +579,7 @@ export default function WinnersFilterGrid({
                 >
                   <span>📚</span>
                   <span>{locale === "en" ? "All Fields" : "Semua Bidang"}</span>
+                  <span className="text-[10px] opacity-75 font-mono">({winnersForSelectedComp.length})</span>
                 </button>
                 {availableCategories.filter((c) => c.count > 0).map((cat) => {
                   const isActive = selectedCategory === cat.key;
@@ -564,6 +613,7 @@ export default function WinnersFilterGrid({
               <div className="flex flex-wrap gap-2">
                 {MEDAL_TABS.map((tab) => {
                   const isActive = selectedMedal === tab.key;
+                  const count = medalCounts[tab.key] ?? 0;
                   return (
                     <button
                       key={tab.key}
@@ -577,6 +627,7 @@ export default function WinnersFilterGrid({
                     >
                       <span>{tab.icon}</span>
                       <span>{t(tab.labelId)}</span>
+                      <span className="text-[10px] opacity-75 font-mono">({count})</span>
                     </button>
                   );
                 })}
