@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import WinnersHero from "@/components/winners/WinnersHero";
-import WinnersFilterGrid from "@/components/winners/WinnersFilterGrid";
+import WinnersExplorer from "@/components/winners/WinnersExplorer";
 import {
   fetchWinnersData,
   fetchWinnerAnnouncements,
@@ -43,8 +43,8 @@ export default async function WinnersPage() {
       {/* Hero Section with Dynamic Stats */}
       <WinnersHero stats={stats} />
 
-      {/* Interactive Searchable & Filterable Winners Database */}
-      <WinnersFilterGrid initialWinners={winners} announcements={announcements} />
+      {/* 3-Tier Interactive Winners Explorer: Card Tahun -> Card Event -> Daftar Pemenang */}
+      <WinnersExplorer initialWinners={winners} announcements={announcements} />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import {
   Search,
@@ -16,6 +16,7 @@ import {
   Award,
   Trophy,
   Star,
+  ArrowLeft,
 } from "lucide-react";
 import clsx from "clsx";
 import {
@@ -29,6 +30,10 @@ import {
 interface WinnersFilterGridProps {
   initialWinners: WinnerItem[];
   announcements?: WinnerAnnouncementDoc[];
+  selectedYear?: number | null;
+  selectedEventCode?: string | null;
+  onBackToEvents?: () => void;
+  onBackToYears?: () => void;
 }
 
 function CountryFlag({
@@ -152,12 +157,24 @@ const CATEGORY_META: Record<string, { icon: string; nameId: string; nameEn: stri
 export default function WinnersFilterGrid({
   initialWinners,
   announcements = [],
+  selectedYear = null,
+  selectedEventCode = null,
+  onBackToEvents,
+  onBackToYears,
 }: WinnersFilterGridProps) {
   const t = useTranslations("winners_page");
   const locale = useLocale();
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCompetition, setSelectedCompetition] = useState("all");
+  const [selectedCompetition, setSelectedCompetition] = useState(selectedEventCode || "all");
+
+  useEffect(() => {
+    if (selectedEventCode) {
+      setSelectedCompetition(selectedEventCode);
+      setSelectedCategory("all");
+      setSelectedMedal("all");
+    }
+  }, [selectedEventCode]);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedMedal, setSelectedMedal] = useState<string>("all");
   const [selectedLevel, setSelectedLevel] = useState<string>("all");
@@ -487,6 +504,70 @@ export default function WinnersFilterGrid({
   return (
     <section className="py-16 px-6 bg-gradient-to-b from-white to-gray-50/70">
       <div className="max-w-7xl mx-auto">
+        {/* Breadcrumb Navigation & Event Header */}
+        {onBackToEvents && (
+          <div className="mb-6 space-y-4">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <button
+                onClick={onBackToEvents}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white border border-gray-200 text-xs font-extrabold text-gray-700 hover:text-primary hover:border-primary shadow-xs hover:bg-gray-50 transition-all cursor-pointer group"
+              >
+                <ArrowLeft size={15} className="group-hover:-translate-x-1 transition-transform" />
+                <span>
+                  {locale === "en"
+                    ? `← Back to Events in ${selectedYear || 2026}`
+                    : `← Kembali ke Daftar Event (Tahun ${selectedYear || 2026})`}
+                </span>
+              </button>
+
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold text-primary">
+                <Trophy size={13} />
+                <span>
+                  {locale === "en" ? "Step 3: Winners & Medalists Database" : "Langkah 3: Daftar Pemenang & Medalis"}
+                </span>
+              </div>
+            </div>
+
+            {selectedCompetition !== "all" && (
+              <div className="bg-gradient-to-r from-[#3B79A7] via-[#358EAA] to-[#2EA3AD] text-white rounded-3xl p-6 sm:p-7 shadow-lg relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div className="relative z-10">
+                  <div className="flex items-center gap-2 mb-2 flex-wrap">
+                    <span className="text-xs font-black uppercase px-2.5 py-0.5 rounded-lg bg-white/20 text-white border border-white/30">
+                      {selectedCompetition}
+                    </span>
+                    <span className="text-xs font-bold text-amber-200">
+                      Edisi {selectedYear || 2026}
+                    </span>
+                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-500/30 text-emerald-100 border border-emerald-300/40">
+                      Terkurasi SIMT Puspresnas
+                    </span>
+                  </div>
+                  <h1 className="text-xl sm:text-2xl font-black">
+                    {(() => {
+                      const foundComp = ALL_COMPETITIONS.find(c => c.code === selectedCompetition);
+                      return foundComp ? foundComp.name.replace(`${selectedCompetition} - `, "").replace(`${selectedCompetition} — `, "") : selectedCompetition;
+                    })()}
+                  </h1>
+                  <p className="text-xs text-white/80 mt-1">
+                    {locale === "en"
+                      ? "Official published medalists, schools, and verified certificate credentials."
+                      : "Daftar resmi penetapan medalis, asal sekolah, dan nomor sertifikat juara terverifikasi."}
+                  </p>
+                </div>
+
+                <div className="relative z-10 flex items-center gap-2 shrink-0">
+                  <div className="bg-white/15 backdrop-blur-md border border-white/25 rounded-2xl px-5 py-3 text-center">
+                    <span className="text-2xl font-black block tabular-nums">{filteredWinners.length}</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-white/85">
+                      {locale === "en" ? "Medalists" : "Medalis"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Controls Container: Search & Filters */}
         <div className="bg-white rounded-3xl p-6 border border-gray-200/90 shadow-lg shadow-black/5 mb-8 space-y-5">
           {/* Top Row: Search Input & Dropdowns (Kompetisi & Jenjang) & View Switcher */}
