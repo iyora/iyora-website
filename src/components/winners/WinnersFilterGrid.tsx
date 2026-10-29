@@ -31,6 +31,79 @@ interface WinnersFilterGridProps {
   announcements?: WinnerAnnouncementDoc[];
 }
 
+function CountryFlag({
+  code,
+  country,
+  className,
+}: {
+  code?: string;
+  country?: string;
+  className?: string;
+}) {
+  const cleanCode = (code || "ID").trim().toUpperCase();
+  const label = country || cleanCode;
+
+  // Inline crisp SVG for Indonesia (instant render, no network needed)
+  if (cleanCode === "ID") {
+    return (
+      <span
+        title={label}
+        className={clsx(
+          "inline-flex items-center justify-center w-5 h-3.5 rounded-[2.5px] overflow-hidden border border-black/20 shadow-xs shrink-0 select-none align-middle",
+          className
+        )}
+      >
+        <svg viewBox="0 0 3 2" className="w-full h-full block">
+          <rect width="3" height="1" fill="#E70011" />
+          <rect y="1" width="3" height="1" fill="#FFFFFF" />
+        </svg>
+      </span>
+    );
+  }
+
+  const lowerCode = cleanCode.toLowerCase();
+  return (
+    <span
+      title={label}
+      className={clsx(
+        "inline-flex items-center justify-center w-5 h-3.5 rounded-[2.5px] overflow-hidden border border-black/20 shadow-xs shrink-0 select-none align-middle bg-gray-100",
+        className
+      )}
+    >
+      <img
+        src={`https://flagcdn.com/w40/${lowerCode}.png`}
+        srcSet={`https://flagcdn.com/w80/${lowerCode}.png 2x`}
+        alt={label}
+        width={20}
+        height={14}
+        className="w-full h-full object-cover block"
+        loading="lazy"
+        onError={(e) => {
+          e.currentTarget.style.display = "none";
+        }}
+      />
+    </span>
+  );
+}
+
+function isInternationalWinner(winner: WinnerItem): boolean {
+  const comp = (winner.competition || "").toUpperCase().trim();
+  const isIntlComp =
+    comp.startsWith("I") ||
+    comp === "WSO" ||
+    comp.endsWith("ISO") ||
+    comp.includes("INT") ||
+    comp.includes("WORLD");
+  const isIntlCountry = Boolean(winner.countryCode && winner.countryCode !== "ID");
+  const isIntlLevel =
+    String(winner.level || "").toLowerCase().includes("internasional") ||
+    String(winner.level || "").toLowerCase().includes("international") ||
+    String(winner.level || "").toLowerCase().includes("dunia") ||
+    String(winner.level || "").toLowerCase().includes("world");
+
+  return Boolean(isIntlComp || isIntlCountry || isIntlLevel);
+}
+
 export default function WinnersFilterGrid({
   initialWinners,
   announcements = [],
@@ -231,16 +304,9 @@ export default function WinnersFilterGrid({
     }
   };
 
-  const getCountryFlag = (code: string, country: string) => {
-    switch (code) {
-      case "ID": return "🇮🇩";
-      case "KR": return "🇰🇷";
-      case "TH": return "🇹🇭";
-      case "MY": return "🇲🇾";
-      case "US": return "🇺🇸";
-      case "UZ": return "🇺🇿";
-      default: return "🌐";
-    }
+  const getWinnerFlag = (winner: WinnerItem) => {
+    if (!isInternationalWinner(winner)) return null;
+    return <CountryFlag code={winner.countryCode} country={winner.country} />;
   };
 
   return (
@@ -392,7 +458,7 @@ export default function WinnersFilterGrid({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredWinners.map((winner) => {
                 const badge = getMedalBadge(winner.medal);
-                const flag = getCountryFlag(winner.countryCode, winner.country);
+                const flag = getWinnerFlag(winner);
 
                 return (
                   <div
@@ -434,7 +500,7 @@ export default function WinnersFilterGrid({
                         {/* Participant Name */}
                         <h3 className="text-base font-extrabold text-white group-hover:text-amber-200 transition-colors flex items-center gap-2 mb-2 drop-shadow-xs">
                           <span>{winner.name}</span>
-                          <span title={winner.country}>{flag}</span>
+                          {flag}
                         </h3>
 
                         {/* School & Location Info */}
@@ -491,12 +557,12 @@ export default function WinnersFilterGrid({
                   <tbody className="divide-y divide-gray-100">
                     {filteredWinners.map((winner) => {
                       const badge = getMedalBadge(winner.medal);
-                      const flag = getCountryFlag(winner.countryCode, winner.country);
+                      const flag = getWinnerFlag(winner);
                       return (
                         <tr key={winner.id} className="hover:bg-gray-50/80 transition-colors">
                           <td className="px-5 py-3.5 font-extrabold text-gray-900 flex items-center gap-2">
                             <span>{winner.name}</span>
-                            <span>{flag}</span>
+                            {flag}
                           </td>
                           <td className="px-5 py-3.5">
                             <div className="font-semibold text-gray-800">{winner.school}</div>

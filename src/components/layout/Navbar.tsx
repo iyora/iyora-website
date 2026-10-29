@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
-import { Menu, X, ChevronDown, Newspaper, Megaphone, FileText, Images, Calendar, ArrowRight, Info, Users, Mail, Globe, Award } from "lucide-react";
+import { Menu, X, ChevronDown, Newspaper, Megaphone, FileText, Images, ArrowRight, Info, Users, Mail, Globe, Award } from "lucide-react";
 import clsx from "clsx";
 import type { NewsPreviewData, CompetitionData } from "@/lib/supabase";
 import { getValidEventRegistrationUrl } from "@/lib/supabase";
@@ -119,7 +119,6 @@ const NEWS_MENU = [
   { key: "gallery", icon: Images, labelId: "tab_gallery", hash: "gallery", descId: "preview_gallery" },
 ] as const;
 
-type NewsMenuKey = typeof NEWS_MENU[number]["key"];
 
 const ABOUT_MENU = [
   { key: "about", href: "/about", icon: Info, labelKey: "about", descKey: "about_desc" },
@@ -127,11 +126,6 @@ const ABOUT_MENU = [
   { key: "contact", href: "/contact", icon: Mail, labelKey: "contact", descKey: "contact_desc" },
 ] as const;
 
-function formatPreviewDate(dateStr: string | null, locale: string = "id"): string {
-  if (!dateStr) return "";
-  const d = new Date(dateStr);
-  return d.toLocaleDateString(locale === "en" ? "en-US" : "id-ID", { day: "numeric", month: "short", year: "numeric" });
-}
 
 interface NavbarProps {
   newsPreview?: NewsPreviewData;
@@ -150,7 +144,6 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
   const [mobileCompetitionsOpen, setMobileCompetitionsOpen] = useState(false);
   const [aboutDropdownOpen, setAboutDropdownOpen] = useState(false);
   const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
-  const [hoveredNewsKey, setHoveredNewsKey] = useState<NewsMenuKey>("news");
 
   // Dynamic competitions list from Supabase or fallback
   const olympiadsList: OlympiadItem[] = (competitions && competitions.length > 0)
@@ -333,6 +326,13 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
             {t("winners")}
           </Link>
 
+          <Link href={href("/newsletter")} className={navLinkClass}>
+            {t("newsletter")}
+          </Link>
+          <Link href={href("/partners")} className={navLinkClass}>
+            {t("partners")}
+          </Link>
+
           <div
             className="relative"
             onMouseEnter={openNewsDropdown}
@@ -357,226 +357,43 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
 
             <div
               className={clsx(
-                "absolute top-full left-0 w-[560px] pt-2 transition-all duration-200",
+                "absolute top-full left-1/2 -translate-x-1/2 w-56 pt-2 transition-all duration-200",
                 newsDropdownOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-1 pointer-events-none"
               )}
             >
-              <div className="bg-white rounded-2xl shadow-xl shadow-black/10 border border-gray-100 overflow-hidden flex">
-                {/* Left: menu items */}
-                <div className="w-[200px] p-3 flex flex-col gap-0.5 border-r border-gray-100">
-                  {NEWS_MENU.map((item) => {
-                    const Icon = item.icon;
-                    const isHovered = hoveredNewsKey === item.key;
-                    return (
-                      <Link
-                        key={item.key}
-                        href={`${href("/news")}?tab=${item.hash}`}
-                        className={clsx(
-                          "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200",
-                          isHovered ? "bg-primary/5" : "hover:bg-gray-50"
-                        )}
-                        onMouseEnter={() => setHoveredNewsKey(item.key)}
-                      >
-                        <div className={clsx(
-                          "w-8 h-8 rounded-lg flex items-center justify-center transition-colors",
-                          isHovered ? "bg-primary/10" : "bg-gray-50"
-                        )}>
-                          <Icon size={16} className={clsx(isHovered ? "text-primary" : "text-gray-400")} />
-                        </div>
-                        <span className={clsx(
-                          "text-sm font-medium transition-colors",
-                          isHovered ? "text-primary" : "text-gray-700"
-                        )}>
-                          {tNews(item.labelId)}
-                        </span>
-                      </Link>
-                    );
-                  })}
-                  <div className="pt-2 mt-auto border-t border-gray-100">
+              <div className="bg-white rounded-2xl shadow-xl shadow-black/10 border border-gray-100 p-2 flex flex-col gap-1">
+                {NEWS_MENU.map((item) => {
+                  const Icon = item.icon;
+                  return (
                     <Link
-                      href={href("/news")}
-                      className="flex items-center justify-center w-full py-2 text-xs font-semibold text-primary hover:underline"
+                      key={item.key}
+                      href={`${href("/news")}?tab=${item.hash}`}
+                      onClick={() => setNewsDropdownOpen(false)}
+                      className="flex items-center gap-3 p-2.5 rounded-xl transition-all duration-150 hover:bg-gray-50 group"
                     >
-                      {locale === "id" ? "Lihat Semua Berita" : "View All News"} →
+                      <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center transition-colors group-hover:bg-primary/10">
+                        <Icon size={16} className="text-gray-400 group-hover:text-primary transition-colors" />
+                      </div>
+                      <span className="text-sm font-medium text-gray-700 group-hover:text-primary transition-colors">
+                        {tNews(item.labelId)}
+                      </span>
                     </Link>
-                  </div>
-                </div>
-
-                {/* Right: preview panel */}
-                <div className="flex-1 p-4 bg-gray-50/50 min-h-[200px]">
-                  {/* News preview */}
-                  {hoveredNewsKey === "news" && (
-                    <div className="space-y-3">
-                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-                        {locale === "id" ? "Berita Terkini" : "Latest News"}
-                      </p>
-                      {newsPreview && newsPreview.news.length > 0 ? (
-                        newsPreview.news.map((item) => (
-                          <Link
-                            key={item.id}
-                            href={href(`/news/${item.slug}`)}
-                            onClick={() => setNewsDropdownOpen(false)}
-                            className="flex gap-3 p-2 rounded-xl hover:bg-white transition-colors group"
-                          >
-                            {item.cover_image ? (
-                              <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0">
-                                <Image src={item.cover_image} alt={item.title} width={56} height={56} className="w-full h-full object-cover" />
-                              </div>
-                            ) : (
-                              <div className="w-14 h-14 rounded-lg bg-primary/5 flex items-center justify-center flex-shrink-0">
-                                <Newspaper size={20} className="text-primary/30" />
-                              </div>
-                            )}
-                            <div className="min-w-0">
-                              <p className="text-sm font-semibold text-gray-800 line-clamp-2 group-hover:text-primary transition-colors">{item.title}</p>
-                              <div className="flex items-center gap-1 mt-1">
-                                <Calendar size={10} className="text-gray-300" />
-                                <span className="text-xs text-gray-400">{formatPreviewDate(item.published_at ?? item.created_at, locale)}</span>
-                              </div>
-                            </div>
-                          </Link>
-                        ))
-                      ) : (
-                        <div className="flex flex-col items-center justify-center py-6 text-center">
-                          <Newspaper size={28} className="text-gray-200 mb-2" />
-                          <p className="text-xs text-gray-400">{locale === "id" ? "Belum ada berita" : "No news yet"}</p>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Announcements preview */}
-                  {hoveredNewsKey === "announcements" && (
-                    <div className="space-y-3">
-                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-                        {locale === "id" ? "Pengumuman Terbaru" : "Recent Announcements"}
-                      </p>
-                      {newsPreview && newsPreview.announcements.length > 0 ? (
-                        newsPreview.announcements.map((item) => (
-                          <Link
-                            key={item.id}
-                            href={href(`/news/${item.slug}`)}
-                            onClick={() => setNewsDropdownOpen(false)}
-                            className="flex gap-3 p-2 rounded-xl hover:bg-white transition-colors group"
-                          >
-                            {item.cover_image ? (
-                              <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0">
-                                <Image src={item.cover_image} alt={item.title} width={56} height={56} className="w-full h-full object-cover" />
-                              </div>
-                            ) : (
-                              <div className="w-14 h-14 rounded-lg bg-accent/5 flex items-center justify-center flex-shrink-0">
-                                <Megaphone size={20} className="text-accent/40" />
-                              </div>
-                            )}
-                            <div className="min-w-0">
-                              <p className="text-sm font-semibold text-gray-800 line-clamp-2 group-hover:text-primary transition-colors">{item.title}</p>
-                              <div className="flex items-center gap-1 mt-1">
-                                <Calendar size={10} className="text-gray-300" />
-                                <span className="text-xs text-gray-400">{formatPreviewDate(item.published_at ?? item.created_at, locale)}</span>
-                              </div>
-                            </div>
-                          </Link>
-                        ))
-                      ) : (
-                        <div className="flex flex-col items-center justify-center py-6 text-center">
-                          <Megaphone size={28} className="text-gray-200 mb-2" />
-                          <p className="text-xs text-gray-400">{locale === "id" ? "Belum ada pengumuman" : "No announcements yet"}</p>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Press Release preview */}
-                  {hoveredNewsKey === "press_release" && (
-                    <div className="space-y-3">
-                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-                        {locale === "id" ? "Siaran Pers Terbaru" : "Recent Press Releases"}
-                      </p>
-                      {newsPreview && newsPreview.pressRelease && newsPreview.pressRelease.length > 0 ? (
-                        newsPreview.pressRelease.map((item) => (
-                          <Link
-                            key={item.id}
-                            href={href(`/news/${item.slug}`)}
-                            onClick={() => setNewsDropdownOpen(false)}
-                            className="flex gap-3 p-2 rounded-xl hover:bg-white transition-colors group"
-                          >
-                            {item.cover_image ? (
-                              <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0">
-                                <Image src={item.cover_image} alt={item.title} width={56} height={56} className="w-full h-full object-cover" />
-                              </div>
-                            ) : (
-                              <div className="w-14 h-14 rounded-lg bg-primary/5 flex items-center justify-center flex-shrink-0">
-                                <FileText size={20} className="text-primary/40" />
-                              </div>
-                            )}
-                            <div className="min-w-0">
-                              <p className="text-sm font-semibold text-gray-800 line-clamp-2 group-hover:text-primary transition-colors">{item.title}</p>
-                              <div className="flex items-center gap-1 mt-1">
-                                <Calendar size={10} className="text-gray-300" />
-                                <span className="text-xs text-gray-400">{formatPreviewDate(item.published_at ?? item.created_at, locale)}</span>
-                              </div>
-                            </div>
-                          </Link>
-                        ))
-                      ) : (
-                        <div className="flex flex-col items-center justify-center py-6 text-center">
-                          <FileText size={28} className="text-gray-200 mb-2" />
-                          <p className="text-xs text-gray-400">{locale === "id" ? "Belum ada siaran pers" : "No press releases yet"}</p>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Gallery preview */}
-                  {hoveredNewsKey === "gallery" && (
-                    <div className="space-y-3">
-                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-                        {locale === "id" ? "Galeri Terbaru" : "Recent Gallery"}
-                      </p>
-                      {newsPreview && newsPreview.gallery.length > 0 ? (
-                        newsPreview.gallery.map((item) => (
-                          <Link
-                            key={item.id}
-                            href={item.slug ? href(`/news/${item.slug}`) : `${href("/news")}?tab=gallery`}
-                            onClick={() => setNewsDropdownOpen(false)}
-                            className="flex gap-3 p-2 rounded-xl hover:bg-white transition-colors group"
-                          >
-                            {item.image_url ? (
-                              <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0">
-                                <Image src={item.image_url} alt={item.title} width={56} height={56} className="w-full h-full object-cover" />
-                              </div>
-                            ) : (
-                              <div className="w-14 h-14 rounded-lg bg-accent/5 flex items-center justify-center flex-shrink-0">
-                                <Images size={20} className="text-accent/40" />
-                              </div>
-                            )}
-                            <div className="min-w-0">
-                              <p className="text-sm font-semibold text-gray-800 line-clamp-2 group-hover:text-primary transition-colors">{item.title}</p>
-                              <div className="flex items-center gap-1 mt-1">
-                                <Calendar size={10} className="text-gray-300" />
-                                <span className="text-xs text-gray-400">{formatPreviewDate(item.created_at || null, locale)}</span>
-                              </div>
-                            </div>
-                          </Link>
-                        ))
-                      ) : (
-                        <div className="flex flex-col items-center justify-center py-6 text-center">
-                          <Images size={28} className="text-gray-200 mb-2" />
-                          <p className="text-xs text-gray-400">{locale === "id" ? "Belum ada galeri" : "No gallery yet"}</p>
-                        </div>
-                      )}
-                    </div>
-                  )}
+                  );
+                })}
+                <div className="pt-2 mt-1 border-t border-gray-100">
+                  <Link
+                    href={href("/news")}
+                    onClick={() => setNewsDropdownOpen(false)}
+                    className="flex items-center justify-center w-full py-1.5 text-xs font-semibold text-primary hover:underline gap-1"
+                  >
+                    <span>{locale === "id" ? "Lihat Semua Berita" : "View All News"}</span>
+                    <ArrowRight size={12} />
+                  </Link>
                 </div>
               </div>
             </div>
           </div>
-          <Link href={href("/newsletter")} className={navLinkClass}>
-            {t("newsletter")}
-          </Link>
-          <Link href={href("/partners")} className={navLinkClass}>
-            {t("partners")}
-          </Link>
+
           <div
             className="relative"
             onMouseEnter={openAboutDropdown}
@@ -729,6 +546,19 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
             >
               <span>{t("winners")}</span>
               <span className="text-[11px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full">🏆 New</span>
+            </Link><Link
+              href={href("/newsletter")}
+              className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors"
+              onClick={() => setMobileOpen(false)}
+            >
+              {t("newsletter")}
+            </Link>
+            <Link
+              href={href("/partners")}
+              className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors"
+              onClick={() => setMobileOpen(false)}
+            >
+              {t("partners")}
             </Link>
             {/* Mobile News accordion */}
             <button
@@ -769,20 +599,6 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
                 })}
               </div>
             )}
-            <Link
-              href={href("/newsletter")}
-              className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors"
-              onClick={() => setMobileOpen(false)}
-            >
-              {t("newsletter")}
-            </Link>
-            <Link
-              href={href("/partners")}
-              className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors"
-              onClick={() => setMobileOpen(false)}
-            >
-              {t("partners")}
-            </Link>
             {/* Mobile About Us accordion */}
             <button
               className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors flex items-center justify-between w-full cursor-pointer"
