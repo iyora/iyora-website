@@ -406,14 +406,16 @@ export default function WinnersFilterGrid({
 
   const hasActiveFilters =
     searchQuery !== "" ||
-    selectedCompetition !== "all" ||
+    (!selectedEventCode && selectedCompetition !== "all") ||
     selectedCategory !== "all" ||
     selectedMedal !== "all" ||
     selectedLevel !== "all";
 
   function resetFilters() {
     setSearchQuery("");
-    setSelectedCompetition("all");
+    if (!selectedEventCode) {
+      setSelectedCompetition("all");
+    }
     setSelectedCategory("all");
     setSelectedMedal("all");
     setSelectedLevel("all");
@@ -594,22 +596,24 @@ export default function WinnersFilterGrid({
 
             {/* Filter Dropdowns (Kompetisi Terpisah + Jenjang) & View Mode Switcher & Download SK Button */}
             <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap justify-between lg:justify-end">
-              {/* Dropdown 1 Menu: Cabang / Nama Olimpiade */}
-              <select
-                value={selectedCompetition}
-                onChange={(e) => handleCompetitionChange(e.target.value)}
-                className="w-full sm:w-auto px-3.5 py-2.5 rounded-2xl bg-gray-50 border border-gray-200 text-xs font-bold text-gray-700 focus:outline-none focus:border-primary cursor-pointer hover:bg-gray-100 transition-colors shadow-sm max-w-[220px]"
-              >
-                <option value="all">🏆 {locale === "en" ? "All Competitions" : "Semua Kompetisi"}</option>
-                {availableCompetitions.map((c) => {
-                  const count = compCounts[c.code];
-                  return (
-                    <option key={c.code} value={c.code}>
-                      {c.code} — {c.name.replace(`${c.code} - `, "").replace(`${c.code} — `, "")} {count ? `(${count})` : ""}
-                    </option>
-                  );
-                })}
-              </select>
+              {/* Dropdown 1 Menu: Cabang / Nama Olimpiade (Hanya tampil jika bukan di dalam mode event spesifik) */}
+              {!selectedEventCode && !onBackToEvents && (
+                <select
+                  value={selectedCompetition}
+                  onChange={(e) => handleCompetitionChange(e.target.value)}
+                  className="w-full sm:w-auto px-3.5 py-2.5 rounded-2xl bg-gray-50 border border-gray-200 text-xs font-bold text-gray-700 focus:outline-none focus:border-primary cursor-pointer hover:bg-gray-100 transition-colors shadow-sm max-w-[220px]"
+                >
+                  <option value="all">🏆 {locale === "en" ? "All Competitions" : "Semua Kompetisi"}</option>
+                  {availableCompetitions.map((c) => {
+                    const count = compCounts[c.code];
+                    return (
+                      <option key={c.code} value={c.code}>
+                        {c.code} — {c.name.replace(`${c.code} - `, "").replace(`${c.code} — `, "")} {count ? `(${count})` : ""}
+                      </option>
+                    );
+                  })}
+                </select>
+              )}
 
               {/* Dropdown 2 Menu: Bidang / Kategori */}
               <select
