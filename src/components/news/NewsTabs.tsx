@@ -198,53 +198,22 @@ export default function NewsTabs({ news, announcements, pressRelease = [], galle
 
   const totalCount = news.length + announcements.length + pressRelease.length + gallery.length;
 
-  const tabs: { key: TabKey; count: number }[] = [
-    { key: "all", count: totalCount },
-    { key: "news", count: news.length },
-    { key: "announcements", count: announcements.length },
-    { key: "press_release", count: pressRelease.length },
-    { key: "gallery", count: gallery.length },
-  ];
-
   return (
-    <section className="py-16 px-6 bg-gradient-to-b from-white to-gray-50/50">
-      <div className="max-w-7xl mx-auto">
-        {/* Tab buttons */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
-          {tabs.map(({ key, count }) => {
-            const Icon = TAB_ICONS[key];
-            const isActive = activeTab === key;
+    <>
+      {/* Dynamic Hero Section (Judul & Keterangan Dinamis Mengikuti Menu Pilihan) */}
+      <section className="gradient-hero pt-32 pb-20 text-white text-center px-6">
+        <h1 className="text-4xl md:text-6xl font-bold mb-4 tracking-tight">
+          {t(`hero_${activeTab}_title`)}
+        </h1>
+        <p className="text-lg md:text-xl max-w-2xl mx-auto opacity-90 leading-relaxed">
+          {t(`hero_${activeTab}_subtitle`)}
+        </p>
+      </section>
 
-            return (
-              <button
-                key={key}
-                onClick={() => setActiveTab(key)}
-                className={clsx(
-                  "flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 cursor-pointer",
-                  isActive
-                    ? "bg-primary text-white shadow-lg shadow-primary/25 scale-105"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-800"
-                )}
-              >
-                <Icon size={16} />
-                <span>{t(`tab_${key}`)}</span>
-                {count > 0 && (
-                  <span
-                    className={clsx(
-                      "text-xs px-2 py-0.5 rounded-full font-bold",
-                      isActive ? "bg-white/20 text-white" : "bg-gray-200 text-gray-500"
-                    )}
-                  >
-                    {count}
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Tab content */}
-        <div className="min-h-[300px]">
+      <section className="py-12 sm:py-16 px-6 bg-gradient-to-b from-white to-gray-50/50">
+        <div className="max-w-7xl mx-auto">
+          {/* Tab content */}
+          <div className="min-h-[300px]">
           {/* VIEW ALL (Semua) */}
           {activeTab === "all" && (
             totalCount > 0 ? (
@@ -259,12 +228,13 @@ export default function NewsTabs({ news, announcements, pressRelease = [], galle
                           {t("tab_news")}
                         </h2>
                       </div>
-                      <button
+                      <Link
+                        href={`/${locale}/news?tab=news`}
                         onClick={() => setActiveTab("news")}
                         className="text-sm font-semibold text-primary hover:underline flex items-center gap-1 cursor-pointer"
                       >
                         {locale === "en" ? "View all news" : "Lihat semua berita"} <ArrowRight size={14} />
-                      </button>
+                      </Link>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {news.slice(0, 3).map((article) => (
@@ -288,12 +258,13 @@ export default function NewsTabs({ news, announcements, pressRelease = [], galle
                           {t("tab_announcements")}
                         </h2>
                       </div>
-                      <button
+                      <Link
+                        href={`/${locale}/news?tab=announcements`}
                         onClick={() => setActiveTab("announcements")}
                         className="text-sm font-semibold text-primary hover:underline flex items-center gap-1 cursor-pointer"
                       >
                         {locale === "en" ? "View all announcements" : "Lihat semua pengumuman"} <ArrowRight size={14} />
-                      </button>
+                      </Link>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {announcements.slice(0, 3).map((article) => (
@@ -317,12 +288,13 @@ export default function NewsTabs({ news, announcements, pressRelease = [], galle
                           {t("tab_press_release")}
                         </h2>
                       </div>
-                      <button
+                      <Link
+                        href={`/${locale}/news?tab=press_release`}
                         onClick={() => setActiveTab("press_release")}
                         className="text-sm font-semibold text-primary hover:underline flex items-center gap-1 cursor-pointer"
                       >
                         {locale === "en" ? "View all press releases" : "Lihat semua siaran pers"} <ArrowRight size={14} />
-                      </button>
+                      </Link>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {pressRelease.slice(0, 3).map((article) => (
@@ -346,12 +318,13 @@ export default function NewsTabs({ news, announcements, pressRelease = [], galle
                           {t("tab_gallery")}
                         </h2>
                       </div>
-                      <button
+                      <Link
+                        href={`/${locale}/news?tab=gallery`}
                         onClick={() => setActiveTab("gallery")}
                         className="text-sm font-semibold text-primary hover:underline flex items-center gap-1 cursor-pointer"
                       >
                         {locale === "en" ? "View all gallery items" : "Lihat semua galeri"} <ArrowRight size={14} />
-                      </button>
+                      </Link>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {gallery.slice(0, 3).map((item) => (
@@ -490,6 +463,7 @@ export default function NewsTabs({ news, announcements, pressRelease = [], galle
 
       </div>
     </section>
+  </>
   );
 }
 
