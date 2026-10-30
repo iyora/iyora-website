@@ -915,6 +915,23 @@ function mapRawToWinnerItem(row: any): WinnerItem {
   const compCode = (row.competition || row.kompetisi || row.event_code || row.code || "").trim().toUpperCase();
   const compName = row.competition_full_name || row.competitionFullName || row.event_name || row.nama_kompetisi || compCode;
 
+  const rawMode = (row.mode || row.metode || row.participation_type || row.tipe_partisipasi || "").toLowerCase();
+  const certStr = String(row.certificate_number || row.certificateNumber || row.nomor_sertifikat || row.no_sertifikat || "").toUpperCase();
+  const noteStr = String(row.special_note || row.specialNote || row.catatan || "").toUpperCase();
+  const catStr = String(row.category || row.bidang || row.kategori || "").toUpperCase();
+
+  let mode: "online" | "offline" = "online";
+  if (
+    rawMode === "offline" ||
+    certStr.includes("NOFF") ||
+    certStr.includes("IOFF") ||
+    (certStr.includes("OFF") && !certStr.includes("OFFICIAL")) ||
+    noteStr.includes("OFFLINE") ||
+    catStr.includes("OFFLINE")
+  ) {
+    mode = "offline";
+  }
+
   return {
     id: String(row.id || Math.random().toString(36).substring(2, 9)),
     name: row.name || row.team_name || row.peserta || row.nama_peserta || row.full_name || "Peserta",
@@ -935,6 +952,7 @@ function mapRawToWinnerItem(row: any): WinnerItem {
     certificateNumber: row.certificate_number || row.certificateNumber || row.nomor_sertifikat || row.no_sertifikat || undefined,
     simtVerified: row.simt_verified ?? row.simtVerified ?? row.is_simt ?? true,
     specialNote: row.special_note || row.specialNote || row.catatan || undefined,
+    mode,
   };
 }
 

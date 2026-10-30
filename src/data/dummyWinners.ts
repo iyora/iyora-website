@@ -31,6 +31,7 @@ export interface WinnerItem {
   certificateNumber?: string;
   simtVerified?: boolean;
   specialNote?: string;
+  mode?: "online" | "offline";
 }
 
 export interface WinnerAnnouncementDoc {

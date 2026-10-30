@@ -154,6 +154,25 @@ const CATEGORY_META: Record<string, { icon: string; nameId: string; nameEn: stri
   Environment: { icon: "🌱", nameId: "Lingkungan", nameEn: "Environment" },
 };
 
+export function getWinnerMode(winner: WinnerItem): "online" | "offline" {
+  if (winner.mode === "offline" || winner.mode === "online") {
+    return winner.mode;
+  }
+  const cert = String(winner.certificateNumber || "").toUpperCase();
+  const note = String(winner.specialNote || "").toUpperCase();
+  const cat = String(winner.category || "").toUpperCase();
+  if (
+    cert.includes("NOFF") ||
+    cert.includes("IOFF") ||
+    (cert.includes("OFF") && !cert.includes("OFFICIAL")) ||
+    note.includes("OFFLINE") ||
+    cat.includes("OFFLINE")
+  ) {
+    return "offline";
+  }
+  return "online";
+}
+
 export default function WinnersFilterGrid({
   initialWinners,
   announcements = [],
@@ -172,9 +191,11 @@ export default function WinnersFilterGrid({
     if (selectedEventCode) {
       setSelectedCompetition(selectedEventCode);
       setSelectedCategory("all");
+      setSelectedMode("all");
       setSelectedMedal("all");
     }
   }, [selectedEventCode]);
+  const [selectedMode, setSelectedMode] = useState<"all" | "online" | "offline">("all");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedMedal, setSelectedMedal] = useState<string>("all");
   const [selectedLevel, setSelectedLevel] = useState<string>("all");
@@ -247,10 +268,23 @@ export default function WinnersFilterGrid({
     return list;
   }, [winnersForSelectedComp, categoryCounts, locale, selectedCompetition]);
 
-  // Handler pergantian kompetisi agar reset kategori dan medali secara tepat
+  // Hitung jumlah peserta online dan offline untuk kompetisi yang sedang aktif
+  const modeCounts = useMemo(() => {
+    let online = 0;
+    let offline = 0;
+    winnersForSelectedComp.forEach((w) => {
+      const m = getWinnerMode(w);
+      if (m === "offline") offline++;
+      else online++;
+    });
+    return { all: winnersForSelectedComp.length, online, offline };
+  }, [winnersForSelectedComp]);
+
+  // Handler pergantian kompetisi agar reset kategori, mode, dan medali secara tepat
   const handleCompetitionChange = (code: string) => {
     setSelectedCompetition(code);
     setSelectedCategory("all");
+    setSelectedMode("all");
     setSelectedMedal("all");
   };
 
@@ -318,6 +352,14 @@ export default function WinnersFilterGrid({
         }
       }
 
+      // Mode match (online vs offline)
+      if (selectedMode !== "all") {
+        const winnerMode = getWinnerMode(winner);
+        if (winnerMode !== selectedMode) {
+          return false;
+        }
+      }
+
       // Category / Bidang match
       if (selectedCategory !== "all") {
         const winnerCat = (winner.category || "").toLowerCase().trim();
@@ -334,7 +376,7 @@ export default function WinnersFilterGrid({
 
       return true;
     });
-  }, [initialWinners, searchQuery, selectedCompetition, selectedCategory, selectedLevel]);
+  }, [initialWinners, searchQuery, selectedCompetition, selectedMode, selectedCategory, selectedLevel]);
 
   // Hitung jumlah medali dinamis berdasarkan kandidat peserta yang cocok (ikut 0/kosong jika peserta kosong)
   const medalCounts = useMemo(() => {
@@ -410,12 +452,13 @@ export default function WinnersFilterGrid({
 
       return (a.name || "").localeCompare(b.name || "");
     });
-  }, [initialWinners, searchQuery, selectedCompetition, selectedCategory, selectedMedal, selectedLevel]);
+  }, [initialWinners, searchQuery, selectedCompetition, selectedMode, selectedCategory, selectedMedal, selectedLevel]);
 
   const hasActiveFilters =
     searchQuery !== "" ||
     (!selectedEventCode && selectedCompetition !== "all") ||
     selectedCategory !== "all" ||
+    selectedMode !== "all" ||
     selectedMedal !== "all" ||
     selectedLevel !== "all";
 
@@ -425,6 +468,7 @@ export default function WinnersFilterGrid({
       setSelectedCompetition("all");
     }
     setSelectedCategory("all");
+    setSelectedMode("all");
     setSelectedMedal("all");
     setSelectedLevel("all");
   }
@@ -623,6 +667,17 @@ export default function WinnersFilterGrid({
                 </select>
               )}
 
+              {/* Dropdown Mode: Online / Offline (Di samping kiri menu Fields) */}
+              <select
+                value={selectedMode}
+                onChange={(e) => setSelectedMode(e.target.value as "all" | "online" | "offline")}
+                className="w-full sm:w-auto px-3.5 py-2.5 rounded-2xl bg-gray-50 border border-gray-200 text-xs font-bold text-gray-700 focus:outline-none focus:border-primary cursor-pointer hover:bg-gray-100 transition-colors shadow-sm"
+              >
+                <option value="all">🌐 Mode</option>
+                <option value="online">💻 Online ({modeCounts.online})</option>
+                <option value="offline">🏛️ Offline ({modeCounts.offline})</option>
+              </select>
+
               {/* Dropdown 2 Menu: Bidang / Kategori */}
               <select
                 value={selectedCategory}
@@ -779,6 +834,9 @@ export default function WinnersFilterGrid({
                                 {winner.category}
                               </span>
                             )}
+                            <span className="text-[10px] font-bold text-white/90 bg-white/10 px-2 py-0.5 rounded-md border border-white/20 backdrop-blur-md">
+                              {getWinnerMode(winner) === "offline" ? "🏛️ Offline" : "💻 Online"}
+                            </span>
                           </div>
                           {winner.simtVerified && (
                             <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-100 bg-emerald-500/25 px-2 py-0.5 rounded-md border border-emerald-300/40 backdrop-blur-md shrink-0 shadow-xs">
@@ -860,9 +918,14 @@ export default function WinnersFilterGrid({
                             <div className="text-[10px] text-gray-400">{winner.city}, {winner.province}</div>
                           </td>
                           <td className="px-5 py-3.5">
-                            <span className="font-bold text-primary bg-primary/5 px-2 py-0.5 rounded-md border border-primary/10">
-                              {winner.competition}
-                            </span>
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="font-bold text-primary bg-primary/5 px-2 py-0.5 rounded-md border border-primary/10">
+                                {winner.competition}
+                              </span>
+                              <span className="text-[10px] font-semibold text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded border border-gray-200">
+                                {getWinnerMode(winner) === "offline" ? "Offline" : "Online"}
+                              </span>
+                            </div>
                             {winner.category && (
                               <div className="mt-1">
                                 <span className="inline-block text-[10px] font-semibold text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">
