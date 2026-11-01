@@ -215,34 +215,47 @@ export default function WinnersFilterGrid({
     });
   }, [initialWinners, selectedCompetition]);
 
-  // Hitung jumlah pemenang per kategori/bidang (disesuaikan dinamis dengan kompetisi yang dipilih)
+  // Data pemenang berdasarkan cabang kompetisi DAN mode (Online / Offline) yang dipilih
+  const winnersForModeScope = useMemo(() => {
+    if (selectedMode === "all") return winnersForSelectedComp;
+    return winnersForSelectedComp.filter((w) => getWinnerMode(w) === selectedMode);
+  }, [winnersForSelectedComp, selectedMode]);
+
+  // Hitung jumlah pemenang per kategori/bidang (disesuaikan dinamis dengan kompetisi & mode yang dipilih)
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = {};
-    winnersForSelectedComp.forEach((w) => {
+    winnersForModeScope.forEach((w) => {
       const cat = (w.category || "").trim();
       if (cat) counts[cat] = (counts[cat] || 0) + 1;
     });
     return counts;
-  }, [winnersForSelectedComp]);
+  }, [winnersForModeScope]);
 
-  // Daftar opsi kategori/bidang yang disertakan dalam kompetisi terpilih
+  // Daftar opsi kategori/bidang yang disertakan dalam kompetisi & mode terpilih
   const availableCategories = useMemo(() => {
-    // 1. Kategori yang sudah memiliki data riil pemenang
+    // 1. Kategori yang sudah memiliki data riil pemenang pada mode terpilih
     const foundCategories = new Set<string>();
-    winnersForSelectedComp.forEach((w) => {
+    winnersForModeScope.forEach((w) => {
       const c = (w.category || "").trim();
       if (c && c !== "General") foundCategories.add(c);
     });
 
-    // 2. Kategori / bidang resmi yang disertakan dalam kompetisi yang dipilih
-    const compCode = selectedCompetition.trim().toUpperCase();
-    const eventIncludedFields =
-      selectedCompetition !== "all"
-        ? (COMPETITION_INCLUDED_FIELDS[compCode] || Array.from(foundCategories))
-        : Object.keys(CATEGORY_META);
+    let targetFields: Set<string>;
 
-    // Gabungkan bidang resmi event + bidang yang ada di data
-    const targetFields = new Set<string>([...eventIncludedFields, ...Array.from(foundCategories)]);
+    if (selectedMode === "offline" || selectedMode === "online") {
+      // Jika mode spesifik (Offline / Online) dipilih, HANYA tampilkan bidang
+      // yang benar-benar memiliki peserta/pemenang di mode tersebut
+      targetFields = foundCategories;
+    } else {
+      // Jika "all" mode, gabungkan bidang resmi event + bidang yang ada di data
+      const compCode = selectedCompetition.trim().toUpperCase();
+      const eventIncludedFields =
+        selectedCompetition !== "all"
+          ? (COMPETITION_INCLUDED_FIELDS[compCode] || Array.from(foundCategories))
+          : Object.keys(CATEGORY_META);
+
+      targetFields = new Set<string>([...eventIncludedFields, ...Array.from(foundCategories)]);
+    }
 
     // Urutkan: bidang yang sudah ada pemenangnya ditampilkan di depan
     const sortedFields = Array.from(targetFields).sort((a, b) => {
@@ -266,7 +279,17 @@ export default function WinnersFilterGrid({
     });
 
     return list;
-  }, [winnersForSelectedComp, categoryCounts, locale, selectedCompetition]);
+  }, [winnersForModeScope, categoryCounts, locale, selectedCompetition, selectedMode]);
+
+  // Otomatis reset kategori terpilih jika tidak tersedia pada mode yang baru dipilih
+  useEffect(() => {
+    if (selectedCategory !== "all") {
+      const isValid = availableCategories.some((cat) => cat.key === selectedCategory);
+      if (!isValid) {
+        setSelectedCategory("all");
+      }
+    }
+  }, [availableCategories, selectedCategory]);
 
   // Hitung jumlah peserta online dan offline untuk kompetisi yang sedang aktif
   const modeCounts = useMemo(() => {
@@ -657,10 +680,9 @@ export default function WinnersFilterGrid({
                 >
                   <option value="all">🏆 {locale === "en" ? "All Competitions" : "Semua Kompetisi"}</option>
                   {availableCompetitions.map((c) => {
-                    const count = compCounts[c.code];
                     return (
                       <option key={c.code} value={c.code}>
-                        {c.code} — {c.name.replace(`${c.code} - `, "").replace(`${c.code} — `, "")} {count ? `(${count})` : ""}
+                        {c.code} — {c.name.replace(`${c.code} - `, "").replace(`${c.code} — `, "")}
                       </option>
                     );
                   })}
@@ -674,8 +696,8 @@ export default function WinnersFilterGrid({
                 className="w-full sm:w-auto px-3.5 py-2.5 rounded-2xl bg-gray-50 border border-gray-200 text-xs font-bold text-gray-700 focus:outline-none focus:border-primary cursor-pointer hover:bg-gray-100 transition-colors shadow-sm"
               >
                 <option value="all">🌐 Mode</option>
-                <option value="online">💻 Online ({modeCounts.online})</option>
-                <option value="offline">🏛️ Offline ({modeCounts.offline})</option>
+                <option value="online">💻 Online</option>
+                <option value="offline">🏛️ Offline</option>
               </select>
 
               {/* Dropdown 2 Menu: Bidang / Kategori */}
@@ -684,10 +706,10 @@ export default function WinnersFilterGrid({
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="w-full sm:w-auto px-3.5 py-2.5 rounded-2xl bg-gray-50 border border-gray-200 text-xs font-bold text-gray-700 focus:outline-none focus:border-primary cursor-pointer hover:bg-gray-100 transition-colors shadow-sm"
               >
-                <option value="all">📚 {locale === "en" ? "Fields" : "Bidang"} ({winnersForSelectedComp.length})</option>
+                <option value="all">📚 {locale === "en" ? "Fields" : "Bidang"}</option>
                 {availableCategories.map((cat) => (
                   <option key={cat.key} value={cat.key}>
-                    {cat.icon} {cat.label} ({cat.count})
+                    {cat.icon} {cat.label}
                   </option>
                 ))}
               </select>
@@ -774,7 +796,6 @@ export default function WinnersFilterGrid({
                       >
                         <span>{tab.icon}</span>
                         <span>{t(tab.labelId)}</span>
-                        <span className="text-[10px] opacity-75 font-mono">({count})</span>
                       </button>
                     );
                   })}
