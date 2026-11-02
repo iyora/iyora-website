@@ -16,7 +16,7 @@ import {
   Users,
 } from "lucide-react";
 import clsx from "clsx";
-import { WinnerAnnouncementDoc, OLYMPIAD_CATEGORIES } from "@/data/dummyWinners";
+import { WinnerAnnouncementDoc, OLYMPIAD_CATEGORIES, getAnnouncementMode } from "@/data/dummyWinners";
 
 interface SkDirectoryProps {
   announcements: WinnerAnnouncementDoc[];
@@ -27,6 +27,7 @@ export default function SkDirectory({ announcements }: SkDirectoryProps) {
   const locale = useLocale();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedMode, setSelectedMode] = useState<"all" | "online" | "offline">("all");
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   // Filtered documents
@@ -54,9 +55,17 @@ export default function SkDirectory({ announcements }: SkDirectoryProps) {
         }
       }
 
+      // Mode filter (Online / Offline)
+      if (selectedMode !== "all") {
+        const docMode = getAnnouncementMode(doc);
+        if (docMode !== selectedMode && docMode !== "all") {
+          return false;
+        }
+      }
+
       return true;
     });
-  }, [announcements, searchQuery, selectedCategory]);
+  }, [announcements, searchQuery, selectedCategory, selectedMode]);
 
   const handleDownload = (doc: WinnerAnnouncementDoc) => {
     setDownloadingId(doc.id);
@@ -156,6 +165,46 @@ export default function SkDirectory({ announcements }: SkDirectoryProps) {
                 <span>Terakreditasi SIMT</span>
               </div>
             </div>
+          </div>
+
+          {/* Mode Filter Pills (Online / Offline) */}
+          <div className="mt-5 pt-4 border-t border-gray-100 flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+            <span className="text-xs font-bold text-gray-400 flex items-center gap-1 shrink-0 mr-1">
+              Metode:
+            </span>
+            <button
+              onClick={() => setSelectedMode("all")}
+              className={clsx(
+                "px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer",
+                selectedMode === "all"
+                  ? "bg-primary text-white shadow-sm"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              )}
+            >
+              Semua Mode
+            </button>
+            <button
+              onClick={() => setSelectedMode("online")}
+              className={clsx(
+                "px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer",
+                selectedMode === "online"
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              )}
+            >
+              💻 Daring (Online)
+            </button>
+            <button
+              onClick={() => setSelectedMode("offline")}
+              className={clsx(
+                "px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer",
+                selectedMode === "offline"
+                  ? "bg-amber-600 text-white shadow-sm"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              )}
+            >
+              🏛️ Luring (Offline)
+            </button>
           </div>
 
           {/* Category Filter Pills */}

@@ -15,7 +15,11 @@ import {
   Sparkles,
 } from "lucide-react";
 import clsx from "clsx";
-import type { WinnerItem, WinnerAnnouncementDoc } from "@/data/dummyWinners";
+import {
+  type WinnerItem,
+  type WinnerAnnouncementDoc,
+  getAnnouncementMode,
+} from "@/data/dummyWinners";
 
 interface WinnersEventCardsProps {
   year: number;
@@ -129,12 +133,15 @@ export default function WinnersEventCards({
                 e.fullName.toLowerCase().includes("international") ||
                 Array.from(e.countries).some((c) => c.toLowerCase() !== "indonesia");
 
-              // Cari dokumen SK Pemenang yang cocok jika ada
-              const skDoc = announcements.find(
+              // Cari dokumen SK Pemenang yang cocok jika ada (dipisahkan Online & Offline)
+              const eventSkDocs = announcements.filter(
                 (a) =>
                   a.competition.toUpperCase() === e.code &&
                   (a.edition.includes(String(year)) || a.title.includes(String(year)))
               );
+              const skOnline = eventSkDocs.find((a) => getAnnouncementMode(a) === "online");
+              const skOffline = eventSkDocs.find((a) => getAnnouncementMode(a) === "offline");
+              const skGeneral = eventSkDocs.find((a) => getAnnouncementMode(a) === "all");
 
               const catList = Array.from(e.categories);
 
@@ -215,16 +222,60 @@ export default function WinnersEventCards({
                       <ChevronRight size={15} />
                     </button>
 
-                    {skDoc?.downloadUrl && skDoc.downloadUrl !== "#" && (
-                      <a
-                        href={skDoc.downloadUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg bg-gray-50 hover:bg-gray-100 text-[11px] font-bold text-gray-600 border border-gray-200 transition-colors"
-                      >
-                        <FileText size={12} className="text-gray-400" />
-                        <span>{isEn ? "Download Official SK (PDF)" : "Unduh SK Pemenang Resmi"}</span>
-                      </a>
+                    {/* Tombol Unduh SK Pemenang: Tersinkronisasi Online & Offline */}
+                    {skOnline && skOffline ? (
+                      <div className="grid grid-cols-2 gap-2">
+                        {skOnline.downloadUrl && skOnline.downloadUrl !== "#" && (
+                          <a
+                            href={skOnline.downloadUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg bg-blue-50/90 hover:bg-blue-100 text-[11px] font-bold text-blue-800 border border-blue-200 transition-colors shadow-2xs"
+                            title={skOnline.title}
+                          >
+                            <FileText size={12} className="text-blue-600 shrink-0" />
+                            <span className="truncate">{isEn ? "SK Online (PDF)" : "SK Daring (PDF)"}</span>
+                          </a>
+                        )}
+                        {skOffline.downloadUrl && skOffline.downloadUrl !== "#" && (
+                          <a
+                            href={skOffline.downloadUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg bg-amber-50/90 hover:bg-amber-100 text-[11px] font-bold text-amber-900 border border-amber-200 transition-colors shadow-2xs"
+                            title={skOffline.title}
+                          >
+                            <FileText size={12} className="text-amber-700 shrink-0" />
+                            <span className="truncate">{isEn ? "SK Offline (PDF)" : "SK Luring (PDF)"}</span>
+                          </a>
+                        )}
+                      </div>
+                    ) : (
+                      (() => {
+                        const doc = skOnline || skOffline || skGeneral || eventSkDocs[0];
+                        if (!doc?.downloadUrl || doc.downloadUrl === "#") return null;
+
+                        const docMode = getAnnouncementMode(doc);
+                        const label =
+                          docMode === "online"
+                            ? isEn ? "Download SK Online (PDF)" : "Unduh SK Daring (PDF)"
+                            : docMode === "offline"
+                            ? isEn ? "Download SK Offline (PDF)" : "Unduh SK Luring (PDF)"
+                            : isEn ? "Download Official SK (PDF)" : "Unduh SK Pemenang Resmi";
+
+                        return (
+                          <a
+                            href={doc.downloadUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg bg-gray-50 hover:bg-gray-100 text-[11px] font-bold text-gray-600 border border-gray-200 transition-colors"
+                            title={doc.title}
+                          >
+                            <FileText size={12} className="text-gray-400" />
+                            <span>{label}</span>
+                          </a>
+                        );
+                      })()
                     )}
                   </div>
                 </div>

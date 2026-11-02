@@ -48,6 +48,7 @@ export interface WinnerAnnouncementDoc {
   totalMedals: number;
   badge: string;
   category: string;
+  mode?: "online" | "offline" | "all";
 }
 
 /**
@@ -322,3 +323,28 @@ export const MEDAL_TABS = [
   { key: "Silver Medal", labelId: "medal_silver", icon: "🥈" },
   { key: "Bronze Medal", labelId: "medal_bronze", icon: "🥉" },
 ];
+
+export function getAnnouncementMode(doc: {
+  title?: string;
+  title_en?: string;
+  category?: string;
+  edition?: string;
+  downloadUrl?: string;
+  download_url?: string;
+  file_name?: string;
+  fileName?: string;
+  mode?: "online" | "offline" | "all";
+}): "online" | "offline" | "all" {
+  if (doc.mode === "online" || doc.mode === "offline" || doc.mode === "all") {
+    return doc.mode;
+  }
+  const text = `${doc.title || ""} ${doc.title_en || ""} ${doc.category || ""} ${doc.edition || ""} ${doc.downloadUrl || ""} ${doc.download_url || ""} ${doc.file_name || ""} ${doc.fileName || ""}`.toLowerCase();
+
+  const isOffline = text.includes("luring") || text.includes("offline") || text.includes("onsite");
+  const isOnline = text.includes("daring") || text.includes("online") || text.includes("cbt");
+
+  if (isOffline && !isOnline) return "offline";
+  if (isOnline && !isOffline) return "online";
+  return "all";
+}
+

@@ -5,6 +5,7 @@ import {
   WinnerMedal,
   WinnerLevel,
   WinnerAnnouncementDoc,
+  getAnnouncementMode,
   DUMMY_WINNERS,
   DUMMY_WINNER_ANNOUNCEMENTS,
   WINNER_STATS,
@@ -1073,6 +1074,7 @@ export async function fetchWinnerAnnouncements(): Promise<WinnerAnnouncementDoc[
           totalMedals: Number(row.total_medals || row.totalMedals || row.total_medali) || 0,
           badge: row.badge || "Resmi",
           category: row.category || row.bidang || row.kategori || "General",
+          mode: getAnnouncementMode(row),
         }));
       }
     }
@@ -1108,6 +1110,7 @@ export async function fetchWinnerAnnouncements(): Promise<WinnerAnnouncementDoc[
       totalMedals: Number(row.total_medals || row.total_medali) || 0,
       badge: row.badge || "Resmi",
       category: row.category || row.bidang || row.kategori || "General",
+      mode: getAnnouncementMode(row),
     }));
 
     return dbDocs.length > 0 ? dbDocs : DUMMY_WINNER_ANNOUNCEMENTS;

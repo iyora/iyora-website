@@ -17,6 +17,7 @@ import {
   Trophy,
   Star,
   ArrowLeft,
+  FileText,
 } from "lucide-react";
 import clsx from "clsx";
 import {
@@ -25,6 +26,7 @@ import {
   WinnerAnnouncementDoc,
   ALL_COMPETITIONS,
   MEDAL_TABS,
+  getAnnouncementMode,
 } from "@/data/dummyWinners";
 
 interface WinnersFilterGridProps {
@@ -290,6 +292,21 @@ export default function WinnersFilterGrid({
       }
     }
   }, [availableCategories, selectedCategory]);
+
+  // Dokumen SK Pemenang yang cocok untuk kompetisi dan tahun yang dipilih (Online / Offline)
+  const eventSkDocs = useMemo(() => {
+    if (selectedCompetition === "all") return [];
+    return announcements.filter(
+      (a) =>
+        a.competition.toUpperCase() === selectedCompetition.toUpperCase() &&
+        (a.edition.includes(String(selectedYear || 2026)) ||
+          a.title.includes(String(selectedYear || 2026)))
+    );
+  }, [announcements, selectedCompetition, selectedYear]);
+
+  const skOnline = useMemo(() => eventSkDocs.find((a) => getAnnouncementMode(a) === "online"), [eventSkDocs]);
+  const skOffline = useMemo(() => eventSkDocs.find((a) => getAnnouncementMode(a) === "offline"), [eventSkDocs]);
+  const skGeneral = useMemo(() => eventSkDocs.find((a) => getAnnouncementMode(a) === "all"), [eventSkDocs]);
 
   // Hitung jumlah peserta online dan offline untuk kompetisi yang sedang aktif
   const modeCounts = useMemo(() => {
@@ -632,7 +649,49 @@ export default function WinnersFilterGrid({
                   </p>
                 </div>
 
-                <div className="relative z-10 flex items-center gap-2 shrink-0">
+                <div className="relative z-10 flex items-center gap-2.5 shrink-0 flex-wrap sm:flex-nowrap">
+                  {/* SK Download Action Buttons (Tersinkronisasi dengan Mode) */}
+                  {eventSkDocs.length > 0 && (
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {(selectedMode === "all" || selectedMode === "online") && skOnline?.downloadUrl && skOnline.downloadUrl !== "#" && (
+                        <a
+                          href={skOnline.downloadUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white border border-white/30 text-xs font-bold transition-all backdrop-blur-md shadow-xs"
+                          title={skOnline.title}
+                        >
+                          <FileText size={13} className="text-amber-200" />
+                          <span>{locale === "en" ? "SK Online (PDF)" : "SK Daring (PDF)"}</span>
+                        </a>
+                      )}
+                      {(selectedMode === "all" || selectedMode === "offline") && skOffline?.downloadUrl && skOffline.downloadUrl !== "#" && (
+                        <a
+                          href={skOffline.downloadUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white border border-white/30 text-xs font-bold transition-all backdrop-blur-md shadow-xs"
+                          title={skOffline.title}
+                        >
+                          <FileText size={13} className="text-amber-200" />
+                          <span>{locale === "en" ? "SK Offline (PDF)" : "SK Luring (PDF)"}</span>
+                        </a>
+                      )}
+                      {!skOnline && !skOffline && skGeneral?.downloadUrl && skGeneral.downloadUrl !== "#" && (
+                        <a
+                          href={skGeneral.downloadUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white border border-white/30 text-xs font-bold transition-all backdrop-blur-md shadow-xs"
+                          title={skGeneral.title}
+                        >
+                          <FileText size={13} className="text-amber-200" />
+                          <span>{locale === "en" ? "Download SK (PDF)" : "Unduh SK (PDF)"}</span>
+                        </a>
+                      )}
+                    </div>
+                  )}
+
                   <div className="bg-white/15 backdrop-blur-md border border-white/25 rounded-2xl px-5 py-3 text-center">
                     <span className="text-2xl font-black block tabular-nums">{filteredWinners.length}</span>
                     <span className="text-[10px] font-bold uppercase tracking-wider text-white/85">
