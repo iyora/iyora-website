@@ -6,7 +6,13 @@ import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 
 
+/* Tautan ke situs tiap ajang — juga sinyal SEO: nama ajang sebagai teks
+   tautan dari situs induk (2026-11-10). */
 const COMPETITIONS = [
+  { name: "NSO", url: "https://nso.iyora.or.id", full: "National Science Olympiad" },
+  { name: "NSMO", url: "https://nsmo.iyora.or.id", full: "National Science Math Olympiad" },
+  { name: "WSO", url: "https://wso.iyora.or.id", full: "World Science Olympiad" },
+  { name: "TISO", url: "https://tiso.iyora.or.id", full: "Thailand International Science Olympiad" },
   { name: "NYBO", url: "https://nybo.iyora.or.id" },
   { name: "IYBO", url: "https://iybo.iyora.or.id" },
   { name: "NYPO", url: "https://nypo.iyora.or.id" },
@@ -18,7 +24,6 @@ const COMPETITIONS = [
   { name: "IYGO", url: "https://iygo.iyora.or.id" },
   { name: "IYEO", url: "https://iyeo.iyora.or.id" },
   { name: "OS2MN", url: "https://os2mn.iyora.or.id" },
-  { name: "WSO", url: "https://wso.iyora.or.id" },
 ];
 
 export default function Footer() {
@@ -67,7 +72,8 @@ export default function Footer() {
                   <a
                     href={c.url}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="noopener"
+                    title={"full" in c && c.full ? `${c.full} (${c.name})` : c.name}
                     className="text-sm text-white/50 hover:text-teal transition-colors"
                   >
                     {c.name}
