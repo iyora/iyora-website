@@ -122,7 +122,7 @@ export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
        },
      ],
    },*/
-  {
+  /*{
     id: "popup-upcoming-nso-2026",
     isActive: true,
     badge: "🔥 PENDAFTARAN DIBUKA: NSO 2026",
@@ -164,7 +164,7 @@ export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
         variant: "instagram",
       },
     ],
-  },
+  },*/
   {
     id: "popup-upcoming-nsmo-2026",
     isActive: true,
