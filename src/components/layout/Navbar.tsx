@@ -546,7 +546,7 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
 
           {/* Dashboard button */}
           <a
-            href="https://dashboard.iysa.or.id/login"
+            href="https://dashboard.iyora.or.id/"
             target="_blank"
             rel="noopener noreferrer"
             className={clsx(
@@ -772,7 +772,7 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
             )}
             <div className="pt-3 flex items-center gap-3">
               <a
-                href="https://dashboard.iysa.or.id/login"
+                href="https://dashboard.iyora.or.id/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-full bg-primary text-white hover:opacity-90 transition-all"
