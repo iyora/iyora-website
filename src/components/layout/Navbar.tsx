@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
-import { Menu, X, ChevronDown, Newspaper, Megaphone, FileText, Camera, Video, ArrowRight, Info, Users, Mail, Globe, Award } from "lucide-react";
+import { Menu, X, ChevronDown, Newspaper, Megaphone, FileText, Camera, Video, ArrowRight, Info, Users, Mail, Globe, Award, LayoutDashboard } from "lucide-react";
 import clsx from "clsx";
 import type { NewsPreviewData, CompetitionData } from "@/lib/supabase";
 import { getValidEventRegistrationUrl } from "@/lib/supabase";
@@ -543,6 +543,22 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
           >
             {otherLocale.toUpperCase()}
           </Link>
+
+          {/* Dashboard button */}
+          <a
+            href="https://dashboard.iysa.or.id/login"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={clsx(
+              "inline-flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-full transition-all duration-200",
+              scrolled
+                ? "bg-primary text-white hover:opacity-90"
+                : "bg-white text-primary hover:bg-white/90"
+            )}
+          >
+            <LayoutDashboard size={14} />
+            DASHBOARD
+          </a>
         </div>
 
         {/* Mobile hamburger */}
@@ -754,7 +770,17 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
                 })}
               </div>
             )}
-            <div className="pt-3">
+            <div className="pt-3 flex items-center gap-3">
+              <a
+                href="https://dashboard.iysa.or.id/login"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-full bg-primary text-white hover:opacity-90 transition-all"
+                onClick={() => setMobileOpen(false)}
+              >
+                <LayoutDashboard size={14} />
+                DASHBOARD
+              </a>
               <Link
                 href={`/${otherLocale}`}
                 className="inline-block text-xs font-bold px-4 py-2 rounded-full border border-gray-300 text-gray-700 hover:border-primary hover:text-primary transition-all"
