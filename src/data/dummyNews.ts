@@ -31,7 +31,7 @@ export interface DummyNewsItem {
 
 export const DUMMY_NEWS: DummyNewsItem[] = [
   // ── 1. PRESS RELEASE ──
-  {
+  /*{
     id: "press-release-opening-ceremony-2026",
     slug: "siaran-pers-opening-ceremony-nygo-iygo-nyeo-iyeo-2026",
     title: "Siaran Pers: Pembukaan Resmi (Opening Ceremony) NYGO, IYGO, NYEO & IYEO 2026 Sukses Digelar Secara Daring",
@@ -39,12 +39,6 @@ export const DUMMY_NEWS: DummyNewsItem[] = [
     category: "press_release",
     photo: "/images/galeri/open.png",
     photos: [
-      "/images/OPENING/dokum1.png",
-      "/images/OPENING/dokum2.png",
-      "/images/OPENING/dokum6.jpeg",
-      "/images/OPENING/dokum5.jpeg",
-      "/images/OPENING/dokum3.jpeg",
-      "/images/OPENING/dokum4.jpeg",
     ],
     caption: "Resmi Dibuka! Opening Ceremony NYGO & IYGO serta NYEO & IYEO 2026 Sukses Digelar Secara Daring pada 20 Agustus 2026.",
     caption_en: "Officially Opened! Online Opening Ceremony for NYGO, IYGO, NYEO & IYEO 2026 Successfully Held on August 20th, 2026.",
@@ -68,7 +62,7 @@ The 2026 NYGO, IYGO, NYEO, and IYEO series serves as a prestigious platform for 
 The online examination phase will proceed according to the technical schedule established by the IYORA platform. The public and schools can monitor updates regarding announcements and final round results via the official portal at https://iyora.or.id.`,
     publishedAt: "2026-08-20",
     author: "IyoraOlympiad",
-  },
+  },*/
   {
     id: "press-releas-nygo-iygo-nyeo-iyeo-2026",
     slug: "siaran-pers-nygo-iygo-nyeo-iyeo-2026",
@@ -76,21 +70,6 @@ The online examination phase will proceed according to the technical schedule es
     title_en: "NYGO, IYGO, NYEO & IYEO 2026 Successfully Held on August 20th, 2026.",
     category: "press_release",
     photo: "/images/galeri/press.jpeg",
-    photos: [
-      "/images/press/iyora.png",
-      "/images/press/open.jpg",
-      "/images/OPENING/dokum3.jpeg",
-      "/images/press/award.png",
-      "/images/press/spc1.png",
-      "/images/OPENING/dokum6.jpeg",
-      "/images/press/spc2.png",
-      "/images/press/spc3.png",
-      "/images/OPENING/dokum5.jpeg",
-      "/images/press/spc4.png",
-      "/images/OPENING/dokum2.png",
-      "/images/press/spc5.jpg",
-      "/images/OPENING/dokum1.png",
-    ],
     caption: "Empat ajang olympiad NYGO IYGO & NYEO IYEO tingkat Nasional dan Internasional",
     caption_en: "Four Olympiad competitions NYGO, IYGO, NYEO, and IYEO at national and international levels.",
     content: `Depok, 28 Agustus 2026 - Indonesia Young Scientist Association (IYSA) kembali sukses menyelenggarakan empat ajang olimpiade bergengsi, yaitu National Youth Geography Olympiad (NYGO), International Youth Geography Olympiad (IYGO), National Youth Economics Olympiad (NYEO), dan International Youth Economics Olympiad (IYEO) secara daring pada 20 - 27 September 2026. Kegiatan ini menjadi wadah bagi pelajar untuk menguji kemampuan akademik sekaligus memperluas jejaring internasional di bidang Geografi dan Ekonomi.
