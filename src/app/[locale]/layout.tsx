@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
@@ -8,7 +9,7 @@ import Footer from "@/components/layout/Footer";
 import EventPopup from "@/components/common/EventPopup";
 import { fetchNewsPreview, fetchCompetitionsData } from "@/lib/supabase";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   metadataBase: new URL("https://iyora.or.id"),
   title: {
     default: "IYORA — Indonesian Youth Outstanding Recognition Association",
@@ -81,14 +82,31 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
-  alternates: {
-    canonical: "https://iyora.or.id/id",
-    languages: {
-      "id-ID": "https://iyora.or.id/id",
-      "en-US": "https://iyora.or.id/en",
-    },
-  },
 };
+
+const SITUS = "https://iyora.or.id";
+
+/**
+ * Kanonis & alternatif bahasa PER HALAMAN (2026-11-14). Sebelumnya statis
+ * `canonical: /id` di layout ini berlaku untuk semua halaman, sehingga /en,
+ * /id/competitions, dst. dianggap duplikat beranda dan tidak diindeks.
+ * Path dari `x-pathname` (lihat src/proxy.ts).
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const path = ((await headers()).get("x-pathname") || "/id").replace(/\/+$/, "") || "/id";
+  const sisa = path.replace(/^\/(id|en)(?=\/|$)/, "");
+  return {
+    ...metadata,
+    alternates: {
+      canonical: `${SITUS}${path === "/" ? "/id" : path}`,
+      languages: {
+        "id-ID": `${SITUS}/id${sisa}`,
+        "en-US": `${SITUS}/en${sisa}`,
+        "x-default": `${SITUS}/id${sisa}`,
+      },
+    },
+  };
+}
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
