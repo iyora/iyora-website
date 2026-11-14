@@ -122,49 +122,49 @@ export const DUMMY_EVENT_POPUPS: EventPopupData[] = [
        },
      ],
    },*/
-  /*{
-    id: "popup-upcoming-nso-2026",
-    isActive: true,
-    badge: "🔥 PENDAFTARAN DIBUKA: NSO 2026",
-    badge_en: "🔥 REGISTRATION OPEN: NSO 2026",
-    title: "NSO 2026 — National Science Olympiad",
-    title_en: "NSO 2026 — National Science Olympiad",
-    subtitle: "Pendaftaran Resmi Dibuka! Kompetisi Sains Terpadu Nasional untuk Jenjang SD, SMP, SMA & Mahasiswa se-Indonesia.",
-    subtitle_en: "Registration Now Open! Prestigious National Science Competition for Elementary, Junior High, High School & University.",
-    image: "/images/pop up/nso.jpeg",
-    content:
-      "Pendaftaran NSO (National Science Olympiad) 2026 resmi dibuka! Menguji penguasaan sains mendalam (Biologi, Fisika, Kimia, IPA Terpadu) melalui ujian berbasis CBT daring dengan standarisasi nasional. Dapatkan medali penghargaan eksklusif, e-sertifikat resmi SIMT Puspresnas, serta piagam pembina berprestasi untuk mendukung portofolio PPDB & SNBT.",
-    content_en:
-      "Registration for NSO (National Science Olympiad) 2026 is officially open! Evaluates comprehensive scientific mastery (Biology, Physics, Chemistry, Integrated Science) via standardized online CBT. Win exclusive medals, SIMT Puspresnas verified certificates, and mentor honors to bolster your academic portfolio.",
-    author: "IyoraOlympiad",
-    publishedAt: "2026-09-03",
-    links: [
-      {
-        label: "Daftar Sekarang",
-        label_en: "Register Now",
-        url: "https://nso.iyora.or.id/register",
-        variant: "primary",
-      },
-      {
-        label: "Website Resmi NSO",
-        label_en: "Official NSO Website",
-        url: "https://nso.iyora.or.id",
-        variant: "teal",
-      },
-      {
-        label: "Buku Panduan NSO",
-        label_en: "NSO Guidebook",
-        url: "https://api.iyora.or.id/storage/v1/object/public/event-media/cf86f6fb-83e8-4fd4-8356-e3ac76936b50/guidebooks/1788455563288-BUKU-PANDUAN-NSO-2026.pdf",
-        variant: "indigo",
-      },
-      {
-        label: "Instagram IYORA",
-        label_en: "Official Instagram",
-        url: "https://www.instagram.com/iyoraofficial",
-        variant: "instagram",
-      },
-    ],
-  },*/
+  /* {
+     id: "popup-upcoming-nso-2026",
+     isActive: true,
+     badge: "🔥 PENDAFTARAN DIBUKA: NSO 2026",
+     badge_en: "🔥 REGISTRATION OPEN: NSO 2026",
+     title: "NSO 2026 — National Science Olympiad",
+     title_en: "NSO 2026 — National Science Olympiad",
+     subtitle: "Pendaftaran Resmi Dibuka! Kompetisi Sains Terpadu Nasional untuk Jenjang SD, SMP, SMA & Mahasiswa se-Indonesia.",
+     subtitle_en: "Registration Now Open! Prestigious National Science Competition for Elementary, Junior High, High School & University.",
+     image: "/images/pop up/nso.jpeg",
+     content:
+       "Pendaftaran NSO (National Science Olympiad) 2026 resmi dibuka! Menguji penguasaan sains mendalam (Biologi, Fisika, Kimia, IPA Terpadu) melalui ujian berbasis CBT daring dengan standarisasi nasional. Dapatkan medali penghargaan eksklusif, e-sertifikat resmi SIMT Puspresnas, serta piagam pembina berprestasi untuk mendukung portofolio PPDB & SNBT.",
+     content_en:
+       "Registration for NSO (National Science Olympiad) 2026 is officially open! Evaluates comprehensive scientific mastery (Biology, Physics, Chemistry, Integrated Science) via standardized online CBT. Win exclusive medals, SIMT Puspresnas verified certificates, and mentor honors to bolster your academic portfolio.",
+     author: "IyoraOlympiad",
+     publishedAt: "2026-09-03",
+     links: [
+       {
+         label: "Daftar Sekarang",
+         label_en: "Register Now",
+         url: "https://nso.iyora.or.id/register",
+         variant: "primary",
+       },
+       {
+         label: "Website Resmi NSO",
+         label_en: "Official NSO Website",
+         url: "https://nso.iyora.or.id",
+         variant: "teal",
+       },
+       {
+         label: "Buku Panduan NSO",
+         label_en: "NSO Guidebook",
+         url: "https://api.iyora.or.id/storage/v1/object/public/event-media/cf86f6fb-83e8-4fd4-8356-e3ac76936b50/guidebooks/1788455563288-BUKU-PANDUAN-NSO-2026.pdf",
+         variant: "indigo",
+       },
+       {
+         label: "Instagram IYORA",
+         label_en: "Official Instagram",
+         url: "https://www.instagram.com/iyoraofficial",
+         variant: "instagram",
+       },
+     ],
+   },*/
   {
     id: "popup-upcoming-nsmo-2026",
     isActive: true,
