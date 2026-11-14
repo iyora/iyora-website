@@ -133,7 +133,8 @@ interface RawDefaultCompetition {
 const RAW_DEFAULT_COMPETITIONS: RawDefaultCompetition[] = [
   // 1. Open Registration
   { slug: "nso", shortName: "NSO", name: "National Science Olympiad", level: "national", category: "Science", websiteUrl: "https://nso.iyora.or.id", registrationUrl: "https://nso.iyora.or.id/register", guidebookUrl: "https://api.iyora.or.id/storage/v1/object/public/event-media/cf86f6fb-83e8-4fd4-8356-e3ac76936b50/guidebooks/1788455563288-BUKU-PANDUAN-NSO-2026.pdf", openAt: "2026-09-03", closeAt: "2026-10-16" },
-  { slug: "nsmo", shortName: "NSMO", name: "National Science Math Olympiad", level: "national", category: "Mathematics", websiteUrl: "https://nsmo.iyora.or.id", registrationUrl: "https://nsmo.iyora.or.id/register", guidebookUrl: "https://api.iyora.or.id/storage/v1/object/public/event-media/58a9dcaa-e853-4c64-bd16-906d362c9585/guidebooks/1790154027781-Guidebook-DMO-2026.pdf", openAt: "2026-09-08", closeAt: "2026-10-27" },
+  { slug: "nsmo", shortName: "NSMO", name: "National Science Math Olympiad", level: "national", category: "Mathematics", websiteUrl: "https://nsmo.iyora.or.id", registrationUrl: "https://nsmo.iyora.or.id/register", guidebookUrl: "https://api-dashboard.iysa.or.id/media/coreapps/events/guidebooks/nsmo-2026-1794637340172-o.pdf", openAt: "2026-09-08", closeAt: "2026-11-20" },
+  { slug: "wso", shortName: "WSO", name: "World Science Olympiad", level: "world", category: "Science", websiteUrl: "https://wso.iyora.or.id", registrationUrl: "https://wso.iyora.or.id/register", guidebookUrl: "https://api-dashboard.iysa.or.id/media/coreapps/events/guidebooks/wso-2026-1794469585996-o.pdf", openAt: "2026-09-20", closeAt: "2026-11-20" },
   { slug: "tiso", shortName: "TISO", name: "THAILAND INTERNATIONAL SCIENCE OLYMPIAD", level: "international", category: "Physics", websiteUrl: "https://tiso.iyora.or.id", registrationUrl: "https://tiso.iyora.or.id/register", guidebookUrl: "https://api.iyora.or.id/storage/v1/object/public/event-media/f46a573a-fede-45e0-a3c0-c8635ee1f14f/guidebooks/1791183416609-Guidebook-TISO-2027.pdf", openAt: "2026-10-02", closeAt: "2026-12-05" },
 
   // 2. Coming Soon
@@ -146,7 +147,6 @@ const RAW_DEFAULT_COMPETITIONS: RawDefaultCompetition[] = [
   { slug: "nyco", shortName: "NYCO", name: "National Youth Chemistry Olympiad", level: "national", category: "Chemistry", websiteUrl: "https://nyco.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: "2026-06-01", closeAt: "2026-08-01" },
   { slug: "iyco", shortName: "IYCO", name: "International Youth Chemistry Olympiad", level: "international", category: "Chemistry", websiteUrl: "https://iyco.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: "2026-06-01", closeAt: "2026-08-01" },
   { slug: "os2mn", shortName: "OS2MN", name: "Olimpiade Sains Siswa Madrasah Nasional", level: "madrasah", category: "Madrasah", websiteUrl: "https://os2mn.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: "2026-06-01", closeAt: "2026-08-01" },
-  { slug: "wso", shortName: "WSO", name: "World Science Olympiad", level: "world", category: "Science", websiteUrl: "https://wso.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: "2026-09-20", closeAt: "2026-09-30" },
   { slug: "kiso", shortName: "KISO", name: "KOREA INTERNATIONAL SCIENCE OLYMPIAD", level: "international", category: "Science", websiteUrl: "https://kiso.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: null, closeAt: null },
   { slug: "hiso", shortName: "HISO", name: "HANOI INTERNATIONAL SCIENCE OLYMPIAD", level: "international", category: "Science", websiteUrl: "https://hiso.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: null, closeAt: null },
   { slug: "miso", shortName: "MISO", name: "MANILA INTERNATIONAL SCIENCE OLYMPIAD", level: "international", category: "Science", websiteUrl: "https://miso.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: null, closeAt: null },
@@ -163,8 +163,12 @@ const RAW_DEFAULT_COMPETITIONS: RawDefaultCompetition[] = [
 
 export const KNOWN_EVENT_MEDIA: Record<string, { banner?: string; logo?: string }> = {
   nsmo: {
-    banner: "https://api.iyora.or.id/storage/v1/object/public/event-media/58a9dcaa-e853-4c64-bd16-906d362c9585/banner.png",
-    logo: "https://api.iyora.or.id/storage/v1/object/public/event-media/58a9dcaa-e853-4c64-bd16-906d362c9585/logo-1789961665293.png",
+    banner: "https://api-dashboard.iysa.or.id/media/coreapps/coreapps/events/iyora/banner-aa800a1bcad9ffe0.png",
+    logo: "https://api-dashboard.iysa.or.id/media/coreapps/coreapps/events/iyora/logo-42e31a735d0eead8.png",
+  },
+  wso: {
+    banner: "https://api-dashboard.iysa.or.id/media/coreapps/coreapps/events/iyora/banner-8dc8a520fdad22f4.png",
+    logo: "https://api-dashboard.iysa.or.id/media/coreapps/coreapps/events/iyora/logo-2b0ff3a467f366d4.png",
   },
   nso: {
     banner: "https://api.iyora.or.id/storage/v1/object/public/event-media/cf86f6fb-83e8-4fd4-8356-e3ac76936b50/banner.png",
@@ -173,6 +177,26 @@ export const KNOWN_EVENT_MEDIA: Record<string, { banner?: string; logo?: string 
   tiso: {
     banner: "https://api.iyora.or.id/storage/v1/object/public/event-media/f46a573a-fede-45e0-a3c0-c8635ee1f14f/banner-1791182905339.png",
     logo: "https://api.iyora.or.id/storage/v1/object/public/event-media/f46a573a-fede-45e0-a3c0-c8635ee1f14f/logo-1790850309781.png",
+  },
+};
+
+export const MANUAL_COMPETITION_OVERRIDES: Record<string, {
+  openAt?: string;
+  closeAt?: string;
+  guidebookUrl?: string;
+  registrationUrl?: string;
+}> = {
+  nsmo: {
+    openAt: "2026-09-08",
+    closeAt: "2026-11-20",
+    guidebookUrl: "https://api-dashboard.iysa.or.id/media/coreapps/events/guidebooks/nsmo-2026-1794637340172-o.pdf",
+    registrationUrl: "https://nsmo.iyora.or.id/register",
+  },
+  wso: {
+    openAt: "2026-09-20",
+    closeAt: "2026-11-20",
+    guidebookUrl: "https://api-dashboard.iysa.or.id/media/coreapps/events/guidebooks/wso-2026-1794469585996-o.pdf",
+    registrationUrl: "https://wso.iyora.or.id/register",
   },
 };
 
@@ -253,9 +277,12 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
             resolvedLevel = "international";
           }
 
+          const override = MANUAL_COMPETITION_OVERRIDES[c.slug?.toLowerCase() || ""];
           const websiteUrl = getValidEventWebsiteUrl(c.slug, c.websiteUrl || c.website_url);
-          const registrationUrl = getValidEventRegistrationUrl(c.slug, c.registrationUrl || c.registration_url, websiteUrl);
-          const guidebookUrl = c.guidebookUrl || c.guidebook_url || null;
+          const registrationUrl = getValidEventRegistrationUrl(c.slug, override?.registrationUrl || c.registrationUrl || c.registration_url, websiteUrl);
+          const guidebookUrl = override?.guidebookUrl || c.guidebookUrl || c.guidebook_url || null;
+          const openAt = override?.openAt || c.registrationOpenAt || c.registration_open_at || null;
+          const closeAt = override?.closeAt || c.registrationCloseAt || c.registration_close_at || null;
 
           const rawBanner =
             c.bannerUrl ||
@@ -287,10 +314,10 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
             category: c.category || null,
             websiteUrl,
             registrationUrl,
-            registrationStatus: (c.registrationStatus || computeStatus(c.registrationOpenAt, c.registrationCloseAt)) as RegistrationStatus,
+            registrationStatus: (override ? computeStatus(openAt, closeAt) : (c.registrationStatus || computeStatus(openAt, closeAt))) as RegistrationStatus,
             guidebookUrl,
-            registrationOpenAt: c.registrationOpenAt || c.registration_open_at || null,
-            registrationCloseAt: c.registrationCloseAt || c.registration_close_at || null,
+            registrationOpenAt: openAt,
+            registrationCloseAt: closeAt,
             bannerUrl: media.bannerUrl,
             heroUrl: media.bannerUrl,
             logoUrl: media.logoUrl,
@@ -357,15 +384,20 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
           resolvedLevel = "international";
         }
 
+        const override = MANUAL_COMPETITION_OVERRIDES[comp.slug?.toLowerCase() || ""];
         const rawCat = comp.category || event?.category;
         const category = Array.isArray(rawCat) ? (rawCat[0] ?? null) : (rawCat ?? null);
         const isEventActive = event?.is_active ?? comp.is_active ?? true;
-        const status = isEventActive
-          ? computeStatus(event?.registration_open_at ?? null, event?.registration_close_at ?? null)
-          : "closed";
+        const openAt = override?.openAt ?? event?.registration_open_at ?? null;
+        const closeAt = override?.closeAt ?? event?.registration_close_at ?? null;
+        const status = override
+          ? computeStatus(openAt, closeAt)
+          : isEventActive
+            ? computeStatus(openAt, closeAt)
+            : "closed";
 
         const websiteUrl = getValidEventWebsiteUrl(comp.slug, comp.website_url);
-        const registrationUrl = getValidEventRegistrationUrl(comp.slug, comp.registration_url, websiteUrl);
+        const registrationUrl = getValidEventRegistrationUrl(comp.slug, override?.registrationUrl || comp.registration_url, websiteUrl);
 
         const rawBanner =
           comp.banner_url ||
@@ -382,7 +414,7 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
           event?.logo_url ||
           null;
 
-        const guidebookUrl = guidebook?.file_url ?? null;
+        const guidebookUrl = override?.guidebookUrl ?? guidebook?.file_url ?? null;
         const media = resolveEventMedia(comp.slug, rawBanner, rawLogo, guidebookUrl);
 
         return {
@@ -395,8 +427,8 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
           registrationUrl,
           registrationStatus: status,
           guidebookUrl,
-          registrationOpenAt: event?.registration_open_at ?? null,
-          registrationCloseAt: event?.registration_close_at ?? null,
+          registrationOpenAt: openAt,
+          registrationCloseAt: closeAt,
           bannerUrl: media.bannerUrl,
           heroUrl: media.bannerUrl,
           logoUrl: media.logoUrl,

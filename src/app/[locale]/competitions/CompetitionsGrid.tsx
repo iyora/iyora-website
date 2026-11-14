@@ -3,7 +3,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
-import { BookOpen } from "lucide-react";
 import type { CompetitionData } from "@/lib/supabase";
 import { getValidEventRegistrationUrl } from "@/lib/supabase";
 
@@ -281,37 +280,17 @@ export default function CompetitionsGrid({ competitions }: Props) {
                 </div>
 
                 {/* Footer CTA - Always aligned at the bottom */}
-                {(isOpen || comp.guidebookUrl) && (
+                {isOpen && (
                   <div className="pt-2 mt-auto">
                     <div className="flex gap-2">
-                      {isOpen && (
-                        <a
-                          href={regUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-1 text-center py-2.5 rounded-xl font-bold text-sm transition-all duration-200 shadow-md bg-white text-[#1a0f30] hover:bg-white/95 hover:text-[#66449b] hover:shadow-lg active:scale-98"
-                        >
-                          {locale === "id" ? "Daftar Sekarang →" : "Register Now →"}
-                        </a>
-                      )}
-                      {comp.guidebookUrl && (
-                        <a
-                          href={comp.guidebookUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`flex items-center justify-center gap-1.5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 ${
-                            isOpen ? "px-3 flex-shrink-0" : "w-full"
-                          } ${
-                            (isOpen || isComing)
-                              ? "bg-white/15 text-white border border-white/30 hover:bg-white/25 backdrop-blur-xs"
-                              : "border-2 border-primary text-primary hover:bg-primary/5"
-                          }`}
-                          title={locale === "id" ? "Unduh Buku Panduan" : "Download Guidebook"}
-                        >
-                          <BookOpen size={15} />
-                          <span>Guidebook</span>
-                        </a>
-                      )}
+                      <a
+                        href={regUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 text-center py-2.5 rounded-xl font-bold text-sm transition-all duration-200 shadow-md bg-white text-[#1a0f30] hover:bg-white/95 hover:text-[#66449b] hover:shadow-lg active:scale-98"
+                      >
+                        {locale === "id" ? "Daftar Sekarang →" : "Register Now →"}
+                      </a>
                     </div>
                   </div>
                 )}
