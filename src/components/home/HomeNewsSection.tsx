@@ -179,7 +179,7 @@ export default function HomeNewsSection({
                     <span>{isEn ? "Activity Gallery" : "Galeri Kegiatan"}</span>
                   </div>
                   <Link
-                    href={`/${locale}/news?tab=gallery`}
+                    href={`/${locale}/gallery/photo`}
                     className="text-xs md:text-sm font-semibold text-primary hover:underline flex items-center gap-1"
                   >
                     {isEn ? "View All Gallery" : "Lihat Semua Galeri"} <ChevronRight size={14} />

@@ -113,8 +113,8 @@ export const OLYMPIADS = [...RAW_OLYMPIADS].sort(
 
 
 const GALLERY_MENU = [
-  { key: "photos", icon: Camera, labelKey: "gallery_photos", hash: "gallery&type=photo" },
-  { key: "videos", icon: Video, labelKey: "gallery_videos", hash: "gallery&type=video" },
+  { key: "photos", icon: Camera, labelKey: "gallery_photos", path: "/gallery/photo" },
+  { key: "videos", icon: Video, labelKey: "gallery_videos", path: "/gallery/video" },
 ] as const;
 
 const NEWS_MENU = [
@@ -368,7 +368,7 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
             onMouseLeave={scheduleGalleryClose}
           >
             <Link
-              href={`${href("/news")}?tab=gallery`}
+              href={href("/gallery/photo")}
               className={clsx(
                 navLinkClass,
                 "flex items-center gap-1 cursor-pointer"
@@ -396,7 +396,7 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
                   return (
                     <Link
                       key={item.key}
-                      href={`${href("/news")}?tab=${item.hash}`}
+                      href={href(item.path)}
                       onClick={() => setGalleryDropdownOpen(false)}
                       className="flex items-center gap-3 p-2.5 rounded-xl transition-all duration-150 hover:bg-gray-50 group"
                     >
@@ -411,7 +411,7 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
                 })}
                 <div className="pt-2 mt-1 border-t border-gray-100">
                   <Link
-                    href={`${href("/news")}?tab=gallery`}
+                    href={href("/gallery/photo")}
                     onClick={() => setGalleryDropdownOpen(false)}
                     className="flex items-center justify-center w-full py-1.5 text-xs font-semibold text-primary hover:underline gap-1"
                   >
@@ -694,7 +694,7 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
             {mobileGalleryOpen && (
               <div className="pl-4 pb-2 flex flex-col gap-0.5">
                 <Link
-                  href={`${href("/news")}?tab=gallery`}
+                  href={href("/gallery/photo")}
                   className="py-2 text-sm text-gray-600 hover:text-primary transition-colors"
                   onClick={() => setMobileOpen(false)}
                 >
@@ -705,7 +705,7 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
                   return (
                     <Link
                       key={item.key}
-                      href={`${href("/news")}?tab=${item.hash}`}
+                      href={href(item.path)}
                       className="py-2 text-sm text-gray-600 hover:text-primary transition-colors flex items-center gap-2"
                       onClick={() => setMobileOpen(false)}
                     >
