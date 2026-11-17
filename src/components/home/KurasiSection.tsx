@@ -1,8 +1,11 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
-import { BadgeCheck, Database, GraduationCap, ShieldCheck } from "lucide-react";
+import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
+import { ArrowRight, BadgeCheck, Database, GraduationCap, ShieldCheck } from "lucide-react";
+import DaftarHasilKurasi from "@/components/kurasi/DaftarHasilKurasi";
+import type { HasilKurasi } from "@/lib/kurasiDashboard";
 
 const BENEFITS = [
   { icon: BadgeCheck,     key: "b1", color: "#66449b", bg: "#66449b18", light: "#f3eeff" },
@@ -11,8 +14,11 @@ const BENEFITS = [
   { icon: ShieldCheck,    key: "b4", color: "#66449b", bg: "#66449b18", light: "#f3eeff" },
 ] as const;
 
-export default function KurasiSection() {
+export default function KurasiSection({ hasil = [] }: { hasil?: HasilKurasi[] }) {
   const t = useTranslations("kurasi");
+  const locale = useLocale();
+  /* Beranda: edisi berbintang terbaru (maks. 6); daftar lengkap di /kurasi. */
+  const terbaru = hasil.slice(0, 6);
 
   return (
     <section className="bg-white py-16 md:py-24 px-6 overflow-hidden">
@@ -107,6 +113,23 @@ export default function KurasiSection() {
             </motion.div>
           ))}
         </div>
+
+        {/* Edisi yang sudah selesai dikurasi dan berbintang — dari dashboard (2026-11-17). */}
+        {terbaru.length > 0 && (
+          <div className="mb-10">
+            <h3 className="mb-6 text-center text-xl md:text-2xl font-extrabold text-gray-900">{t("hasil_judul")}</h3>
+            <DaftarHasilKurasi hasil={terbaru} />
+            <div className="mt-8 flex justify-center">
+              <Link
+                href={`/${locale}/kurasi`}
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-bold text-white shadow-md transition hover:opacity-90"
+              >
+                {t("hasil_lihat_semua", { n: hasil.length })}
+                <ArrowRight size={16} />
+              </Link>
+            </div>
+          </div>
+        )}
 
         {/* Source attribution */}
         <motion.p

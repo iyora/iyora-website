@@ -131,6 +131,14 @@ export default function Footer() {
               </li>
               <li>
                 <Link
+                  href={href("/kurasi")}
+                  className="text-sm text-white/50 hover:text-teal transition-colors"
+                >
+                  {t("kurasi_label")}
+                </Link>
+              </li>
+              <li>
+                <Link
                   href={href("/sk")}
                   className="text-sm text-white/50 hover:text-teal transition-colors"
                 >

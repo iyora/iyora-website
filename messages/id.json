@@ -94,7 +94,25 @@
     "b3_desc": "Sertifikat olimpiade terkurasi sangat berharga untuk seleksi masuk SMA unggulan dan perguruan tinggi negeri terbaik Indonesia.",
     "b4_title": "Terverifikasi Kemendikdasmen",
     "b4_desc": "Diverifikasi langsung oleh tim kurator dari Kementerian Pendidikan, menjamin standar kualitas dan integritas kompetisi.",
-    "source": "Sumber informasi resmi:"
+    "source": "Sumber informasi resmi:",
+    "hasil_judul": "Edisi Terkurasi Puspresnas",
+    "hasil_lihat_semua": "Lihat semua hasil kurasi ({n})",
+    "hasil_saring": "Saring ajang",
+    "hasil_semua": "Semua ajang",
+    "hasil_edisi": "Edisi {tahun}",
+    "hasil_jumlah": "{n} ajang",
+    "hasil_predikat": "Predikat",
+    "hasil_bintang": "Bintang {n}",
+    "hasil_skor": "Skor",
+    "hasil_selesai": "Selesai dikurasi {tgl}",
+    "hasil_dokumen": "Dokumen kurasi",
+    "hasil_situs": "Situs ajang",
+    "halaman_judul": "Hasil Kurasi Puspresnas",
+    "halaman_sub": "Edisi olimpiade IYORA yang telah selesai dikurasi Puspresnas Kemendikdasmen RI dan memperoleh predikat bintang. Data diperbarui otomatis dari dashboard.",
+    "halaman_kosong": "Data hasil kurasi belum dapat dimuat. Silakan coba beberapa saat lagi.",
+    "stat_edisi": "Edisi berbintang",
+    "stat_ajang": "Ajang",
+    "stat_tertinggi": "Predikat tertinggi"
   },
   "cta_section": {
     "title": "Siap Bersaing di Level Berikutnya?",
@@ -114,7 +132,8 @@
     "newsletter_label": "Newsletter",
     "follow": "Ikuti Kami",
     "copyright": "© 2025 IYORA — Indonesian Youth Outstanding Recognition Association",
-    "born": "Lahir dari IYSA"
+    "born": "Lahir dari IYSA",
+    "kurasi_label": "Hasil Kurasi"
   },
   "about": {
     "hero_title": "Tentang IYORA",

@@ -94,7 +94,25 @@
     "b3_desc": "Accredited olympiad certificates are highly valuable for admission to top high schools and state universities in Indonesia.",
     "b4_title": "Verified by the Ministry of Education",
     "b4_desc": "Directly verified by a team of curators from the Ministry of Education, ensuring the competition meets the highest standards of quality and integrity.",
-    "source": "Official source:"
+    "source": "Official source:",
+    "hasil_judul": "Puspresnas-Curated Editions",
+    "hasil_lihat_semua": "View all curation results ({n})",
+    "hasil_saring": "Filter competitions",
+    "hasil_semua": "All competitions",
+    "hasil_edisi": "{tahun} edition",
+    "hasil_jumlah": "{n} competitions",
+    "hasil_predikat": "Rating",
+    "hasil_bintang": "{n}-star",
+    "hasil_skor": "Score",
+    "hasil_selesai": "Curation completed {tgl}",
+    "hasil_dokumen": "Curation documents",
+    "hasil_situs": "Competition site",
+    "halaman_judul": "Puspresnas Curation Results",
+    "halaman_sub": "IYORA olympiad editions that have completed curation by Puspresnas (Indonesian Ministry of Primary and Secondary Education) and received a star rating. Updated automatically from the dashboard.",
+    "halaman_kosong": "Curation results could not be loaded. Please try again shortly.",
+    "stat_edisi": "Star-rated editions",
+    "stat_ajang": "Competitions",
+    "stat_tertinggi": "Highest rating"
   },
   "cta_section": {
     "title": "Ready to Compete at the Next Level?",
@@ -114,7 +132,8 @@
     "newsletter_label": "Newsletter",
     "follow": "Follow Us",
     "copyright": "© 2025 IYORA — Indonesian Youth Outstanding Recognition Association",
-    "born": "Born from IYSA"
+    "born": "Born from IYSA",
+    "kurasi_label": "Curation Results"
   },
   "about": {
     "hero_title": "About IYORA",

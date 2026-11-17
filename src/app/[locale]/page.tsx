@@ -9,6 +9,7 @@ import KurasiSection from "@/components/home/KurasiSection";
 import CTASection from "@/components/home/CTASection";
 import HomePreloader from "@/components/home/HomePreloader";
 import { fetchCompetitionsData, fetchAllNews, fetchSiteStats } from "@/lib/supabase";
+import { ambilHasilKurasi } from "@/lib/kurasiDashboard";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +28,7 @@ export default async function HomePage({
   const competitions = await fetchCompetitionsData();
   const statistik = await fetchSiteStats();
   const { news, announcements, pressRelease, gallery } = await fetchAllNews(locale);
+  const hasilKurasi = await ambilHasilKurasi();
 
   return (
     <>
@@ -37,7 +39,7 @@ export default async function HomePage({
       <CompetitionsSection competitions={competitions} />
       <HomeNewsSection news={news} announcements={announcements} pressRelease={pressRelease} gallery={gallery} />
       <WhyIYORA />
-      <KurasiSection />
+      <KurasiSection hasil={hasilKurasi} />
       <CTASection />
     </>
   );
