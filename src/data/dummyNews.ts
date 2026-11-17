@@ -270,7 +270,7 @@ We look forward to welcoming you again at the IYSA Olympiads next year, with gre
    },*/
 
   // ── 4. GALLERY (Galeri) ──
-  {
+  /*{
     id: "gallery-round1-2026",
     slug: "dokumentasi-round1-nso-2026",
     title: "Dokumentasi Acara Round 1: NSO 2026",
@@ -321,7 +321,7 @@ We look forward to welcoming you again at the IYSA Olympiads next year, with gre
     link: "https://drive.google.com/drive/folders/1pRn-Qh6aQIqVQvA-a7fGqR_yGnWFbOex?usp=sharing",
     linkLabel: "FULL DOKUMENTASI ROUND 2",
     linkLabel_en: "Full Documentation of Round 2",
-  },
+  },*/
   {
     id: "gallery-round2-2026",
     slug: "dokumentasi-round2-nygo-iygo-nyeo-iyeo-2026",
