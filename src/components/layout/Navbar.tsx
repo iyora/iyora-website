@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
-import { Menu, X, ChevronDown, ArrowRight, Info, Users, Mail, Globe, Award, Calendar, LayoutDashboard } from "lucide-react";
+import { Menu, X, ChevronDown, ArrowRight, Info, Users, Mail, Calendar, LayoutDashboard, Trophy } from "lucide-react";
 import clsx from "clsx";
 import type { NewsPreviewData, CompetitionData } from "@/lib/supabase";
 import { getValidEventRegistrationUrl } from "@/lib/supabase";
@@ -252,42 +252,6 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
             >
               <div className="bg-white rounded-2xl shadow-xl shadow-black/10 border border-gray-100 p-2 w-72 flex flex-col gap-1">
                 <Link
-                  href={href("/competitions?level=national")}
-                  onClick={() => setDropdownOpen(false)}
-                  className="flex items-start gap-3 p-2.5 rounded-xl transition-all duration-150 hover:bg-gray-50 group"
-                >
-                  <div className="w-8 h-8 rounded-lg bg-teal-50 text-teal flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-teal group-hover:text-white transition-colors">
-                    <Award size={16} />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-sm font-semibold text-gray-800 group-hover:text-primary transition-colors">
-                      {t("competitions_national")}
-                    </div>
-                    <p className="text-[11px] text-gray-400 leading-tight mt-0.5">
-                      {t("competitions_national_desc")}
-                    </p>
-                  </div>
-                </Link>
-
-                <Link
-                  href={href("/competitions?level=international")}
-                  onClick={() => setDropdownOpen(false)}
-                  className="flex items-start gap-3 p-2.5 rounded-xl transition-all duration-150 hover:bg-gray-50 group"
-                >
-                  <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-primary group-hover:text-white transition-colors">
-                    <Globe size={16} />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-sm font-semibold text-gray-800 group-hover:text-primary transition-colors">
-                      {t("competitions_international")}
-                    </div>
-                    <p className="text-[11px] text-gray-400 leading-tight mt-0.5">
-                      {t("competitions_international_desc")}
-                    </p>
-                  </div>
-                </Link>
-
-                <Link
                   href={href("/competitions/timeline")}
                   onClick={() => setDropdownOpen(false)}
                   className="flex items-start gap-3 p-2.5 rounded-xl transition-all duration-150 hover:bg-gray-50 group"
@@ -301,6 +265,25 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
                     </div>
                     <p className="text-[11px] text-gray-400 leading-tight mt-0.5">
                       {t("competitions_timeline_desc")}
+                    </p>
+                  </div>
+                </Link>
+
+                <Link
+                  href={href("/winners")}
+                  onClick={() => setDropdownOpen(false)}
+                  className="flex items-start gap-3 p-2.5 rounded-xl transition-all duration-150 hover:bg-gray-50 group"
+                >
+                  <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
+                    <Trophy size={16} />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-sm font-semibold text-gray-800 group-hover:text-primary transition-colors flex items-center gap-1.5">
+                      <span>{t("winners")}</span>
+                      <span className="text-[10px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.5 rounded-full">🏆 New</span>
+                    </div>
+                    <p className="text-[11px] text-gray-400 leading-tight mt-0.5">
+                      {t("competitions_winners_desc")}
                     </p>
                   </div>
                 </Link>
@@ -321,10 +304,6 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
 
           <Link href={href("/calendar")} className={navLinkClass}>
             {t("calendar")}
-          </Link>
-
-          <Link href={href("/winners")} className={navLinkClass}>
-            {t("winners")}
           </Link>
 
           <Link href={href("/gallery/photo")} className={navLinkClass}>
@@ -473,32 +452,6 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
             {mobileCompetitionsOpen && (
               <div className="pl-4 pb-2 flex flex-col gap-0.5">
                 <Link
-                  href={href("/competitions?level=national")}
-                  className="py-2.5 text-sm text-gray-600 hover:text-primary transition-colors flex items-center gap-2.5"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  <div className="w-7 h-7 rounded-lg bg-teal-50 text-teal flex items-center justify-center flex-shrink-0">
-                    <Award size={14} />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="font-medium text-gray-800">{t("competitions_national")}</span>
-                    <span className="text-[11px] text-gray-400">{t("competitions_national_desc")}</span>
-                  </div>
-                </Link>
-                <Link
-                  href={href("/competitions?level=international")}
-                  className="py-2.5 text-sm text-gray-600 hover:text-primary transition-colors flex items-center gap-2.5"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  <div className="w-7 h-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
-                    <Globe size={14} />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="font-medium text-gray-800">{t("competitions_international")}</span>
-                    <span className="text-[11px] text-gray-400">{t("competitions_international_desc")}</span>
-                  </div>
-                </Link>
-                <Link
                   href={href("/competitions/timeline")}
                   className="py-2.5 text-sm text-gray-600 hover:text-primary transition-colors flex items-center gap-2.5"
                   onClick={() => setMobileOpen(false)}
@@ -509,6 +462,22 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
                   <div className="flex flex-col">
                     <span className="font-medium text-gray-800">{t("competitions_timeline")}</span>
                     <span className="text-[11px] text-gray-400">{t("competitions_timeline_desc")}</span>
+                  </div>
+                </Link>
+                <Link
+                  href={href("/winners")}
+                  className="py-2.5 text-sm text-gray-600 hover:text-primary transition-colors flex items-center gap-2.5"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0">
+                    <Trophy size={14} />
+                  </div>
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-medium text-gray-800">{t("winners")}</span>
+                      <span className="text-[10px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.2 rounded-full">🏆 New</span>
+                    </div>
+                    <span className="text-[11px] text-gray-400">{t("competitions_winners_desc")}</span>
                   </div>
                 </Link>
                 <Link
@@ -526,14 +495,6 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
               onClick={() => setMobileOpen(false)}
             >
               {t("calendar")}
-            </Link>
-            <Link
-              href={href("/winners")}
-              className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors flex items-center justify-between"
-              onClick={() => setMobileOpen(false)}
-            >
-              <span>{t("winners")}</span>
-              <span className="text-[11px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full">🏆 New</span>
             </Link>
             <Link
               href={href("/gallery/photo")}
