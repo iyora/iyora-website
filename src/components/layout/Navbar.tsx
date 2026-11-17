@@ -223,7 +223,7 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
   }, []);
 
   const navLinkClass = clsx(
-    "text-sm font-medium transition-colors duration-200 hover:opacity-80",
+    "whitespace-nowrap text-[13px] 2xl:text-sm font-medium transition-colors duration-200 hover:opacity-80",
     scrolled || mobileOpen ? "text-gray-800" : "text-white"
   );
 
@@ -253,7 +253,7 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
           />
         </Link>
 
-        <div className="hidden md:flex items-center gap-6">
+        <div className="ml-6 hidden xl:flex items-center gap-[1.1rem] 2xl:gap-6">
           <Link href={href("/")} className={navLinkClass}>
             {t("home")}
           </Link>
@@ -357,6 +357,10 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
               </div>
             </div>
           </div>
+
+          <Link href={href("/calendar")} className={navLinkClass}>
+            {t("calendar")}
+          </Link>
 
           <Link href={href("/winners")} className={navLinkClass}>
             {t("winners")}
@@ -586,7 +590,7 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
 
         {/* Mobile hamburger */}
         <button
-          className={clsx("md:hidden p-2 rounded-lg", navLinkClass)}
+          className={clsx("xl:hidden p-2 rounded-lg", navLinkClass)}
           onClick={() => setMobileOpen((v) => !v)}
           aria-label="Toggle menu"
         >
@@ -596,7 +600,7 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
 
       {/* Mobile overlay */}
       {mobileOpen && (
-        <div className="md:hidden bg-white border-t border-gray-100 shadow-lg">
+        <div className="xl:hidden bg-white border-t border-gray-100 shadow-lg">
           <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-1">
             <Link
               href={href("/")}
@@ -669,6 +673,13 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
                 </Link>
               </div>
             )}
+            <Link
+              href={href("/calendar")}
+              className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors"
+              onClick={() => setMobileOpen(false)}
+            >
+              {t("calendar")}
+            </Link>
             <Link
               href={href("/winners")}
               className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors flex items-center justify-between"
