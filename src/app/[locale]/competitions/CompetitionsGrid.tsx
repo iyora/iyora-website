@@ -47,7 +47,7 @@ const LEVEL_BADGE: Record<string, string> = {
 };
 
 type LevelFilterKey = "all" | "national" | "international";
-type StatusFilterKey = "all" | "open" | "coming_soon" | "closed";
+type StatusFilterKey = "open" | "coming_soon" | "closed";
 
 interface Props {
   competitions: CompetitionData[];
@@ -62,7 +62,7 @@ export default function CompetitionsGrid({ competitions }: Props) {
   const validLevels: LevelFilterKey[] = ["all", "national", "international"];
   const initialLevel = levelParam && validLevels.includes(levelParam) ? levelParam : "all";
   const [activeLevel, setActiveLevel] = useState<LevelFilterKey>(initialLevel);
-  const [activeStatus, setActiveStatus] = useState<StatusFilterKey>("all");
+  const [activeStatus, setActiveStatus] = useState<StatusFilterKey>("open");
 
   useEffect(() => {
     if (levelParam && validLevels.includes(levelParam)) {
@@ -81,7 +81,6 @@ export default function CompetitionsGrid({ competitions }: Props) {
   // Hitung jumlah item untuk tiap status
   const counts = useMemo(() => {
     return {
-      all: competitions.length,
       open: competitions.filter((c) => c.registrationStatus === "open").length,
       coming_soon: competitions.filter((c) => c.registrationStatus === "coming_soon").length,
       closed: competitions.filter((c) => c.registrationStatus === "closed").length,
@@ -89,7 +88,6 @@ export default function CompetitionsGrid({ competitions }: Props) {
   }, [competitions]);
 
   const statusFilters: { key: StatusFilterKey; label: string; count: number }[] = [
-    { key: "all", label: locale === "id" ? "Semua Status" : "All Status", count: counts.all },
     { key: "open", label: locale === "id" ? "Pendaftaran Dibuka" : "Open Register", count: counts.open },
     { key: "coming_soon", label: locale === "id" ? "Segera Dibuka" : "Coming Soon", count: counts.coming_soon },
     { key: "closed", label: locale === "id" ? "Ditutup" : "Closed", count: counts.closed },
@@ -102,7 +100,7 @@ export default function CompetitionsGrid({ competitions }: Props) {
         (activeLevel === "international"
           ? c.level === "international" || c.level === "world"
           : c.level === activeLevel);
-      const matchStatus = activeStatus === "all" || c.registrationStatus === activeStatus;
+      const matchStatus = c.registrationStatus === activeStatus;
       return matchLevel && matchStatus;
     });
   }, [competitions, activeLevel, activeStatus]);
@@ -171,7 +169,7 @@ export default function CompetitionsGrid({ competitions }: Props) {
           <button
             onClick={() => {
               setActiveLevel("all");
-              setActiveStatus("all");
+              setActiveStatus("open");
             }}
             className="text-xs font-bold text-primary hover:underline cursor-pointer"
           >

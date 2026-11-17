@@ -21,6 +21,8 @@
     "competitions_international": "International",
     "competitions_national_desc": "National-level science olympiads in Indonesia",
     "competitions_international_desc": "International and global stage science olympiads",
+    "competitions_timeline": "Event Timeline",
+    "competitions_timeline_desc": "Registration & competition schedule timeline",
     "all_competitions": "View All Competitions"
   },
   "hero": {

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
-import { Menu, X, ChevronDown, Newspaper, Megaphone, FileText, Camera, Video, ArrowRight, Info, Users, Mail, Globe, Award, LayoutDashboard } from "lucide-react";
+import { Menu, X, ChevronDown, Newspaper, Megaphone, FileText, Camera, Video, ArrowRight, Info, Users, Mail, Globe, Award, Calendar, LayoutDashboard } from "lucide-react";
 import clsx from "clsx";
 import type { NewsPreviewData, CompetitionData } from "@/lib/supabase";
 import { getValidEventRegistrationUrl } from "@/lib/supabase";
@@ -325,6 +325,24 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
                   </div>
                 </Link>
 
+                <Link
+                  href={href("/competitions/timeline")}
+                  onClick={() => setDropdownOpen(false)}
+                  className="flex items-start gap-3 p-2.5 rounded-xl transition-all duration-150 hover:bg-gray-50 group"
+                >
+                  <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-amber-500 group-hover:text-white transition-colors">
+                    <Calendar size={16} />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-sm font-semibold text-gray-800 group-hover:text-primary transition-colors">
+                      {t("competitions_timeline")}
+                    </div>
+                    <p className="text-[11px] text-gray-400 leading-tight mt-0.5">
+                      {t("competitions_timeline_desc")}
+                    </p>
+                  </div>
+                </Link>
+
                 <div className="pt-2 mt-1 border-t border-gray-100">
                   <Link
                     href={href("/competitions")}
@@ -622,6 +640,19 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
                   <div className="flex flex-col">
                     <span className="font-medium text-gray-800">{t("competitions_international")}</span>
                     <span className="text-[11px] text-gray-400">{t("competitions_international_desc")}</span>
+                  </div>
+                </Link>
+                <Link
+                  href={href("/competitions/timeline")}
+                  className="py-2.5 text-sm text-gray-600 hover:text-primary transition-colors flex items-center gap-2.5"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0">
+                    <Calendar size={14} />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-medium text-gray-800">{t("competitions_timeline")}</span>
+                    <span className="text-[11px] text-gray-400">{t("competitions_timeline_desc")}</span>
                   </div>
                 </Link>
                 <Link

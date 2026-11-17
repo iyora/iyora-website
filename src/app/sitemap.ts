@@ -5,6 +5,7 @@ const LOCALES = ["id", "en"];
 const PAGES = [
   { path: "",              priority: 1.0,  changeFreq: "weekly"  as const },
   { path: "/competitions", priority: 0.9,  changeFreq: "weekly"  as const },
+  { path: "/competitions/timeline", priority: 0.85, changeFreq: "weekly" as const },
   { path: "/winners",      priority: 0.9,  changeFreq: "weekly"  as const },
   { path: "/team",         priority: 0.8,  changeFreq: "monthly" as const },
   { path: "/about",        priority: 0.8,  changeFreq: "monthly" as const },

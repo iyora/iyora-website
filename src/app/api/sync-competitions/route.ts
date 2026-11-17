@@ -10,6 +10,7 @@ export async function POST(req: NextRequest) {
     revalidatePath("/", "layout");
     revalidatePath("/[locale]", "layout");
     revalidatePath("/[locale]/competitions", "page");
+    revalidatePath("/[locale]/competitions/timeline", "page");
 
     // Pre-fetch fresh data from dashboard
     const competitions = await fetchCompetitionsData();
