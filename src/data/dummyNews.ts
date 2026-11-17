@@ -322,7 +322,7 @@ We look forward to welcoming you again at the IYSA Olympiads next year, with gre
     linkLabel: "FULL DOKUMENTASI ROUND 2",
     linkLabel_en: "Full Documentation of Round 2",
   },*/
-  {
+  /*{
     id: "gallery-round2-2026",
     slug: "dokumentasi-round2-nygo-iygo-nyeo-iyeo-2026",
     title: "Dokumentasi Acara Round 2: NYGO, IYGO, NYEO & IYEO 2026",
@@ -372,7 +372,7 @@ We look forward to welcoming you again at the IYSA Olympiads next year, with gre
     link: "https://drive.google.com/drive/folders/139SZyKKk2xDc6-Kx5FN3zFTsrIhWaLp0?usp=sharing",
     linkLabel: "FULL DOKUMENTASI ROUND 1",
     linkLabel_en: "Full Documentation of Round 1",
-  },
+  },*/
   {
     id: "gallery-1",
     slug: "after-event-biology-physics-olympiad-2026",
