@@ -16,10 +16,6 @@ import {
   getDummyNewsByCategory,
   getDummyNewsBySlug,
 } from "@/data/dummyNews";
-import {
-  getDummyNewsletters,
-  getDummyNewsletterBySlug,
-} from "@/data/dummyNewsletter";
 
 export type RegistrationStatus = "open" | "coming_soon" | "closed";
 
@@ -1746,180 +1742,74 @@ function mapRawToNewsletter(row: any, isEn: boolean = false): NewsletterItem {
   };
 }
 
+/**
+ * Newsletter IYORA (2026-11-17): terbitan asli saja, tanpa data contoh.
+ * Sumber digabung:
+ *  1. Dashboard IYSA `GET /api/public/v1/_newsletter?lembaga=IYORA` — hanya baris
+ *     yang lembaganya IYORA (filter API ikut memuat baris tanpa lembaga = IYSA).
+ *  2. Tabel `newsletters` Supabase IYORA (sumber situs/dashboard IYORA lama),
+ *     kolom tanggalnya `publish_date`.
+ */
 export async function fetchNewslettersData(locale?: string): Promise<NewsletterItem[]> {
   const isEn = locale === "en";
-  const dashboardUrl =
-    process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.iyora.or.id";
+  const hasil: NewsletterItem[] = [];
 
-  // 1. Ambil dari Endpoint Public API Dashboard (https://dashboard.iyora.or.id/api/public/newsletters)
+  const apiV1 = (process.env.IYSA_PUBLIC_API || "https://api-dashboard.iysa.or.id/api/public/v1").replace(/\/$/, "");
   try {
-    const endpoints = [
-      `${dashboardUrl}/api/public/newsletters`,
-      `${dashboardUrl}/api/public/newsletter`,
-    ];
-
-    for (const url of endpoints) {
-      try {
-        const res = await fetch(url, {
-          cache: "no-store",
-          signal: AbortSignal.timeout(6000),
-        });
-        if (res.ok) {
-          const json = await res.json();
-          const items = Array.isArray(json)
-            ? json
-            : Array.isArray(json.data)
-              ? json.data
-              : Array.isArray(json.newsletters)
-                ? json.newsletters
-                : Array.isArray(json.results)
-                  ? json.results
-                  : null;
-
-          if (items !== null) {
-            return items.map((row: any) => mapRawToNewsletter(row, isEn));
-          }
-        }
-      } catch {
-        // Coba endpoint alternatif
+    const res = await fetch(`${apiV1}/_newsletter?lembaga=IYORA`, { next: { revalidate: 900 }, signal: AbortSignal.timeout(8000) });
+    if (res.ok) {
+      const json = await res.json();
+      const items = (json?.data?.newsletter ?? []) as any[];
+      for (const n of items) {
+        if (String(n.lembaga ?? "").toUpperCase() !== "IYORA" || !n.pdf) continue;
+        hasil.push(mapRawToNewsletter({
+          id: n.id,
+          slug: n.id,
+          title: n.nama,
+          edition: n.nomor || n.nama,
+          cover_image: n.sampul || undefined,
+          file_url: n.pdf,
+          published_at: n.tanggal_terbit || n.periode_mulai || undefined,
+          pages: n.halaman,
+        }, isEn));
       }
     }
   } catch (err) {
     console.warn("[Dashboard API] Failed fetching newsletters:", err);
   }
 
-  // 2. Fallback: Ambil langsung dari Supabase Client (Tabel newsletters atau news dengan category newsletter)
   try {
     const supabase = createSupabase();
-
-    // Cek tabel 'newsletters'
     const { data, error } = await supabase
       .from("newsletters")
       .select("*")
       .eq("is_published", true)
-      .order("published_at", { ascending: false });
-
+      .order("publish_date", { ascending: false });
     if (!error && Array.isArray(data)) {
-      return data.map((row: any) => mapRawToNewsletter(row, isEn));
-    }
-
-    // Cek tabel 'news' dengan category 'newsletter'
-    try {
-      const { data: newsCategoryData, error: newsErr } = await supabase
-        .from("news")
-        .select("*")
-        .eq("category", "newsletter")
-        .eq("is_published", true)
-        .order("published_at", { ascending: false });
-
-      if (!newsErr && Array.isArray(newsCategoryData)) {
-        return newsCategoryData.map((row: any) => mapRawToNewsletter(row, isEn));
+      for (const row of data) {
+        hasil.push(mapRawToNewsletter({ ...row, published_at: row.publish_date || row.created_at, views: row.views_count }, isEn));
       }
-    } catch {
-      // Abaikan jika tidak ada category newsletter di tabel news
+    } else if (error) {
+      console.warn("[Supabase] Failed fetching newsletters:", error.message);
     }
-
-    const dummyItems = getDummyNewsletters().map((item) => ({
-      id: item.id,
-      title: isEn && item.title_en ? item.title_en : item.title,
-      slug: item.slug,
-      edition: isEn && item.edition_en ? item.edition_en : item.edition,
-      description: isEn && item.description_en ? item.description_en : item.description,
-      cover_image: item.coverImage,
-      file_url: item.fileUrl,
-      published_at: item.publishedAt,
-      created_at: item.publishedAt,
-      author: item.author || "Redaksi IYORA Bulletin",
-      pages: item.pages || null,
-      featured: item.featured || false,
-      tags: item.tags || [],
-      read_time: item.readTime || "5 min read",
-      views: item.views || 1200,
-    }));
-
-    return dummyItems;
-  } catch {
-    return getDummyNewsletters().map((item) => ({
-      id: item.id,
-      title: isEn && item.title_en ? item.title_en : item.title,
-      slug: item.slug,
-      edition: isEn && item.edition_en ? item.edition_en : item.edition,
-      description: isEn && item.description_en ? item.description_en : item.description,
-      cover_image: item.coverImage,
-      file_url: item.fileUrl,
-      published_at: item.publishedAt,
-      created_at: item.publishedAt,
-      author: item.author || "Redaksi IYORA Bulletin",
-      pages: item.pages || null,
-      featured: item.featured || false,
-      tags: item.tags || [],
-      read_time: item.readTime || "5 min read",
-      views: item.views || 1200,
-    }));
+  } catch (err) {
+    console.warn("[Supabase] Failed fetching newsletters:", err);
   }
+
+  const terlihat = new Set<string>();
+  return hasil
+    .filter((n) => {
+      const k = n.title.trim().toLowerCase();
+      if (!n.file_url || n.file_url === "#" || terlihat.has(k)) return false;
+      terlihat.add(k);
+      return true;
+    })
+    .sort((a, b) => String(b.published_at).localeCompare(String(a.published_at)));
 }
 
 export async function fetchNewsletterBySlug(slug: string, locale?: string): Promise<NewsletterItem | null> {
-  const isEn = locale === "en";
-  const dashboardUrl =
-    process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.iyora.or.id";
-
-  // 1. Coba ambil detail dari Dashboard API
-  try {
-    const detailEndpoints = [
-      `${dashboardUrl}/api/public/newsletters/${encodeURIComponent(slug)}`,
-      `${dashboardUrl}/api/public/newsletter/${encodeURIComponent(slug)}`,
-    ];
-
-    for (const url of detailEndpoints) {
-      try {
-        const res = await fetch(url, {
-          cache: "no-store",
-          signal: AbortSignal.timeout(4000),
-        });
-        if (res.ok) {
-          const json = await res.json();
-          const item = json.data || json.newsletter || json;
-          if (item && (item.id || item.slug || item.title)) {
-            return mapRawToNewsletter(item, isEn);
-          }
-        }
-      } catch {
-        // Coba endpoint selanjutnya
-      }
-    }
-  } catch {
-    // Lanjut ke fallback
-  }
-
-  // 2. Cari dari list data
   const all = await fetchNewslettersData(locale);
-  const found = all.find((n) => n.slug === slug || n.id === slug);
-  if (found) return found;
-
-  // 3. Fallback dummy
-  const dummy = getDummyNewsletterBySlug(slug);
-  if (dummy) {
-    return {
-      id: dummy.id,
-      title: isEn && dummy.title_en ? dummy.title_en : dummy.title,
-      slug: dummy.slug,
-      edition: isEn && dummy.edition_en ? dummy.edition_en : dummy.edition,
-      description: isEn && dummy.description_en ? dummy.description_en : dummy.description,
-      cover_image: dummy.coverImage,
-      file_url: dummy.fileUrl,
-      published_at: dummy.publishedAt,
-      created_at: dummy.publishedAt,
-      author: dummy.author || "Redaksi IYORA Bulletin",
-      pages: dummy.pages || null,
-      featured: dummy.featured || false,
-      tags: dummy.tags || [],
-      read_time: dummy.readTime || "5 min read",
-      views: dummy.views || 1200,
-    };
-  }
-
-  return null;
+  return all.find((n) => n.slug === slug || n.id === slug) ?? null;
 }
 
 
