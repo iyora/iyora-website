@@ -10,11 +10,11 @@ import type { HasilKurasi } from "@/lib/kurasiDashboard";
  * (2026-11-17). Data dari API dashboard (`ambilHasilKurasi`), dikelompokkan per
  * tahun. `penyaring` menampilkan pilihan ajang (halaman /kurasi).
  */
-export function Bintang({ n, ukuran = 14 }: { n: number; ukuran?: number }) {
+export function Bintang({ n, ukuran = 20 }: { n: number; ukuran?: number }) {
   return (
-    <span className="inline-flex items-center gap-0.5" aria-label={`${n}`}>
+    <span className="inline-flex items-center gap-1" aria-label={`${n}`}>
       {Array.from({ length: n }).map((_, i) => (
-        <Star key={i} size={ukuran} className="fill-amber-400 text-amber-400" />
+        <Star key={i} size={ukuran} className="fill-amber-400 text-amber-400 drop-shadow-2xs" />
       ))}
     </span>
   );
@@ -68,24 +68,18 @@ export default function DaftarHasilKurasi({ hasil, penyaring = false }: { hasil:
             <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {daftar.map((h) => (
                 <li key={`${h.akronim}-${h.tahun}`} className="flex flex-col rounded-2xl border border-purple-100 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className="text-xl font-extrabold text-gray-900">{h.akronim} {h.tahun}</p>
-                      <p className="mt-0.5 text-[13px] leading-snug text-gray-500">{h.nama}</p>
-                    </div>
-                    <Bintang n={h.bintang} />
+                  <div className="min-w-0">
+                    <p className="text-xl font-extrabold text-gray-900">{h.akronim} {h.tahun}</p>
+                    <p className="mt-0.5 text-[13px] leading-snug text-gray-500">{h.nama}</p>
                   </div>
-                  <dl className="mt-4 grid grid-cols-2 gap-3 rounded-xl bg-purple-50/60 p-3 text-[13px]">
+                  <dl className="mt-4 grid grid-cols-2 items-center gap-3 rounded-xl bg-purple-50/60 p-3.5 text-[13px]">
                     <div>
                       <dt className="text-[11px] font-semibold uppercase tracking-wide text-purple-700">{t("hasil_predikat")}</dt>
                       <dd className="mt-0.5 font-bold text-gray-900">{t("hasil_bintang", { n: h.bintang })}</dd>
                     </div>
-                    {h.skor != null && (
-                      <div>
-                        <dt className="text-[11px] font-semibold uppercase tracking-wide text-purple-700">{t("hasil_skor")}</dt>
-                        <dd className="mt-0.5 font-bold tabular-nums text-gray-900">{skor(h.skor)}</dd>
-                      </div>
-                    )}
+                    <div className="flex items-center">
+                      <Bintang n={h.bintang} ukuran={22} />
+                    </div>
                   </dl>
                   {h.selesai && <p className="mt-3 text-xs text-gray-400">{t("hasil_selesai", { tgl: tgl(h.selesai) })}</p>}
                   {(h.dokumen || h.situs) && (

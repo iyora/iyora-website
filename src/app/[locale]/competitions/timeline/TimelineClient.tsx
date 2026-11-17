@@ -542,52 +542,125 @@ export default function TimelineClient({ competitions }: Props) {
                   </div>
 
                   {/* Detailed Event Timeline Milestones from Dashboard */}
-                  {comp.timeline && comp.timeline.length > 0 && (
-                    <div className="mt-5 pt-4 border-t border-primary/10">
-                      <div className="text-xs font-extrabold uppercase tracking-wider text-primary mb-3 flex items-center gap-1.5">
-                        <Clock size={13} className="text-teal-dark" />
-                        <span>
-                          {isId ? "Rangkaian Jadwal Kegiatan:" : "Event Schedule Milestones:"}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-                        {comp.timeline.map((m, idx) => (
-                          <div
-                            key={`${m.milestone}-${m.tanggal}-${idx}`}
-                            className="p-3 rounded-xl bg-gradient-to-br from-primary/[0.04] to-teal/[0.06] border border-primary/12 flex flex-col justify-between gap-1.5"
-                          >
-                            <div className="flex items-start justify-between gap-2">
-                              <span className="text-xs font-bold text-gray-900 leading-snug">
-                                {m.milestone}
+                  {comp.timeline && comp.timeline.length > 0 && (() => {
+                    const sortByDateAndTime = (
+                      a: NonNullable<typeof comp.timeline>[number],
+                      b: NonNullable<typeof comp.timeline>[number]
+                    ) =>
+                      (a.tanggal || "").localeCompare(b.tanggal || "") ||
+                      (a.jam_mulai || "").localeCompare(b.jam_mulai || "");
+
+                    const onlineItems = comp.timeline
+                      .filter((m) => (m.jalur || "").toLowerCase() === "online")
+                      .sort(sortByDateAndTime);
+                    const offlineItems = comp.timeline
+                      .filter((m) => (m.jalur || "").toLowerCase() === "offline")
+                      .sort(sortByDateAndTime);
+                    const generalItems = comp.timeline
+                      .filter((m) => {
+                        const j = (m.jalur || "").toLowerCase();
+                        return j !== "online" && j !== "offline";
+                      })
+                      .sort(sortByDateAndTime);
+
+                    const renderMilestoneCard = (
+                      m: NonNullable<typeof comp.timeline>[number],
+                      idx: number
+                    ) => {
+                      const isOfflineItem = (m.jalur || "").toLowerCase() === "offline";
+                      return (
+                        <div
+                          key={`${m.milestone}-${m.tanggal}-${m.jalur || ""}-${idx}`}
+                          className={`p-3.5 rounded-xl border flex flex-col justify-between gap-1.5 transition-all ${
+                            isOfflineItem
+                              ? "bg-gradient-to-br from-amber-50/60 to-orange-50/40 border-accent/25"
+                              : "bg-gradient-to-br from-primary/[0.04] to-teal/[0.06] border-primary/15"
+                          }`}
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <span className="text-xs font-bold text-gray-900 leading-snug">
+                              {m.milestone}
+                            </span>
+                            {m.jalur && (
+                              <span
+                                className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase shrink-0 ${
+                                  isOfflineItem
+                                    ? "bg-accent/15 text-accent-dark border border-accent/30"
+                                    : "bg-teal/15 text-teal-dark border border-teal/30"
+                                }`}
+                              >
+                                {m.jalur}
                               </span>
-                              {m.jalur && (
-                                <span
-                                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase shrink-0 ${
-                                    m.jalur.toLowerCase() === "offline"
-                                      ? "bg-accent/15 text-accent-dark border border-accent/30"
-                                      : "bg-teal/15 text-teal-dark border border-teal/30"
-                                  }`}
-                                >
-                                  {m.jalur}
-                                </span>
-                              )}
-                            </div>
-                            <div className="text-[11px] font-semibold text-primary">
-                              📅 {formatShortDate(m.tanggal, locale)}
-                              {m.jam_mulai
-                                ? ` · ${m.jam_mulai}${m.jam_selesai ? `–${m.jam_selesai}` : ""}`
-                                : ""}
-                            </div>
-                            {m.lokasi && (
-                              <div className="text-[11px] text-gray-500 truncate" title={m.lokasi}>
-                                📍 {m.lokasi}
-                              </div>
                             )}
                           </div>
-                        ))}
+                          <div className="text-[11px] font-semibold text-primary">
+                            📅 {formatShortDate(m.tanggal, locale)}
+                            {m.jam_mulai
+                              ? ` · ${m.jam_mulai}${m.jam_selesai ? `–${m.jam_selesai}` : ""}`
+                              : ""}
+                          </div>
+                          {m.lokasi && (
+                            <div className="text-[11px] text-gray-500 truncate" title={m.lokasi}>
+                              📍 {m.lokasi}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    };
+
+                    return (
+                      <div className="mt-5 pt-4 border-t border-primary/10 space-y-4">
+                        <div className="text-xs font-extrabold uppercase tracking-wider text-primary flex items-center gap-1.5">
+                          <Clock size={13} className="text-teal-dark" />
+                          <span>
+                            {isId ? "Rangkaian Jadwal Kegiatan:" : "Event Schedule Milestones:"}
+                          </span>
+                        </div>
+
+                        {/* General Milestones (if any) */}
+                        {generalItems.length > 0 && (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                            {generalItems.map((m, idx) => renderMilestoneCard(m, idx))}
+                          </div>
+                        )}
+
+                        {/* Online Milestones (Top) */}
+                        {onlineItems.length > 0 && (
+                          <div className="space-y-2.5">
+                            <div className="flex items-center gap-2">
+                              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wide bg-teal/15 text-teal-dark border border-teal/30">
+                                💻 {isId ? "Jadwal Online (Daring)" : "Online Schedule"}
+                              </span>
+                              <div className="h-px flex-1 bg-teal/20" />
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                              {onlineItems.map((m, idx) => renderMilestoneCard(m, idx))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Divider between Online and Offline */}
+                        {onlineItems.length > 0 && offlineItems.length > 0 && (
+                          <div className="border-t border-dashed border-primary/15 my-1" />
+                        )}
+
+                        {/* Offline Milestones (Bottom) */}
+                        {offlineItems.length > 0 && (
+                          <div className="space-y-2.5">
+                            <div className="flex items-center gap-2">
+                              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wide bg-accent/15 text-accent-dark border border-accent/30">
+                                🏛️ {isId ? "Jadwal Offline (Luring)" : "Offline Schedule"}
+                              </span>
+                              <div className="h-px flex-1 bg-accent/25" />
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                              {offlineItems.map((m, idx) => renderMilestoneCard(m, idx))}
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  )}
+                    );
+                  })()}
 
                   {/* Action Buttons Footer */}
                   {(isOpen || comp.guidebookUrl || webUrl) && (
