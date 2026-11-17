@@ -1,337 +1,266 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
-import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  X,
-  ExternalLink,
-  Sparkles,
-  ChevronLeft,
-  ChevronRight,
-  Layers,
-  Flame,
-  Award,
-} from "lucide-react";
-import { DUMMY_EVENT_POPUPS, type EventPopupData, type EventPopupLink } from "@/data/dummyEventPopup";
-import type { CompetitionData } from "@/lib/supabase";
+import { X, CalendarDays, Clock, MapPin, CheckCircle2, ArrowRight, Globe, BookOpen, Flame } from "lucide-react";
+import type { AcaraPopup, TitikTimeline } from "@/lib/popupTimeline";
 
-const BUTTON_VARIANTS: Record<string, string> = {
-  primary: "bg-primary hover:bg-primary/90 text-white shadow-md shadow-primary/20",
-  teal: "bg-teal hover:bg-teal-600 text-white shadow-md shadow-teal-500/20",
-  indigo: "bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-500/20",
-  rose: "bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-500/20",
-  instagram: "bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:opacity-95 text-white shadow-md shadow-pink-500/20",
-  secondary: "bg-gray-100 hover:bg-gray-200 text-gray-800 border border-gray-200",
-};
+/**
+ * Popup event beranda (2026-11-17): TIMELINE olimpiade yang pendaftarannya
+ * dibuka, dari API dashboard (`ambilAcaraPopup`). Satu tab per ajang; isi =
+ * Jadwal utama, atau timeline rinci Luring/Daring lengkap dengan jam (WIB).
+ */
 
-function formatDate(dateStr: string | null, isEn: boolean): string {
-  if (!dateStr) return "-";
-  const date = new Date(dateStr);
-  return date.toLocaleDateString(isEn ? "en-US" : "id-ID", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
+type Tampilan = "utama" | "offline" | "online";
+
+/** "EXAM SESSION ROUND 1 ONLINE" → "Exam Session Round 1 Online"; singkatan tetap. */
+function rapiJudul(s: string, akronim: string): string {
+  if (s !== s.toUpperCase()) return s;
+  const tetap = new Set([akronim.toUpperCase(), "IYORA", "IYSA", "CBT", "WIB", "SK", "TNC", "II", "III", "IV"]);
+  return s
+    .toLowerCase()
+    .split(" ")
+    .map((w) => (tetap.has(w.toUpperCase()) ? w.toUpperCase() : w.charAt(0).toUpperCase() + w.slice(1)))
+    .join(" ");
 }
 
-function getSlideShortLabel(id: string, isEn: boolean): string {
-  if (id.includes("sk-pemenang") || id.includes("sk")) return isEn ? "SK Pemenang" : "SK Pemenang";
-  if (id.includes("nso-nsmo-wso")) return isEn ? "All Upcoming" : "Semua Upcoming";
-  if (id.includes("nso-2026")) return "NSO 2026";
-  if (id.includes("nsmo-2026")) return "NSMO 2026";
-  if (id.includes("wso-2026")) return "WSO 2026";
-  if (id.includes("tiso")) return "TISO 2027";
-  if (id.includes("awarding")) return "Awarding";
-  if (id.includes("opening")) return isEn ? "Opening" : "Pembukaan";
-  return isEn ? "Event" : "Kegiatan";
+const tanggalLokal = (t: string) => new Date(`${t.slice(0, 10)}T12:00:00`);
+
+function hariIni(): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jakarta" }).format(new Date());
 }
 
-const slideVariants = {
-  enter: (direction: number) => ({
-    x: direction > 0 ? 320 : -320,
-    opacity: 0,
-  }),
-  center: {
-    zIndex: 1,
-    x: 0,
-    opacity: 1,
-  },
-  exit: (direction: number) => ({
-    zIndex: 0,
-    x: direction < 0 ? 320 : -320,
-    opacity: 0,
-  }),
-};
-
-interface EventPopupProps {
-  competitions?: CompetitionData[];
-}
-
-export default function EventPopup({ competitions }: EventPopupProps) {
+export default function EventPopup({ acara = [] }: { acara?: AcaraPopup[] }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [hasInteracted, setHasInteracted] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [direction, setDirection] = useState(1);
-  const [isPaused, setIsPaused] = useState(false);
-  const [progress, setProgress] = useState(0);
-
+  const [aktif, setAktif] = useState(0);
+  const [tampilan, setTampilan] = useState<Tampilan>("utama");
   const pathname = usePathname();
   const locale = useLocale();
   const isEn = locale === "en";
+  const loc = isEn ? "en-GB" : "id-ID";
 
-  // Active popup slides
-  const slides: EventPopupData[] = DUMMY_EVENT_POPUPS.filter((item) => item.isActive);
-  const totalSlides = slides.length;
-  const currentSlide = slides[currentIndex] || slides[0];
+  const isHomepage = /^\/(id|en)?\/?$/.test(pathname || "/");
+  const ev = acara[aktif] ?? acara[0];
 
-  const isHomepage =
-    pathname === "/" ||
-    pathname === "/id" ||
-    pathname === "/en" ||
-    pathname === "/id/" ||
-    pathname === "/en/";
-
-  // Auto show on first homepage load
   useEffect(() => {
-    if (totalSlides === 0 || !isHomepage) {
+    if (!acara.length || !isHomepage) {
       setIsOpen(false);
       return;
     }
-
-    const timer = setTimeout(() => {
-      setIsOpen(true);
-    }, 600);
-
+    const timer = setTimeout(() => setIsOpen(true), 600);
     return () => clearTimeout(timer);
-  }, [pathname, isHomepage, totalSlides]);
+  }, [pathname, isHomepage, acara.length]);
 
-  // Handle slide navigation
-  const nextSlide = useCallback(() => {
-    if (totalSlides <= 1) return;
-    setDirection(1);
-    setCurrentIndex((prev) => (prev + 1) % totalSlides);
-    setProgress(0);
-  }, [totalSlides]);
-
-  const prevSlide = useCallback(() => {
-    if (totalSlides <= 1) return;
-    setDirection(-1);
-    setCurrentIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
-    setProgress(0);
-  }, [totalSlides]);
-
-  const goToSlide = (index: number) => {
-    if (index === currentIndex) return;
-    setDirection(index > currentIndex ? 1 : -1);
-    setCurrentIndex(index);
-    setProgress(0);
-  };
-
-  // Progress Bar and Auto-Play Interval (6s duration)
-  useEffect(() => {
-    if (!isOpen || isPaused || totalSlides <= 1) return;
-
-    const intervalTime = 6000; // 6s per slide
-    const stepTime = 100;
-    const progressIncrement = (stepTime / intervalTime) * 100;
-
-    const timer = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          nextSlide();
-          return 0;
-        }
-        return prev + progressIncrement;
-      });
-    }, stepTime);
-
-    return () => clearInterval(timer);
-  }, [isOpen, isPaused, totalSlides, nextSlide]);
-
-  // Keyboard navigation
   useEffect(() => {
     if (!isOpen) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setIsOpen(false);
-        setHasInteracted(true);
-      } else if (e.key === "ArrowRight") {
-        nextSlide();
-      } else if (e.key === "ArrowLeft") {
-        prevSlide();
-      }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsOpen(false);
+      else if (e.key === "ArrowRight" && acara.length > 1) pilihAcara((aktif + 1) % acara.length);
+      else if (e.key === "ArrowLeft" && acara.length > 1) pilihAcara((aktif - 1 + acara.length) % acara.length);
     };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, nextSlide, prevSlide]);
-
-  const handleClose = () => {
-    setIsOpen(false);
-    setHasInteracted(true);
+  const pilihAcara = (i: number) => {
+    setAktif(i);
+    setTampilan("utama");
   };
 
-  const handleOpen = () => {
-    setIsOpen(true);
-    setProgress(0);
+  const hari = hariIni();
+  const daftar: TitikTimeline[] = useMemo(() => {
+    if (!ev) return [];
+    return tampilan === "utama" ? ev.jadwal : ev.rinci.filter((k) => k.jalur === tampilan);
+  }, [ev, tampilan]);
+  const idxBerikut = daftar.findIndex((k) => k.tanggal >= hari);
+
+  if (!acara.length || !ev) return null;
+
+  const adaJalur = (["offline", "online"] as const).filter((j) => ev.rinci.some((k) => k.jalur === j));
+  const sisaHari = ev.tutup
+    ? Math.round((tanggalLokal(ev.tutup).getTime() - tanggalLokal(hari).getTime()) / 86400000)
+    : null;
+  const fmt = (t: string, o: Intl.DateTimeFormatOptions) => tanggalLokal(t).toLocaleDateString(loc, o);
+  const label = {
+    trigger: isEn ? `Event Timeline (${acara.length})` : `Timeline Event (${acara.length})`,
+    buka: isEn ? "Registration open" : "Pendaftaran dibuka",
+    tutup: (d: string) => (isEn ? `closes ${d}` : `ditutup ${d}`),
+    sisa: (n: number) => (n === 0 ? (isEn ? "last day" : "hari terakhir") : isEn ? `${n} days left` : `${n} hari lagi`),
+    utama: isEn ? "Key dates" : "Jadwal utama",
+    offline: isEn ? "Offline" : "Luring",
+    online: isEn ? "Online" : "Daring",
+    berikut: isEn ? "Next" : "Berikutnya",
+    daftar: isEn ? "Register now" : "Daftar sekarang",
+    situs: isEn ? "Website" : "Situs resmi",
+    panduan: isEn ? "Guidebook" : "Buku panduan",
+    tutupPopup: isEn ? "Close" : "Tutup",
   };
-
-  if (totalSlides === 0) return null;
-
-  const badgeText = isEn ? currentSlide.badge_en || currentSlide.badge : currentSlide.badge;
-  const titleText = isEn ? currentSlide.title_en || currentSlide.title : currentSlide.title;
-  const subtitleText = isEn ? currentSlide.subtitle_en || currentSlide.subtitle : currentSlide.subtitle;
-  const contentText = isEn ? currentSlide.content_en || currentSlide.content : currentSlide.content;
-
-  const isSkSlide = currentSlide.id.includes("sk");
-  const isUpcomingSlide =
-    !isSkSlide &&
-    (currentSlide.id.includes("nso") ||
-      currentSlide.id.includes("nsmo") ||
-      currentSlide.id.includes("wso") ||
-      currentSlide.id.includes("upcoming"));
-
-  // Generate dynamic button label based on active slides
-  const hasSk = slides.some((s) => s.id.includes("sk"));
-  const hasUpcoming = slides.some((s) => !s.id.includes("sk"));
-  const triggerLabel = hasSk && hasUpcoming
-    ? (isEn ? "Event Info: SK & Upcoming" : "Info Event: SK & Upcoming")
-    : hasSk
-    ? (isEn ? "Event Info: SK Pemenang" : "Info Event: SK Pemenang")
-    : (isEn ? "Event Info: Upcoming Olympiads" : "Info Event: Upcoming Olympiads");
 
   return (
     <>
-      {/* 🚀 Floating Quick Trigger Button (When popup is closed) */}
       {!isOpen && isHomepage && (
         <motion.button
           initial={{ opacity: 0, scale: 0.8, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.8, y: 20 }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={handleOpen}
-          className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-gradient-to-r from-primary via-teal-600 to-indigo-600 text-white font-bold text-xs sm:text-sm shadow-xl shadow-primary/25 border border-white/20 backdrop-blur-md cursor-pointer transition-transform group"
-          aria-label={triggerLabel}
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-gradient-to-r from-primary via-teal-600 to-indigo-600 text-white font-bold text-xs sm:text-sm shadow-xl shadow-primary/25 border border-white/20 cursor-pointer group"
+          aria-label={label.trigger}
         >
           <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-300 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-400"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-300 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-400" />
           </span>
-          <Flame size={16} className="text-amber-300 group-hover:rotate-12 transition-transform" />
-          <span className="tracking-wide">{triggerLabel}</span>
+          <CalendarDays size={16} className="text-amber-300" />
+          <span className="tracking-wide">{label.trigger}</span>
         </motion.button>
       )}
 
-      {/* 🌟 Modal Pop Up */}
       <AnimatePresence>
         {isOpen && (
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-            {/* Subtle Translucent Backdrop (Thin dark tint & light blur to make popup pop) */}
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="popup-judul">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              onClick={handleClose}
-              className="fixed inset-0 bg-black/25 backdrop-blur-[2px] cursor-pointer"
+              onClick={() => setIsOpen(false)}
+              className="fixed inset-0 bg-black/45 backdrop-blur-[2px] cursor-pointer"
             />
-
-            {/* Modal Box with Floating Drop Shadow */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              initial={{ opacity: 0, scale: 0.94, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              exit={{ opacity: 0, scale: 0.94, y: 20 }}
               transition={{ type: "spring", damping: 26, stiffness: 320 }}
-              onMouseEnter={() => setIsPaused(true)}
-              onMouseLeave={() => setIsPaused(false)}
-              className="relative rounded-2xl overflow-visible max-w-lg w-full z-10 my-auto group shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] drop-shadow-2xl"
+              className="relative z-10 flex max-h-[92vh] w-full max-w-xl flex-col overflow-hidden rounded-3xl bg-white shadow-[0_25px_60px_-15px_rgba(0,0,0,0.6)]"
             >
-              {/* Close Button Floating Outside / Top-Right */}
-              <button
-                onClick={handleClose}
-                className="absolute top-3 right-3 z-30 w-8 h-8 rounded-full bg-black/75 hover:bg-black text-white flex items-center justify-center transition-all cursor-pointer shadow-xl hover:scale-110 border border-white/30"
-                aria-label={isEn ? "Close Pop Up" : "Tutup Pop Up"}
-              >
-                <X size={18} />
-              </button>
-
-              {/* Main Image Poster Container - Pure Image Display */}
-              {(() => {
-                const primaryLink = currentSlide.links?.[0]?.url || "#";
-                const isExternal = primaryLink.startsWith("http");
-                return (
-                  <div className="relative w-full overflow-hidden bg-transparent">
-                    <AnimatePresence custom={direction} mode="wait">
-                      <motion.div
-                        key={currentSlide.id}
-                        custom={direction}
-                        variants={slideVariants}
-                        initial="enter"
-                        animate="center"
-                        exit="exit"
-                        transition={{ duration: 0.35, ease: "easeInOut" }}
-                        className="relative w-full"
-                      >
-                        <a
-                          href={primaryLink}
-                          target={isExternal ? "_blank" : undefined}
-                          rel={isExternal ? "noopener noreferrer" : undefined}
-                          className="block relative w-full cursor-pointer group"
-                        >
-                          {currentSlide.image && (
-                            <img
-                              src={currentSlide.image}
-                              alt={titleText}
-                              className="w-full h-auto max-h-[85vh] object-contain rounded-2xl shadow-2xl transition-transform duration-300 group-hover:scale-[1.01]"
-                            />
-                          )}
-                        </a>
-                      </motion.div>
-                    </AnimatePresence>
-
-                    {/* Carousel Navigation Arrows */}
-                    {totalSlides > 1 && (
-                      <>
-                        <button
-                          onClick={prevSlide}
-                          className="absolute left-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur-md flex items-center justify-center transition-all cursor-pointer shadow-md hover:scale-110 border border-white/10"
-                          aria-label="Previous Slide"
-                        >
-                          <ChevronLeft size={20} />
-                        </button>
-                        <button
-                          onClick={nextSlide}
-                          className="absolute right-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur-md flex items-center justify-center transition-all cursor-pointer shadow-md hover:scale-110 border border-white/10"
-                          aria-label="Next Slide"
-                        >
-                          <ChevronRight size={20} />
-                        </button>
-
-                        {/* Minimalist Floating Dots Indicator at bottom */}
-                        <div className="absolute bottom-3 left-0 right-0 z-20 flex items-center justify-center gap-1.5 pointer-events-none">
-                          {slides.map((_, idx) => (
-                            <button
-                              key={idx}
-                              onClick={() => goToSlide(idx)}
-                              aria-label={`Go to slide ${idx + 1}`}
-                              className={`h-2 rounded-full transition-all duration-300 pointer-events-auto cursor-pointer ${
-                                idx === currentIndex
-                                  ? "w-6 bg-white shadow-lg shadow-black/50"
-                                  : "w-2 bg-white/50 hover:bg-white/80 backdrop-blur-sm"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                      </>
-                    )}
+              {/* Kepala: banner ajang + status pendaftaran */}
+              <div className="relative shrink-0 text-white" style={{ background: "linear-gradient(135deg, #66449b, #39bcbe)" }}>
+                {ev.banner && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={ev.banner} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#2d1b4e]/80 to-transparent" />
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-white transition hover:bg-black/70 cursor-pointer"
+                  aria-label={label.tutupPopup}
+                >
+                  <X size={18} />
+                </button>
+                <div className="relative flex items-end gap-4 px-5 pb-4 pt-6 sm:px-6">
+                  {ev.logo && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={ev.logo} alt={ev.akronim} className="h-16 w-16 shrink-0 rounded-2xl bg-white object-contain p-1.5 shadow-lg" />
+                  )}
+                  <div className="min-w-0">
+                    <span className="inline-flex flex-wrap items-center gap-1.5 rounded-full bg-white/20 px-2.5 py-1 text-[11px] font-bold backdrop-blur-sm">
+                      <Flame size={12} className="text-amber-300" />
+                      {label.buka}
+                      {ev.tutup && <span className="font-medium text-white/85">· {label.tutup(fmt(ev.tutup, { day: "numeric", month: "short", year: "numeric" }))}</span>}
+                      {sisaHari !== null && sisaHari >= 0 && sisaHari <= 30 && (
+                        <span className="rounded-full bg-amber-400 px-1.5 text-[10px] text-gray-900">{label.sisa(sisaHari)}</span>
+                      )}
+                    </span>
+                    <h2 id="popup-judul" className="mt-2 text-2xl font-extrabold leading-tight sm:text-3xl">{ev.akronim} {ev.tahun}</h2>
+                    <p className="truncate text-sm text-white/85">{ev.nama}</p>
                   </div>
-                );
-              })()}
+                </div>
+                {acara.length > 1 && (
+                  <div className="relative flex gap-1.5 overflow-x-auto px-5 pb-3 sm:px-6" role="tablist">
+                    {acara.map((a, i) => (
+                      <button
+                        key={a.akronim}
+                        role="tab"
+                        aria-selected={i === aktif}
+                        onClick={() => pilihAcara(i)}
+                        className={`shrink-0 rounded-full px-3.5 py-1 text-xs font-bold transition cursor-pointer ${
+                          i === aktif ? "bg-white text-primary shadow" : "bg-white/15 text-white hover:bg-white/25"
+                        }`}
+                      >
+                        {a.akronim} {a.tahun}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Pilihan tampilan timeline */}
+              {adaJalur.length > 0 && (
+                <div className="flex shrink-0 gap-1 border-b border-gray-100 bg-gray-50 px-5 py-2 sm:px-6">
+                  {(["utama", ...adaJalur] as Tampilan[]).map((v) => (
+                    <button
+                      key={v}
+                      onClick={() => setTampilan(v)}
+                      aria-pressed={tampilan === v}
+                      className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition cursor-pointer ${
+                        tampilan === v ? "bg-white text-primary shadow-sm ring-1 ring-purple-100" : "text-gray-500 hover:text-primary"
+                      }`}
+                    >
+                      {label[v]}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Isi timeline */}
+              <ol key={`${ev.akronim}-${tampilan}`} className="min-h-0 flex-1 overflow-y-auto px-5 py-4 sm:px-6">
+                {daftar.map((k, i) => {
+                  const lewat = k.tanggal < hari;
+                  const berikut = i === idxBerikut;
+                  const jam = [k.jam_mulai, k.jam_selesai].filter(Boolean).join("–");
+                  return (
+                    <li key={i} className="relative flex gap-4 pb-4 last:pb-0">
+                      {i < daftar.length - 1 && <span className="absolute left-[1.6rem] top-14 bottom-0 w-px bg-purple-100" aria-hidden />}
+                      <div
+                        className={`flex h-14 w-[3.25rem] shrink-0 flex-col items-center justify-center rounded-xl border text-center ${
+                          berikut ? "border-primary bg-primary text-white shadow-md shadow-primary/25"
+                            : lewat ? "border-gray-100 bg-gray-50 text-gray-400" : "border-purple-100 bg-purple-50 text-primary"
+                        }`}
+                      >
+                        <span className="text-lg font-extrabold leading-none">{fmt(k.tanggal, { day: "numeric" })}</span>
+                        <span className="mt-0.5 text-[10px] font-bold uppercase">{fmt(k.tanggal, { month: "short" })}</span>
+                      </div>
+                      <div className={`min-w-0 flex-1 pt-1 ${lewat ? "opacity-60" : ""}`}>
+                        <p className="flex flex-wrap items-center gap-2 text-sm font-bold text-gray-900">
+                          {rapiJudul(k.milestone, ev.akronim)}
+                          {berikut && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800">{label.berikut}</span>}
+                          {lewat && <CheckCircle2 size={14} className="text-teal-600" aria-hidden />}
+                        </p>
+                        <p className="mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-gray-500">
+                          <span>{fmt(k.tanggal, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
+                          {jam && <span className="inline-flex items-center gap-1"><Clock size={11} />{jam} WIB</span>}
+                          {k.lokasi && <span className="inline-flex items-center gap-1"><MapPin size={11} />{k.lokasi}</span>}
+                        </p>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ol>
+
+              {/* Tombol aksi */}
+              <div className="flex shrink-0 flex-wrap gap-2 border-t border-gray-100 px-5 py-3 sm:px-6">
+                {ev.daftar && (
+                  <a href={ev.daftar} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex w-full sm:w-auto sm:flex-1 items-center justify-center gap-1.5 rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-primary/20 transition hover:opacity-90">
+                    {label.daftar}<ArrowRight size={15} />
+                  </a>
+                )}
+                {ev.situs && (
+                  <a href={ev.situs} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex flex-1 sm:flex-none items-center justify-center gap-1.5 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-teal-500 hover:text-teal-700">
+                    <Globe size={15} />{label.situs}
+                  </a>
+                )}
+                {ev.guidebook && (
+                  <a href={ev.guidebook} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex flex-1 sm:flex-none items-center justify-center gap-1.5 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-primary hover:text-primary">
+                    <BookOpen size={15} />{label.panduan}
+                  </a>
+                )}
+              </div>
             </motion.div>
           </div>
         )}

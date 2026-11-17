@@ -8,6 +8,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import EventPopup from "@/components/common/EventPopup";
 import { fetchNewsPreview, fetchCompetitionsData } from "@/lib/supabase";
+import { ambilAcaraPopup } from "@/lib/popupTimeline";
 
 const metadata: Metadata = {
   metadataBase: new URL("https://iyora.or.id"),
@@ -127,15 +128,16 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  const [messages, newsPreview, competitions] = await Promise.all([
+  const [messages, newsPreview, competitions, acaraPopup] = await Promise.all([
     getMessages(),
     fetchNewsPreview(locale),
     fetchCompetitionsData(),
+    ambilAcaraPopup(),
   ]);
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <EventPopup competitions={competitions} />
+      <EventPopup acara={acaraPopup} />
       <Navbar newsPreview={newsPreview} competitions={competitions} />
       <main>{children}</main>
       <Footer />
