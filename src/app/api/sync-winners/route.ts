@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@supabase/supabase-js";
+import { fetchWinnersData, fetchWinnerAnnouncements } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
@@ -127,44 +129,38 @@ export async function POST(req: Request) {
 
 export async function GET() {
   try {
+    revalidatePath("/[locale]/winners", "page");
+    revalidatePath("/[locale]/sk", "page");
+
     const dashboardUrl = process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.iyora.or.id";
-    const res = await fetch(`${dashboardUrl}/api/public/winners`, {
-      cache: "no-store",
-      signal: AbortSignal.timeout(8000),
-    });
-
-    if (!res.ok) {
-      return NextResponse.json(
-        { ok: false, error: `Dashboard API responded with status ${res.status}` },
-        { status: 502 }
-      );
-    }
-
-    const json = await res.json();
-    const count = json.count || (Array.isArray(json.data) ? json.data.length : 0);
+    const [winners, announcements] = await Promise.all([
+      fetchWinnersData(),
+      fetchWinnerAnnouncements(),
+    ]);
 
     const compBreakdown: Record<string, number> = {};
-    if (Array.isArray(json.data)) {
-      json.data.forEach((w: any) => {
-        const c = (w.competition || w.kompetisi || "OTHER").toUpperCase();
-        compBreakdown[c] = (compBreakdown[c] || 0) + 1;
-      });
-    }
+    winners.forEach((w) => {
+      const c = (w.competition || "OTHER").toUpperCase();
+      compBreakdown[c] = (compBreakdown[c] || 0) + 1;
+    });
 
     return NextResponse.json({
       ok: true,
-      message: "Daftar pemenang dan nilai tersinkronisasi langsung dari Dashboard",
+      message: "Daftar pemenang, nilai, dan SK tersinkronisasi langsung dari Dashboard",
       source: dashboardUrl,
-      totalWinners: count,
+      totalWinners: winners.length,
+      totalAnnouncements: announcements.length,
       competitions: compBreakdown,
-      sampleWinnersWithScore: Array.isArray(json.data)
-        ? json.data.slice(0, 3).map((w: any) => ({
-            name: w.name,
-            competition: w.competition,
-            score: w.score,
-            medal: w.medal,
-          }))
-        : [],
+      sampleWinnersWithScore: winners.slice(0, 5).map((w) => ({
+        name: w.name,
+        school: w.school,
+        competition: w.competition,
+        category: w.category,
+        level: w.level,
+        score: w.score,
+        medal: w.medal,
+        mode: w.mode,
+      })),
     });
   } catch (error: any) {
     return NextResponse.json(

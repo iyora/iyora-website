@@ -9,6 +9,7 @@ const PAGES = [
   { path: "/winners",      priority: 0.9,  changeFreq: "weekly"  as const },
   { path: "/team",         priority: 0.8,  changeFreq: "monthly" as const },
   { path: "/about",        priority: 0.8,  changeFreq: "monthly" as const },
+  { path: "/faq",          priority: 0.75, changeFreq: "monthly" as const },
   { path: "/contact",      priority: 0.7,  changeFreq: "monthly" as const },
   { path: "/news",         priority: 0.7,  changeFreq: "weekly"  as const },
   { path: "/partners",     priority: 0.6,  changeFreq: "monthly" as const },

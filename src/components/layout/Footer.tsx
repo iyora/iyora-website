@@ -153,6 +153,14 @@ export default function Footer() {
                   {t("newsletter_label")}
                 </Link>
               </li>
+              <li>
+                <Link
+                  href={href("/faq")}
+                  className="text-sm text-white/50 hover:text-teal transition-colors"
+                >
+                  FAQ
+                </Link>
+              </li>
             </ul>
           </div>
 

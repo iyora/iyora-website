@@ -3,12 +3,11 @@ import HeroSection from "@/components/home/HeroSection";
 import OriginStory from "@/components/home/OriginStory";
 import StatsSection from "@/components/home/StatsSection";
 import CompetitionsSection from "@/components/home/CompetitionsSection";
-import HomeNewsSection from "@/components/home/HomeNewsSection";
 import WhyIYORA from "@/components/home/WhyIYORA";
 import KurasiSection from "@/components/home/KurasiSection";
 import CTASection from "@/components/home/CTASection";
 import HomePreloader from "@/components/home/HomePreloader";
-import { fetchCompetitionsData, fetchAllNews, fetchSiteStats } from "@/lib/supabase";
+import { fetchCompetitionsData, fetchSiteStats } from "@/lib/supabase";
 import { ambilHasilKurasi } from "@/lib/kurasiDashboard";
 
 export const dynamic = "force-dynamic";
@@ -19,15 +18,9 @@ export const metadata: Metadata = {
     "Rumah resmi olimpiade sains pemuda Indonesia. Lahir dari IYSA, IYORA mendedikasikan diri sepenuhnya untuk mengangkat potensi terbaik generasi muda melalui kompetisi olimpiade bertaraf nasional dan internasional.",
 };
 
-export default async function HomePage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
-  const { locale } = await params;
+export default async function HomePage() {
   const competitions = await fetchCompetitionsData();
   const statistik = await fetchSiteStats();
-  const { news, announcements, pressRelease, gallery } = await fetchAllNews(locale);
   const hasilKurasi = await ambilHasilKurasi();
 
   return (
@@ -37,9 +30,8 @@ export default async function HomePage({
       <OriginStory />
       <StatsSection stats={statistik} />
       <CompetitionsSection competitions={competitions} />
-      <HomeNewsSection news={news} announcements={announcements} pressRelease={pressRelease} gallery={gallery} />
-      <WhyIYORA />
       <KurasiSection hasil={hasilKurasi} />
+      <WhyIYORA />
       <CTASection />
     </>
   );

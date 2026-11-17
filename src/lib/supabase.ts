@@ -23,6 +23,16 @@ import {
 
 export type RegistrationStatus = "open" | "coming_soon" | "closed";
 
+export interface CompetitionTimelineMilestone {
+  milestone: string;
+  tanggal: string;
+  jalur?: string;
+  lokasi?: string;
+  jam_mulai?: string;
+  jam_selesai?: string;
+  keterangan?: string;
+}
+
 export interface CompetitionData {
   slug: string;
   shortName: string;
@@ -35,11 +45,14 @@ export interface CompetitionData {
   guidebookUrl: string | null;
   registrationOpenAt?: string | null;
   registrationCloseAt?: string | null;
+  eventStartAt?: string | null;
+  eventEndAt?: string | null;
   bannerUrl?: string | null;
   heroUrl?: string | null;
   logoUrl?: string | null;
   edition?: number | string | null;
   year?: number | null;
+  timeline?: CompetitionTimelineMilestone[];
 }
 
 export function normalizeUrl(url: string | null | undefined): string | null {
@@ -183,20 +196,38 @@ export const KNOWN_EVENT_MEDIA: Record<string, { banner?: string; logo?: string 
 export const MANUAL_COMPETITION_OVERRIDES: Record<string, {
   openAt?: string;
   closeAt?: string;
+  status?: RegistrationStatus;
   guidebookUrl?: string;
   registrationUrl?: string;
 }> = {
+  nso: {
+    openAt: "2026-09-03",
+    closeAt: "2026-10-16",
+    status: "closed",
+  },
+  gyso: {
+    status: "closed",
+  },
   nsmo: {
     openAt: "2026-09-08",
     closeAt: "2026-11-20",
+    status: "open",
     guidebookUrl: "https://api-dashboard.iysa.or.id/media/coreapps/events/guidebooks/nsmo-2026-1794637340172-o.pdf",
     registrationUrl: "https://nsmo.iyora.or.id/register",
   },
   wso: {
     openAt: "2026-09-20",
     closeAt: "2026-11-20",
+    status: "open",
     guidebookUrl: "https://api-dashboard.iysa.or.id/media/coreapps/events/guidebooks/wso-2026-1794469585996-o.pdf",
     registrationUrl: "https://wso.iyora.or.id/register",
+  },
+  tiso: {
+    openAt: "2026-10-02",
+    closeAt: "2026-12-05",
+    status: "open",
+    guidebookUrl: "https://api.iyora.or.id/storage/v1/object/public/event-media/f46a573a-fede-45e0-a3c0-c8635ee1f14f/guidebooks/1791183416609-Guidebook-TISO-2027.pdf",
+    registrationUrl: "https://tiso.iyora.or.id/register",
   },
 };
 
@@ -252,14 +283,178 @@ export function getDefaultCompetitions(): CompetitionData[] {
 
 export const DEFAULT_COMPETITIONS: CompetitionData[] = getDefaultCompetitions();
 
+const DASHBOARD_ORG_HEADERS = {
+  "X-Organization-Slug": "iysa",
+};
+
+function inferCategoryFromAcronym(akronim: string, name: string): string | null {
+  const s = (akronim || "").toUpperCase();
+  const n = (name || "").toLowerCase();
+  if (s === "NSMO" || n.includes("science math")) return "Mathematics";
+  if (s.includes("BO") || n.includes("biolog")) return "Biology";
+  if (s.includes("PO") || n.includes("physic") || s === "TISO") return "Physics";
+  if (s.includes("CO") || n.includes("chemi")) return "Chemistry";
+  if (s.includes("MO") || n.includes("math")) return "Mathematics";
+  if (s.includes("GO") || n.includes("geograph")) return "Geography";
+  if (s.includes("EO") || n.includes("econom")) return "Economics";
+  if (s.includes("OS2MN") || n.includes("madrasah")) return "Madrasah";
+  return "Science";
+}
+
+async function fetchDashboardV1IyoraSeries(dashboardUrl: string): Promise<any[]> {
+  const res = await fetch(`${dashboardUrl}/api/public/v1/_seri`, {
+    headers: DASHBOARD_ORG_HEADERS,
+    cache: "no-store",
+    signal: AbortSignal.timeout(8000),
+  });
+  if (!res.ok) return [];
+  const json = await res.json();
+  const allSeri = Array.isArray(json?.data?.seri) ? json.data.seri : [];
+  return allSeri.filter(
+    (s: any) =>
+      s.lembaga === "IYORA" ||
+      s.jenis === "olympiad" ||
+      (typeof s.situs === "string" && s.situs.toLowerCase().includes("iyora.or.id"))
+  );
+}
+
 export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
-  // 1. Coba ambil langsung dari Endpoint Public API Dashboard (Sinkronisasi Otomatis Terpusat)
+  const dashboardUrl =
+    process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.iyora.or.id";
+
+  // 1. Ambil dari Endpoint Public API v1 Dashboard (/api/public/v1/_seri + detail seksi)
   try {
-    const dashboardUrl =
-      process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.iyora.or.id";
+    const iyoraSeri = await fetchDashboardV1IyoraSeries(dashboardUrl);
+    if (iyoraSeri.length > 0) {
+      const defaultsBySlug = new Map(
+        DEFAULT_COMPETITIONS.map((d) => [d.slug.toLowerCase(), d])
+      );
+
+      const enriched: CompetitionData[] = await Promise.all(
+        iyoraSeri.map(async (s: any): Promise<CompetitionData> => {
+          const slug = String(s.akronim || s.slug || "")
+            .toLowerCase()
+            .replace(/-\d{4}$/, "")
+            .trim();
+          const shortName = String(s.akronim || slug).toUpperCase();
+          const cleanName = String(s.nama || shortName).replace(/\s+\d{4}$/, "").trim();
+          const def = defaultsBySlug.get(slug);
+          const override = MANUAL_COMPETITION_OVERRIDES[slug];
+
+          let resolvedLevel: CompetitionData["level"] = "national";
+          if (slug === "os2mn") {
+            resolvedLevel = "madrasah";
+          } else if (slug === "wso") {
+            resolvedLevel = "world";
+          } else if (s.lingkup === "international" || slug.startsWith("i") || slug.endsWith("iso") || slug === "gyso") {
+            resolvedLevel = "international";
+          }
+
+          let detailGuidebookUrl: string | null = null;
+          let timelineMilestones: CompetitionTimelineMilestone[] = [];
+          try {
+            const detailRes = await fetch(
+              `${dashboardUrl}/api/public/v1/${encodeURIComponent(shortName)}?sections=timeline,jadwal_kegiatan,guidebook`,
+              {
+                headers: DASHBOARD_ORG_HEADERS,
+                cache: "no-store",
+                signal: AbortSignal.timeout(6000),
+              }
+            );
+            if (detailRes.ok) {
+              const detailJson = await detailRes.json();
+              const sections: any[] = detailJson?.data?.sections || [];
+              const gbSec = sections.find((sec) => sec.key === "guidebook")?.isi;
+              if (gbSec?.url) detailGuidebookUrl = gbSec.url;
+
+              const tlSec = sections.find((sec) => sec.key === "timeline")?.isi;
+              const jkSec = sections.find((sec) => sec.key === "jadwal_kegiatan")?.isi;
+              if (Array.isArray(tlSec) && tlSec.length > 0) {
+                timelineMilestones = tlSec;
+              } else if (Array.isArray(jkSec) && jkSec.length > 0) {
+                timelineMilestones = jkSec;
+              }
+            }
+          } catch {
+            // Abaikan jika detail seksi gagal
+          }
+
+          const websiteUrl = getValidEventWebsiteUrl(slug, s.situs || def?.websiteUrl);
+          const registrationUrl = getValidEventRegistrationUrl(
+            slug,
+            override?.registrationUrl || s.pendaftaran_url || def?.registrationUrl,
+            websiteUrl
+          );
+          const guidebookUrl =
+            override?.guidebookUrl || detailGuidebookUrl || def?.guidebookUrl || null;
+          const openAt =
+            override?.openAt || s.pendaftaran_buka || def?.registrationOpenAt || null;
+          const closeAt =
+            override?.closeAt || s.pendaftaran_tutup || def?.registrationCloseAt || null;
+
+          let registrationStatus: RegistrationStatus;
+          if (override?.status) {
+            registrationStatus = override.status;
+          } else if (override) {
+            registrationStatus = computeStatus(openAt, closeAt);
+          } else if (s.pendaftaran_dibuka === true) {
+            registrationStatus = "open";
+          } else if (openAt && closeAt) {
+            registrationStatus = computeStatus(openAt, closeAt);
+          } else if (closeAt) {
+            const closeDate = new Date(closeAt);
+            if (closeAt.length <= 10) closeDate.setHours(23, 59, 59, 999);
+            registrationStatus = new Date() > closeDate ? "closed" : "coming_soon";
+          } else {
+            registrationStatus = def?.registrationStatus || "coming_soon";
+          }
+
+          const media = resolveEventMedia(slug, s.banner, s.logo, guidebookUrl);
+
+          return {
+            slug,
+            shortName,
+            name: cleanName,
+            level: resolvedLevel,
+            category: def?.category || inferCategoryFromAcronym(shortName, cleanName),
+            websiteUrl,
+            registrationUrl,
+            registrationStatus,
+            guidebookUrl,
+            registrationOpenAt: openAt,
+            registrationCloseAt: closeAt,
+            eventStartAt: s.mulai || null,
+            eventEndAt: s.selesai || null,
+            bannerUrl: media.bannerUrl,
+            heroUrl: media.bannerUrl,
+            logoUrl: media.logoUrl,
+            edition: s.slug || null,
+            year: Number(s.tahun) || null,
+            timeline: timelineMilestones,
+          } satisfies CompetitionData;
+        })
+      );
+
+      // Pastikan kompetisi default yang belum ada di _seri tetap disertakan
+      const existingSlugs = new Set(enriched.map((c) => c.slug.toLowerCase()));
+      for (const def of DEFAULT_COMPETITIONS) {
+        if (!existingSlugs.has(def.slug.toLowerCase())) {
+          enriched.push(def);
+        }
+      }
+
+      return sortCompetitionsByStatus(enriched);
+    }
+  } catch (err) {
+    console.warn("[Dashboard v1 API] Competitions fetch failed, trying legacy/fallbacks:", err);
+  }
+
+  // 2. Fallback Legacy Endpoint (/api/public/competitions)
+  try {
     const res = await fetch(`${dashboardUrl}/api/public/competitions`, {
+      headers: DASHBOARD_ORG_HEADERS,
       cache: "no-store",
-      signal: AbortSignal.timeout(10000),
+      signal: AbortSignal.timeout(6000),
     });
     if (res.ok) {
       const json = await res.json();
@@ -314,7 +509,7 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
             category: c.category || null,
             websiteUrl,
             registrationUrl,
-            registrationStatus: (override ? computeStatus(openAt, closeAt) : (c.registrationStatus || computeStatus(openAt, closeAt))) as RegistrationStatus,
+            registrationStatus: (override?.status || (override ? computeStatus(openAt, closeAt) : (c.registrationStatus || computeStatus(openAt, closeAt)))) as RegistrationStatus,
             guidebookUrl,
             registrationOpenAt: openAt,
             registrationCloseAt: closeAt,
@@ -390,11 +585,13 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
         const isEventActive = event?.is_active ?? comp.is_active ?? true;
         const openAt = override?.openAt ?? event?.registration_open_at ?? null;
         const closeAt = override?.closeAt ?? event?.registration_close_at ?? null;
-        const status = override
-          ? computeStatus(openAt, closeAt)
-          : isEventActive
+        const status = override?.status
+          ? override.status
+          : override
             ? computeStatus(openAt, closeAt)
-            : "closed";
+            : isEventActive
+              ? computeStatus(openAt, closeAt)
+              : "closed";
 
         const websiteUrl = getValidEventWebsiteUrl(comp.slug, comp.website_url);
         const registrationUrl = getValidEventRegistrationUrl(comp.slug, override?.registrationUrl || comp.registration_url, websiteUrl);
@@ -943,48 +1140,115 @@ function normalizeMedal(rawMedal: any): WinnerMedal {
   return (rawMedal as WinnerMedal) || "Gold Medal";
 }
 
+function resolveCountryCode(country?: string, rawCode?: string): string {
+  if (rawCode && rawCode.trim()) return rawCode.trim().toUpperCase();
+  const c = (country || "").trim().toLowerCase();
+  if (!c || c === "indonesia") return "ID";
+  if (c.includes("malaysia")) return "MY";
+  if (c.includes("thailand")) return "TH";
+  if (c.includes("uzbekistan")) return "UZ";
+  if (c.includes("korea")) return "KR";
+  if (c.includes("united states") || c === "usa" || c.includes("america")) return "US";
+  if (c.includes("philippines") || c.includes("filipina")) return "PH";
+  if (c.includes("vietnam")) return "VN";
+  if (c.includes("singapore") || c.includes("singapura")) return "SG";
+  if (c.includes("mexico") || c.includes("meksiko")) return "MX";
+  if (c.includes("macedonia")) return "MK";
+  if (c.includes("turkey") || c.includes("türkiye") || c.includes("turki")) return "TR";
+  if (c.includes("india")) return "IN";
+  if (c.includes("japan") || c.includes("jepang")) return "JP";
+  if (c.includes("china") || c.includes("tiongkok")) return "CN";
+  return "ID";
+}
+
+function normalizeWinnerLevel(rawLevel: any): WinnerLevel {
+  const l = String(rawLevel || "").trim().toLowerCase();
+  if (
+    l === "elementary" ||
+    l === "sd" ||
+    l === "mi" ||
+    l.includes("elementary") ||
+    l.includes("sd / mi") ||
+    l.includes("primary")
+  ) {
+    return "SD / MI";
+  }
+  if (
+    l === "junior_high" ||
+    l === "smp" ||
+    l === "mts" ||
+    l.includes("junior") ||
+    l.includes("smp / mts") ||
+    l.includes("middle")
+  ) {
+    return "SMP / MTs";
+  }
+  if (
+    l === "university" ||
+    l === "universitas" ||
+    l === "mahasiswa" ||
+    l.includes("univ") ||
+    l.includes("mahasiswa") ||
+    l.includes("college")
+  ) {
+    return "Universitas / Mahasiswa";
+  }
+  return "SMA / MA / SMK";
+}
+
 function mapRawToWinnerItem(row: any): WinnerItem {
   const medal = normalizeMedal(row.medal || row.medali || row.kategori_juara || row.award || row.rank_label);
   const compCode = (row.competition || row.kompetisi || row.event_code || row.code || "").trim().toUpperCase();
   const compName = row.competition_full_name || row.competitionFullName || row.event_name || row.nama_kompetisi || compCode;
 
-  const rawMode = (row.mode || row.metode || row.participation_type || row.tipe_partisipasi || "").toLowerCase();
+  const rawMode = (row.mode || row.moda || row.jalur || row.metode || row.participation_type || row.tipe_partisipasi || "").toLowerCase();
   const certStr = String(row.certificate_number || row.certificateNumber || row.nomor_sertifikat || row.no_sertifikat || "").toUpperCase();
-  const noteStr = String(row.special_note || row.specialNote || row.catatan || "").toUpperCase();
-  const catStr = String(row.category || row.bidang || row.kategori || "").toUpperCase();
+  const noteStr = String(row.special_note || row.specialNote || row.special_award || row.catatan || "").toUpperCase();
+  const catStr = String(row.category || row.subject || row.bidang || row.kategori || "").toUpperCase();
+  const schoolStr = String(row.school || row.sekolah || row.institusi || row.institution || "").toUpperCase();
 
   let mode: "online" | "offline" = "online";
   if (
     rawMode === "offline" ||
+    rawMode === "luring" ||
     certStr.includes("NOFF") ||
     certStr.includes("IOFF") ||
     (certStr.includes("OFF") && !certStr.includes("OFFICIAL")) ||
     noteStr.includes("OFFLINE") ||
-    catStr.includes("OFFLINE")
+    catStr.includes("OFFLINE") ||
+    (compCode === "NSO" &&
+      (schoolStr.includes("AL FAKHIR") ||
+        schoolStr.includes("AL-FAKHIR") ||
+        schoolStr.includes("AL HIDAYAH") ||
+        schoolStr.includes("AL-HIDAYAH")))
   ) {
     mode = "offline";
   }
 
+  const countryName = row.country || row.negara || "Indonesia";
+  const countryCode = resolveCountryCode(countryName, row.country_code || row.countryCode || row.kode_negara);
+  const yearNum = Number(row.edition_year || row.editionYear || row.tahun || row.year) || new Date().getFullYear();
+
   return {
-    id: String(row.id || Math.random().toString(36).substring(2, 9)),
-    name: row.name || row.team_name || row.peserta || row.nama_peserta || row.full_name || "Peserta",
+    id: String(row.id || `${compCode}-${yearNum}-${row.team || row.name || Math.random().toString(36).substring(2, 9)}-${row.subject || row.category || ""}-${row.rank || ""}`),
+    name: row.name || row.team || row.team_name || row.peserta || row.nama_peserta || row.full_name || "Peserta",
     school: row.school || row.sekolah || row.institusi || row.institution || row.asal_sekolah || "—",
     city: row.city || row.kota || row.kabupaten || "",
     province: row.province || row.provinsi || "",
-    country: row.country || row.negara || "Indonesia",
-    countryCode: (row.country_code || row.countryCode || row.kode_negara || "ID").toUpperCase(),
+    country: countryName,
+    countryCode,
     competition: compCode,
     competitionFullName: compName,
-    category: row.category || row.bidang || row.kategori || "General",
-    level: (row.level || row.jenjang || "SMA / MA / SMK") as any,
-    editionYear: Number(row.edition_year || row.editionYear || row.tahun || row.year) || new Date().getFullYear(),
-    editionName: row.edition_name || row.editionName || `${compCode} ${row.edition_year || row.tahun || new Date().getFullYear()}`.trim(),
+    category: row.category || row.subject || row.bidang || row.kategori || "General",
+    level: normalizeWinnerLevel(row.level || row.jenjang),
+    editionYear: yearNum,
+    editionName: row.edition_name || row.editionName || `${compCode} ${yearNum}`.trim(),
     medal,
     score: row.score !== undefined && row.score !== null ? String(row.score) : (row.nilai !== undefined && row.nilai !== null ? String(row.nilai) : undefined),
     photo: row.photo || row.foto || undefined,
     certificateNumber: row.certificate_number || row.certificateNumber || row.nomor_sertifikat || row.no_sertifikat || undefined,
     simtVerified: row.simt_verified ?? row.simtVerified ?? row.is_simt ?? true,
-    specialNote: row.special_note || row.specialNote || row.catatan || undefined,
+    specialNote: row.special_note || row.specialNote || row.special_award || row.catatan || undefined,
     mode,
   };
 }
@@ -1024,14 +1288,64 @@ function sortWinnersByMedal(items: WinnerItem[]): WinnerItem[] {
 }
 
 export async function fetchWinnersData(): Promise<WinnerItem[]> {
-  // 1. Coba ambil langsung dari Endpoint Public API Dashboard (Opsi 2: Sinkronisasi API langsung)
+  const dashboardUrl =
+    process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.iyora.or.id";
+
+  // 1. Ambil langsung dari Endpoint Public API v1 Dashboard (/api/public/v1/{AKRONIM}?sections=results)
   try {
-    const dashboardUrl =
-      process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.iyora.or.id";
+    const iyoraSeri = await fetchDashboardV1IyoraSeries(dashboardUrl);
+    if (iyoraSeri.length > 0) {
+      const perSeriesWinners = await Promise.all(
+        iyoraSeri.map(async (s: any) => {
+          const code = String(s.akronim || "").toUpperCase();
+          const fullName = String(s.nama || code).replace(/\s+\d{4}$/, "").trim();
+          const editionYear = Number(s.tahun) || 2026;
+          try {
+            const res = await fetch(
+              `${dashboardUrl}/api/public/v1/${encodeURIComponent(code)}?sections=results`,
+              {
+                headers: DASHBOARD_ORG_HEADERS,
+                cache: "no-store",
+                next: { revalidate: 0 },
+                signal: AbortSignal.timeout(8000),
+              }
+            );
+            if (!res.ok) return [] as WinnerItem[];
+            const json = await res.json();
+            const resSec = (json?.data?.sections || []).find((sec: any) => sec.key === "results")?.isi;
+            const resultsList: any[] = Array.isArray(resSec?.results) ? resSec.results : [];
+            return resultsList.map((item: any, idx: number) =>
+              mapRawToWinnerItem({
+                ...item,
+                id: `${code}-${editionYear}-${idx}`,
+                competition: code,
+                competition_full_name: fullName,
+                edition_year: editionYear,
+                edition_name: `${code} ${editionYear}`,
+              })
+            );
+          } catch {
+            return [] as WinnerItem[];
+          }
+        })
+      );
+
+      const allWinners = perSeriesWinners.flat();
+      if (allWinners.length > 0) {
+        return sortWinnersByMedal(allWinners);
+      }
+    }
+  } catch (err) {
+    console.warn("[Dashboard v1 API] Failed fetching winners:", err);
+  }
+
+  // 2. Fallback Legacy Endpoint (/api/public/winners)
+  try {
     const res = await fetch(`${dashboardUrl}/api/public/winners`, {
+      headers: DASHBOARD_ORG_HEADERS,
       cache: "no-store",
       next: { revalidate: 0 },
-      signal: AbortSignal.timeout(8000),
+      signal: AbortSignal.timeout(6000),
     });
     if (res.ok) {
       const json = await res.json();
@@ -1080,14 +1394,151 @@ export async function fetchWinnersData(): Promise<WinnerItem[]> {
 }
 
 export async function fetchWinnerAnnouncements(): Promise<WinnerAnnouncementDoc[]> {
-  // 1. Coba ambil langsung dari Endpoint Public API Dashboard
+  const dashboardUrl =
+    process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.iyora.or.id";
+
+  // 1. Ambil langsung dari Endpoint Public API v1 Dashboard (/api/public/v1/{AKRONIM}?sections=results,sk_pemenang,peserta)
   try {
-    const dashboardUrl =
-      process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.iyora.or.id";
+    const iyoraSeri = await fetchDashboardV1IyoraSeries(dashboardUrl);
+    if (iyoraSeri.length > 0) {
+      const perSeriesDocs = await Promise.all(
+        iyoraSeri.map(async (s: any) => {
+          const code = String(s.akronim || "").toUpperCase();
+          const fullName = String(s.nama || code).replace(/\s+\d{4}$/, "").trim();
+          const editionYear = String(s.tahun || "2026");
+          const category = inferCategoryFromAcronym(code, fullName) || "General";
+
+          try {
+            const res = await fetch(
+              `${dashboardUrl}/api/public/v1/${encodeURIComponent(code)}?sections=results,sk_pemenang,peserta`,
+              {
+                headers: DASHBOARD_ORG_HEADERS,
+                cache: "no-store",
+                next: { revalidate: 0 },
+                signal: AbortSignal.timeout(8000),
+              }
+            );
+            if (!res.ok) return [] as WinnerAnnouncementDoc[];
+            const json = await res.json();
+            const sections: any[] = json?.data?.sections || [];
+            const resSec = sections.find((sec) => sec.key === "results")?.isi;
+            const skSec: any[] = sections.find((sec) => sec.key === "sk_pemenang")?.isi || [];
+            const pesSec = sections.find((sec) => sec.key === "peserta")?.isi;
+
+            const totalParticipants = Number(pesSec?.tim) || 0;
+            const totalMedals = Array.isArray(resSec?.results) ? resSec.results.length : 0;
+
+            const docs: WinnerAnnouncementDoc[] = [];
+            const seenUrls = new Set<string>();
+
+            const rawDocs: any[] = Array.isArray(resSec?.documents) ? resSec.documents : [];
+            const skDocs = rawDocs.filter((d) => d.type === "sk" || d.type === "winner_list");
+
+            // Prioritaskan dokumen bertipe "winner_list" dan "sk" dari results.documents
+            skDocs.forEach((d, idx) => {
+              const url = d.url || "#";
+              if (!url || url === "#" || seenUrls.has(url)) return;
+              seenUrls.add(url);
+
+              // Cari nomor SK & tanggal dari pasangan "sk" jika ada
+              const matchingSk = rawDocs.find(
+                (other) => other.type === "sk" && (other.url === url || other.sk_number)
+              );
+              const skNumber =
+                d.sk_number ||
+                matchingSk?.sk_number ||
+                skSec[0]?.nomor ||
+                `SK/${code}/${editionYear}`;
+              const publishDate =
+                d.date ||
+                matchingSk?.date ||
+                skSec[0]?.tanggal ||
+                resSec?.announced_at ||
+                `${editionYear}-08-28`;
+
+              const rawTitle = d.title || `SK Penetapan Pemenang Resmi ${code} ${editionYear}`;
+              const cleanTitle = rawTitle.includes("—")
+                ? rawTitle.split("—").slice(1).join("—").trim()
+                : rawTitle;
+
+              docs.push({
+                id: `v1-doc-${code}-${editionYear}-${idx}`,
+                competition: code,
+                competitionFullName: fullName,
+                title: cleanTitle,
+                title_en: cleanTitle,
+                edition: `Season ${editionYear}`,
+                publishDate: String(publishDate).substring(0, 10),
+                skNumber,
+                downloadUrl: url,
+                totalParticipants,
+                totalMedals,
+                badge: "Terbaru",
+                category,
+                mode: getAnnouncementMode({
+                  title: rawTitle,
+                  downloadUrl: url,
+                  category: d.category,
+                }),
+              });
+            });
+
+            // Tambahkan dari sk_pemenang jika URL-nya belum ada
+            if (Array.isArray(skSec)) {
+              skSec.forEach((sk, idx) => {
+                const url = sk.url || "#";
+                if (!url || url === "#" || seenUrls.has(url)) return;
+                seenUrls.add(url);
+
+                const title = sk.perihal || `SK Penetapan Pemenang Resmi ${code} ${editionYear}`;
+                docs.push({
+                  id: `v1-sk-${code}-${editionYear}-${idx}`,
+                  competition: code,
+                  competitionFullName: fullName,
+                  title,
+                  title_en: title,
+                  edition: `Season ${editionYear}`,
+                  publishDate: sk.tanggal ? String(sk.tanggal).substring(0, 10) : `${editionYear}-08-28`,
+                  skNumber: sk.nomor || `SK/${code}/${editionYear}`,
+                  downloadUrl: url,
+                  totalParticipants,
+                  totalMedals,
+                  badge: "Resmi",
+                  category,
+                  mode: getAnnouncementMode({
+                    title,
+                    downloadUrl: url,
+                  }),
+                });
+              });
+            }
+
+            return docs;
+          } catch {
+            return [] as WinnerAnnouncementDoc[];
+          }
+        })
+      );
+
+      const allDocs = perSeriesDocs
+        .flat()
+        .sort((a, b) => (b.publishDate || "").localeCompare(a.publishDate || ""));
+
+      if (allDocs.length > 0) {
+        return allDocs;
+      }
+    }
+  } catch (err) {
+    console.warn("[Dashboard v1 API] Failed fetching winner announcements:", err);
+  }
+
+  // 2. Fallback Legacy Endpoint (/api/public/announcements)
+  try {
     const res = await fetch(`${dashboardUrl}/api/public/announcements`, {
+      headers: DASHBOARD_ORG_HEADERS,
       cache: "no-store",
       next: { revalidate: 0 },
-      signal: AbortSignal.timeout(8000),
+      signal: AbortSignal.timeout(6000),
     });
     if (res.ok) {
       const json = await res.json();

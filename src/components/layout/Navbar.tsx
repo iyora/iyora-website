@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
-import { Menu, X, ChevronDown, Newspaper, Megaphone, FileText, Camera, Video, ArrowRight, Info, Users, Mail, Globe, Award, Calendar, LayoutDashboard } from "lucide-react";
+import { Menu, X, ChevronDown, Newspaper, Megaphone, FileText, Camera, Video, ArrowRight, Info, Users, Mail, HelpCircle, Globe, Award, Calendar, LayoutDashboard } from "lucide-react";
 import clsx from "clsx";
 import type { NewsPreviewData, CompetitionData } from "@/lib/supabase";
 import { getValidEventRegistrationUrl } from "@/lib/supabase";
@@ -127,6 +127,7 @@ const NEWS_MENU = [
 const ABOUT_MENU = [
   { key: "about", href: "/about", icon: Info, labelKey: "about", descKey: "about_desc" },
   { key: "team", href: "/team", icon: Users, labelKey: "team", descKey: "team_desc" },
+  { key: "faq", href: "/faq", icon: HelpCircle, labelKey: "faq", descKey: "faq_desc" },
   { key: "contact", href: "/contact", icon: Mail, labelKey: "contact", descKey: "contact_desc" },
 ] as const;
 
@@ -252,7 +253,7 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
           />
         </Link>
 
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-6">
           <Link href={href("/")} className={navLinkClass}>
             {t("home")}
           </Link>
@@ -549,6 +550,10 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
             </div>
           </div>
 
+          <Link href={href("/faq")} className={navLinkClass}>
+            {t("faq")}
+          </Link>
+
           {/* Language switcher */}
           <Link
             href={`/${otherLocale}`}
@@ -801,6 +806,13 @@ export default function Navbar({ newsPreview, competitions }: NavbarProps) {
                 })}
               </div>
             )}
+            <Link
+              href={href("/faq")}
+              className="py-3 text-gray-800 font-medium border-b border-gray-50 hover:text-primary transition-colors"
+              onClick={() => setMobileOpen(false)}
+            >
+              {t("faq")}
+            </Link>
             <div className="pt-3 flex items-center gap-3">
               <a
                 href="https://dashboard.iyora.or.id/"

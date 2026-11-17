@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
+import { Calendar, ArrowRight } from "lucide-react";
 import type { CompetitionData } from "@/lib/supabase";
 import { getValidEventRegistrationUrl } from "@/lib/supabase";
 
@@ -143,8 +145,8 @@ export default function CompetitionsGrid({ competitions }: Props) {
           })}
         </div>
 
-        {/* Level pills */}
-        <div className="flex flex-wrap justify-center gap-2">
+        {/* Level pills & Timeline button */}
+        <div className="flex flex-wrap items-center justify-center gap-2">
           {levelFilters.map(({ key, label }) => (
             <button
               key={key}
@@ -158,6 +160,15 @@ export default function CompetitionsGrid({ competitions }: Props) {
               {label}
             </button>
           ))}
+
+          <Link
+            href={`/${locale}/competitions/timeline`}
+            className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full font-bold text-xs bg-primary text-white hover:bg-primary/90 shadow-md shadow-primary/20 transition-all duration-200 hover:-translate-y-0.5 ml-1"
+          >
+            <Calendar size={13} />
+            <span>{locale === "id" ? "Timeline Event" : "Event Timeline"}</span>
+            <ArrowRight size={13} />
+          </Link>
         </div>
       </div>
 
