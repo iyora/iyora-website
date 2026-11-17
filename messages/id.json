@@ -3,7 +3,7 @@
     "home": "Beranda",
     "about": "Tentang Kami",
     "team": "Tim Kami",
-    "competitions": "Kompetisi",
+    "competitions": "Event",
     "winners": "Daftar Pemenang",
     "gallery": "Galeri",
     "gallery_photos": "Foto",
@@ -25,7 +25,7 @@
     "competitions_international_desc": "Olimpiade sains tingkat internasional & dunia",
     "competitions_timeline": "Timeline Event",
     "competitions_timeline_desc": "Jadwal pendaftaran & pelaksanaan olimpiade",
-    "all_competitions": "Lihat Semua Kompetisi",
+    "all_competitions": "Lihat Semua Event",
     "calendar": "Kalender"
   },
   "hero": {

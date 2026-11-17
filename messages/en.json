@@ -3,7 +3,7 @@
     "home": "Home",
     "about": "About Us",
     "team": "Our Team",
-    "competitions": "Competitions",
+    "competitions": "Event",
     "winners": "Winners",
     "gallery": "Gallery",
     "gallery_photos": "Photos",
@@ -25,7 +25,7 @@
     "competitions_international_desc": "International and global stage science olympiads",
     "competitions_timeline": "Event Timeline",
     "competitions_timeline_desc": "Registration & competition schedule timeline",
-    "all_competitions": "View All Competitions",
+    "all_competitions": "View All Events",
     "calendar": "Calendar"
   },
   "hero": {
