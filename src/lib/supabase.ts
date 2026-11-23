@@ -196,32 +196,22 @@ export const MANUAL_COMPETITION_OVERRIDES: Record<string, {
   guidebookUrl?: string;
   registrationUrl?: string;
 }> = {
-  nso: {
-    openAt: "2026-09-03",
-    closeAt: "2026-10-16",
-    status: "closed",
-  },
-  gyso: {
-    status: "closed",
-  },
+  /*
+   * 2026-11-23: tanggal & status pendaftaran TIDAK lagi ditulis di sini —
+   * semuanya dari dasbor (sakelar Pendaftaran + tanggal buka/tutup edisi).
+   * Tulisan manual sebelumnya membuat NSMO/WSO tetap "dibuka" sesudah tutup
+   * 20 Nov dan GYSO "ditutup" padahal dibuka. Yang tersisa hanya tautan
+   * cadangan bila dasbor tidak mengirimnya.
+   */
   nsmo: {
-    openAt: "2026-09-08",
-    closeAt: "2026-11-20",
-    status: "open",
     guidebookUrl: "https://api-dashboard.iysa.or.id/media/coreapps/events/guidebooks/nsmo-2026-1794637340172-o.pdf",
     registrationUrl: "https://nsmo.iyora.or.id/register",
   },
   wso: {
-    openAt: "2026-09-20",
-    closeAt: "2026-11-20",
-    status: "open",
     guidebookUrl: "https://api-dashboard.iysa.or.id/media/coreapps/events/guidebooks/wso-2026-1794469585996-o.pdf",
     registrationUrl: "https://wso.iyora.or.id/register",
   },
   tiso: {
-    openAt: "2026-10-02",
-    closeAt: "2026-12-05",
-    status: "open",
     guidebookUrl: "https://api.iyora.or.id/storage/v1/object/public/event-media/f46a573a-fede-45e0-a3c0-c8635ee1f14f/guidebooks/1791183416609-Guidebook-TISO-2027.pdf",
     registrationUrl: "https://tiso.iyora.or.id/register",
   },
@@ -388,19 +378,23 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
           const closeAt =
             override?.closeAt || s.pendaftaran_tutup || def?.registrationCloseAt || null;
 
+          /*
+           * Sakelar Pendaftaran dasbor yang memutuskan "dibuka". Tanggal hanya
+           * membedakan "segera" dan "ditutup" saat sakelarnya mati.
+           */
+          const akhirHari = (v: string) => { const d = new Date(v); if (v.length <= 10) d.setHours(23, 59, 59, 999); return d; };
+          const kini = new Date();
           let registrationStatus: RegistrationStatus;
           if (override?.status) {
             registrationStatus = override.status;
-          } else if (override) {
-            registrationStatus = computeStatus(openAt, closeAt);
           } else if (s.pendaftaran_dibuka === true) {
             registrationStatus = "open";
-          } else if (openAt && closeAt) {
-            registrationStatus = computeStatus(openAt, closeAt);
-          } else if (closeAt) {
-            const closeDate = new Date(closeAt);
-            if (closeAt.length <= 10) closeDate.setHours(23, 59, 59, 999);
-            registrationStatus = new Date() > closeDate ? "closed" : "coming_soon";
+          } else if (openAt && kini < new Date(openAt)) {
+            registrationStatus = "coming_soon";
+          } else if (closeAt && kini > akhirHari(closeAt)) {
+            registrationStatus = "closed";
+          } else if (openAt || closeAt) {
+            registrationStatus = "coming_soon";
           } else {
             registrationStatus = def?.registrationStatus || "coming_soon";
           }
