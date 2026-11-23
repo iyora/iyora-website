@@ -52,7 +52,36 @@ function getIcon(category: string | null) {
 }
 
 type LevelFilterKey = "all" | "national" | "international";
-type StatusFilterKey = "open" | "coming_soon" | "closed";
+type StatusFilterKey = "open" | "coming_soon" | "ongoing" | "closed";
+
+/*
+ * "Berlangsung" (2026-11-23, permintaan pengguna): pendaftaran sudah ditutup
+ * tetapi olimpiadenya masih berjalan sampai tanggal awarding. Tanggal awarding
+ * = tanggal terakhir agenda Awarding / Penganugerahan / Pengumuman Pemenang /
+ * Closing di jadwal dasbor; bila tidak ada, tanggal selesai edisi.
+ */
+const POLA_AWARDING = /award|penganugerahan|pengumuman pemenang|winner announcement|closing|penutupan/i;
+
+function tanggalAwarding(c: CompetitionData): string | null {
+  const daftar = (c.timeline ?? [])
+    .filter((m) => m?.tanggal && POLA_AWARDING.test(m.milestone || ""))
+    .map((m) => String(m.tanggal).slice(0, 10))
+    .sort();
+  return daftar.length ? daftar[daftar.length - 1] : (c.eventEndAt ? String(c.eventEndAt).slice(0, 10) : null);
+}
+
+/** Tanggal hari ini di WIB, "YYYY-MM-DD". */
+function hariIniWib(): string {
+  return new Date(Date.now() + 7 * 3600 * 1000).toISOString().slice(0, 10);
+}
+
+function statusTampil(c: CompetitionData): StatusFilterKey {
+  if (c.registrationStatus === "closed") {
+    const aw = tanggalAwarding(c);
+    if (aw && hariIniWib() <= aw) return "ongoing";
+  }
+  return c.registrationStatus as StatusFilterKey;
+}
 
 function formatTimelineDate(dateStr: string | null | undefined, locale: string): string {
   if (!dateStr) return locale === "id" ? "Segera Diumumkan" : "To Be Announced";
@@ -104,13 +133,15 @@ export default function TimelineClient({ competitions }: Props) {
       all: competitions.length,
       open: competitions.filter((c) => c.registrationStatus === "open").length,
       coming_soon: competitions.filter((c) => c.registrationStatus === "coming_soon").length,
-      closed: competitions.filter((c) => c.registrationStatus === "closed").length,
+      ongoing: competitions.filter((c) => statusTampil(c) === "ongoing").length,
+      closed: competitions.filter((c) => statusTampil(c) === "closed").length,
     };
   }, [competitions]);
 
   const statusFilters: { key: StatusFilterKey; label: string; count: number }[] = [
     { key: "open", label: isId ? "Pendaftaran Dibuka" : "Open Register", count: counts.open },
     { key: "coming_soon", label: isId ? "Segera Dibuka" : "Coming Soon", count: counts.coming_soon },
+    { key: "ongoing", label: isId ? "Sedang Berlangsung" : "Ongoing", count: counts.ongoing },
     { key: "closed", label: isId ? "Selesai / Ditutup" : "Closed", count: counts.closed },
   ];
 
@@ -129,7 +160,7 @@ export default function TimelineClient({ competitions }: Props) {
         (activeLevel === "international"
           ? c.level === "international" || c.level === "world"
           : c.level === activeLevel);
-      const matchStatus = c.registrationStatus === activeStatus;
+      const matchStatus = statusTampil(c) === activeStatus;
       const matchSearch =
         !q ||
         c.shortName.toLowerCase().includes(q) ||
@@ -157,6 +188,13 @@ export default function TimelineClient({ competitions }: Props) {
         if (closeA !== closeB) return closeA - closeB;
       }
 
+      // Ongoing: nearest awarding date first
+      if (activeStatus === "ongoing") {
+        const awA = tanggalAwarding(a) ?? "9999";
+        const awB = tanggalAwarding(b) ?? "9999";
+        if (awA !== awB) return awA < awB ? -1 : 1;
+      }
+
       // For closed events, sort by closing date descending (most recent first)
       if (a.registrationStatus === "closed") {
         const closeA = a.registrationCloseAt ? new Date(a.registrationCloseAt).getTime() : 0;
@@ -171,7 +209,7 @@ export default function TimelineClient({ competitions }: Props) {
   return (
     <div className="space-y-10">
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <div className="bg-white rounded-2xl p-5 border border-primary/15 shadow-sm flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
             <Calendar size={22} />
@@ -191,7 +229,7 @@ export default function TimelineClient({ competitions }: Props) {
           <div>
             <div className="text-2xl font-extrabold text-teal-dark">{counts.open}</div>
             <div className="text-xs text-teal-dark/80 font-semibold">
-              {isId ? "Sedang Berlangsung" : "Open Registration"}
+              {isId ? "Pendaftaran Dibuka" : "Open Registration"}
             </div>
           </div>
         </div>
@@ -204,6 +242,18 @@ export default function TimelineClient({ competitions }: Props) {
             <div className="text-2xl font-extrabold text-primary">{counts.coming_soon}</div>
             <div className="text-xs text-primary/80 font-semibold">
               {isId ? "Segera Dibuka" : "Coming Soon"}
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-amber-50 rounded-2xl p-5 border border-amber-200 shadow-sm flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-sm shadow-amber-500/30">
+            <Award size={22} />
+          </div>
+          <div>
+            <div className="text-2xl font-extrabold text-amber-700">{counts.ongoing}</div>
+            <div className="text-xs text-amber-700/80 font-semibold">
+              {isId ? "Sedang Berlangsung" : "Ongoing"}
             </div>
           </div>
         </div>
@@ -238,7 +288,9 @@ export default function TimelineClient({ competitions }: Props) {
                         ? "gradient-hero text-white shadow-md shadow-primary/20"
                         : key === "coming_soon"
                           ? "bg-primary text-white shadow-md shadow-primary/20"
-                          : "bg-gray-600 text-white shadow-md shadow-gray-600/20"
+                          : key === "ongoing"
+                            ? "bg-amber-500 text-white shadow-md shadow-amber-500/20"
+                            : "bg-gray-600 text-white shadow-md shadow-gray-600/20"
                       : "text-gray-600 hover:text-primary hover:bg-white/80"
                   }`}
                 >
@@ -255,6 +307,9 @@ export default function TimelineClient({ competitions }: Props) {
                         isActive ? "bg-amber-300" : "bg-accent"
                       }`}
                     />
+                  )}
+                  {key === "ongoing" && (
+                    <span className={`w-2 h-2 rounded-full ${isActive ? "bg-white" : "bg-amber-500"}`} />
                   )}
                   {key === "closed" && <span className="w-2 h-2 rounded-full bg-gray-400" />}
                   <span>{label}</span>
@@ -336,6 +391,8 @@ export default function TimelineClient({ competitions }: Props) {
           {sortedAndFiltered.map((comp) => {
             const isOpen = comp.registrationStatus === "open";
             const isComing = comp.registrationStatus === "coming_soon";
+            const isOngoing = statusTampil(comp) === "ongoing";
+            const awarding = isOngoing ? tanggalAwarding(comp) : null;
             const regUrl = getValidEventRegistrationUrl(comp.slug, comp.registrationUrl, comp.websiteUrl);
             const webUrl = getValidEventWebsiteUrl(comp.slug, comp.websiteUrl);
             const daysLeft = isOpen ? getDaysRemaining(comp.registrationCloseAt) : null;
@@ -350,13 +407,17 @@ export default function TimelineClient({ competitions }: Props) {
                       ? "gradient-hero text-white shadow-primary/30"
                       : isComing
                         ? "bg-primary text-white shadow-primary/25"
-                        : "bg-gray-300 text-gray-600"
+                        : isOngoing
+                          ? "bg-amber-500 text-white shadow-amber-500/25"
+                          : "bg-gray-300 text-gray-600"
                   }`}
                 >
                   {isOpen ? (
                     <span className="w-2.5 h-2.5 rounded-full bg-white animate-pulse" />
                   ) : isComing ? (
                     <Clock size={14} />
+                  ) : isOngoing ? (
+                    <Award size={14} />
                   ) : (
                     <CheckCircle2 size={14} />
                   )}
@@ -369,7 +430,9 @@ export default function TimelineClient({ competitions }: Props) {
                       ? "border-primary/25 shadow-lg shadow-primary/8 hover:border-teal hover:shadow-xl hover:shadow-primary/12"
                       : isComing
                         ? "border-primary/20 shadow-md shadow-primary/5 hover:border-primary/40 hover:shadow-lg"
-                        : "border-gray-200/80 shadow-xs hover:border-gray-300"
+                        : isOngoing
+                          ? "border-amber-200 shadow-md shadow-amber-500/5 hover:border-amber-300"
+                          : "border-gray-200/80 shadow-xs hover:border-gray-300"
                   }`}
                 >
                   {/* Top Theme Gradient Accent Bar */}
@@ -379,7 +442,9 @@ export default function TimelineClient({ competitions }: Props) {
                         ? "gradient-hero"
                         : isComing
                           ? "bg-gradient-to-r from-primary to-primary-light"
-                          : "bg-gray-200"
+                          : isOngoing
+                            ? "bg-amber-400"
+                            : "bg-gray-200"
                     }`}
                   />
 
@@ -403,6 +468,13 @@ export default function TimelineClient({ competitions }: Props) {
                             : "Schedule To Be Announced"}
                       </span>
 
+                      {awarding && (
+                        <span className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+                          <Award size={13} />
+                          {isId ? "Awarding" : "Awarding"} {formatShortDate(awarding, locale)}
+                        </span>
+                      )}
+
                       {daysLeft !== null && (
                         <span className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full bg-accent/15 text-accent-dark border border-accent/30">
                           ⏳{" "}
@@ -424,7 +496,9 @@ export default function TimelineClient({ competitions }: Props) {
                           ? "bg-teal/15 text-teal-dark border border-teal/30"
                           : isComing
                             ? "bg-primary/10 text-primary border border-primary/20"
-                            : "bg-gray-100 text-gray-500 border border-gray-200"
+                            : isOngoing
+                              ? "bg-amber-50 text-amber-700 border border-amber-200"
+                              : "bg-gray-100 text-gray-500 border border-gray-200"
                       }`}
                     >
                       <span
@@ -433,7 +507,9 @@ export default function TimelineClient({ competitions }: Props) {
                             ? "bg-teal animate-pulse"
                             : isComing
                               ? "bg-primary"
-                              : "bg-gray-400"
+                              : isOngoing
+                                ? "bg-amber-500 animate-pulse"
+                                : "bg-gray-400"
                         }`}
                       />
                       {isOpen
@@ -444,9 +520,13 @@ export default function TimelineClient({ competitions }: Props) {
                           ? isId
                             ? "Segera Dibuka"
                             : "Coming Soon"
-                          : isId
-                            ? "Pendaftaran Ditutup"
-                            : "Registration Closed"}
+                          : isOngoing
+                            ? isId
+                              ? "Sedang Berlangsung"
+                              : "Ongoing"
+                            : isId
+                              ? "Pendaftaran Ditutup"
+                              : "Registration Closed"}
                     </span>
                   </div>
 
