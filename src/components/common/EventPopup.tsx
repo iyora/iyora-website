@@ -4,13 +4,15 @@ import { useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, CalendarDays, Clock, MapPin, CheckCircle2, ArrowRight, Globe, BookOpen, Flame } from "lucide-react";
+import { X, CalendarDays, Clock, MapPin, CheckCircle2, ArrowRight, Globe, BookOpen, Flame, Award } from "lucide-react";
 import type { AcaraPopup, TitikTimeline } from "@/lib/popupTimeline";
 
 /**
  * Popup event beranda (2026-11-17): TIMELINE olimpiade yang pendaftarannya
  * dibuka, dari API dashboard (`ambilAcaraPopup`). Satu tab per ajang; isi =
  * Jadwal utama, atau timeline rinci Luring/Daring lengkap dengan jam (WIB).
+ * Sejak 2026-11-23 juga ajang yang sedang berlangsung (pendaftaran ditutup,
+ * belum lewat awarding): label "Sedang berlangsung · awarding …", tanpa tombol daftar.
  */
 
 type Tampilan = "utama" | "offline" | "online";
@@ -79,13 +81,16 @@ export default function EventPopup({ acara = [] }: { acara?: AcaraPopup[] }) {
   if (!acara.length || !ev) return null;
 
   const adaJalur = (["offline", "online"] as const).filter((j) => ev.rinci.some((k) => k.jalur === j));
-  const sisaHari = ev.tutup
+  const berlangsung = ev.status === "ongoing";
+  const sisaHari = !berlangsung && ev.tutup
     ? Math.round((tanggalLokal(ev.tutup).getTime() - tanggalLokal(hari).getTime()) / 86400000)
     : null;
   const fmt = (t: string, o: Intl.DateTimeFormatOptions) => tanggalLokal(t).toLocaleDateString(loc, o);
   const label = {
     trigger: isEn ? `Event Timeline (${acara.length})` : `Timeline Event (${acara.length})`,
     buka: isEn ? "Registration open" : "Pendaftaran dibuka",
+    berlangsung: isEn ? "Ongoing" : "Sedang berlangsung",
+    awarding: (d: string) => (isEn ? `awarding ${d}` : `awarding ${d}`),
     tutup: (d: string) => (isEn ? `closes ${d}` : `ditutup ${d}`),
     sisa: (n: number) => (n === 0 ? (isEn ? "last day" : "hari terakhir") : isEn ? `${n} days left` : `${n} hari lagi`),
     utama: isEn ? "Key dates" : "Jadwal utama",
@@ -157,9 +162,11 @@ export default function EventPopup({ acara = [] }: { acara?: AcaraPopup[] }) {
                   )}
                   <div className="min-w-0">
                     <span className="inline-flex flex-wrap items-center gap-1.5 rounded-full bg-white/20 px-2.5 py-1 text-[11px] font-bold backdrop-blur-sm">
-                      <Flame size={12} className="text-amber-300" />
-                      {label.buka}
-                      {ev.tutup && <span className="font-medium text-white/85">· {label.tutup(fmt(ev.tutup, { day: "numeric", month: "short", year: "numeric" }))}</span>}
+                      {berlangsung ? <Award size={12} className="text-amber-300" /> : <Flame size={12} className="text-amber-300" />}
+                      {berlangsung ? label.berlangsung : label.buka}
+                      {berlangsung
+                        ? ev.awarding && <span className="font-medium text-white/85">· {label.awarding(fmt(ev.awarding, { day: "numeric", month: "short", year: "numeric" }))}</span>
+                        : ev.tutup && <span className="font-medium text-white/85">· {label.tutup(fmt(ev.tutup, { day: "numeric", month: "short", year: "numeric" }))}</span>}
                       {sisaHari !== null && sisaHari >= 0 && sisaHari <= 30 && (
                         <span className="rounded-full bg-amber-400 px-1.5 text-[10px] text-gray-900">{label.sisa(sisaHari)}</span>
                       )}
@@ -242,7 +249,7 @@ export default function EventPopup({ acara = [] }: { acara?: AcaraPopup[] }) {
 
               {/* Tombol aksi */}
               <div className="flex shrink-0 flex-wrap gap-2 border-t border-gray-100 px-5 py-3 sm:px-6">
-                {ev.daftar && (
+                {ev.daftar && !berlangsung && (
                   <a href={ev.daftar} target="_blank" rel="noopener noreferrer"
                     className="inline-flex w-full sm:w-auto sm:flex-1 items-center justify-center gap-1.5 rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-primary/20 transition hover:opacity-90">
                     {label.daftar}<ArrowRight size={15} />
