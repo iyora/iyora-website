@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, Fragment } from "react";
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,7 +9,6 @@ import {
   Clock,
   CheckCircle2,
   Sparkles,
-  ExternalLink,
   BookOpen,
   Search,
   ArrowRight,
@@ -20,7 +19,7 @@ import {
   MapPin,
 } from "lucide-react";
 import type { CompetitionData } from "@/lib/supabase";
-import { getValidEventRegistrationUrl, getValidEventWebsiteUrl } from "@/lib/supabase";
+import { getValidEventRegistrationUrl } from "@/lib/supabase";
 
 const CATEGORY_ICONS: Record<string, string> = {
   Biology:            "🧬",
@@ -439,7 +438,6 @@ export default function TimelineClient({ competitions }: Props) {
             const isOngoing = statusTampil(comp) === "ongoing";
             const awarding = isOngoing ? tanggalAwarding(comp) : null;
             const regUrl = getValidEventRegistrationUrl(comp.slug, comp.registrationUrl, comp.websiteUrl);
-            const webUrl = getValidEventWebsiteUrl(comp.slug, comp.websiteUrl);
             const daysLeft = isOpen ? getDaysRemaining(comp.registrationCloseAt) : null;
             const hasDates = Boolean(comp.registrationOpenAt || comp.registrationCloseAt);
 
@@ -667,7 +665,7 @@ export default function TimelineClient({ competitions }: Props) {
                   </div>
 
                   {/* Action Buttons Footer */}
-                  {(isOpen || comp.guidebookUrl || webUrl || (comp.timeline && comp.timeline.length > 0)) && (
+                  {(isOpen || comp.guidebookUrl || (comp.timeline && comp.timeline.length > 0)) && (
                     <div className="mt-5 pt-4 border-t border-gray-100 flex flex-wrap items-center justify-end gap-2.5">
                       {comp.timeline && comp.timeline.length > 0 && (
                         <button
@@ -692,18 +690,6 @@ export default function TimelineClient({ competitions }: Props) {
                         >
                           <BookOpen size={14} />
                           {isId ? "Buku Panduan" : "Guidebook"}
-                        </a>
-                      )}
-
-                      {webUrl && (
-                        <a
-                          href={webUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-primary/10 text-primary hover:bg-primary/15 border border-primary/20 transition-all"
-                        >
-                          <ExternalLink size={14} />
-                          {isId ? "Website Event" : "Event Website"}
                         </a>
                       )}
 
@@ -840,14 +826,29 @@ export default function TimelineClient({ competitions }: Props) {
               {/* Tab Filters for Modal: Semua, Online, Offline */}
               {(() => {
                 const rawMilestones = previewComp.timeline || [];
-                const sortByDateAndTime = (
+
+                // Sort: Online first (1), Offline second (2), Other third (3).
+                // Within each category, sort chronologically by date and start time.
+                const getJalurRank = (jalur?: string) => {
+                  const j = (jalur || "").toLowerCase().trim();
+                  if (j === "online") return 1;
+                  if (j === "offline") return 2;
+                  return 3;
+                };
+
+                const sortMilestones = (
                   a: typeof rawMilestones[number],
                   b: typeof rawMilestones[number]
-                ) =>
-                  (a.tanggal || "").localeCompare(b.tanggal || "") ||
-                  (a.jam_mulai || "").localeCompare(b.jam_mulai || "");
+                ) => {
+                  const rankDiff = getJalurRank(a.jalur) - getJalurRank(b.jalur);
+                  if (rankDiff !== 0) return rankDiff;
+                  return (
+                    (a.tanggal || "").localeCompare(b.tanggal || "") ||
+                    (a.jam_mulai || "").localeCompare(b.jam_mulai || "")
+                  );
+                };
 
-                const sortedAll = [...rawMilestones].sort(sortByDateAndTime);
+                const sortedAll = [...rawMilestones].sort(sortMilestones);
                 const onlineCount = sortedAll.filter(
                   (m) => (m.jalur || "").toLowerCase() === "online"
                 ).length;
@@ -923,6 +924,14 @@ export default function TimelineClient({ competitions }: Props) {
                           {displayItems.map((m, idx) => {
                             const isOfflineItem = (m.jalur || "").toLowerCase() === "offline";
                             const isOnlineItem = (m.jalur || "").toLowerCase() === "online";
+                            const isNewGroup =
+                              previewTab === "all" &&
+                              onlineCount > 0 &&
+                              offlineCount > 0 &&
+                              (idx === 0 ||
+                                (displayItems[idx - 1]?.jalur || "").toLowerCase() !==
+                                  (m.jalur || "").toLowerCase());
+
                             const dateObj = m.tanggal ? new Date(`${m.tanggal.slice(0, 10)}T12:00:00`) : null;
                             const dayNumber = dateObj ? dateObj.getDate() : "--";
                             const monthShort = dateObj
@@ -940,67 +949,98 @@ export default function TimelineClient({ competitions }: Props) {
                             const timeStr = [m.jam_mulai, m.jam_selesai].filter(Boolean).join(" – ");
 
                             return (
-                              <li key={`${m.milestone}-${m.tanggal}-${idx}`} className="relative flex items-start gap-4">
-                                {/* Date Block Node */}
-                                <div
-                                  className={`flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl border text-center shadow-xs z-10 ${
-                                    isOfflineItem
-                                      ? "bg-gradient-to-br from-amber-50 to-orange-50 border-accent/30 text-accent-dark"
-                                      : "bg-gradient-to-br from-primary/5 to-teal/10 border-primary/20 text-primary"
-                                  }`}
-                                >
-                                  <span className="text-lg font-black leading-none">{dayNumber}</span>
-                                  <span className="mt-0.5 text-[10px] font-extrabold uppercase tracking-wider">
-                                    {monthShort}
-                                  </span>
-                                </div>
-
-                                {/* Detail Card */}
-                                <div
-                                  className={`flex-1 rounded-2xl p-4 border transition-all ${
-                                    isOfflineItem
-                                      ? "bg-amber-50/40 border-accent/25 hover:border-accent/40"
-                                      : "bg-white border-gray-200/90 hover:border-primary/30 shadow-xs"
-                                  }`}
-                                >
-                                  <div className="flex flex-wrap items-start justify-between gap-2 mb-1.5">
-                                    <h4 className="text-sm font-bold text-gray-900 leading-snug">
-                                      {rapiJudul(m.milestone, previewComp.shortName)}
-                                    </h4>
-                                    {m.jalur && (
-                                      <span
-                                        className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider shrink-0 ${
-                                          isOfflineItem
+                              <Fragment key={`${m.milestone}-${m.tanggal}-${idx}`}>
+                                {isNewGroup && (
+                                  <li className="relative pl-[70px] pt-3 pb-1 first:pt-0 list-none">
+                                    <div
+                                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold shadow-xs border ${
+                                        isOnlineItem
+                                          ? "bg-teal/10 text-teal-dark border-teal/30"
+                                          : isOfflineItem
                                             ? "bg-accent/15 text-accent-dark border border-accent/30"
-                                            : isOnlineItem
-                                              ? "bg-teal/15 text-teal-dark border border-teal/30"
-                                              : "bg-gray-100 text-gray-700 border border-gray-200"
-                                        }`}
-                                      >
-                                        {m.jalur}
+                                            : "bg-gray-100 text-gray-700 border border-gray-200"
+                                      }`}
+                                    >
+                                      <span>{isOnlineItem ? "💻" : isOfflineItem ? "🏛️" : "📅"}</span>
+                                      <span className="uppercase tracking-wider font-extrabold text-[11px]">
+                                        {isOnlineItem
+                                          ? isId
+                                            ? "Rangkaian Jadwal Online"
+                                            : "Online Milestones Schedule"
+                                          : isOfflineItem
+                                            ? isId
+                                              ? "Rangkaian Jadwal Offline"
+                                              : "Offline Milestones Schedule"
+                                            : isId
+                                              ? "Jadwal Lainnya"
+                                              : "Other Schedule"}
                                       </span>
-                                    )}
+                                    </div>
+                                  </li>
+                                )}
+
+                                <li className="relative flex items-start gap-4">
+                                  {/* Date Block Node */}
+                                  <div
+                                    className={`flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl border text-center shadow-xs z-10 ${
+                                      isOfflineItem
+                                        ? "bg-gradient-to-br from-amber-50 to-orange-50 border-accent/30 text-accent-dark"
+                                        : "bg-gradient-to-br from-primary/5 to-teal/10 border-primary/20 text-primary"
+                                    }`}
+                                  >
+                                    <span className="text-lg font-black leading-none">{dayNumber}</span>
+                                    <span className="mt-0.5 text-[10px] font-extrabold uppercase tracking-wider">
+                                      {monthShort}
+                                    </span>
                                   </div>
 
-                                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-600">
-                                    <span className="font-semibold text-primary">
-                                      📅 {fullDate}
-                                    </span>
-                                    {timeStr && (
-                                      <span className="inline-flex items-center gap-1 font-medium text-gray-700">
-                                        <Clock size={12} className="text-gray-400" />
-                                        {timeStr} WIB
+                                  {/* Detail Card */}
+                                  <div
+                                    className={`flex-1 rounded-2xl p-4 border transition-all ${
+                                      isOfflineItem
+                                        ? "bg-amber-50/40 border-accent/25 hover:border-accent/40"
+                                        : "bg-white border-gray-200/90 hover:border-primary/30 shadow-xs"
+                                    }`}
+                                  >
+                                    <div className="flex flex-wrap items-start justify-between gap-2 mb-1.5">
+                                      <h4 className="text-sm font-bold text-gray-900 leading-snug">
+                                        {rapiJudul(m.milestone, previewComp.shortName)}
+                                      </h4>
+                                      {m.jalur && (
+                                        <span
+                                          className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider shrink-0 ${
+                                            isOfflineItem
+                                              ? "bg-accent/15 text-accent-dark border border-accent/30"
+                                              : isOnlineItem
+                                                ? "bg-teal/15 text-teal-dark border border-teal/30"
+                                                : "bg-gray-100 text-gray-700 border border-gray-200"
+                                          }`}
+                                        >
+                                          {m.jalur}
+                                        </span>
+                                      )}
+                                    </div>
+
+                                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-600">
+                                      <span className="font-semibold text-primary">
+                                        📅 {fullDate}
                                       </span>
-                                    )}
-                                    {m.lokasi && (
-                                      <span className="inline-flex items-center gap-1 font-medium text-gray-700">
-                                        <MapPin size={12} className="text-gray-400" />
-                                        {m.lokasi}
-                                      </span>
-                                    )}
+                                      {timeStr && (
+                                        <span className="inline-flex items-center gap-1 font-medium text-gray-700">
+                                          <Clock size={12} className="text-gray-400" />
+                                          {timeStr} WIB
+                                        </span>
+                                      )}
+                                      {m.lokasi && (
+                                        <span className="inline-flex items-center gap-1 font-medium text-gray-700">
+                                          <MapPin size={12} className="text-gray-400" />
+                                          {m.lokasi}
+                                        </span>
+                                      )}
+                                    </div>
                                   </div>
-                                </div>
-                              </li>
+                                </li>
+                              </Fragment>
                             );
                           })}
                         </ol>
@@ -1022,18 +1062,6 @@ export default function TimelineClient({ competitions }: Props) {
                     >
                       <BookOpen size={14} />
                       {isId ? "Buku Panduan" : "Guidebook"}
-                    </a>
-                  )}
-
-                  {previewComp.websiteUrl && (
-                    <a
-                      href={getValidEventWebsiteUrl(previewComp.slug, previewComp.websiteUrl)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-primary border border-primary/20 hover:bg-primary/5 transition-all"
-                    >
-                      <ExternalLink size={14} />
-                      {isId ? "Website Event" : "Event Website"}
                     </a>
                   )}
                 </div>

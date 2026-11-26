@@ -105,7 +105,12 @@ export async function ambilAcaraPopup(): Promise<AcaraPopup[]> {
         banner: i.banner || null,
         situs,
         daftar: i.pendaftaran_url || (situs ? `${situs.replace(/\/$/, "")}/register` : null),
-        guidebook: ((sk.guidebook ?? {}) as { url?: string }).url || null,
+        guidebook:
+          ((sk.guidebook ?? {}) as { url?: string; berkas?: Array<{ jenis?: string; url?: string }> }).url ||
+          ((sk.guidebook ?? {}) as { url?: string; berkas?: Array<{ jenis?: string; url?: string }> }).berkas?.find(
+            (b) => b.jenis === "guidebook" || (typeof b.url === "string" && b.url.toLowerCase().endsWith(".pdf"))
+          )?.url ||
+          null,
         tutup: i.pendaftaran_tutup || null,
         lingkup: i.lingkup || null,
         status,

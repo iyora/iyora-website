@@ -141,12 +141,13 @@ interface RawDefaultCompetition {
 
 const RAW_DEFAULT_COMPETITIONS: RawDefaultCompetition[] = [
   // 1. Open Registration
-  { slug: "nso", shortName: "NSO", name: "National Science Olympiad", level: "national", category: "Science", websiteUrl: "https://nso.iyora.or.id", registrationUrl: "https://nso.iyora.or.id/register", guidebookUrl: "https://api.iyora.or.id/storage/v1/object/public/event-media/cf86f6fb-83e8-4fd4-8356-e3ac76936b50/guidebooks/1788455563288-BUKU-PANDUAN-NSO-2026.pdf", openAt: "2026-09-03", closeAt: "2026-10-16" },
+  { slug: "nso", shortName: "NSO", name: "National Science Olympiad", level: "national", category: "Science", websiteUrl: "https://nso.iyora.or.id", registrationUrl: "https://nso.iyora.or.id/register", guidebookUrl: "https://api-dashboard.iysa.or.id/media/coreapps/iyora/event-media/cf86f6fb-83e8-4fd4-8356-e3ac76936b50/guidebooks/1790573374035-Guidebook-NSO-2026.pdf", openAt: "2026-09-03", closeAt: "2026-10-16" },
   { slug: "nsmo", shortName: "NSMO", name: "National Science Math Olympiad", level: "national", category: "Mathematics", websiteUrl: "https://nsmo.iyora.or.id", registrationUrl: "https://nsmo.iyora.or.id/register", guidebookUrl: "https://api-dashboard.iysa.or.id/media/coreapps/events/guidebooks/nsmo-2026-1794637340172-o.pdf", openAt: "2026-09-08", closeAt: "2026-11-20" },
   { slug: "wso", shortName: "WSO", name: "World Science Olympiad", level: "world", category: "Science", websiteUrl: "https://wso.iyora.or.id", registrationUrl: "https://wso.iyora.or.id/register", guidebookUrl: "https://api-dashboard.iysa.or.id/media/coreapps/events/guidebooks/wso-2026-1794469585996-o.pdf", openAt: "2026-09-20", closeAt: "2026-11-20" },
-  { slug: "tiso", shortName: "TISO", name: "THAILAND INTERNATIONAL SCIENCE OLYMPIAD", level: "international", category: "Physics", websiteUrl: "https://tiso.iyora.or.id", registrationUrl: "https://tiso.iyora.or.id/register", guidebookUrl: "https://api.iyora.or.id/storage/v1/object/public/event-media/f46a573a-fede-45e0-a3c0-c8635ee1f14f/guidebooks/1791183416609-Guidebook-TISO-2027.pdf", openAt: "2026-10-02", closeAt: "2026-12-05" },
+  { slug: "tiso", shortName: "TISO", name: "THAILAND INTERNATIONAL SCIENCE OLYMPIAD", level: "international", category: "Physics", websiteUrl: "https://tiso.iyora.or.id", registrationUrl: "https://tiso.iyora.or.id/register", guidebookUrl: "https://api-dashboard.iysa.or.id/media/coreapps/events/guidebooks/tiso-2027-1795404273206-o.pdf", openAt: "2026-10-02", closeAt: "2026-12-05" },
 
   // 2. Coming Soon
+  { slug: "gyso", shortName: "GYSO", name: "GLOBAL YOUTH SCIENCE OLYMPIAD", level: "international", category: "Science", websiteUrl: "https://gyso.iyora.or.id", registrationUrl: null, guidebookUrl: "https://api-dashboard.iysa.or.id/media/coreapps/iyora/event-media/80c9f1b9-0b30-439f-9905-981afe8cdaf6/guidebooks/1791256275558-Guidebook-GYSO-2027.pdf", openAt: null, closeAt: null },
   { slug: "nymo", shortName: "NYMO", name: "National Youth Mathematics Olympiad", level: "national", category: "Mathematics", websiteUrl: "https://nymo.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: "2026-06-01", closeAt: "2026-08-01" },
   { slug: "iymo", shortName: "IYMO", name: "International Youth Mathematics Olympiad", level: "international", category: "Mathematics", websiteUrl: "https://iymo.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: "2026-06-01", closeAt: "2026-08-01" },
   { slug: "nybo", shortName: "NYBO", name: "National Youth Biology Olympiad", level: "national", category: "Biology", websiteUrl: "https://nybo.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: "2026-06-01", closeAt: "2026-08-01" },
@@ -163,11 +164,11 @@ const RAW_DEFAULT_COMPETITIONS: RawDefaultCompetition[] = [
   { slug: "nmiso", shortName: "NMISO", name: "NORTH MACEDONIA INTERNATIONAL SCIENCE OLYMPIAD", level: "international", category: "Science", websiteUrl: "https://nmiso.iyora.or.id", registrationUrl: null, guidebookUrl: null, openAt: null, closeAt: null },
 
   // 3. Closed (Past Competitions)
-  { slug: "dmo", shortName: "DMO", name: "Diponegoro Mathematics Olympiad", level: "national", category: "Mathematics", websiteUrl: "https://dmo.iyora.or.id", registrationUrl: null, guidebookUrl: "https://api.iyora.or.id/storage/v1/object/public/event-media/99fe4bb3-2e06-4444-93ec-e8b2649b1ff3/guidebooks/1788772757309-JUKNIS_EVENT_DSCF_2026.pdf", openAt: "2026-06-01", closeAt: "2026-08-01" },
-  { slug: "nygo", shortName: "NYGO", name: "National Youth Geography Olympiad", level: "national", category: "Geography", websiteUrl: "https://nygo.iyora.or.id", registrationUrl: null, guidebookUrl: "https://api.iyora.or.id/storage/v1/object/public/event-media/0a2f7235-47dc-4988-8096-b11665778032/guidebooks/1785738982960-GUIDEBOOK_NYGO_2026.pdf", openAt: "2026-06-30", closeAt: "2026-08-16" },
-  { slug: "iygo", shortName: "IYGO", name: "International Youth Geography Olympiad", level: "international", category: "Geography", websiteUrl: "https://iygo.iyora.or.id", registrationUrl: null, guidebookUrl: "https://api.iyora.or.id/storage/v1/object/public/event-media/028b2c71-c7d7-4bfa-98f5-0be973bdd2ff/guidebooks/1785738887590-GUIDEBOOK_IYGO_2026__1_.pdf", openAt: "2026-06-30", closeAt: "2026-08-16" },
-  { slug: "nyeo", shortName: "NYEO", name: "National Youth Economics Olympiad", level: "national", category: "Economics", websiteUrl: "https://nyeo.iyora.or.id", registrationUrl: null, guidebookUrl: "https://api.iyora.or.id/storage/v1/object/public/event-media/3c12e84f-ced0-457b-a4cc-7bb06aae1e1e/guidebooks/1787733952986-Guidebook-NYEO-2026.pdf", openAt: "2026-06-30", closeAt: "2026-08-16" },
-  { slug: "iyeo", shortName: "IYEO", name: "International Youth Economics Olympiad", level: "international", category: "Economics", websiteUrl: "https://iyeo.iyora.or.id", registrationUrl: null, guidebookUrl: "https://api.iyora.or.id/storage/v1/object/public/event-media/189299c9-d901-42cc-9650-0464c33e6026/guidebooks/1785116985719-GUIDEBOOK_IYEO_2026.pdf", openAt: "2026-06-30", closeAt: "2026-08-19" },
+  { slug: "dmo", shortName: "DMO", name: "Diponegoro Mathematics Olympiad", level: "national", category: "Mathematics", websiteUrl: "https://dmo.iyora.or.id", registrationUrl: null, guidebookUrl: "https://api-dashboard.iysa.or.id/media/coreapps/iyora/event-media/63ed6c00-dd94-4bfa-9df8-00285c0335c0/guidebooks/1788772757309-JUKNIS_EVENT_DSCF_2026.pdf", openAt: "2026-06-01", closeAt: "2026-08-01" },
+  { slug: "nygo", shortName: "NYGO", name: "National Youth Geography Olympiad", level: "national", category: "Geography", websiteUrl: "https://nygo.iyora.or.id", registrationUrl: null, guidebookUrl: "https://api-dashboard.iysa.or.id/media/coreapps/iyora/event-media/0a2f7235-47dc-4988-8096-b11665778032/guidebooks/1785738982960-GUIDEBOOK_NYGO_2026.pdf", openAt: "2026-06-30", closeAt: "2026-08-16" },
+  { slug: "iygo", shortName: "IYGO", name: "International Youth Geography Olympiad", level: "international", category: "Geography", websiteUrl: "https://iygo.iyora.or.id", registrationUrl: null, guidebookUrl: "https://api-dashboard.iysa.or.id/media/coreapps/iyora/event-media/028b2c71-c7d7-4bfa-98f5-0be973bdd2ff/guidebooks/1785738887590-GUIDEBOOK_IYGO_2026__1_.pdf", openAt: "2026-06-30", closeAt: "2026-08-16" },
+  { slug: "nyeo", shortName: "NYEO", name: "National Youth Economics Olympiad", level: "national", category: "Economics", websiteUrl: "https://nyeo.iyora.or.id", registrationUrl: null, guidebookUrl: "https://api-dashboard.iysa.or.id/media/coreapps/iyora/event-media/3c12e84f-ced0-457b-a4cc-7bb06aae1e1e/guidebooks/1787733952986-Guidebook-NYEO-2026.pdf", openAt: "2026-06-30", closeAt: "2026-08-16" },
+  { slug: "iyeo", shortName: "IYEO", name: "International Youth Economics Olympiad", level: "international", category: "Economics", websiteUrl: "https://iyeo.iyora.or.id", registrationUrl: null, guidebookUrl: "https://api-dashboard.iysa.or.id/media/coreapps/iyora/event-media/189299c9-d901-42cc-9650-0464c33e6026/guidebooks/1785116985719-GUIDEBOOK_IYEO_2026.pdf", openAt: "2026-06-30", closeAt: "2026-08-19" },
 ];
 
 export const KNOWN_EVENT_MEDIA: Record<string, { banner?: string; logo?: string }> = {
@@ -212,7 +213,7 @@ export const MANUAL_COMPETITION_OVERRIDES: Record<string, {
     registrationUrl: "https://wso.iyora.or.id/register",
   },
   tiso: {
-    guidebookUrl: "https://api.iyora.or.id/storage/v1/object/public/event-media/f46a573a-fede-45e0-a3c0-c8635ee1f14f/guidebooks/1791183416609-Guidebook-TISO-2027.pdf",
+    guidebookUrl: "https://api-dashboard.iysa.or.id/media/coreapps/events/guidebooks/tiso-2027-1795404273206-o.pdf",
     registrationUrl: "https://tiso.iyora.or.id/register",
   },
 };
@@ -351,7 +352,16 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
               const detailJson = await detailRes.json();
               const sections: any[] = detailJson?.data?.sections || [];
               const gbSec = sections.find((sec) => sec.key === "guidebook")?.isi;
-              if (gbSec?.url) detailGuidebookUrl = gbSec.url;
+              if (gbSec?.url) {
+                detailGuidebookUrl = gbSec.url;
+              } else if (Array.isArray(gbSec?.berkas)) {
+                const gbFile = gbSec.berkas.find(
+                  (b: any) =>
+                    b.jenis === "guidebook" ||
+                    (typeof b.url === "string" && b.url.toLowerCase().endsWith(".pdf"))
+                );
+                if (gbFile?.url) detailGuidebookUrl = gbFile.url;
+              }
 
               const tlSec = sections.find((sec) => sec.key === "timeline")?.isi;
               const jkSec = sections.find((sec) => sec.key === "jadwal_kegiatan")?.isi;
@@ -365,6 +375,10 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
             // Abaikan jika detail seksi gagal
           }
 
+          if (!detailGuidebookUrl && (s.panduan || s.guidebook || s.guidebook_url)) {
+            detailGuidebookUrl = s.panduan || s.guidebook || s.guidebook_url;
+          }
+
           const websiteUrl = getValidEventWebsiteUrl(slug, s.situs || def?.websiteUrl);
           const registrationUrl = getValidEventRegistrationUrl(
             slug,
@@ -372,7 +386,7 @@ export async function fetchCompetitionsData(): Promise<CompetitionData[]> {
             websiteUrl
           );
           const guidebookUrl =
-            override?.guidebookUrl || detailGuidebookUrl || def?.guidebookUrl || null;
+            detailGuidebookUrl || override?.guidebookUrl || def?.guidebookUrl || null;
           const openAt =
             override?.openAt || s.pendaftaran_buka || def?.registrationOpenAt || null;
           const closeAt =
